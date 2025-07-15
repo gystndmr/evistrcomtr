@@ -71,13 +71,13 @@ export default function Home() {
               />
             </div>
             
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
-              Republic of Türkiye
+            <h1 className="text-5xl md:text-7xl font-black mb-6 drop-shadow-2xl tracking-wide">
+              REPUBLIC OF TÜRKİYE
             </h1>
-            <h2 className="text-2xl md:text-3xl font-semibold mb-3 drop-shadow-md">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 drop-shadow-lg border-b-4 border-white/30 pb-2 inline-block">
               e-Visa Services
             </h2>
-            <p className="text-lg md:text-xl mb-6 opacity-90 drop-shadow-sm">
+            <p className="text-xl md:text-2xl mb-8 opacity-95 drop-shadow-md font-medium tracking-wide">
               Official Electronic Visa Application System
             </p>
             
