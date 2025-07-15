@@ -22,26 +22,32 @@ export default function Home() {
     {
       name: "Cappadocia",
       location: "Nevşehir",
-      image: "https://images.unsplash.com/photo-1539650116574-75c0c6930311?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
+      image: "https://images.unsplash.com/photo-1618556450991-2f1af64e8191?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
       description: "Fairy chimneys and hot air balloons"
     },
     {
       name: "Pamukkale",
       location: "Denizli",
-      image: "https://images.unsplash.com/photo-1565214950140-7fa6b7b2a5a8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
       description: "Natural thermal pools"
     },
     {
       name: "Ephesus",
       location: "İzmir",
-      image: "https://images.unsplash.com/photo-1580500804811-48b6248e4df7?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
+      image: "https://images.unsplash.com/photo-1602002418816-5c0aeef426aa?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
       description: "Ancient Greek city ruins"
     },
     {
       name: "Bosphorus",
       location: "Istanbul",
-      image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
+      image: "https://images.unsplash.com/photo-1570939274851-584e8e88d945?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
       description: "Bridge between Europe and Asia"
+    },
+    {
+      name: "Antalya",
+      location: "Mediterranean Coast",
+      image: "https://images.unsplash.com/photo-1539650116574-75c0c6930311?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
+      description: "Turquoise coast and beaches"
     }
   ];
 

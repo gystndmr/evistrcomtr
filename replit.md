@@ -145,7 +145,8 @@ The application is designed for easy deployment on platforms like Replit, Vercel
 ✓ Updated country eligibility data based on official Turkish government sources
 ✓ Afghanistan and other previously marked ineligible countries now correctly marked as e-visa eligible
 ✓ Added country flags to country selector dropdown
-✓ Fixed Turkey landmark images by replacing external URLs with gradient backgrounds and SVG icons
+✓ Updated Turkey landmark images with real photos (Hagia Sophia, Cappadocia, Pamukkale, Ephesus, Bosphorus, Antalya)
+✓ Removed manual navigation controls (arrows, dots) for automatic slideshow only
 ✓ Simplified insurance options to exact 7 pricing tiers as requested (7 days: $114, 14 days: $131, 30 days: $154, 60 days: $191, 90 days: $214, 180 days: $275, 1 year: $315)
 ✓ Removed excessive UI elements from insurance page including repetitive descriptions
 ✓ Cleaned up database duplicates for insurance products
