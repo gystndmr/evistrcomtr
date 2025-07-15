@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Shield, Clock, CheckCircle, Calendar, MapPin, Star, Crown } from "lucide-react";
+import { Shield, CheckCircle, Calendar, MapPin, Star, Crown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { InsuranceProduct } from "@shared/schema";
@@ -28,6 +28,21 @@ export default function Insurance() {
 
   const { data: products = [] } = useQuery({
     queryKey: ["/api/insurance/products"],
+  });
+
+  // Sort products in the order: 7, 14, 30, 60, 90, 180, 1 year
+  const sortedProducts = [...products].sort((a, b) => {
+    const getDuration = (name: string) => {
+      if (name.includes('7 Days')) return 1;
+      if (name.includes('14 Days')) return 2;
+      if (name.includes('30 Days')) return 3;
+      if (name.includes('60 Days')) return 4;
+      if (name.includes('90 Days')) return 5;
+      if (name.includes('180 Days')) return 6;
+      if (name.includes('1 Year')) return 7;
+      return 0;
+    };
+    return getDuration(a.name) - getDuration(b.name);
   });
 
   const createApplicationMutation = useMutation({
@@ -130,7 +145,7 @@ export default function Insurance() {
             </div>
             
             <div className="divide-y divide-gray-200">
-              {products.map((product: InsuranceProduct, index) => (
+              {sortedProducts.map((product: InsuranceProduct, index) => (
                 <div 
                   key={product.id} 
                   className={`px-6 py-4 cursor-pointer transition-all ${
@@ -142,20 +157,17 @@ export default function Insurance() {
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        selectedProduct?.id === product.id ? "bg-red-100" : "bg-gray-100"
-                      }`}>
-                        <Clock className={`w-5 h-5 ${
-                          selectedProduct?.id === product.id ? "text-red-600" : "text-gray-600"
-                        }`} />
+                      <div className="flex items-center">
+                        <input
+                          type="radio"
+                          name="insurance-product"
+                          checked={selectedProduct?.id === product.id}
+                          onChange={() => setSelectedProduct(product)}
+                          className="w-4 h-4 text-red-600 border-gray-300 focus:ring-red-500"
+                        />
                       </div>
                       <div>
-                        <div className="flex items-center space-x-3">
-                          <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
-                          {product.isPopular && (
-                            <Badge className="bg-red-600 text-white text-xs px-2 py-1">Recommended</Badge>
-                          )}
-                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
                       </div>
                     </div>
                     <div className="text-right">
