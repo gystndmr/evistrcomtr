@@ -117,12 +117,12 @@ export default function Insurance() {
             <p className="text-lg text-neutral-600">Select the insurance plan that matches your travel duration</p>
           </div>
           
-          {/* Insurance Products as List */}
-          <div className="space-y-4 mb-12">
-            {products.map((product: InsuranceProduct, index) => (
+          {/* Insurance Products as Simple List */}
+          <div className="space-y-3 mb-12">
+            {products.map((product: InsuranceProduct) => (
               <div 
                 key={product.id} 
-                className={`border rounded-lg p-6 transition-all cursor-pointer ${
+                className={`border rounded-lg p-4 transition-all cursor-pointer ${
                   selectedProduct?.id === product.id 
                     ? "border-primary bg-primary/5 shadow-md" 
                     : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
@@ -130,9 +130,9 @@ export default function Insurance() {
                 onClick={() => setSelectedProduct(product)}
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center justify-center w-10 h-10 bg-primary/10 rounded-full">
-                      <Clock className="w-5 h-5 text-primary" />
+                  <div className="flex items-center space-x-3">
+                    <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
+                      <Clock className="w-4 h-4 text-primary" />
                     </div>
                     <div>
                       <div className="flex items-center space-x-2">
@@ -141,7 +141,6 @@ export default function Insurance() {
                           <Badge className="bg-primary text-white text-xs">Most Popular</Badge>
                         )}
                       </div>
-                      <p className="text-sm text-gray-600">{product.description}</p>
                     </div>
                   </div>
                   <div className="text-right">
@@ -149,21 +148,6 @@ export default function Insurance() {
                     <div className="text-sm text-gray-500">Total Coverage</div>
                   </div>
                 </div>
-                
-                {selectedProduct?.id === product.id && (
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      {product.coverage && Object.entries(product.coverage as Record<string, any>).map(([key, value]) => (
-                        <div key={key} className="flex items-center space-x-2">
-                          <CheckCircle className="w-4 h-4 text-green-500" />
-                          <span className="text-gray-700">
-                            <strong>{key}:</strong> {typeof value === 'string' ? value : key}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             ))}
           </div>

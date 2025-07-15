@@ -93,7 +93,7 @@ export default function Home() {
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group">
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1539650116574-75c0c6930311?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center transition-transform duration-300 group-hover:scale-110"></div>
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1590077428593-a55bb07c4665?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center transition-transform duration-300 group-hover:scale-110"></div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                 <h3 className="text-xl font-bold mb-2">Hagia Sophia</h3>
@@ -102,7 +102,7 @@ export default function Home() {
             </div>
             
             <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group">
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1576653829445-2e3dea2f3b54?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center transition-transform duration-300 group-hover:scale-110"></div>
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1539650116574-75c0c6930311?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center transition-transform duration-300 group-hover:scale-110"></div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                 <h3 className="text-xl font-bold mb-2">Cappadocia</h3>

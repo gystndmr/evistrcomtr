@@ -12,6 +12,10 @@ Preferred communication style: Simple, everyday language.
 - Security badges and payment icons for trust
 - Direct insurance redirection for non-eligible countries
 - Simple list-based insurance pricing (no complex cards)
+- Country flags displayed in country selector
+- Updated Turkey landmark images (Pamukkale, Hagia Sophia, Cappadocia)
+- Accurate Turkey e-visa eligibility based on official government sources
+- 7 specific insurance options with exact pricing (7 days: $114, 14 days: $131, 30 days: $154, 60 days: $191, 90 days: $214, 180 days: $275, 1 year: $315)
 
 ## System Architecture
 
@@ -135,3 +139,14 @@ The application uses four main tables:
 - CORS and security middleware configured
 
 The application is designed for easy deployment on platforms like Replit, Vercel, or traditional hosting providers, with clear separation between frontend and backend concerns while maintaining type safety throughout the stack.
+
+## Recent Changes (January 2025)
+
+✓ Updated country eligibility data based on official Turkish government sources
+✓ Afghanistan and other previously marked ineligible countries now correctly marked as e-visa eligible
+✓ Added country flags to country selector dropdown
+✓ Updated Turkey landmark images with working URLs (Hagia Sophia, Cappadocia, Pamukkale)
+✓ Simplified insurance options to exact 7 pricing tiers as requested
+✓ Removed excessive UI elements from insurance page
+✓ Updated non-eligible country messaging to indicate visa-free travel
+✓ Database updated with new insurance products and corrected country eligibility
