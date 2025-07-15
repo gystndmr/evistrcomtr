@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { IdCard, CreditCard, Download, Shield, Star, Crown, Search } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
 import cappadociaImg from "../../../attached_assets/pexels-musaortac-14186574_1752590100661.jpg";
 import ephesusImg from "../../../attached_assets/pexels-hilal-tosun-54875889-33011223_1752590240668.jpg";
@@ -16,6 +17,7 @@ import hagiaSophiaImg from "../../../attached_assets/pexels-mustafa-eker-6491149
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const { t } = useLanguage();
 
   // Turkish landmark images 
   const turkishLandmarks = [
@@ -73,13 +75,13 @@ export default function Home() {
             </div>
             
             <h1 className="text-3xl md:text-4xl font-bold mb-4 drop-shadow-lg tracking-wider">
-              REPUBLIC OF TURKEY
+              {t('header.title')}
             </h1>
             <h2 className="text-xl md:text-2xl font-semibold mb-3 drop-shadow-md border-b-2 border-white/30 pb-1 inline-block">
-              e-Visa Services
+              {t('home.hero.title')}
             </h2>
             <p className="text-base md:text-lg mb-6 opacity-90 drop-shadow-sm font-medium">
-              Official Electronic Visa Application System
+              {t('home.hero.subtitle')}
             </p>
             
 
@@ -109,8 +111,8 @@ export default function Home() {
       <section className="py-12 sm:py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Your visa ready in 3 steps</h2>
-            <p className="text-base sm:text-lg text-neutral-600">Get your Turkish e-visa in minutes</p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-800 mb-4">{t('home.hero.steps')}</h2>
+            <p className="text-base sm:text-lg text-neutral-600">{t('home.hero.subtitle')}</p>
           </div>
           
           <div className="flex flex-col sm:flex-row sm:justify-center sm:items-start gap-6 sm:gap-8 lg:gap-12">

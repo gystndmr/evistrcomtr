@@ -4,16 +4,18 @@ import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "./language-switcher";
 import { Star, Menu, X } from "lucide-react";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Header() {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { t } = useLanguage();
 
   const navItems = [
     { href: "/", label: "Home" },
-    { href: "/application", label: "Apply for E-Visa" },
-    { href: "/status", label: "Check Status" },
-    { href: "/insurance", label: "Travel Insurance" },
+    { href: "/application", label: t('header.application') },
+    { href: "/status", label: t('header.status') },
+    { href: "/insurance", label: t('header.insurance') },
   ];
 
   return (
