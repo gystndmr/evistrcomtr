@@ -37,9 +37,9 @@ export default function Home() {
                 </Button>
               </Link>
               <Link href="/status">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-red-600 px-8 py-4 text-lg font-semibold">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-red-600 px-8 py-4 text-lg font-semibold bg-transparent">
                   <Search className="w-5 h-5 mr-2" />
-                  Check Application Status
+                  <span className="inline-block">Check Application Status</span>
                 </Button>
               </Link>
             </div>
@@ -83,122 +83,50 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Travel Insurance Services */}
-      <section className="py-16 bg-blue-50">
+      {/* Turkey Historical Sites */}
+      <section className="py-16 bg-gradient-to-br from-blue-50 to-red-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Travel Insurance Services</h2>
-            <p className="text-lg text-neutral-600">Protect your trip with comprehensive travel insurance</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Discover Turkey's Heritage</h2>
+            <p className="text-lg text-neutral-600">Explore magnificent historical sites and cultural treasures</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <Card>
-              <CardHeader>
-                <div className="text-center">
-                  <Shield className="w-12 h-12 text-primary mx-auto mb-3" />
-                  <CardTitle>Basic Coverage</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-neutral-600 mb-6">
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-secondary rounded-full mr-2"></span>
-                    Medical Emergency Coverage
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-secondary rounded-full mr-2"></span>
-                    Trip Cancellation
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-secondary rounded-full mr-2"></span>
-                    Lost Luggage Protection
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-secondary rounded-full mr-2"></span>
-                    24/7 Support
-                  </li>
-                </ul>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary mb-2">$29.99</div>
-                  <Link href="/insurance">
-                    <Button className="w-full">Get Basic Coverage</Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="border-2 border-primary relative">
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <Badge className="bg-primary text-white">Most Popular</Badge>
+            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group">
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1539650116574-75c0c6930311?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center transition-transform duration-300 group-hover:scale-110"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-xl font-bold mb-2">Hagia Sophia</h3>
+                <p className="text-sm opacity-90">Iconic Byzantine masterpiece in Istanbul</p>
               </div>
-              <CardHeader>
-                <div className="text-center">
-                  <Star className="w-12 h-12 text-primary mx-auto mb-3" />
-                  <CardTitle>Premium Coverage</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-neutral-600 mb-6">
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-secondary rounded-full mr-2"></span>
-                    All Basic Coverage
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-secondary rounded-full mr-2"></span>
-                    Adventure Sports Coverage
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-secondary rounded-full mr-2"></span>
-                    Pre-existing Conditions
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-secondary rounded-full mr-2"></span>
-                    Rental Car Protection
-                  </li>
-                </ul>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary mb-2">$59.99</div>
-                  <Link href="/insurance">
-                    <Button className="w-full">Get Premium Coverage</Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
+            </div>
             
-            <Card>
-              <CardHeader>
-                <div className="text-center">
-                  <Crown className="w-12 h-12 text-primary mx-auto mb-3" />
-                  <CardTitle>Comprehensive</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm text-neutral-600 mb-6">
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-secondary rounded-full mr-2"></span>
-                    All Premium Coverage
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-secondary rounded-full mr-2"></span>
-                    Business Equipment
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-secondary rounded-full mr-2"></span>
-                    Extended Stay Coverage
-                  </li>
-                  <li className="flex items-center">
-                    <span className="w-2 h-2 bg-secondary rounded-full mr-2"></span>
-                    Concierge Services
-                  </li>
-                </ul>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary mb-2">$99.99</div>
-                  <Link href="/insurance">
-                    <Button className="w-full">Get Comprehensive</Button>
-                  </Link>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group">
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1576653829445-2e3dea2f3b54?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center transition-transform duration-300 group-hover:scale-110"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-xl font-bold mb-2">Cappadocia</h3>
+                <p className="text-sm opacity-90">Extraordinary rock formations and hot air balloons</p>
+              </div>
+            </div>
+            
+            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group">
+              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1565214950140-7fa6b7b2a5a8?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center transition-transform duration-300 group-hover:scale-110"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-xl font-bold mb-2">Pamukkale</h3>
+                <p className="text-sm opacity-90">Natural thermal pools and ancient ruins</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center mt-12">
+            <Link href="/insurance">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-4">
+                <Shield className="w-5 h-5 mr-2" />
+                Get Travel Insurance for Turkey
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

@@ -7,6 +7,11 @@ This is a full-stack web application for processing Turkey e-visa applications. 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+- Professional government-style appearance required
+- Turkish flag and heritage imagery prominently featured
+- Security badges and payment icons for trust
+- Direct insurance redirection for non-eligible countries
+- Simple list-based insurance pricing (no complex cards)
 
 ## System Architecture
 
