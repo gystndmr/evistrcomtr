@@ -14,20 +14,16 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-red-600 to-red-700 text-white py-20 overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-20"></div>
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-30"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1570939274717-7eda259b50ed?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-40"></div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-red-600 rounded-full mb-6 shadow-lg">
-              <div className="relative flex items-center justify-center">
-                {/* Turkish Flag: Crescent and Star */}
-                <svg className="w-8 h-8 text-white" viewBox="0 0 30 20" fill="currentColor">
-                  {/* Crescent Moon */}
-                  <path d="M8 4C8 4 6 6 6 10C6 14 8 16 8 16C6 16 4 14 4 10C4 6 6 4 8 4Z" />
-                  {/* Five-pointed Star */}
-                  <path d="M16 6L17.5 9.5L21 9.5L18.25 12L19.5 15.5L16 13.5L12.5 15.5L13.75 12L11 9.5L14.5 9.5L16 6Z" />
-                </svg>
-              </div>
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full mb-6 shadow-lg p-2">
+              <img 
+                src="/attached_assets/turkey-flag_1752583610847.png" 
+                alt="Turkey Flag" 
+                className="w-full h-full object-cover rounded-full"
+              />
             </div>
             <h1 className="text-4xl md:text-6xl font-bold mb-4">Turkey E-Visa Application</h1>
             <p className="text-xl md:text-2xl mb-2 opacity-90">Professional Visa Service</p>
