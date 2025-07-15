@@ -89,80 +89,99 @@ export default function Insurance() {
     <div className="min-h-screen bg-background">
       <Header />
       
-      {/* Hero Section with Turkey background */}
-      <section className="relative bg-gradient-secondary text-white py-24 overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-20"></div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Professional Header Section */}
+      <section className="bg-gradient-to-r from-red-700 to-red-800 text-white py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full mb-6 shadow-lg p-3">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-6 shadow-lg p-3">
               <img 
                 src={turkeyFlag} 
-                alt="Turkey Flag" 
+                alt="Republic of Turkey Flag" 
                 className="w-full h-full object-cover rounded-full"
               />
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">Travel Insurance for Turkey</h1>
-            <p className="text-xl md:text-2xl mb-8 opacity-90">Comprehensive protection for your Turkish adventure</p>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">Republic of Turkey</h1>
+            <h2 className="text-xl md:text-2xl mb-2 opacity-90">Travel Insurance Services</h2>
+            <p className="text-lg opacity-80">Official Travel Insurance for Turkish Visit</p>
           </div>
         </div>
       </section>
 
-      {/* Insurance Products List */}
-      <section className="py-16 bg-white">
+      {/* Insurance Products List - Professional Design */}
+      <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Choose Your Coverage Duration</h2>
-            <p className="text-lg text-neutral-600">Select the insurance plan that matches your travel duration</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Official Travel Insurance Plans</h2>
+            <p className="text-lg text-gray-700">Select your coverage duration for travel to Turkey</p>
+            <div className="mt-4 flex justify-center">
+              <div className="bg-white px-6 py-3 rounded-lg shadow-sm border border-gray-200">
+                <div className="flex items-center space-x-2">
+                  <Shield className="w-5 h-5 text-green-600" />
+                  <span className="text-sm font-medium text-gray-700">Government Approved Insurance</span>
+                </div>
+              </div>
+            </div>
           </div>
           
-          {/* Insurance Products as Simple List */}
-          <div className="space-y-3 mb-12">
-            {products.map((product: InsuranceProduct) => (
-              <div 
-                key={product.id} 
-                className={`border rounded-lg p-4 transition-all cursor-pointer ${
-                  selectedProduct?.id === product.id 
-                    ? "border-primary bg-primary/5 shadow-md" 
-                    : "border-gray-200 hover:border-gray-300 hover:shadow-sm"
-                } ${product.isPopular ? "ring-2 ring-primary/20" : ""}`}
-                onClick={() => setSelectedProduct(product)}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
-                      <Clock className="w-4 h-4 text-primary" />
-                    </div>
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
-                        {product.isPopular && (
-                          <Badge className="bg-primary text-white text-xs">Most Popular</Badge>
-                        )}
+          {/* Professional Insurance Table */}
+          <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+            <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">Available Insurance Plans</h3>
+            </div>
+            
+            <div className="divide-y divide-gray-200">
+              {products.map((product: InsuranceProduct, index) => (
+                <div 
+                  key={product.id} 
+                  className={`px-6 py-4 cursor-pointer transition-all ${
+                    selectedProduct?.id === product.id 
+                      ? "bg-red-50 border-l-4 border-red-600" 
+                      : "hover:bg-gray-50"
+                  }`}
+                  onClick={() => setSelectedProduct(product)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                        selectedProduct?.id === product.id ? "bg-red-100" : "bg-gray-100"
+                      }`}>
+                        <Clock className={`w-5 h-5 ${
+                          selectedProduct?.id === product.id ? "text-red-600" : "text-gray-600"
+                        }`} />
+                      </div>
+                      <div>
+                        <div className="flex items-center space-x-3">
+                          <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
+                          {product.isPopular && (
+                            <Badge className="bg-red-600 text-white text-xs px-2 py-1">Recommended</Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-600 mt-1">Full coverage for your stay in Turkey</p>
                       </div>
                     </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-red-600">${product.price}</div>
+                      <div className="text-sm text-gray-500">Total Premium</div>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-primary">${product.price}</div>
-                    <div className="text-sm text-gray-500">Total Coverage</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Professional Application Form */}
+          {selectedProduct && (
+            <div className="bg-white rounded-lg shadow-lg border border-gray-200 mt-8">
+              <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                <div className="flex items-center space-x-3">
+                  <Shield className="w-6 h-6 text-red-600" />
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">Insurance Application Form</h3>
+                    <p className="text-sm text-gray-600">Selected Plan: {selectedProduct.name}</p>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-
-          {/* Application Form */}
-          {selectedProduct && (
-            <Card className="max-w-2xl mx-auto mt-8">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Shield className="w-5 h-5 text-primary" />
-                  <span>Insurance Application</span>
-                </CardTitle>
-                <p className="text-neutral-600">Complete your application for {selectedProduct.name}</p>
-              </CardHeader>
-              <CardContent>
+              <div className="p-6">
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
@@ -229,32 +248,41 @@ export default function Insurance() {
                     </div>
                   </div>
                   
-                  <div className="bg-gradient-to-r from-blue-50 to-red-50 rounded-lg p-6 border border-primary/20">
-                    <h4 className="font-semibold mb-4 text-primary">Order Summary</h4>
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-gray-700">{selectedProduct.name}</span>
-                        <span className="font-semibold text-primary">${selectedProduct.price}</span>
+                  <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <h4 className="font-semibold mb-4 text-gray-900 flex items-center space-x-2">
+                      <Shield className="w-5 h-5 text-red-600" />
+                      <span>Insurance Summary</span>
+                    </h4>
+                    <div className="space-y-3">
+                      <div className="flex justify-between py-2">
+                        <span className="text-gray-700 font-medium">{selectedProduct.name}</span>
+                        <span className="font-semibold text-red-600">${selectedProduct.price}</span>
                       </div>
-                      <div className="border-t pt-2 mt-2 border-gray-200">
+                      <div className="border-t pt-3 mt-3 border-gray-300">
                         <div className="flex justify-between font-bold">
-                          <span className="text-gray-900">Total Amount</span>
-                          <span className="text-primary text-lg">${selectedProduct.price}</span>
+                          <span className="text-gray-900">Total Premium</span>
+                          <span className="text-red-600 text-xl">${selectedProduct.price}</span>
                         </div>
+                      </div>
+                      <div className="mt-3 text-xs text-gray-500">
+                        <p>• Medical coverage up to $100,000</p>
+                        <p>• 24/7 emergency assistance</p>
+                        <p>• Trip cancellation protection</p>
+                        <p>• Lost baggage coverage</p>
                       </div>
                     </div>
                   </div>
                   
                   <Button 
                     type="submit" 
-                    className="w-full bg-primary hover:bg-primary/90 text-white py-3"
+                    className="w-full bg-red-600 hover:bg-red-700 text-white py-4 text-lg font-semibold"
                     disabled={createApplicationMutation.isPending}
                   >
-                    {createApplicationMutation.isPending ? "Processing..." : "Submit Application & Get Coverage"}
+                    {createApplicationMutation.isPending ? "Processing Application..." : "Submit Insurance Application"}
                   </Button>
                 </form>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
         </div>
       </section>
