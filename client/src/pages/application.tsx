@@ -4,6 +4,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { VisaForm } from "@/components/visa-form";
 import { Star } from "lucide-react";
+import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -35,7 +36,7 @@ export default function Application() {
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-12 h-12 bg-white rounded-full mb-4 shadow-lg p-2">
               <img 
-                src="/attached_assets/turkey-flag_1752583610847.png" 
+                src={turkeyFlag} 
                 alt="Turkey Flag" 
                 className="w-full h-full object-cover rounded-full"
               />

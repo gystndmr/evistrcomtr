@@ -3,6 +3,7 @@ import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "./language-switcher";
 import { Star, Menu, X } from "lucide-react";
+import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
 
 export function Header() {
   const [location] = useLocation();
@@ -23,7 +24,7 @@ export function Header() {
             <Link href="/" className="flex items-center space-x-3">
               <div className="w-10 h-7 rounded-sm overflow-hidden">
                 <img 
-                  src="/attached_assets/turkey-flag_1752583610847.png" 
+                  src={turkeyFlag} 
                   alt="Turkey Flag" 
                   className="w-full h-full object-cover"
                 />

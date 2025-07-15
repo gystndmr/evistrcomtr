@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { IdCard, CreditCard, Download, Shield, Star, Crown, Search } from "lucide-react";
+import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
 
 export default function Home() {
   return (
@@ -14,13 +15,13 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-red-600 to-red-700 text-white py-20 overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-20"></div>
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1570939274717-7eda259b50ed?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-40"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-40"></div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full mb-6 shadow-lg p-2">
               <img 
-                src="/attached_assets/turkey-flag_1752583610847.png" 
+                src={turkeyFlag} 
                 alt="Turkey Flag" 
                 className="w-full h-full object-cover rounded-full"
               />

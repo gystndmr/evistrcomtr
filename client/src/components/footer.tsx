@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { Star } from "lucide-react";
+import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
 
 export function Footer() {
   return (
@@ -95,7 +96,7 @@ export function Footer() {
           <div className="flex items-center justify-center mb-4">
             <div className="w-8 h-5 rounded-sm overflow-hidden mr-3">
               <img 
-                src="/attached_assets/turkey-flag_1752583610847.png" 
+                src={turkeyFlag} 
                 alt="Turkey Flag" 
                 className="w-full h-full object-cover"
               />
