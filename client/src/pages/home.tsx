@@ -5,42 +5,42 @@ import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { IdCard, CreditCard, Download, Shield, Star, Crown, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { IdCard, CreditCard, Download, Shield, Star, Crown, Search } from "lucide-react";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Turkish landmark images with gradient backgrounds
+  // Turkish landmark images with real photos
   const turkishLandmarks = [
     {
       name: "Hagia Sophia",
       location: "Istanbul",
-      gradient: "from-blue-800 to-purple-900",
+      image: "https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
       description: "Historic Byzantine masterpiece"
     },
     {
       name: "Cappadocia",
       location: "Nevşehir",
-      gradient: "from-orange-600 to-red-700",
+      image: "https://images.unsplash.com/photo-1539650116574-75c0c6930311?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
       description: "Fairy chimneys and hot air balloons"
     },
     {
       name: "Pamukkale",
       location: "Denizli",
-      gradient: "from-cyan-400 to-blue-600",
+      image: "https://images.unsplash.com/photo-1565214950140-7fa6b7b2a5a8?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
       description: "Natural thermal pools"
     },
     {
       name: "Ephesus",
       location: "İzmir",
-      gradient: "from-amber-500 to-orange-600",
+      image: "https://images.unsplash.com/photo-1580500804811-48b6248e4df7?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
       description: "Ancient Greek city ruins"
     },
     {
       name: "Bosphorus",
       location: "Istanbul",
-      gradient: "from-teal-600 to-blue-700",
+      image: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
       description: "Bridge between Europe and Asia"
     }
   ];
@@ -52,13 +52,7 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % turkishLandmarks.length);
-  };
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + turkishLandmarks.length) % turkishLandmarks.length);
-  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -75,25 +69,16 @@ export default function Home() {
                 index === currentSlide ? 'opacity-100' : 'opacity-0'
               }`}
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${landmark.gradient}`} />
-              <div className="absolute inset-0 bg-black opacity-40" />
+              <div 
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url(${landmark.image})` }}
+              />
+              <div className="absolute inset-0 bg-black opacity-50" />
             </div>
           ))}
         </div>
 
-        {/* Navigation Arrows */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-6 top-1/2 transform -translate-y-1/2 z-20 p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all"
-        >
-          <ChevronLeft className="w-6 h-6 text-white" />
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute right-6 top-1/2 transform -translate-y-1/2 z-20 p-2 rounded-full bg-white/20 hover:bg-white/30 transition-all"
-        >
-          <ChevronRight className="w-6 h-6 text-white" />
-        </button>
+
 
         {/* Main Content */}
         <div className="relative z-10 flex items-center justify-center h-full">
@@ -145,18 +130,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Slide Indicators */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex space-x-2">
-          {turkishLandmarks.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all ${
-                index === currentSlide ? 'bg-white' : 'bg-white/50'
-              }`}
-            />
-          ))}
-        </div>
+
       </section>
 
       {/* Application Process Steps */}
