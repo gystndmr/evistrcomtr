@@ -45,6 +45,7 @@ export function VisaForm() {
   const [selectedDocumentType, setSelectedDocumentType] = useState("");
   const [uploadedDocument, setUploadedDocument] = useState<File | null>(null);
   const [showInsuranceModal, setShowInsuranceModal] = useState(false);
+  const [showPrerequisites, setShowPrerequisites] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<ApplicationFormData>({
@@ -95,8 +96,9 @@ export function VisaForm() {
 
   const handleCountrySelect = (country: Country | null) => {
     setSelectedCountry(country);
-    if (country && !country.isEligible) {
-      setShowInsuranceModal(true);
+    // Dynamic form flow based on country eligibility
+    if (country && country.isEligible && !country.requiresSupportingDocs) {
+      setShowPrerequisites(true);
     }
   };
 
@@ -135,12 +137,29 @@ export function VisaForm() {
     createApplicationMutation.mutate(data);
   };
 
-  const steps = [
-    { number: 1, title: "Country Selection" },
-    { number: 2, title: "Travel Information" },
-    { number: 3, title: "Personal Details" },
-    { number: 4, title: "Payment" },
-  ];
+  const getDynamicSteps = () => {
+    const baseSteps = [
+      { number: 1, title: "Choice of Nationality" },
+      { number: 2, title: "Arrival Information" },
+    ];
+    
+    if (selectedCountry?.isEligible && !selectedCountry?.requiresSupportingDocs) {
+      return [
+        ...baseSteps,
+        { number: 3, title: "Prerequisites" },
+        { number: 4, title: "Personal Information" },
+        { number: 5, title: "Payment" },
+      ];
+    } else {
+      return [
+        ...baseSteps,
+        { number: 3, title: "Personal Information" },
+        { number: 4, title: "Payment" },
+      ];
+    }
+  };
+  
+  const steps = getDynamicSteps();
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -246,10 +265,50 @@ export function VisaForm() {
                 </div>
               )}
 
-              {/* Step 3: Personal Details */}
-              {currentStep === 3 && (
+              {/* Step 3: Prerequisites (for eligible countries) */}
+              {currentStep === 3 && selectedCountry?.isEligible && !selectedCountry?.requiresSupportingDocs && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Step 3: Personal Information</h3>
+                  <h3 className="text-lg font-semibold mb-4">Step 3: Prerequisites</h3>
+                  <div className="space-y-4">
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h4 className="font-medium text-blue-900 mb-2">Please confirm you meet the following criteria:</h4>
+                      <div className="space-y-2">
+                        <label className="flex items-center">
+                          <input type="checkbox" className="mr-2" required />
+                          <span className="text-sm text-blue-800">You have an ordinary passport (not diplomatic or service passport)</span>
+                        </label>
+                        <label className="flex items-center">
+                          <input type="checkbox" className="mr-2" required />
+                          <span className="text-sm text-blue-800">Your passport is valid for at least 6 months</span>
+                        </label>
+                        <label className="flex items-center">
+                          <input type="checkbox" className="mr-2" required />
+                          <span className="text-sm text-blue-800">You will enter Turkey within 3 months of visa issuance</span>
+                        </label>
+                        <label className="flex items-center">
+                          <input type="checkbox" className="mr-2" required />
+                          <span className="text-sm text-blue-800">Your stay will not exceed 30 days in a 180-day period</span>
+                        </label>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-amber-50 p-4 rounded-lg">
+                      <h4 className="font-medium text-amber-900 mb-2">Visa Information:</h4>
+                      <div className="text-sm text-amber-800">
+                        <p>• Your e-visa will be valid for 180 days from your arrival date</p>
+                        <p>• Maximum stay: 30 days per entry</p>
+                        <p>• Single entry visa</p>
+                        <p>• Visa fee: ${selectedCountry?.visaFee || '60'}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 4: Personal Details (for eligible countries) or Step 3 (for others) */}
+              {(currentStep === 4 || (currentStep === 3 && (!selectedCountry?.isEligible || selectedCountry?.requiresSupportingDocs))) && (
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
                   <div className="grid md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
@@ -338,10 +397,10 @@ export function VisaForm() {
                 </div>
               )}
 
-              {/* Step 4: Payment */}
-              {currentStep === 4 && (
+              {/* Step 5: Payment (for eligible countries) or Step 4 (for others) */}
+              {(currentStep === 5 || (currentStep === 4 && (!selectedCountry?.isEligible || selectedCountry?.requiresSupportingDocs))) && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Step 4: Payment</h3>
+                  <h3 className="text-lg font-semibold mb-4">Payment</h3>
                   
                   <div className="bg-neutral-50 rounded-lg p-6 mb-6">
                     <h4 className="font-semibold mb-4">Order Summary</h4>

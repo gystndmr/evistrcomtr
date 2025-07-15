@@ -157,45 +157,93 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // Seed insurance products
+      // Seed insurance products with duration-based pricing
       const insuranceProducts = [
         {
-          name: "Basic Coverage",
-          description: "Essential protection for your trip to Turkey",
-          price: "29.99",
+          name: "7 Days Coverage",
+          description: "Essential protection for short trips to Turkey",
+          price: "114.00",
           coverage: {
             "Medical Emergency": "Up to $100,000",
             "Trip Cancellation": "Up to $10,000",
             "Lost Luggage": "Up to $1,000",
+            "Duration": "7 days",
             "24/7 Support": "Available"
           },
           isPopular: false
         },
         {
-          name: "Premium Coverage",
-          description: "Comprehensive protection with additional benefits",
-          price: "59.99",
+          name: "14 Days Coverage",
+          description: "Protection for two-week stays in Turkey",
+          price: "131.00",
           coverage: {
-            "Medical Emergency": "Up to $250,000",
-            "Trip Cancellation": "Up to $25,000",
-            "Lost Luggage": "Up to $2,500",
-            "Adventure Sports": "Covered",
-            "Pre-existing Conditions": "Covered",
-            "Rental Car Protection": "Included"
+            "Medical Emergency": "Up to $150,000",
+            "Trip Cancellation": "Up to $15,000",
+            "Lost Luggage": "Up to $1,500",
+            "Duration": "14 days",
+            "24/7 Support": "Available"
           },
           isPopular: true
         },
         {
-          name: "Comprehensive Coverage",
-          description: "Maximum protection for business and extended stays",
-          price: "99.99",
+          name: "30 Days Coverage",
+          description: "Comprehensive protection for monthly stays",
+          price: "152.00",
+          coverage: {
+            "Medical Emergency": "Up to $200,000",
+            "Trip Cancellation": "Up to $20,000",
+            "Lost Luggage": "Up to $2,000",
+            "Duration": "30 days",
+            "Adventure Sports": "Covered",
+            "24/7 Support": "Available"
+          },
+          isPopular: false
+        },
+        {
+          name: "60 Days Coverage",
+          description: "Extended protection for long-term visits",
+          price: "191.00",
+          coverage: {
+            "Medical Emergency": "Up to $300,000",
+            "Trip Cancellation": "Up to $30,000",
+            "Lost Luggage": "Up to $3,000",
+            "Duration": "60 days",
+            "Adventure Sports": "Covered",
+            "Pre-existing Conditions": "Covered",
+            "24/7 Support": "Available"
+          },
+          isPopular: false
+        },
+        {
+          name: "180 Days Coverage",
+          description: "Maximum protection for extended stays",
+          price: "235.00",
+          coverage: {
+            "Medical Emergency": "Up to $400,000",
+            "Trip Cancellation": "Up to $40,000",
+            "Lost Luggage": "Up to $4,000",
+            "Duration": "180 days",
+            "Adventure Sports": "Covered",
+            "Pre-existing Conditions": "Covered",
+            "Business Equipment": "Covered",
+            "24/7 Support": "Available"
+          },
+          isPopular: false
+        },
+        {
+          name: "1 Year Coverage",
+          description: "Annual comprehensive protection",
+          price: "285.00",
           coverage: {
             "Medical Emergency": "Up to $500,000",
             "Trip Cancellation": "Up to $50,000",
             "Lost Luggage": "Up to $5,000",
+            "Duration": "365 days",
+            "Adventure Sports": "Covered",
+            "Pre-existing Conditions": "Covered",
             "Business Equipment": "Covered",
-            "Extended Stay": "Up to 365 days",
-            "Concierge Services": "Included"
+            "Concierge Services": "Included",
+            "24/7 Support": "Available"
           },
           isPopular: false
         }

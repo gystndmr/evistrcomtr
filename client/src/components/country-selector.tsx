@@ -48,38 +48,30 @@ export function CountrySelector({
     if (!selectedCountry || !selectedDocumentType) return null;
 
     if (!selectedCountry.isEligible) {
+      // Direct redirect to insurance without warning
+      setTimeout(() => {
+        window.location.href = "/insurance";
+      }, 100);
       return (
-        <Alert className="border-red-200 bg-red-50">
-          <XCircle className="h-4 w-4 text-red-500" />
-          <AlertDescription className="text-red-800">
-            <strong>E-Visa Not Available</strong>
-            <br />
-            E-visa service is not available for your country.{" "}
-            <button
-              onClick={() => window.location.href = "/insurance"}
-              className="underline font-medium hover:text-red-600"
-            >
-              Get travel insurance instead
-            </button>
+        <Alert className="border-blue-200 bg-blue-50">
+          <AlertTriangle className="h-4 w-4 text-blue-500" />
+          <AlertDescription className="text-blue-800">
+            Redirecting to insurance services...
           </AlertDescription>
         </Alert>
       );
     }
 
     if (selectedCountry.requiresSupportingDocs) {
+      // Direct redirect to insurance if supporting docs required but not available
+      setTimeout(() => {
+        window.location.href = "/insurance";
+      }, 100);
       return (
-        <Alert className="border-yellow-200 bg-yellow-50">
-          <AlertTriangle className="h-4 w-4 text-yellow-500" />
-          <AlertDescription className="text-yellow-800">
-            <strong>Supporting Documents Required</strong>
-            <br />
-            Your country requires additional supporting documents for e-visa approval.{" "}
-            <button
-              onClick={() => window.location.href = "/insurance"}
-              className="underline font-medium hover:text-yellow-600"
-            >
-              Skip documents and get travel insurance
-            </button>
+        <Alert className="border-blue-200 bg-blue-50">
+          <AlertTriangle className="h-4 w-4 text-blue-500" />
+          <AlertDescription className="text-blue-800">
+            Redirecting to insurance services...
           </AlertDescription>
         </Alert>
       );
