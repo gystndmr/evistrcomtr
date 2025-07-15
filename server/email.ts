@@ -17,7 +17,7 @@ interface EmailParams {
 export async function sendEmail(params: EmailParams): Promise<boolean> {
   try {
     // SendGrid doğrulanmış gönderen e-postası gerektirir
-    const fromEmail = 'noreply@evisatr.xyz'; // SendGrid'de doğrulanmış domain olmalı
+    const fromEmail = 'info@visatanzania.org'; // SendGrid'de doğrulanmış domain olmalı
     
     await sgMail.send({
       to: params.to,
@@ -27,8 +27,13 @@ export async function sendEmail(params: EmailParams): Promise<boolean> {
       html: params.html,
     });
     return true;
-  } catch (error) {
+  } catch (error: any) {
     console.error('SendGrid email error:', error);
+    
+    // Hata detaylarını yazdır
+    if (error.response && error.response.body) {
+      console.error('SendGrid error details:', JSON.stringify(error.response.body, null, 2));
+    }
     
     // Hata durumunda e-posta içeriğini konsola yazdıralım
     console.log('Email details:');
