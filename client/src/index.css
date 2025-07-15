@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(0, 0%, 98%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(212, 100%, 45%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(142, 76%, 36%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --accent: hsl(0, 84%, 60%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+  
+  /* Custom colors for Turkey theme */
+  --turkey-red: hsl(0, 100%, 50%);
+  --turkey-flag: hsl(0, 85%, 45%);
+  --success-green: hsl(142, 76%, 36%);
+  --warning-yellow: hsl(45, 93%, 47%);
+  --neutral-50: hsl(0, 0%, 98%);
+  --neutral-100: hsl(240, 4.8%, 95.9%);
+  --neutral-200: hsl(240, 5.9%, 90%);
+  --neutral-300: hsl(240, 4.9%, 83.9%);
+  --neutral-400: hsl(240, 5%, 64.9%);
+  --neutral-500: hsl(240, 3.8%, 46.1%);
+  --neutral-600: hsl(240, 5.2%, 33.9%);
+  --neutral-700: hsl(240, 5.3%, 26.1%);
+  --neutral-800: hsl(240, 3.7%, 15.9%);
+  --neutral-900: hsl(240, 5.9%, 10%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(212, 100%, 45%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(142, 76%, 36%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --accent: hsl(0, 84%, 60%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .turkey-flag {
+    background: linear-gradient(135deg, var(--turkey-flag) 0%, var(--turkey-red) 100%);
+  }
+  
+  .step-indicator {
+    @apply flex items-center space-x-2 text-sm font-medium;
+  }
+  
+  .step-indicator.active {
+    @apply text-primary;
+  }
+  
+  .step-indicator.completed {
+    @apply text-secondary;
+  }
+  
+  .step-indicator.inactive {
+    @apply text-muted-foreground;
+  }
+}
+
+@layer utilities {
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, hsl(212, 100%, 45%) 0%, hsl(212, 100%, 35%) 100%);
+  }
+  
+  .bg-gradient-secondary {
+    background: linear-gradient(135deg, hsl(142, 76%, 36%) 0%, hsl(142, 76%, 26%) 100%);
+  }
+  
+  .text-gradient {
+    background: linear-gradient(135deg, hsl(212, 100%, 45%) 0%, hsl(142, 76%, 36%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
