@@ -115,7 +115,8 @@ export function VisaForm() {
         return;
       }
       if (!selectedCountry.isEligible) {
-        // Non-eligible countries are redirected by country selector
+        // Redirect to insurance for non-eligible countries
+        window.location.href = "/insurance";
         return;
       }
     }

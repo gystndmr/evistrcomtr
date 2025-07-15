@@ -144,7 +144,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         { code: "NGA", name: "Nigeria", isEligible: false, requiresSupportingDocs: false },
         { code: "PAK", name: "Pakistan", isEligible: false, requiresSupportingDocs: false },
         { code: "BGD", name: "Bangladesh", isEligible: false, requiresSupportingDocs: false },
-        { code: "AFG", name: "Afghanistan", isEligible: false, requiresSupportingDocs: false },
+        { code: "AFG", name: "Afghanistan", isEligible: true, requiresSupportingDocs: true, supportedDocumentTypes: ["hotel", "flight", "financial"], visaFee: "60.00", maxStayDays: 30, validityDays: 180 },
         { code: "IRQ", name: "Iraq", isEligible: false, requiresSupportingDocs: false },
         { code: "SYR", name: "Syria", isEligible: false, requiresSupportingDocs: false },
         { code: "IRN", name: "Iran", isEligible: false, requiresSupportingDocs: false },
