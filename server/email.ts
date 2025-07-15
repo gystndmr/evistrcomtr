@@ -17,8 +17,7 @@ interface EmailParams {
 export async function sendEmail(params: EmailParams): Promise<boolean> {
   try {
     // SendGrid doğrulanmış gönderen e-postası gerektirir
-    // Geçici olarak admin@evisa.gov.tr yerine kullanıcının verdiği anahtarla uyumlu e-posta kullanacağız
-    const fromEmail = 'admin@evisa.gov.tr'; // SendGrid'de doğrulanmış domain olmalı
+    const fromEmail = 'noreply@evisatr.xyz'; // SendGrid'de doğrulanmış domain olmalı
     
     await sgMail.send({
       to: params.to,

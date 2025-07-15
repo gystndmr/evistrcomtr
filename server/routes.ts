@@ -61,7 +61,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await sendEmail({
             to: application.email,
-            from: 'noreply@evisa.gov.tr',
+            from: 'noreply@evisatr.xyz',
             subject: emailContent.subject,
             html: emailContent.html,
             text: emailContent.text
@@ -137,7 +137,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await sendEmail({
             to: application.email,
-            from: 'noreply@evisa.gov.tr',
+            from: 'noreply@evisatr.xyz',
             subject: emailContent.subject,
             html: emailContent.html,
             text: emailContent.text
@@ -436,7 +436,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             await sendEmail({
               to: application.email,
-              from: 'noreply@evisa.gov.tr', // Bu e-posta SendGrid'de doğrulanmış olmalı
+              from: 'noreply@evisatr.xyz',
               subject: emailContent.subject,
               html: emailContent.html,
               text: emailContent.text
@@ -489,7 +489,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await sendEmail({
             to: application.email,
-            from: 'noreply@evisa.gov.tr',
+            from: 'noreply@evisatr.xyz',
             subject: emailContent.subject,
             html: emailContent.html,
             text: emailContent.text
