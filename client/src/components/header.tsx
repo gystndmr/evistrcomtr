@@ -24,12 +24,12 @@ export function Header() {
               <div className="w-10 h-7 bg-red-600 rounded-sm flex items-center justify-center relative">
                 <div className="absolute inset-0 bg-red-600 rounded-sm"></div>
                 <div className="relative flex items-center justify-center">
-                  {/* Turkish Flag: Star and Crescent */}
-                  <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-                  </svg>
-                  <svg className="w-4 h-4 text-white absolute -left-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                  {/* Turkish Flag: Crescent and Star */}
+                  <svg className="w-6 h-6 text-white" viewBox="0 0 30 20" fill="currentColor">
+                    {/* Crescent Moon */}
+                    <path d="M8 4C8 4 6 6 6 10C6 14 8 16 8 16C6 16 4 14 4 10C4 6 6 4 8 4Z" />
+                    {/* Five-pointed Star */}
+                    <path d="M16 6L17.5 9.5L21 9.5L18.25 12L19.5 15.5L16 13.5L12.5 15.5L13.75 12L11 9.5L14.5 9.5L16 6Z" />
                   </svg>
                 </div>
               </div>
