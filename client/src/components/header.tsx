@@ -22,21 +22,16 @@ export function Header() {
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center p-1">
-                <svg viewBox="0 0 100 100" className="w-full h-full">
-                  {/* Turkish Republic Official Emblem */}
-                  <circle cx="50" cy="50" r="48" fill="#e30613" stroke="#ffffff" strokeWidth="1"/>
-                  <g fill="#ffffff">
-                    {/* Five-pointed star */}
-                    <path d="M50 20 L53.5 32 L66 32 L56.5 40 L60 52 L50 44 L40 52 L43.5 40 L34 32 L46.5 32 Z"/>
-                    {/* Crescent moon */}
-                    <path d="M30 50 A15 15 0 0 0 60 50 A12 12 0 0 1 30 50 Z"/>
-                  </g>
-                </svg>
+              <div className="w-10 h-7 rounded-sm overflow-hidden">
+                <img 
+                  src={turkeyFlag} 
+                  alt="Turkey Flag" 
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div className="flex flex-col">
-                <div className="text-xl font-bold text-neutral-800">Republic of Turkey</div>
-                <div className="text-xs text-neutral-600">Electronic Visa Application System</div>
+                <div className="text-xl font-bold text-neutral-800">Turkey E-Visa</div>
+                <div className="text-xs text-neutral-600">Professional Visa Application Service</div>
               </div>
             </Link>
           </div>
