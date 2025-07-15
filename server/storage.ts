@@ -35,6 +35,8 @@ export interface IStorage {
   createInsuranceApplication(application: InsertInsuranceApplication): Promise<InsuranceApplication>;
   getInsuranceApplicationByNumber(applicationNumber: string): Promise<InsuranceApplication | undefined>;
   getAllInsuranceApplications(): Promise<InsuranceApplication[]>;
+  getInsuranceApplicationById(id: number): Promise<InsuranceApplication | undefined>;
+  updateInsuranceApplicationStatus(id: number, status: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -101,6 +103,15 @@ export class DatabaseStorage implements IStorage {
 
   async getAllInsuranceApplications(): Promise<InsuranceApplication[]> {
     return await db.select().from(insuranceApplications).orderBy(desc(insuranceApplications.createdAt));
+  }
+
+  async getInsuranceApplicationById(id: number): Promise<InsuranceApplication | undefined> {
+    const [application] = await db.select().from(insuranceApplications).where(eq(insuranceApplications.id, id));
+    return application;
+  }
+
+  async updateInsuranceApplicationStatus(id: number, status: string): Promise<void> {
+    await db.update(insuranceApplications).set({ status, updatedAt: new Date() }).where(eq(insuranceApplications.id, id));
   }
 }
 

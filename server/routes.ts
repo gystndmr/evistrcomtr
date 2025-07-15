@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertApplicationSchema, insertInsuranceApplicationSchema } from "@shared/schema";
 import { z } from "zod";
+import { sendEmail, generateVisaApprovalEmail, generateInsuranceApprovalEmail } from "./email";
 
 function generateApplicationNumber(): string {
   const timestamp = Date.now().toString(36);
@@ -48,6 +49,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       const application = await storage.createApplication(validatedData);
+      
+      // E-posta gönderimi (vize başvuru onayı)
+      if (application.status === 'approved' || application.paymentStatus === 'completed') {
+        try {
+          const emailContent = generateVisaApprovalEmail(
+            application.firstName, 
+            application.lastName, 
+            application.applicationNumber
+          );
+          
+          await sendEmail({
+            to: application.email,
+            from: 'noreply@evisa.gov.tr',
+            subject: emailContent.subject,
+            html: emailContent.html,
+            text: emailContent.text
+          });
+          
+          console.log(`Visa approval email sent to ${application.email}`);
+        } catch (emailError) {
+          console.error('Failed to send visa approval email:', emailError);
+        }
+      }
+      
       res.status(201).json(application);
     } catch (error) {
       console.error("Error creating application:", error);
@@ -95,6 +120,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       const application = await storage.createInsuranceApplication(validatedData);
+      
+      // E-posta gönderimi (sigorta başvuru onayı)
+      if (application.status === 'approved' || application.paymentStatus === 'completed') {
+        try {
+          // Sigorta ürün bilgisini al
+          const product = application.productId ? await storage.getInsuranceProduct(application.productId) : null;
+          const productName = product ? product.name : 'Travel Insurance';
+          
+          const emailContent = generateInsuranceApprovalEmail(
+            application.firstName, 
+            application.lastName, 
+            application.applicationNumber,
+            productName
+          );
+          
+          await sendEmail({
+            to: application.email,
+            from: 'noreply@evisa.gov.tr',
+            subject: emailContent.subject,
+            html: emailContent.html,
+            text: emailContent.text
+          });
+          
+          console.log(`Insurance approval email sent to ${application.email}`);
+        } catch (emailError) {
+          console.error('Failed to send insurance approval email:', emailError);
+        }
+      }
+      
       res.status(201).json(application);
     } catch (error) {
       console.error("Error creating insurance application:", error);
@@ -354,6 +408,103 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching stats:", error);
       res.status(500).json({ message: "Failed to fetch stats" });
+    }
+  });
+
+  // Update application status (admin)
+  app.patch("/api/admin/applications/:id/status", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      
+      if (!status || !['pending', 'approved', 'rejected'].includes(status)) {
+        return res.status(400).json({ message: "Invalid status" });
+      }
+      
+      await storage.updateApplicationStatus(parseInt(id), status);
+      
+      // Eğer onaylandıysa e-posta gönder
+      if (status === 'approved') {
+        const application = await storage.getApplication(parseInt(id));
+        if (application) {
+          try {
+            const emailContent = generateVisaApprovalEmail(
+              application.firstName, 
+              application.lastName, 
+              application.applicationNumber
+            );
+            
+            await sendEmail({
+              to: application.email,
+              from: 'noreply@evisa.gov.tr', // Bu e-posta SendGrid'de doğrulanmış olmalı
+              subject: emailContent.subject,
+              html: emailContent.html,
+              text: emailContent.text
+            });
+            
+            console.log(`Visa approval email sent to ${application.email}`);
+          } catch (emailError) {
+            console.error('Failed to send visa approval email:', emailError);
+          }
+        }
+      }
+      
+      res.json({ message: "Application status updated successfully" });
+    } catch (error) {
+      console.error("Error updating application status:", error);
+      res.status(500).json({ message: "Failed to update application status" });
+    }
+  });
+
+  // Update insurance application status (admin)
+  app.patch("/api/admin/insurance-applications/:id/status", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      
+      if (!status || !['pending', 'approved', 'rejected'].includes(status)) {
+        return res.status(400).json({ message: "Invalid status" });
+      }
+      
+      // Sigorta için status güncelleme fonksiyonu storage'a eklenmeli
+      const application = await storage.getInsuranceApplicationById(parseInt(id));
+      if (!application) {
+        return res.status(404).json({ message: "Insurance application not found" });
+      }
+      
+      await storage.updateInsuranceApplicationStatus(parseInt(id), status);
+      
+      // Eğer onaylandıysa e-posta gönder
+      if (status === 'approved') {
+        try {
+          const product = application.productId ? await storage.getInsuranceProduct(application.productId) : null;
+          const productName = product ? product.name : 'Travel Insurance';
+          
+          const emailContent = generateInsuranceApprovalEmail(
+            application.firstName, 
+            application.lastName, 
+            application.applicationNumber,
+            productName
+          );
+          
+          await sendEmail({
+            to: application.email,
+            from: 'noreply@evisa.gov.tr',
+            subject: emailContent.subject,
+            html: emailContent.html,
+            text: emailContent.text
+          });
+          
+          console.log(`Insurance approval email sent to ${application.email}`);
+        } catch (emailError) {
+          console.error('Failed to send insurance approval email:', emailError);
+        }
+      }
+      
+      res.json({ message: "Insurance application status updated successfully" });
+    } catch (error) {
+      console.error("Error updating insurance application status:", error);
+      res.status(500).json({ message: "Failed to update insurance application status" });
     }
   });
 
