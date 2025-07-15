@@ -65,7 +65,7 @@ export default function Home() {
       <Header />
       
       {/* Hero Section with Rotating Turkish Landmarks */}
-      <section className="relative h-screen overflow-hidden">
+      <section className="relative h-[70vh] overflow-hidden">
         {/* Background Slides */}
         <div className="absolute inset-0">
           {turkishLandmarks.map((landmark, index) => (
@@ -106,23 +106,23 @@ export default function Home() {
               />
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 drop-shadow-lg">
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
               Republic of Türkiye
             </h1>
-            <h2 className="text-3xl md:text-4xl font-semibold mb-4 drop-shadow-md">
+            <h2 className="text-2xl md:text-3xl font-semibold mb-3 drop-shadow-md">
               e-Visa Services
             </h2>
-            <p className="text-xl md:text-2xl mb-8 opacity-90 drop-shadow-sm">
+            <p className="text-lg md:text-xl mb-6 opacity-90 drop-shadow-sm">
               Official Electronic Visa Application System
             </p>
             
             {/* Current Location Display */}
-            <div className="mb-8 text-center">
-              <p className="text-lg opacity-80 mb-2">Discover Turkey</p>
-              <div className="text-2xl font-semibold">
+            <div className="mb-6 text-center">
+              <p className="text-base opacity-80 mb-1">Discover Turkey</p>
+              <div className="text-xl font-semibold">
                 {turkishLandmarks[currentSlide].name}
               </div>
-              <div className="text-lg opacity-75">
+              <div className="text-base opacity-75">
                 {turkishLandmarks[currentSlide].location} • {turkishLandmarks[currentSlide].description}
               </div>
             </div>
