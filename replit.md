@@ -168,3 +168,5 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - Turkish and English email templates with responsive HTML design
   - Email system fully operational using verified sender address (info@visatanzania.org)
   - Successfully tested end-to-end email delivery for both visa and insurance approvals
+  - Note: info@evisatr.xyz domain configured but requires single sender verification
+  - Temporary solution: Using info@visatanzania.org until evisatr.xyz verification complete
