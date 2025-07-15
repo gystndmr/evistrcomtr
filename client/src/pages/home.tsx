@@ -7,48 +7,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { IdCard, CreditCard, Download, Shield, Star, Crown, Search } from "lucide-react";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
+import cappadociaImg from "../../../attached_assets/pexels-musaortac-14186574_1752590100661.jpg";
+import ephesusImg from "../../../attached_assets/pexels-hilal-tosun-54875889-33011223_1752590240668.jpg";
+import antalyaImg from "../../../attached_assets/pexels-mikhail-nilov-8322807_1752590250012.jpg";
+import bosphorusImg from "../../../attached_assets/pexels-ugur-kahraman-1765266160-29649889_1752590268560.jpg";
+import pamukkaleImg from "../../../attached_assets/pexels-fromsalih-27829278_1752590288989.jpg";
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Turkish landmark images with real photos
+  // Turkish landmark images 
   const turkishLandmarks = [
-    {
-      name: "Hagia Sophia",
-      location: "Istanbul",
-      image: "https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
-      description: "Historic Byzantine masterpiece"
-    },
-    {
-      name: "Cappadocia",
-      location: "Nevşehir",
-      image: "https://images.unsplash.com/photo-1618556450991-2f1af64e8191?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
-      description: "Fairy chimneys and hot air balloons"
-    },
-    {
-      name: "Pamukkale",
-      location: "Denizli",
-      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
-      description: "Natural thermal pools"
-    },
-    {
-      name: "Ephesus",
-      location: "İzmir",
-      image: "https://images.unsplash.com/photo-1602002418816-5c0aeef426aa?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
-      description: "Ancient Greek city ruins"
-    },
-    {
-      name: "Bosphorus",
-      location: "Istanbul",
-      image: "https://images.unsplash.com/photo-1570939274851-584e8e88d945?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
-      description: "Bridge between Europe and Asia"
-    },
-    {
-      name: "Antalya",
-      location: "Mediterranean Coast",
-      image: "https://images.unsplash.com/photo-1539650116574-75c0c6930311?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
-      description: "Turquoise coast and beaches"
-    }
+    { image: cappadociaImg },
+    { image: ephesusImg }, 
+    { image: antalyaImg },
+    { image: bosphorusImg },
+    { image: pamukkaleImg }
   ];
 
   useEffect(() => {
@@ -107,16 +81,7 @@ export default function Home() {
               Official Electronic Visa Application System
             </p>
             
-            {/* Current Location Display */}
-            <div className="mb-6 text-center">
-              <p className="text-base opacity-80 mb-1">Discover Turkey</p>
-              <div className="text-xl font-semibold">
-                {turkishLandmarks[currentSlide].name}
-              </div>
-              <div className="text-base opacity-75">
-                {turkishLandmarks[currentSlide].location} • {turkishLandmarks[currentSlide].description}
-              </div>
-            </div>
+
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
@@ -143,7 +108,7 @@ export default function Home() {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Simple 3-Step Process</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Your visa ready in 3 steps</h2>
             <p className="text-lg text-neutral-600">Get your Turkish e-visa in minutes</p>
           </div>
           
