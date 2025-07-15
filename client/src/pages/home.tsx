@@ -106,83 +106,83 @@ export default function Home() {
       </section>
 
       {/* Application Process Steps */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Your visa ready in 3 steps</h2>
-            <p className="text-lg text-neutral-600">Get your Turkish e-visa in minutes</p>
+      <section className="py-12 sm:py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Your visa ready in 3 steps</h2>
+            <p className="text-base sm:text-lg text-neutral-600">Get your Turkish e-visa in minutes</p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
+          <div className="flex flex-col sm:flex-row sm:justify-center sm:items-start gap-6 sm:gap-8 lg:gap-12">
+            <div className="text-center sm:flex-1 max-w-xs mx-auto sm:mx-0">
               <div className="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold text-xl">1</span>
               </div>
-              <h3 className="text-xl font-semibold text-neutral-800 mb-2">Complete Application</h3>
-              <p className="text-neutral-600">Fill out the visa application form with your correct information</p>
+              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">Complete Application</h3>
+              <p className="text-sm sm:text-base text-neutral-600 px-2">Fill out the visa application form with your correct information</p>
             </div>
             
-            <div className="text-center">
+            <div className="text-center sm:flex-1 max-w-xs mx-auto sm:mx-0">
               <div className="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold text-xl">2</span>
               </div>
-              <h3 className="text-xl font-semibold text-neutral-800 mb-2">Make Payment</h3>
-              <p className="text-neutral-600">Pay securely with your credit card or debit card</p>
+              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">Make Payment</h3>
+              <p className="text-sm sm:text-base text-neutral-600 px-2">Pay securely with your credit card or debit card</p>
             </div>
             
-            <div className="text-center">
+            <div className="text-center sm:flex-1 max-w-xs mx-auto sm:mx-0">
               <div className="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold text-xl">3</span>
               </div>
-              <h3 className="text-xl font-semibold text-neutral-800 mb-2">Download E-Visa</h3>
-              <p className="text-neutral-600">Download your e-visa when application is completed successfully</p>
+              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">Download E-Visa</h3>
+              <p className="text-sm sm:text-base text-neutral-600 px-2">Download your e-visa when application is completed successfully</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Turkey Historical Sites */}
-      <section className="py-16 bg-gradient-to-br from-blue-50 to-red-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Discover Turkey's Heritage</h2>
-            <p className="text-lg text-neutral-600">Explore magnificent historical sites and cultural treasures</p>
+      <section className="py-12 sm:py-16 bg-gradient-to-br from-blue-50 to-red-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Discover Turkey's Heritage</h2>
+            <p className="text-base sm:text-lg text-neutral-600">Explore magnificent historical sites and cultural treasures</p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+            <div className="relative rounded-lg overflow-hidden shadow-lg h-48 sm:h-56 md:h-64 group">
               <div 
                 className="absolute inset-0 bg-cover bg-center"
                 style={{ backgroundImage: `url(${hagiaSophiaImg})` }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-xl font-bold mb-2">Hagia Sophia</h3>
-                <p className="text-sm opacity-90">Iconic Byzantine masterpiece in Istanbul</p>
+              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
+                <h3 className="text-lg sm:text-xl font-bold mb-1 sm:mb-2">Hagia Sophia</h3>
+                <p className="text-xs sm:text-sm opacity-90">Iconic Byzantine masterpiece in Istanbul</p>
               </div>
             </div>
             
-            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group">
+            <div className="relative rounded-lg overflow-hidden shadow-lg h-48 sm:h-56 md:h-64 group">
               <div 
                 className="absolute inset-0 bg-cover bg-center"
                 style={{ backgroundImage: `url(${cappadociaImg})` }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-xl font-bold mb-2">Cappadocia</h3>
-                <p className="text-sm opacity-90">Extraordinary rock formations and hot air balloons</p>
+              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
+                <h3 className="text-lg sm:text-xl font-bold mb-1 sm:mb-2">Cappadocia</h3>
+                <p className="text-xs sm:text-sm opacity-90">Extraordinary rock formations and hot air balloons</p>
               </div>
             </div>
             
-            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group">
+            <div className="relative rounded-lg overflow-hidden shadow-lg h-48 sm:h-56 md:h-64 group sm:col-span-2 md:col-span-1">
               <div 
                 className="absolute inset-0 bg-cover bg-center"
                 style={{ backgroundImage: `url(${pamukkaleImg})` }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-xl font-bold mb-2">Pamukkale</h3>
-                <p className="text-sm opacity-90">Natural thermal pools and ancient ruins</p>
+              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
+                <h3 className="text-lg sm:text-xl font-bold mb-1 sm:mb-2">Pamukkale</h3>
+                <p className="text-xs sm:text-sm opacity-90">Natural thermal pools and ancient ruins</p>
               </div>
             </div>
           </div>
