@@ -7,7 +7,7 @@ export function Footer() {
   return (
     <footer className="bg-neutral-800 text-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-lg font-semibold mb-4">Application</h3>
             <ul className="space-y-2 text-sm">
@@ -137,7 +137,6 @@ export function Footer() {
           
           <div className="text-center text-sm text-neutral-400">
             <div className="flex items-center justify-center mb-4">
-              <Star className="w-5 h-5 text-yellow-500 mr-2" />
               <div className="w-8 h-5 rounded-sm overflow-hidden mr-3">
                 <img 
                   src={turkeyFlag} 
