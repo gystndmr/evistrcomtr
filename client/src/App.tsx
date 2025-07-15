@@ -8,6 +8,7 @@ import Home from "@/pages/home";
 import Application from "@/pages/application";
 import Insurance from "@/pages/insurance";
 import Status from "@/pages/status";
+import Admin from "@/pages/admin";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -17,6 +18,7 @@ function Router() {
       <Route path="/application" component={Application} />
       <Route path="/insurance" component={Insurance} />
       <Route path="/status" component={Status} />
+      <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>
   );

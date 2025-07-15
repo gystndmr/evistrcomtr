@@ -89,6 +89,11 @@ export function Footer() {
                   Refund Policy
                 </Link>
               </li>
+              <li>
+                <Link href="/admin" className="hover:text-primary transition-colors text-xs opacity-30">
+                  •
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

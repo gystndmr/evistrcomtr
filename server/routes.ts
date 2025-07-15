@@ -315,6 +315,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin routes
+  app.get("/api/admin/applications", async (req, res) => {
+    try {
+      const applications = await storage.getAllApplications();
+      res.json(applications);
+    } catch (error) {
+      console.error("Error fetching applications:", error);
+      res.status(500).json({ message: "Failed to fetch applications" });
+    }
+  });
+
+  app.get("/api/admin/insurance-applications", async (req, res) => {
+    try {
+      const applications = await storage.getAllInsuranceApplications();
+      res.json(applications);
+    } catch (error) {
+      console.error("Error fetching insurance applications:", error);
+      res.status(500).json({ message: "Failed to fetch insurance applications" });
+    }
+  });
+
+  app.get("/api/admin/stats", async (req, res) => {
+    try {
+      const applications = await storage.getAllApplications();
+      const insuranceApplications = await storage.getAllInsuranceApplications();
+      
+      const stats = {
+        totalApplications: applications.length,
+        totalInsuranceApplications: insuranceApplications.length,
+        totalRevenue: applications.reduce((sum: number, app: any) => sum + parseFloat(app.totalAmount), 0) + 
+                     insuranceApplications.reduce((sum: number, app: any) => sum + parseFloat(app.totalAmount), 0),
+        pendingApplications: applications.filter((app: any) => app.status === 'pending').length + 
+                           insuranceApplications.filter((app: any) => app.status === 'pending').length
+      };
+      
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+      res.status(500).json({ message: "Failed to fetch stats" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

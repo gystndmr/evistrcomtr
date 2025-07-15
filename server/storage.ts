@@ -24,6 +24,7 @@ export interface IStorage {
   // Application operations
   getApplication(id: number): Promise<Application | undefined>;
   getApplicationByNumber(applicationNumber: string): Promise<Application | undefined>;
+  getAllApplications(): Promise<Application[]>;
   createApplication(application: InsertApplication): Promise<Application>;
   updateApplicationStatus(id: number, status: string): Promise<void>;
   
@@ -33,6 +34,7 @@ export interface IStorage {
   createInsuranceProduct(product: InsertInsuranceProduct): Promise<InsuranceProduct>;
   createInsuranceApplication(application: InsertInsuranceApplication): Promise<InsuranceApplication>;
   getInsuranceApplicationByNumber(applicationNumber: string): Promise<InsuranceApplication | undefined>;
+  getAllInsuranceApplications(): Promise<InsuranceApplication[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -58,6 +60,10 @@ export class DatabaseStorage implements IStorage {
   async getApplicationByNumber(applicationNumber: string): Promise<Application | undefined> {
     const [application] = await db.select().from(applications).where(eq(applications.applicationNumber, applicationNumber));
     return application;
+  }
+
+  async getAllApplications(): Promise<Application[]> {
+    return await db.select().from(applications).orderBy(desc(applications.createdAt));
   }
 
   async createApplication(applicationData: InsertApplication): Promise<Application> {
@@ -91,6 +97,10 @@ export class DatabaseStorage implements IStorage {
   async getInsuranceApplicationByNumber(applicationNumber: string): Promise<InsuranceApplication | undefined> {
     const [application] = await db.select().from(insuranceApplications).where(eq(insuranceApplications.applicationNumber, applicationNumber));
     return application;
+  }
+
+  async getAllInsuranceApplications(): Promise<InsuranceApplication[]> {
+    return await db.select().from(insuranceApplications).orderBy(desc(insuranceApplications.createdAt));
   }
 }
 
