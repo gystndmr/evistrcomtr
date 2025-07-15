@@ -19,13 +19,16 @@ export default function Home() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-red-600 rounded-full mb-6 shadow-lg">
-              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                <Star className="w-5 h-5 text-red-600" />
+              <div className="relative flex items-center justify-center">
+                <Star className="w-5 h-5 text-white" />
+                <svg className="w-4 h-4 text-white absolute -left-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                </svg>
               </div>
             </div>
             <h1 className="text-4xl md:text-6xl font-bold mb-4">Turkey E-Visa Application</h1>
-            <p className="text-xl md:text-2xl mb-2 opacity-90">Republic of Turkey</p>
-            <p className="text-lg md:text-xl mb-8 opacity-80">Ministry of Culture and Tourism - Official Electronic Visa Service</p>
+            <p className="text-xl md:text-2xl mb-2 opacity-90">Professional Visa Service</p>
+            <p className="text-lg md:text-xl mb-8 opacity-80">Fast and Reliable Electronic Visa Application</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/application">
                 <Button size="lg" className="bg-white text-red-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold shadow-lg">

@@ -93,14 +93,17 @@ export function Footer() {
         
         <div className="border-t border-neutral-700 mt-8 pt-8 text-center text-sm text-neutral-400">
           <div className="flex items-center justify-center mb-4">
-            <div className="w-8 h-5 bg-red-600 rounded-sm flex items-center justify-center mr-3">
+            <div className="w-8 h-5 bg-red-600 rounded-sm flex items-center justify-center mr-3 relative">
               <Star className="w-3 h-3 text-white" />
+              <svg className="w-2.5 h-2.5 text-white absolute -left-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
             </div>
-            <span className="font-medium">Republic of Turkey</span>
+            <span className="font-medium">Turkey E-Visa Service</span>
           </div>
           <p>&copy; 2024 Turkey E-Visa Application Service. All rights reserved.</p>
-          <p className="mt-2">Official Government Service - Ministry of Culture and Tourism</p>
-          <p className="mt-1 text-xs">This service is provided by the Government of Turkey</p>
+          <p className="mt-2">Professional Visa Application Service</p>
+          <p className="mt-1 text-xs">Fast, reliable and secure visa processing</p>
         </div>
       </div>
     </footer>

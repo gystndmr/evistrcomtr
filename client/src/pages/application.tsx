@@ -33,8 +33,11 @@ export default function Application() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-12 h-12 bg-red-600 rounded-full mb-4 shadow-lg">
-              <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-                <Star className="w-3 h-3 text-red-600" />
+              <div className="relative flex items-center justify-center">
+                <Star className="w-4 h-4 text-white" />
+                <svg className="w-3 h-3 text-white absolute -left-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                </svg>
               </div>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4">E-Visa Application</h1>

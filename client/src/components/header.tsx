@@ -24,12 +24,18 @@ export function Header() {
               <div className="w-10 h-7 bg-red-600 rounded-sm flex items-center justify-center relative">
                 <div className="absolute inset-0 bg-red-600 rounded-sm"></div>
                 <div className="relative flex items-center justify-center">
-                  <Star className="w-4 h-4 text-white" />
+                  {/* Turkish Flag: Star and Crescent */}
+                  <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                  </svg>
+                  <svg className="w-4 h-4 text-white absolute -left-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                  </svg>
                 </div>
               </div>
               <div className="flex flex-col">
                 <div className="text-xl font-bold text-neutral-800">Turkey E-Visa</div>
-                <div className="text-xs text-neutral-600">Republic of Turkey - Ministry of Culture and Tourism</div>
+                <div className="text-xs text-neutral-600">Professional Visa Application Service</div>
               </div>
             </Link>
           </div>
