@@ -8,7 +8,7 @@ export function Footer() {
     <footer className="bg-neutral-800 text-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="text-lg font-semibold mb-4">Application</h3>
             <ul className="space-y-2 text-sm">
               <li>
@@ -29,7 +29,7 @@ export function Footer() {
             </ul>
           </div>
           
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="text-lg font-semibold mb-4">Information</h3>
             <ul className="space-y-2 text-sm">
               <li>
@@ -50,7 +50,7 @@ export function Footer() {
             </ul>
           </div>
           
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="text-lg font-semibold mb-4">Support</h3>
             <ul className="space-y-2 text-sm">
               <li>
@@ -71,7 +71,7 @@ export function Footer() {
             </ul>
           </div>
           
-          <div>
+          <div className="text-center md:text-left">
             <h3 className="text-lg font-semibold mb-4">Legal</h3>
             <ul className="space-y-2 text-sm">
               <li>
