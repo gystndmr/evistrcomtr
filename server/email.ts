@@ -17,7 +17,7 @@ interface EmailParams {
 export async function sendEmail(params: EmailParams): Promise<boolean> {
   try {
     // SendGrid doğrulanmış gönderen e-postası gerektirir
-    const fromEmail = 'info@visatanzania.org'; // SendGrid'de doğrulanmış domain olmalı
+    const fromEmail = 'info@em7659.visatanzania.org'; // SendGrid'de doğrulanmış domain olmalı
     
     await sgMail.send({
       to: params.to,
