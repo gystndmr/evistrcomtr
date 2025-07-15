@@ -12,6 +12,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CountrySelector } from "./country-selector";
 import { SupportingDocs } from "./supporting-docs";
+import { SupportingDocumentCheck } from "./supporting-document-check";
 import { InsuranceModal } from "./insurance-modal";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -46,6 +47,8 @@ export function VisaForm() {
   const [uploadedDocument, setUploadedDocument] = useState<File | null>(null);
   const [showInsuranceModal, setShowInsuranceModal] = useState(false);
   const [showPrerequisites, setShowPrerequisites] = useState(false);
+  const [hasSupportingDocument, setHasSupportingDocument] = useState<boolean | null>(null);
+  const [supportingDocumentDetails, setSupportingDocumentDetails] = useState<any>(null);
   const { toast } = useToast();
 
   const form = useForm<ApplicationFormData>({
@@ -96,10 +99,9 @@ export function VisaForm() {
 
   const handleCountrySelect = (country: Country | null) => {
     setSelectedCountry(country);
-    // Dynamic form flow based on country eligibility
-    if (country && country.isEligible && !country.requiresSupportingDocs) {
-      setShowPrerequisites(true);
-    }
+    // Reset supporting document state when country changes
+    setHasSupportingDocument(null);
+    setSupportingDocumentDetails(null);
   };
 
   const handleNextStep = () => {
@@ -113,11 +115,22 @@ export function VisaForm() {
         return;
       }
       if (!selectedCountry.isEligible) {
-        setShowInsuranceModal(true);
+        // Non-eligible countries are redirected by country selector
         return;
       }
-      if (selectedCountry.requiresSupportingDocs && !uploadedDocument) {
-        setShowInsuranceModal(true);
+    }
+    
+    if (currentStep === 2) {
+      if (hasSupportingDocument === null) {
+        toast({
+          title: "Required Selection",
+          description: "Please indicate if you have supporting documents",
+          variant: "destructive",
+        });
+        return;
+      }
+      if (hasSupportingDocument === false) {
+        // Will be redirected by the component
         return;
       }
     }
@@ -140,21 +153,22 @@ export function VisaForm() {
   const getDynamicSteps = () => {
     const baseSteps = [
       { number: 1, title: "Choice of Nationality" },
-      { number: 2, title: "Arrival Information" },
+      { number: 2, title: "Supporting Document Check" },
+      { number: 3, title: "Arrival Information" },
     ];
     
-    if (selectedCountry?.isEligible && !selectedCountry?.requiresSupportingDocs) {
+    if (selectedCountry?.isEligible && hasSupportingDocument === true) {
       return [
         ...baseSteps,
-        { number: 3, title: "Prerequisites" },
-        { number: 4, title: "Personal Information" },
-        { number: 5, title: "Payment" },
+        { number: 4, title: "Prerequisites" },
+        { number: 5, title: "Personal Information" },
+        { number: 6, title: "Payment" },
       ];
     } else {
       return [
         ...baseSteps,
-        { number: 3, title: "Personal Information" },
-        { number: 4, title: "Payment" },
+        { number: 4, title: "Personal Information" },
+        { number: 5, title: "Payment" },
       ];
     }
   };
@@ -206,20 +220,22 @@ export function VisaForm() {
                     selectedCountry={selectedCountry}
                     selectedDocumentType={selectedDocumentType}
                   />
-                  
-                  {selectedCountry?.requiresSupportingDocs && (
-                    <div className="mt-6">
-                      <SupportingDocs
-                        onDocumentUpload={setUploadedDocument}
-                        uploadedDocument={uploadedDocument}
-                      />
-                    </div>
-                  )}
                 </div>
               )}
 
-              {/* Step 2: Travel Information */}
-              {currentStep === 2 && (
+              {/* Step 2: Supporting Document Check */}
+              {currentStep === 2 && selectedCountry?.isEligible && (
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Step 2: Supporting Document Check</h3>
+                  <SupportingDocumentCheck
+                    onHasSupportingDocument={setHasSupportingDocument}
+                    onDocumentDetailsChange={setSupportingDocumentDetails}
+                  />
+                </div>
+              )}
+
+              {/* Step 3: Travel Information */}
+              {currentStep === 3 && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4">Step 2: Travel Information</h3>
                   <div className="grid md:grid-cols-2 gap-6">
@@ -265,10 +281,10 @@ export function VisaForm() {
                 </div>
               )}
 
-              {/* Step 3: Prerequisites (for eligible countries) */}
-              {currentStep === 3 && selectedCountry?.isEligible && !selectedCountry?.requiresSupportingDocs && (
+              {/* Step 4: Prerequisites (for eligible countries with supporting docs) */}
+              {currentStep === 4 && selectedCountry?.isEligible && hasSupportingDocument === true && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Step 3: Prerequisites</h3>
+                  <h3 className="text-lg font-semibold mb-4">Step 4: Prerequisites</h3>
                   <div className="space-y-4">
                     <div className="bg-blue-50 p-4 rounded-lg">
                       <h4 className="font-medium text-blue-900 mb-2">Please confirm you meet the following criteria:</h4>
@@ -305,8 +321,8 @@ export function VisaForm() {
                 </div>
               )}
 
-              {/* Step 4: Personal Details (for eligible countries) or Step 3 (for others) */}
-              {(currentStep === 4 || (currentStep === 3 && (!selectedCountry?.isEligible || selectedCountry?.requiresSupportingDocs))) && (
+              {/* Step 5: Personal Details (for eligible countries with supporting docs) or Step 4 (for others) */}
+              {(currentStep === 5 || (currentStep === 4 && (!selectedCountry?.isEligible || hasSupportingDocument === false))) && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
                   <div className="grid md:grid-cols-2 gap-6">
@@ -397,8 +413,8 @@ export function VisaForm() {
                 </div>
               )}
 
-              {/* Step 5: Payment (for eligible countries) or Step 4 (for others) */}
-              {(currentStep === 5 || (currentStep === 4 && (!selectedCountry?.isEligible || selectedCountry?.requiresSupportingDocs))) && (
+              {/* Step 6: Payment (for eligible countries with supporting docs) or Step 5 (for others) */}
+              {(currentStep === 6 || (currentStep === 5 && (!selectedCountry?.isEligible || hasSupportingDocument === false))) && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4">Payment</h3>
                   

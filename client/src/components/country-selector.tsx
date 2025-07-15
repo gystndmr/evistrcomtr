@@ -48,30 +48,13 @@ export function CountrySelector({
     if (!selectedCountry || !selectedDocumentType) return null;
 
     if (!selectedCountry.isEligible) {
-      // Direct redirect to insurance without warning
-      setTimeout(() => {
-        window.location.href = "/insurance";
-      }, 100);
       return (
-        <Alert className="border-blue-200 bg-blue-50">
-          <AlertTriangle className="h-4 w-4 text-blue-500" />
-          <AlertDescription className="text-blue-800">
-            Redirecting to insurance services...
-          </AlertDescription>
-        </Alert>
-      );
-    }
-
-    if (selectedCountry.requiresSupportingDocs) {
-      // Direct redirect to insurance if supporting docs required but not available
-      setTimeout(() => {
-        window.location.href = "/insurance";
-      }, 100);
-      return (
-        <Alert className="border-blue-200 bg-blue-50">
-          <AlertTriangle className="h-4 w-4 text-blue-500" />
-          <AlertDescription className="text-blue-800">
-            Redirecting to insurance services...
+        <Alert className="border-red-200 bg-red-50">
+          <XCircle className="h-4 w-4 text-red-500" />
+          <AlertDescription className="text-red-800">
+            <strong>E-Visa Not Available</strong>
+            <br />
+            E-visa service is not available for your country. You will be redirected to insurance services.
           </AlertDescription>
         </Alert>
       );
