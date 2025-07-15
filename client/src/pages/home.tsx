@@ -92,8 +92,12 @@ export default function Home() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group">
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1590077428593-a55bb07c4665?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center transition-transform duration-300 group-hover:scale-110"></div>
+            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group bg-gradient-to-br from-blue-600 to-blue-800">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <svg className="w-24 h-24 text-white opacity-30" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+                </svg>
+              </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                 <h3 className="text-xl font-bold mb-2">Hagia Sophia</h3>
@@ -101,8 +105,12 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group">
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1539650116574-75c0c6930311?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center transition-transform duration-300 group-hover:scale-110"></div>
+            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group bg-gradient-to-br from-orange-500 to-red-600">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <svg className="w-24 h-24 text-white opacity-30" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+                </svg>
+              </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                 <h3 className="text-xl font-bold mb-2">Cappadocia</h3>
@@ -110,8 +118,12 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group">
-              <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1565214950140-7fa6b7b2a5a8?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center transition-transform duration-300 group-hover:scale-110"></div>
+            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group bg-gradient-to-br from-cyan-400 to-blue-500">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <svg className="w-24 h-24 text-white opacity-30" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+                </svg>
+              </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                 <h3 className="text-xl font-bold mb-2">Pamukkale</h3>
