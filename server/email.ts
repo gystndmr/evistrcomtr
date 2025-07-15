@@ -21,7 +21,10 @@ export async function sendEmail(params: EmailParams): Promise<boolean> {
     
     await sgMail.send({
       to: params.to,
-      from: fromEmail,
+      from: {
+        email: fromEmail,
+        name: 'Turkey E-Visa System'
+      },
       subject: params.subject,
       text: params.text,
       html: params.html,
