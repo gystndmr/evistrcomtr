@@ -183,28 +183,53 @@ export function VisaForm() {
           <CardTitle>New E-Visa Application</CardTitle>
           
           {/* Progress Steps */}
-          <div className="flex items-center justify-between mt-6">
-            {steps.map((step, index) => (
-              <div key={step.number} className="flex items-center">
-                <div
-                  className={`rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold ${
-                    currentStep >= step.number
-                      ? "bg-primary text-white"
-                      : "bg-neutral-300 text-neutral-600"
-                  }`}
-                >
-                  {step.number}
+          <div className="mt-6">
+            {/* Mobile: Vertical layout */}
+            <div className="flex flex-col space-y-3 sm:hidden">
+              {steps.map((step, index) => (
+                <div key={step.number} className="flex items-center">
+                  <div
+                    className={`rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold ${
+                      currentStep >= step.number
+                        ? "bg-primary text-white"
+                        : "bg-neutral-300 text-neutral-600"
+                    }`}
+                  >
+                    {step.number}
+                  </div>
+                  <span className={`ml-3 font-medium text-sm ${
+                    currentStep >= step.number ? "text-primary" : "text-neutral-400"
+                  }`}>
+                    {step.title}
+                  </span>
                 </div>
-                <span className={`ml-2 font-medium ${
-                  currentStep >= step.number ? "text-primary" : "text-neutral-400"
-                }`}>
-                  {step.title}
-                </span>
-                {index < steps.length - 1 && (
-                  <div className="flex-1 border-t border-neutral-300 mx-4" />
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
+            
+            {/* Desktop: Horizontal layout */}
+            <div className="hidden sm:flex items-center justify-between">
+              {steps.map((step, index) => (
+                <div key={step.number} className="flex items-center">
+                  <div
+                    className={`rounded-full w-8 h-8 flex items-center justify-center text-sm font-semibold ${
+                      currentStep >= step.number
+                        ? "bg-primary text-white"
+                        : "bg-neutral-300 text-neutral-600"
+                    }`}
+                  >
+                    {step.number}
+                  </div>
+                  <span className={`ml-2 font-medium text-sm lg:text-base ${
+                    currentStep >= step.number ? "text-primary" : "text-neutral-400"
+                  }`}>
+                    {step.title}
+                  </span>
+                  {index < steps.length - 1 && (
+                    <div className="flex-1 border-t border-neutral-300 mx-2 lg:mx-4" />
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </CardHeader>
 
