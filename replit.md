@@ -140,13 +140,14 @@ The application uses four main tables:
 
 The application is designed for easy deployment on platforms like Replit, Vercel, or traditional hosting providers, with clear separation between frontend and backend concerns while maintaining type safety throughout the stack.
 
-## Recent Changes (January 2025)
+## Recent Changes (July 2025)
 
 ✓ Updated country eligibility data based on official Turkish government sources
 ✓ Afghanistan and other previously marked ineligible countries now correctly marked as e-visa eligible
 ✓ Added country flags to country selector dropdown
-✓ Updated Turkey landmark images with working URLs (Hagia Sophia, Cappadocia, Pamukkale)
-✓ Simplified insurance options to exact 7 pricing tiers as requested
-✓ Removed excessive UI elements from insurance page
+✓ Fixed Turkey landmark images by replacing external URLs with gradient backgrounds and SVG icons
+✓ Simplified insurance options to exact 7 pricing tiers as requested (7 days: $114, 14 days: $131, 30 days: $154, 60 days: $191, 90 days: $214, 180 days: $275, 1 year: $315)
+✓ Removed excessive UI elements from insurance page including repetitive descriptions
+✓ Cleaned up database duplicates for insurance products
 ✓ Updated non-eligible country messaging to indicate visa-free travel
 ✓ Database updated with new insurance products and corrected country eligibility

@@ -156,7 +156,6 @@ export default function Insurance() {
                             <Badge className="bg-red-600 text-white text-xs px-2 py-1">Recommended</Badge>
                           )}
                         </div>
-                        <p className="text-sm text-gray-600 mt-1">Full coverage for your stay in Turkey</p>
                       </div>
                     </div>
                     <div className="text-right">
