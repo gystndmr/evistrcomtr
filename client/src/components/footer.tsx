@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Star } from "lucide-react";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
+import turkeyEmblem from "@/assets/Ekran Resmi 2025-07-15 17.05.26_1752588365236.png";
 
 export function Footer() {
   return (
@@ -145,23 +146,12 @@ export function Footer() {
             
             {/* Official Turkish Government Emblem */}
             <div className="flex items-center justify-center mb-4">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center p-2">
-                <svg viewBox="0 0 100 100" className="w-full h-full">
-                  <circle cx="50" cy="50" r="45" fill="#DAA520" stroke="#FFD700" strokeWidth="2"/>
-                  <g fill="#FFFFFF">
-                    {/* Outer stars ring */}
-                    <g transform="translate(50,50)">
-                      {Array.from({ length: 16 }, (_, i) => (
-                        <g key={i} transform={`rotate(${i * 22.5})`}>
-                          <path d="M0,-38 L1,-36 L3,-36 L1,-34 L2,-32 L0,-33 L-2,-32 L-1,-34 L-3,-36 L-1,-36 Z"/>
-                        </g>
-                      ))}
-                    </g>
-                    {/* Crescent and star */}
-                    <path d="M35 50 A8 8 0 0 0 51 50 A6 6 0 0 1 35 50 Z"/>
-                    <path d="M58 45 L60 49 L64 49 L61 52 L62 56 L58 54 L54 56 L55 52 L52 49 L56 49 Z"/>
-                  </g>
-                </svg>
+              <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                <img 
+                  src={turkeyEmblem} 
+                  alt="Turkish Government Emblem" 
+                  className="w-full h-full object-contain"
+                />
               </div>
             </div>
             
