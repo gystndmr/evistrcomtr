@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertApplicationSchema, insertInsuranceApplicationSchema } from "@shared/schema";
 import { z } from "zod";
-import { sendEmail, generateVisaApprovalEmail, generateInsuranceApprovalEmail } from "./email";
+import { sendEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail } from "./email";
 
 function generateApplicationNumber(): string {
   const timestamp = Date.now().toString(36);
@@ -50,27 +50,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const application = await storage.createApplication(validatedData);
       
-      // E-posta gönderimi (vize başvuru onayı)
-      if (application.status === 'approved' || application.paymentStatus === 'completed') {
-        try {
-          const emailContent = generateVisaApprovalEmail(
-            application.firstName, 
-            application.lastName, 
-            application.applicationNumber
-          );
-          
-          await sendEmail({
-            to: application.email,
-            from: 'info@visatanzania.org',
-            subject: emailContent.subject,
-            html: emailContent.html,
-            text: emailContent.text
-          });
-          
-          console.log(`Visa approval email sent to ${application.email}`);
-        } catch (emailError) {
-          console.error('Failed to send visa approval email:', emailError);
-        }
+      // E-posta gönderimi (vize başvuru alındı)
+      try {
+        const emailContent = generateVisaReceivedEmail(
+          application.firstName, 
+          application.lastName, 
+          application.applicationNumber
+        );
+        
+        await sendEmail({
+          to: application.email,
+          from: 'info@visatanzania.org',
+          subject: emailContent.subject,
+          html: emailContent.html,
+          text: emailContent.text
+        });
+        
+        console.log(`Visa application received email sent to ${application.email}`);
+      } catch (emailError) {
+        console.error('Failed to send visa application received email:', emailError);
       }
       
       res.status(201).json(application);
@@ -121,32 +119,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const application = await storage.createInsuranceApplication(validatedData);
       
-      // E-posta gönderimi (sigorta başvuru onayı)
-      if (application.status === 'approved' || application.paymentStatus === 'completed') {
-        try {
-          // Sigorta ürün bilgisini al
-          const product = application.productId ? await storage.getInsuranceProduct(application.productId) : null;
-          const productName = product ? product.name : 'Travel Insurance';
-          
-          const emailContent = generateInsuranceApprovalEmail(
-            application.firstName, 
-            application.lastName, 
-            application.applicationNumber,
-            productName
-          );
-          
-          await sendEmail({
-            to: application.email,
-            from: 'info@visatanzania.org',
-            subject: emailContent.subject,
-            html: emailContent.html,
-            text: emailContent.text
-          });
-          
-          console.log(`Insurance approval email sent to ${application.email}`);
-        } catch (emailError) {
-          console.error('Failed to send insurance approval email:', emailError);
-        }
+      // E-posta gönderimi (sigorta başvuru alındı)
+      try {
+        // Sigorta ürün bilgisini al
+        const product = application.productId ? await storage.getInsuranceProduct(application.productId) : null;
+        const productName = product ? product.name : 'Travel Insurance';
+        
+        const emailContent = generateInsuranceReceivedEmail(
+          application.firstName, 
+          application.lastName, 
+          application.applicationNumber,
+          productName
+        );
+        
+        await sendEmail({
+          to: application.email,
+          from: 'info@visatanzania.org',
+          subject: emailContent.subject,
+          html: emailContent.html,
+          text: emailContent.text
+        });
+        
+        console.log(`Insurance application received email sent to ${application.email}`);
+      } catch (emailError) {
+        console.error('Failed to send insurance application received email:', emailError);
       }
       
       res.status(201).json(application);
@@ -428,7 +424,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const application = await storage.getApplication(parseInt(id));
         if (application) {
           try {
-            const emailContent = generateVisaApprovalEmail(
+            const emailContent = generateVisaReceivedEmail(
               application.firstName, 
               application.lastName, 
               application.applicationNumber
