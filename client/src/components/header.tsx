@@ -21,10 +21,16 @@ export function Header() {
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-8 h-6 turkey-flag rounded-sm flex items-center justify-center">
-                <Star className="w-4 h-4 text-white" />
+              <div className="w-10 h-7 bg-red-600 rounded-sm flex items-center justify-center relative">
+                <div className="absolute inset-0 bg-red-600 rounded-sm"></div>
+                <div className="relative flex items-center justify-center">
+                  <Star className="w-4 h-4 text-white" />
+                </div>
               </div>
-              <div className="text-xl font-bold text-neutral-800">Turkey E-Visa</div>
+              <div className="flex flex-col">
+                <div className="text-xl font-bold text-neutral-800">Turkey E-Visa</div>
+                <div className="text-xs text-neutral-600">Republic of Turkey - Ministry of Culture and Tourism</div>
+              </div>
             </Link>
           </div>
           

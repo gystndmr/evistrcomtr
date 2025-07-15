@@ -12,20 +12,29 @@ export default function Home() {
       <Header />
       
       {/* Hero Section */}
-      <section className="bg-gradient-primary text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative bg-gradient-to-r from-red-600 to-red-700 text-white py-20 overflow-hidden">
+        <div className="absolute inset-0 bg-black opacity-20"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-30"></div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">Turkey E-Visa Application</h1>
-            <p className="text-xl md:text-2xl mb-8 opacity-90">Official Government Service for Electronic Visa Applications</p>
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-red-600 rounded-full mb-6 shadow-lg">
+              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                <Star className="w-5 h-5 text-red-600" />
+              </div>
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold mb-4">Turkey E-Visa Application</h1>
+            <p className="text-xl md:text-2xl mb-2 opacity-90">Republic of Turkey</p>
+            <p className="text-lg md:text-xl mb-8 opacity-80">Ministry of Culture and Tourism - Official Electronic Visa Service</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/application">
-                <Button size="lg" className="bg-white text-primary hover:bg-neutral-100 px-8 py-4 text-lg">
+                <Button size="lg" className="bg-white text-red-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold shadow-lg">
                   <IdCard className="w-5 h-5 mr-2" />
                   Apply for E-Visa
                 </Button>
               </Link>
               <Link href="/status">
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary px-8 py-4 text-lg">
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-red-600 px-8 py-4 text-lg font-semibold">
                   <Search className="w-5 h-5 mr-2" />
                   Check Application Status
                 </Button>

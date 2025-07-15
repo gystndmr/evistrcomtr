@@ -28,9 +28,15 @@ export default function Application() {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <section className="py-16 bg-neutral-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-16 bg-gradient-to-br from-blue-50 to-red-50 min-h-screen">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=2071&auto=format&fit=crop')] bg-cover bg-center opacity-5"></div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-red-600 rounded-full mb-4 shadow-lg">
+              <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+                <Star className="w-3 h-3 text-red-600" />
+              </div>
+            </div>
             <h1 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4">E-Visa Application</h1>
             <p className="text-lg text-neutral-600">Complete your Turkey e-visa application in simple steps</p>
           </div>

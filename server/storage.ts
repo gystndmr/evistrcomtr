@@ -30,6 +30,7 @@ export interface IStorage {
   // Insurance operations
   getInsuranceProducts(): Promise<InsuranceProduct[]>;
   getInsuranceProduct(id: number): Promise<InsuranceProduct | undefined>;
+  createInsuranceProduct(product: InsertInsuranceProduct): Promise<InsuranceProduct>;
   createInsuranceApplication(application: InsertInsuranceApplication): Promise<InsuranceApplication>;
   getInsuranceApplicationByNumber(applicationNumber: string): Promise<InsuranceApplication | undefined>;
 }
@@ -74,6 +75,11 @@ export class DatabaseStorage implements IStorage {
 
   async getInsuranceProduct(id: number): Promise<InsuranceProduct | undefined> {
     const [product] = await db.select().from(insuranceProducts).where(eq(insuranceProducts.id, id));
+    return product;
+  }
+
+  async createInsuranceProduct(productData: InsertInsuranceProduct): Promise<InsuranceProduct> {
+    const [product] = await db.insert(insuranceProducts).values(productData).returning();
     return product;
   }
 

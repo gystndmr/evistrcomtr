@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import { Star } from "lucide-react";
 
 export function Footer() {
   return (
@@ -91,8 +92,15 @@ export function Footer() {
         </div>
         
         <div className="border-t border-neutral-700 mt-8 pt-8 text-center text-sm text-neutral-400">
+          <div className="flex items-center justify-center mb-4">
+            <div className="w-8 h-5 bg-red-600 rounded-sm flex items-center justify-center mr-3">
+              <Star className="w-3 h-3 text-white" />
+            </div>
+            <span className="font-medium">Republic of Turkey</span>
+          </div>
           <p>&copy; 2024 Turkey E-Visa Application Service. All rights reserved.</p>
-          <p className="mt-2">Official Government Service - Republic of Turkey Ministry of Culture and Tourism</p>
+          <p className="mt-2">Official Government Service - Ministry of Culture and Tourism</p>
+          <p className="mt-1 text-xs">This service is provided by the Government of Turkey</p>
         </div>
       </div>
     </footer>

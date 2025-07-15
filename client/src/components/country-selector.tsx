@@ -29,7 +29,7 @@ export function CountrySelector({
 }: CountrySelectorProps) {
   const [showEligibilityStatus, setShowEligibilityStatus] = useState(false);
 
-  const { data: countries = [] } = useQuery({
+  const { data: countries = [], isLoading } = useQuery({
     queryKey: ["/api/countries"],
   });
 
@@ -107,11 +107,17 @@ export function CountrySelector({
               <SelectValue placeholder="Select Country/Region" />
             </SelectTrigger>
             <SelectContent>
-              {countries.map((country: Country) => (
-                <SelectItem key={country.code} value={country.code}>
-                  {country.name} ({country.code})
-                </SelectItem>
-              ))}
+              {isLoading ? (
+                <SelectItem value="loading" disabled>Loading countries...</SelectItem>
+              ) : countries.length === 0 ? (
+                <SelectItem value="no-data" disabled>No countries available</SelectItem>
+              ) : (
+                countries.map((country: Country) => (
+                  <SelectItem key={country.code} value={country.code}>
+                    {country.name} ({country.code})
+                  </SelectItem>
+                ))
+              )}
             </SelectContent>
           </Select>
         </div>

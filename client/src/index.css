@@ -24,9 +24,11 @@
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
   
-  /* Custom colors for Turkey theme */
+  /* Official Turkey Government Colors */
   --turkey-red: hsl(0, 100%, 50%);
   --turkey-flag: hsl(0, 85%, 45%);
+  --government-blue: hsl(220, 100%, 25%);
+  --government-gold: hsl(45, 100%, 50%);
   --success-green: hsl(142, 76%, 36%);
   --warning-yellow: hsl(45, 93%, 47%);
   --neutral-50: hsl(0, 0%, 98%);
