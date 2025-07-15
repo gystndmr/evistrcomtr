@@ -231,7 +231,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         {
           name: "30 Days Coverage",
           description: "Comprehensive protection for monthly stays",
-          price: "152.00",
+          price: "154.00",
           coverage: {
             "Medical Emergency": "Up to $200,000",
             "Trip Cancellation": "Up to $20,000",
@@ -255,9 +255,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
           isPopular: false
         },
         {
+          name: "90 Days Coverage",
+          description: "Long-term protection for extended stays",
+          price: "214.00",
+          coverage: {
+            "Medical Emergency": "Up to $400,000",
+            "Trip Cancellation": "Up to $40,000",
+            "Lost Luggage": "Up to $4,000",
+            "Duration": "90 days",
+            "24/7 Support": "Available"
+          },
+          isPopular: false
+        },
+        {
           name: "180 Days Coverage",
           description: "Long-term protection for extended stays",
-          price: "235.00",
+          price: "275.00",
           coverage: {
             "Medical Emergency": "Up to $500,000",
             "Trip Cancellation": "Up to $50,000",
@@ -270,7 +283,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         {
           name: "1 Year Coverage",
           description: "Complete protection for annual stays",
-          price: "285.00",
+          price: "315.00",
           coverage: {
             "Medical Emergency": "Up to $1,000,000",
             "Trip Cancellation": "Up to $100,000",
@@ -283,11 +296,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       ];
 
-      for (const productData of insuranceProducts) {
-        try {
-          await storage.createInsuranceProduct(productData);
-        } catch (error) {
-          // Product might already exist, continue
+      // Check if insurance products exist, if not create them
+      const existingProducts = await storage.getInsuranceProducts();
+      if (existingProducts.length === 0) {
+        for (const productData of insuranceProducts) {
+          try {
+            await storage.createInsuranceProduct(productData);
+          } catch (error) {
+            // Product might already exist, continue
+          }
         }
       }
 

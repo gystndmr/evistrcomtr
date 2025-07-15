@@ -28,13 +28,6 @@ export function SupportingDocumentCheck({
   const handleHasDocumentChange = (value: boolean) => {
     setHasDocument(value);
     onHasSupportingDocument(value);
-    
-    if (!value) {
-      // Direct redirect to insurance if no supporting document
-      setTimeout(() => {
-        window.location.href = "/insurance";
-      }, 100);
-    }
   };
 
   const handleDocumentTypeChange = (type: string) => {

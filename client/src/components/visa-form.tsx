@@ -131,7 +131,8 @@ export function VisaForm() {
         return;
       }
       if (hasSupportingDocument === false) {
-        // Will be redirected by the component
+        // Redirect to insurance for users without supporting documents
+        window.location.href = "/insurance";
         return;
       }
     }
