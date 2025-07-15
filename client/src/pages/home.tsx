@@ -12,6 +12,7 @@ import ephesusImg from "../../../attached_assets/pexels-hilal-tosun-54875889-330
 import antalyaImg from "../../../attached_assets/pexels-mikhail-nilov-8322807_1752590250012.jpg";
 import bosphorusImg from "../../../attached_assets/pexels-ugur-kahraman-1765266160-29649889_1752590268560.jpg";
 import pamukkaleImg from "../../../attached_assets/pexels-fromsalih-27829278_1752590288989.jpg";
+import hagiaSophiaImg from "../../../attached_assets/pexels-mustafa-eker-649114924-17634093_1752590829229.jpg";
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -149,12 +150,11 @@ export default function Home() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group bg-gradient-to-br from-blue-600 to-blue-800">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <svg className="w-24 h-24 text-white opacity-30" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
-                </svg>
-              </div>
+            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group">
+              <div 
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url(${hagiaSophiaImg})` }}
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                 <h3 className="text-xl font-bold mb-2">Hagia Sophia</h3>
@@ -162,12 +162,11 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group bg-gradient-to-br from-orange-500 to-red-600">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <svg className="w-24 h-24 text-white opacity-30" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
-                </svg>
-              </div>
+            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group">
+              <div 
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url(${cappadociaImg})` }}
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                 <h3 className="text-xl font-bold mb-2">Cappadocia</h3>
@@ -175,12 +174,11 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group bg-gradient-to-br from-cyan-400 to-blue-500">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <svg className="w-24 h-24 text-white opacity-30" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
-                </svg>
-              </div>
+            <div className="relative rounded-lg overflow-hidden shadow-lg h-64 group">
+              <div 
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url(${pamukkaleImg})` }}
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                 <h3 className="text-xl font-bold mb-2">Pamukkale</h3>
