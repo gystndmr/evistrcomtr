@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { Star } from "lucide-react";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
-import turkeyEmblem from "@/assets/Ekran Resmi 2025-07-15 17.05.26_1752588365236.png";
+import turkeyEmblem from "@assets/Ekran Resmi 2025-07-15 17.05.26_1752588365236.png";
 
 export function Footer() {
   return (
