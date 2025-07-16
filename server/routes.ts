@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { insertApplicationSchema, insertInsuranceApplicationSchema } from "@shared/schema";
 import { z } from "zod";
 import { sendEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail, generateVisaApprovalEmail } from "./email";
-import { globiPayService } from "./payment";
+import { gloDiPayService } from "./payment";
 
 function generateApplicationNumber(): string {
   const timestamp = Date.now().toString(36);
@@ -585,7 +585,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         cancelUrl: `${process.env.REPLIT_DOMAIN || 'https://localhost:5000'}/payment-success?payment=cancelled`
       };
       
-      const paymentResponse = await globiPayService.createPayment(paymentRequest);
+      const paymentResponse = await gloDiPayService.createPayment(paymentRequest);
       
       if (paymentResponse.success) {
         res.json({
@@ -614,7 +614,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Missing transaction ID or signature" });
       }
       
-      const isValid = await globiPayService.verifyPayment(transactionId, signature);
+      const isValid = await gloDiPayService.verifyPayment(transactionId, signature);
       
       res.json({
         success: isValid,

@@ -90,7 +90,7 @@ export function VisaForm() {
       const paymentData = await paymentResponse.json();
       
       if (paymentData.success && paymentData.paymentUrl) {
-        // Redirect to GlobiPay payment page
+        // Redirect to GloDiPay payment page
         window.location.href = paymentData.paymentUrl;
       } else {
         throw new Error(paymentData.error || "Payment initialization failed");

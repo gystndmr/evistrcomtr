@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-export interface GlobiPayConfig {
+export interface GloDiPayConfig {
   merchantId: string;
   publicKey: string;
   privateKey: string;
@@ -25,10 +25,10 @@ export interface PaymentResponse {
   error?: string;
 }
 
-export class GlobiPayService {
-  private config: GlobiPayConfig;
+export class GloDiPayService {
+  private config: GloDiPayConfig;
 
-  constructor(config: GlobiPayConfig) {
+  constructor(config: GloDiPayConfig) {
     this.config = config;
   }
 
@@ -96,7 +96,7 @@ export class GlobiPayService {
         };
       }
     } catch (error) {
-      console.error('GlobiPay payment error:', error);
+      console.error('GloDiPay payment error:', error);
       return {
         success: false,
         error: 'Payment service unavailable'
@@ -127,8 +127,8 @@ export class GlobiPayService {
   }
 }
 
-// Initialize GlobiPay service
-export const globiPayService = new GlobiPayService({
+// Initialize GloDiPay service
+export const gloDiPayService = new GloDiPayService({
   merchantId: '1100002537',
   publicKey: `-----BEGIN PUBLIC KEY-----
 MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAviOrMy6pJDRThx6IkAcY
@@ -196,5 +196,5 @@ XPO/9gMtqRwgH4BW2gnlY0AXXBWSbHJavW2i9+Wk117KmzHMRvCiC5h+A3t2JmSk
 iXf4vp52gYeOfD94UjEYSMGSa++q350iup7AbB8c2aKfgvgMO0m6/6xemxmtuU/E
 DjPZy1LIdNVuY5gNsPweK2KBzJGc
 -----END PRIVATE KEY-----`,
-  apiUrl: 'https://api.globipay.com/v1'
+  apiUrl: 'https://api.glodipay.com/v1'
 });
