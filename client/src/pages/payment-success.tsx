@@ -18,10 +18,11 @@ export default function PaymentSuccess() {
     const paymentStatus = params.get('payment');
     const transactionId = params.get('transaction');
     const orderId = params.get('order');
+    const isTest = params.get('test');
     
     if (paymentStatus === 'success' && transactionId && orderId) {
       toast({
-        title: "Payment Successful",
+        title: isTest ? "Test Payment Successful" : "Payment Successful",
         description: `Your payment has been processed successfully. Transaction ID: ${transactionId}`,
       });
     } else if (paymentStatus === 'cancelled') {
@@ -36,6 +37,7 @@ export default function PaymentSuccess() {
   const transactionId = urlParams?.get('transaction');
   const orderId = urlParams?.get('order');
   const paymentStatus = urlParams?.get('payment');
+  const isTest = urlParams?.get('test');
 
   if (paymentStatus === 'cancelled') {
     return (
@@ -74,12 +76,17 @@ export default function PaymentSuccess() {
           <div className="mx-auto w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
             <CheckCircle className="w-6 h-6 text-green-600" />
           </div>
-          <CardTitle className="text-green-600">Payment Successful!</CardTitle>
+          <CardTitle className="text-green-600">
+            {isTest ? "Test Payment Successful!" : "Payment Successful!"}
+          </CardTitle>
         </CardHeader>
         <CardContent className="text-center space-y-4">
           <Alert>
             <AlertDescription>
-              Your e-visa application has been submitted successfully and payment has been processed.
+              {isTest 
+                ? "Your e-visa application has been submitted successfully and test payment has been processed."
+                : "Your e-visa application has been submitted successfully and payment has been processed."
+              }
             </AlertDescription>
           </Alert>
           

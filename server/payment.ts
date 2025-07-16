@@ -46,6 +46,23 @@ export class GloDiPayService {
 
   async createPayment(request: PaymentRequest): Promise<PaymentResponse> {
     try {
+      // Check if we're in test mode (API unavailable)
+      const isTestMode = process.env.NODE_ENV === 'development';
+      
+      if (isTestMode) {
+        // Test mode - simulate successful payment creation
+        const mockTransactionId = `TEST_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Simulate payment URL redirect to our success page with test parameters
+        const testPaymentUrl = `${request.returnUrl}&transaction=${mockTransactionId}&order=${request.orderId}&test=true`;
+        
+        return {
+          success: true,
+          paymentUrl: testPaymentUrl,
+          transactionId: mockTransactionId
+        };
+      }
+      
       const timestamp = Math.floor(Date.now() / 1000);
       const nonce = crypto.randomBytes(16).toString('hex');
       
