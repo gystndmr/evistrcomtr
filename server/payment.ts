@@ -72,15 +72,45 @@ export class GloDiPayService {
 
       const signature = this.generateSignature(signatureString);
 
-      const response = await fetch(`${this.config.apiUrl}/payment/create`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Signature': signature,
-          'X-Merchant-Id': this.config.merchantId
-        },
-        body: JSON.stringify(paymentData)
-      });
+      // Common endpoint patterns to try
+      const endpoints = [
+        '/api/v1/payments',
+        '/api/v1/checkout',
+        '/v1/payments',
+        '/v1/checkout',
+        '/payments',
+        '/checkout'
+      ];
+
+      let response;
+      let lastError;
+      
+      for (const endpoint of endpoints) {
+        try {
+          response = await fetch(`${this.config.apiUrl}${endpoint}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Signature': signature,
+              'X-Merchant-Id': this.config.merchantId,
+              'Authorization': `Bearer ${this.config.merchantId}` // Try both auth methods
+            },
+            body: JSON.stringify(paymentData)
+          });
+          
+          if (response.status !== 404) {
+            console.log(`Found working endpoint: ${endpoint}, Status: ${response.status}`);
+            break;
+          }
+        } catch (error) {
+          lastError = error;
+          continue;
+        }
+      }
+
+      if (!response || response.status === 404) {
+        throw new Error('No working API endpoint found');
+      }
 
       const result = await response.json();
 
