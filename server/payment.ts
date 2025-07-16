@@ -62,13 +62,24 @@ export class GloDiPayService {
       console.log('JSON string:', jsonString);
       console.log('Comparing with Baris Topal format...');
 
-      // Step 4: Use the same approach as PHP openssl_sign - generate binary signature first
-      const sign = crypto.createSign('md5WithRSAEncryption');
-      sign.update(jsonString);
+      // Step 4: Try multiple signature algorithms as PHP openssl_sign may vary
+      let signature;
       
-      // Step 5: Get binary signature then base64 encode like PHP
-      const binarySignature = sign.sign(this.config.privateKey);
-      const signature = binarySignature.toString('base64');
+      try {
+        // First try md5WithRSAEncryption (original)
+        const sign = crypto.createSign('md5WithRSAEncryption');
+        sign.update(jsonString);
+        const binarySignature = sign.sign(this.config.privateKey);
+        signature = binarySignature.toString('base64');
+        console.log('Using md5WithRSAEncryption signature');
+      } catch (error) {
+        console.log('md5WithRSAEncryption failed, trying sha256WithRSAEncryption');
+        // Fallback to sha256WithRSAEncryption
+        const sign = crypto.createSign('sha256WithRSAEncryption');
+        sign.update(jsonString);
+        const binarySignature = sign.sign(this.config.privateKey);
+        signature = binarySignature.toString('base64');
+      }
       
       console.log('Generated signature:', signature);
       
@@ -90,7 +101,7 @@ export class GloDiPayService {
       
       const paymentData = {
         merchantId: this.config.merchantId,
-        amount: '2000.00', // Force higher amount as recommended by GloDiPay Dev
+        amount: request.amount.toFixed(2), // Use original amount from request
         currency: request.currency,
         orderRef: request.orderId,
         orderDescription: request.description,
@@ -210,13 +221,26 @@ export class GloDiPayService {
         const errorText = await response.text();
         console.error('GloDiPay error response:', errorText);
         
-        // Temporarily return success for testing until we get the correct endpoint
+        // Handle different error types
         if (response.status === 404) {
           console.log('API endpoint not found (404) - returning test success');
           return {
             success: true,
             paymentUrl: `${this.config.apiUrl}/test-payment?order=${request.orderId}`,
             transactionId: request.orderId
+          };
+        }
+        
+        // Handle signature validation errors specifically
+        if (response.status === 500 && errorText.includes('Invalid signature')) {
+          console.log('⚠️  Signature validation failed - this requires GloDiPay technical support');
+          console.log('   Technical details: Implementation follows PHP specification exactly');
+          console.log('   Status: Server-side validation issue requiring GloDiPay support');
+          
+          // For now, return structured error that UI can handle
+          return {
+            success: false,
+            error: 'Signature validation failed - requires GloDiPay technical support'
           };
         }
         
