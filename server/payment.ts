@@ -50,35 +50,45 @@ export class GloDiPayService {
         sortedData[key] = value;
       });
 
-      // Step 3: Create JSON string like PHP json_encode with proper escaping
-      // PHP json_encode escapes forward slashes by default
-      const jsonString = JSON.stringify(sortedData).replace(/\//g, '\\/');
+      // Step 3: Try multiple data formats for signature generation
+      const formats = [
+        // Format 1: JSON with escaped forward slashes (PHP default)
+        { name: 'json_escaped', data: JSON.stringify(sortedData).replace(/\//g, '\\/') },
+        // Format 2: Raw JSON without escaping
+        { name: 'json_raw', data: JSON.stringify(sortedData) },
+        // Format 3: Query string format
+        { name: 'query_string', data: sortedKeys.map(key => `${key}=${sortedData[key]}`).join('&') },
+        // Format 4: Concatenated values only
+        { name: 'values_only', data: sortedKeys.map(key => sortedData[key]).join('') }
+      ];
       
       console.log('==== SIGNATURE DEBUG ====');
-      console.log('Original data keys:', Object.keys(data));
-      console.log('Sorted keys:', sortedKeys);
-      console.log('Sorted data:', sortedData);
-      console.log('JSON string length:', jsonString.length);
-      console.log('JSON string:', jsonString);
-      console.log('Comparing with Baris Topal format...');
-
-      // Step 4: Try multiple signature algorithms as PHP openssl_sign may vary
-      let signature;
+      console.log('Trying multiple signature formats...');
       
-      try {
-        // First try md5WithRSAEncryption (original)
-        const sign = crypto.createSign('md5WithRSAEncryption');
-        sign.update(jsonString);
-        const binarySignature = sign.sign(this.config.privateKey);
-        signature = binarySignature.toString('base64');
-        console.log('Using md5WithRSAEncryption signature');
-      } catch (error) {
-        console.log('md5WithRSAEncryption failed, trying sha256WithRSAEncryption');
-        // Fallback to sha256WithRSAEncryption
-        const sign = crypto.createSign('sha256WithRSAEncryption');
-        sign.update(jsonString);
-        const binarySignature = sign.sign(this.config.privateKey);
-        signature = binarySignature.toString('base64');
+      let signature = '';
+      
+      // Try each format with different algorithms
+      for (const format of formats) {
+        try {
+          console.log(`Trying ${format.name} format...`);
+          console.log(`Data: ${format.data.substring(0, 200)}...`);
+          
+          // Try md5WithRSAEncryption first
+          const sign = crypto.createSign('md5WithRSAEncryption');
+          sign.update(format.data);
+          const binarySignature = sign.sign(this.config.privateKey);
+          signature = binarySignature.toString('base64');
+          
+          console.log(`${format.name} signature generated successfully`);
+          break; // Use first successful format
+        } catch (error) {
+          console.log(`${format.name} format failed: ${error.message}`);
+          continue;
+        }
+      }
+      
+      if (!signature) {
+        throw new Error('All signature formats failed');
       }
       
       console.log('Generated signature:', signature);
@@ -126,9 +136,8 @@ export class GloDiPayService {
         customerIp: '127.0.0.1' // Add missing MANDATORY field from PDF spec
       };
 
-      // Temporarily disable signature for testing callback handling
-      // const signature = this.generateSignature(paymentData);
-      const signature = "test_signature_disabled_for_callback_testing";
+      // Generate signature using exact GPay specification
+      const signature = this.generateSignature(paymentData);
       
       // Create form data for application/x-www-form-urlencoded
       const formData = new URLSearchParams();
@@ -241,12 +250,14 @@ export class GloDiPayService {
           
           // TEMPORARY: For testing callback handling, mock a successful payment flow
           if (process.env.NODE_ENV === 'development') {
-            console.log('🧪 DEVELOPMENT MODE: Mocking payment success for callback testing');
+            console.log('🧪 DEVELOPMENT MODE: Simulating GPay payment page redirect');
             
-            // Return mock payment URL that simulates GPay success flow
+            // Create a test payment page that simulates GPay flow
+            const mockGPayUrl = `${process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000'}/mock-gpay-payment?order=${request.orderId}&amount=${request.amount}&merchant=${this.config.merchantId}&return=${encodeURIComponent(request.returnUrl)}&cancel=${encodeURIComponent(request.cancelUrl)}`;
+            
             return {
               success: true,
-              paymentUrl: `${request.returnUrl}?payment=mock_success&transaction=MOCK_TXN_${Date.now()}&order=${request.orderId}&test=true`,
+              paymentUrl: mockGPayUrl,
               transactionId: request.orderId
             };
           }
