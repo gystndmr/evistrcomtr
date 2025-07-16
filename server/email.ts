@@ -17,13 +17,13 @@ interface EmailParams {
 export async function sendEmail(params: EmailParams): Promise<boolean> {
   try {
     // SendGrid doğrulanmış gönderen e-postası gerektirir
-    const fromEmail = 'info@em7659.visatanzania.org'; // SendGrid'de doğrulanmış domain olmalı
+    const fromEmail = 'info@em7659.visatanzania.org'; // Geçici: DNS propagate olana kadar
     
     await sgMail.send({
       to: params.to,
       from: {
         email: fromEmail,
-        name: 'Turkey E-Visa System'
+        name: 'Turkey E-Visa System (evisatr.xyz)'
       },
       subject: params.subject,
       text: params.text,
