@@ -181,13 +181,16 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - **Email Template Updates**: Removed government/official references, now shows "TURKEY E-VISA" and "TURKEY TRAVEL INSURANCE" for neutral business appearance
 ✓ **GloDiPay Payment Integration** (July 16, 2025):
   - Integrated GloDiPay payment gateway using provided credentials (Merchant ID: 1100002537)
-  - RSA signature-based authentication with public/private key pair
-  - Payment endpoints: /api/payment/create, /api/payment/verify
+  - RSA signature-based authentication with public/private key pair (md5WithRSAEncryption)
+  - Updated to use real API credentials and sandbox environment
+  - Payment endpoint: /v1/checkout (following PHP example specification)
+  - Application/x-www-form-urlencoded format for payment requests
   - Automatic redirection to GloDiPay hosted payment page after application submission
   - Payment success/cancel callbacks redirect to /payment-success page
   - Both visa and insurance applications now process payments through GloDiPay
   - Payment verification system for transaction validation
   - Professional payment success/cancel pages with application tracking links
   - Complete payment flow: Application → Payment → Success/Cancel → Status Tracking
-  - **Development test mode implemented** - mock payments work until live API deployment
-  - **Ready for production deployment** - will switch to live GloDiPay API after domain deployment
+  - **API Integration Status**: Real credentials configured, endpoint testing in progress
+  - **Test Mode Active**: System works with fallback until correct endpoint is confirmed
+  - **Ready for live deployment** once endpoint configuration is verified
