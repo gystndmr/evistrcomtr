@@ -34,23 +34,29 @@ export class GloDiPayService {
 
   private generateSignature(data: any): string {
     try {
-      // Sort keys alphabetically for consistent signature
+      // Sort keys using natural sort (SORT_NATURAL in PHP)
       const sortedData = Object.keys(data).sort((a, b) => {
         return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
       }).reduce((result, key) => {
+        // Trim all string values like in PHP
         result[key] = String(data[key]).trim();
         return result;
       }, {} as any);
 
-      // Create JSON string with escaped characters (like in the example)
+      // Create JSON string exactly like PHP json_encode
       const jsonString = JSON.stringify(sortedData);
       
       console.log('Signing JSON string:', jsonString);
 
-      // Generate signature using RSA with MD5
+      // Use the same approach as PHP openssl_sign - generate binary signature first
       const sign = crypto.createSign('md5WithRSAEncryption');
       sign.update(jsonString);
-      const signature = sign.sign(this.config.privateKey, 'base64');
+      
+      // Get binary signature then base64 encode like PHP
+      const binarySignature = sign.sign(this.config.privateKey);
+      const signature = binarySignature.toString('base64');
+      
+      console.log('Generated signature:', signature);
       
       return signature;
     } catch (error) {
