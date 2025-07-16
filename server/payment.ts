@@ -84,11 +84,12 @@ export class GloDiPayService {
         billingLastName: request.customerName.split(' ')[1] || '',
         billingEmail: request.customerEmail,
         billingCountry: 'TR', // Add missing required field
-        billingStreet1: '', // Add missing required field
+        billingStreet1: 'Default Street', // Add missing required field
         billingStreet2: '', // Add missing required field
+        billingCity: 'Istanbul', // Add missing required field
         brandName: '', // Add missing required field
         colorMode: 'default-mode', // Add missing required field
-        feeBySeller: '0', // Add missing required field
+        feeBySeller: '50', // Add missing required field (default from example)
         logoSource: '', // Add missing required field
         metadata: '{}', // Add missing required field
         transactionDocuments: '{}', // Add missing required field
