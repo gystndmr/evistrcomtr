@@ -83,9 +83,9 @@ export function generateVisaReceivedEmail(
             <!-- Header -->
             <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
               ${turkeyFlagSvg}
-              <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">REPUBLIC OF TURKEY</h1>
+              <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY E-VISA</h1>
               <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
-              <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">Official Government Portal - evisatr.xyz</p>
+              <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">evisatr.xyz</p>
             </div>
             
             <!-- Content -->
@@ -94,8 +94,8 @@ export function generateVisaReceivedEmail(
               
               <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 10px; margin: 20px 0; border: 1px solid #dee2e6;">
                 <p style="color: #1a1a1a; line-height: 1.7; margin: 0; font-size: 16px; text-align: center;">
-                  <strong>Your Republic of Turkey Electronic Visa application has been successfully received and recorded.</strong><br>
-                  <span style="color: #666; font-size: 14px;">Your application has been forwarded to the Ministry of Interior for evaluation.</span>
+                  <strong>Your Turkey Electronic Visa application has been successfully received and recorded.</strong><br>
+                  <span style="color: #666; font-size: 14px;">Your application has been forwarded for evaluation.</span>
                 </p>
               </div>
               
@@ -284,7 +284,7 @@ export function generateVisaReceivedEmail(
                 ${turkeyFlagSvg}
               </div>
               <div style="margin-bottom: 20px;">
-                <h3 style="margin: 0 0 5px 0; font-size: 18px; font-weight: bold; letter-spacing: 1px;">REPUBLIC OF TURKEY</h3>
+                <h3 style="margin: 0 0 5px 0; font-size: 18px; font-weight: bold; letter-spacing: 1px;">TURKEY E-VISA</h3>
                 <p style="margin: 0; font-size: 16px; opacity: 0.9; font-weight: 500;">ELECTRONIC VISA SYSTEM</p>
               </div>
               
@@ -305,7 +305,7 @@ export function generateVisaReceivedEmail(
                     This email was sent automatically. Please do not reply to this email.
                   </p>
                   <p style="margin: 0; font-size: 12px; opacity: 0.7;">
-                    © 2025 Republic of Turkey E-Visa System. All rights reserved.
+                    © 2025 Turkey E-Visa System. All rights reserved.
                   </p>
                 </div>
               </div>
@@ -315,11 +315,11 @@ export function generateVisaReceivedEmail(
         </html>
       `,
       text: `
-TÜRKİYE CUMHURİYETİ E-VİZE SİSTEMİ
+TURKEY E-VISA SYSTEM
 
-Sayın ${firstName} ${lastName},
+Dear ${firstName} ${lastName},
 
-Türkiye Cumhuriyeti Elektronik Vize başvurunuz başarıyla alınmış ve kayıt altına alınmıştır.
+Your Turkey Electronic Visa application has been successfully received and recorded.
 
 BAŞVURU DETAYLARI:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

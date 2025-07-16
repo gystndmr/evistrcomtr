@@ -178,3 +178,4 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - Both visa and insurance applications now send professional English emails with status tracking
   - Customers can click email links or manually enter application numbers to track progress
   - Complete end-to-end workflow: Application → Email → Status Tracking → Admin Management
+  - **Email Template Updates**: Removed government/official references, now shows "TURKEY E-VISA" and "TURKEY TRAVEL INSURANCE" for neutral business appearance

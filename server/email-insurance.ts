@@ -33,9 +33,9 @@ export function generateInsuranceReceivedEmail(
           <!-- Header -->
           <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
             ${turkeyFlagSvg}
-            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">REPUBLIC OF TURKEY</h1>
+            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY TRAVEL INSURANCE</h1>
             <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">TRAVEL INSURANCE SYSTEM</p>
-            <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">Official Government Portal - evisatr.xyz</p>
+            <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">evisatr.xyz</p>
           </div>
           
           <!-- Content -->
@@ -136,7 +136,7 @@ export function generateInsuranceReceivedEmail(
               ${turkeyFlagSvg}
             </div>
             <div style="margin-bottom: 20px;">
-              <h3 style="margin: 0 0 5px 0; font-size: 18px; font-weight: bold; letter-spacing: 1px;">REPUBLIC OF TURKEY</h3>
+              <h3 style="margin: 0 0 5px 0; font-size: 18px; font-weight: bold; letter-spacing: 1px;">TURKEY TRAVEL INSURANCE</h3>
               <p style="margin: 0; font-size: 16px; opacity: 0.9; font-weight: 500;">TRAVEL INSURANCE SYSTEM</p>
             </div>
             
@@ -157,7 +157,7 @@ export function generateInsuranceReceivedEmail(
                   This email was sent automatically. Please do not reply to this email.
                 </p>
                 <p style="margin: 0; font-size: 12px; opacity: 0.7;">
-                  © 2025 Republic of Turkey Travel Insurance System. All rights reserved.
+                  © 2025 Turkey Travel Insurance System. All rights reserved.
                 </p>
               </div>
             </div>
@@ -167,7 +167,7 @@ export function generateInsuranceReceivedEmail(
       </html>
     `,
     text: `
-REPUBLIC OF TURKEY TRAVEL INSURANCE SYSTEM
+TURKEY TRAVEL INSURANCE SYSTEM
 
 Dear ${firstName} ${lastName},
 
@@ -198,7 +198,7 @@ Email: info@evisatr.xyz
 Website: https://evisatr.xyz
 
 This email was sent automatically. Please do not reply to this email.
-© 2025 Republic of Turkey Travel Insurance System. All rights reserved.
+© 2025 Turkey Travel Insurance System. All rights reserved.
     `
   };
 }
