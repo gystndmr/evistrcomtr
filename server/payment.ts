@@ -34,64 +34,31 @@ export class GloDiPayService {
 
   private generateSignature(data: any): string {
     try {
-      // Step 1: First sort keys naturally (like PHP ksort with SORT_NATURAL)
-      const sortedKeys = Object.keys(data).sort((a, b) => {
-        return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
-      });
-      
-      // Step 2: Create new object with sorted keys and trimmed values
-      const sortedData: any = {};
-      sortedKeys.forEach(key => {
-        let value = data[key];
-        // Trim all string values like PHP array_walk_recursive does
-        if (typeof value === 'string') {
-          value = value.trim();
-        }
-        sortedData[key] = value;
-      });
-
-      // Step 3: Try multiple data formats for signature generation
-      const formats = [
-        // Format 1: JSON with escaped forward slashes (PHP default)
-        { name: 'json_escaped', data: JSON.stringify(sortedData).replace(/\//g, '\\/') },
-        // Format 2: Raw JSON without escaping
-        { name: 'json_raw', data: JSON.stringify(sortedData) },
-        // Format 3: Query string format
-        { name: 'query_string', data: sortedKeys.map(key => `${key}=${sortedData[key]}`).join('&') },
-        // Format 4: Concatenated values only
-        { name: 'values_only', data: sortedKeys.map(key => sortedData[key]).join('') }
-      ];
-      
       console.log('==== SIGNATURE DEBUG ====');
-      console.log('Trying multiple signature formats...');
+      console.log('Generating signature following .NET working pattern...');
       
-      let signature = '';
+      // Following .NET pattern: Use exact field ordering and format
+      // Step 1: Sort keys alphabetically (like PHP ksort)
+      const sortedKeys = Object.keys(data).sort();
       
-      // Try each format with different algorithms
-      for (const format of formats) {
-        try {
-          console.log(`Trying ${format.name} format...`);
-          console.log(`Data: ${format.data.substring(0, 200)}...`);
-          
-          // Try md5WithRSAEncryption first
-          const sign = crypto.createSign('md5WithRSAEncryption');
-          sign.update(format.data);
-          const binarySignature = sign.sign(this.config.privateKey);
-          signature = binarySignature.toString('base64');
-          
-          console.log(`${format.name} signature generated successfully`);
-          break; // Use first successful format
-        } catch (error) {
-          console.log(`${format.name} format failed: ${error.message}`);
-          continue;
-        }
-      }
+      // Step 2: Create signature string with key=value pairs
+      const signatureParts = sortedKeys.map(key => {
+        const value = String(data[key]).trim(); // Trim values like PHP
+        return `${key}=${value}`;
+      });
       
-      if (!signature) {
-        throw new Error('All signature formats failed');
-      }
+      const dataToSign = signatureParts.join('&');
       
-      console.log('Generated signature:', signature);
+      console.log('Signature data (first 300 chars):', dataToSign.substring(0, 300));
+      console.log('Total signature data length:', dataToSign.length);
+      
+      // Generate signature using md5WithRSAEncryption (same as .NET RSA-MD5)
+      const sign = crypto.createSign('md5WithRSAEncryption');
+      sign.update(dataToSign, 'utf8');
+      const signature = sign.sign(this.config.privateKey, 'base64');
+      
+      console.log('Generated signature (first 100 chars):', signature.substring(0, 100));
+      console.log('Signature length:', signature.length);
       
       return signature;
     } catch (error) {
@@ -111,17 +78,18 @@ export class GloDiPayService {
       
       const paymentData = {
         merchantId: this.config.merchantId,
-        amount: request.amount.toFixed(2), // Use original amount from request
+        amount: request.amount.toFixed(2),
         currency: request.currency,
-        orderRef: request.orderId,
-        orderDescription: request.description,
+        ref: request.orderId, // Use 'ref' not 'orderRef' per GPay spec
+        description: request.description,
         billingFirstName: request.customerName.split(' ')[0] || 'Customer',
         billingLastName: request.customerName.split(' ')[1] || '',
         billingEmail: request.customerEmail,
-        billingCountry: 'TR', // Use TR for Turkey as primary country
+        billingCountry: 'TR', // Always use TR for Turkey
         billingStreet1: 'Güvercintepe Mah. Tekstilkent Evleri Çimen Sok. 110 A-5 107 A D.16 Başakşehir/İstanbul',
         billingStreet2: '',
         billingCity: 'Istanbul',
+        billingZipCode: '34000',
         brandName: '',
         colorMode: 'default-mode',
         feeBySeller: '50',
@@ -133,7 +101,7 @@ export class GloDiPayService {
         notificationUrl: `https://${process.env.REPLIT_DEV_DOMAIN || 'localhost:5000'}/api/payment/callback`,
         errorUrl: request.cancelUrl,
         paymentMethod: 'ALL',
-        customerIp: '127.0.0.1' // Add missing MANDATORY field from PDF spec
+        customerIp: '127.0.0.1' // MANDATORY field
       };
 
       // Generate signature using exact GPay specification
