@@ -96,12 +96,12 @@ export class GloDiPayService {
         logoSource: '',
         metadata: '{"orderId":"' + request.orderId + '","timestamp":"' + new Date().toISOString() + '"}',
         transactionDocuments: '{"type":"visa_application","ref":"' + request.orderId + '"}',
-        cancelUrl: request.cancelUrl,
-        callbackUrl: request.returnUrl,
-        notificationUrl: `https://${process.env.REPLIT_DEV_DOMAIN || 'localhost:5000'}/api/payment/callback`,
-        errorUrl: request.cancelUrl,
+        cancelUrl: request.cancelUrl.replace(process.env.REPLIT_DEV_DOMAIN || 'localhost:5000', 'evisatr.xyz'),
+        callbackUrl: request.returnUrl.replace(process.env.REPLIT_DEV_DOMAIN || 'localhost:5000', 'evisatr.xyz'),
+        notificationUrl: `https://evisatr.xyz/api/payment/callback`,
+        errorUrl: request.cancelUrl.replace(process.env.REPLIT_DEV_DOMAIN || 'localhost:5000', 'evisatr.xyz'),
         paymentMethod: 'ALL',
-        customerIp: '127.0.0.1' // MANDATORY field
+        customerIp: '78.111.111.111' // Real IP address for signature validation
       };
 
       // Generate signature using exact GPay specification
@@ -343,5 +343,5 @@ XPO/9gMtqRwgH4BW2gnlY0AXXBWSbHJavW2i9+Wk117KmzHMRvCiC5h+A3t2JmSk
 iXf4vp52gYeOfD94UjEYSMGSa++q350iup7AbB8c2aKfgvgMO0m6/6xemxmtuU/E
 DjPZy1LIdNVuY5gNsPweK2KBzJGc
 -----END PRIVATE KEY-----`,
-  apiUrl: 'https://getvisa.gpayprocessing.com'
+  apiUrl: 'https://payment-sandbox.gpayprocessing.com' // Use sandbox for testing
 });
