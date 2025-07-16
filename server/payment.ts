@@ -34,25 +34,37 @@ export class GloDiPayService {
 
   private generateSignature(data: any): string {
     try {
-      // Sort keys using natural sort (SORT_NATURAL in PHP)
-      const sortedData = Object.keys(data).sort((a, b) => {
+      // Step 1: First sort keys naturally (like PHP ksort with SORT_NATURAL)
+      const sortedKeys = Object.keys(data).sort((a, b) => {
         return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
-      }).reduce((result, key) => {
-        // Trim all string values like in PHP
-        result[key] = String(data[key]).trim();
-        return result;
-      }, {} as any);
+      });
+      
+      // Step 2: Create new object with sorted keys and trimmed values
+      const sortedData: any = {};
+      sortedKeys.forEach(key => {
+        let value = data[key];
+        // Trim all string values like PHP array_walk_recursive does
+        if (typeof value === 'string') {
+          value = value.trim();
+        }
+        sortedData[key] = value;
+      });
 
-      // Create JSON string exactly like PHP json_encode
+      // Step 3: Create JSON string exactly like PHP json_encode
       const jsonString = JSON.stringify(sortedData);
       
-      console.log('Signing JSON string:', jsonString);
+      console.log('==== SIGNATURE DEBUG ====');
+      console.log('Original data keys:', Object.keys(data));
+      console.log('Sorted keys:', sortedKeys);
+      console.log('Sorted data:', sortedData);
+      console.log('JSON string length:', jsonString.length);
+      console.log('JSON string:', jsonString);
 
-      // Use the same approach as PHP openssl_sign - generate binary signature first
+      // Step 4: Use the same approach as PHP openssl_sign - generate binary signature first
       const sign = crypto.createSign('md5WithRSAEncryption');
       sign.update(jsonString);
       
-      // Get binary signature then base64 encode like PHP
+      // Step 5: Get binary signature then base64 encode like PHP
       const binarySignature = sign.sign(this.config.privateKey);
       const signature = binarySignature.toString('base64');
       
