@@ -69,7 +69,7 @@ export function generateVisaReceivedEmail(
 
   if (language === 'tr') {
     return {
-      subject: "Türkiye E-Vize Başvurunuz Alındı",
+      subject: `[${applicationNumber}] Türkiye Cumhuriyeti E-Vize Başvurunuz Alındı`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -83,63 +83,156 @@ export function generateVisaReceivedEmail(
             <!-- Header -->
             <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
               ${turkeyFlagSvg}
-              <h1 style="margin: 15px 0 5px 0; font-size: 24px; font-weight: bold;">TÜRKİYE CUMHURİYETİ</h1>
-              <p style="margin: 0; font-size: 14px; opacity: 0.9;">E-Vize Başvuru Sistemi</p>
+              <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TÜRKİYE CUMHURİYETİ</h1>
+              <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELEKTRONİK VİZE BAŞVURU SİSTEMİ</p>
+              <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">Resmi Devlet Portalı - evisatr.xyz</p>
             </div>
             
             <!-- Content -->
             <div style="padding: 40px 30px;">
               <h2 style="color: #1a1a1a; margin-bottom: 20px; font-size: 22px;">Sayın ${firstName} ${lastName},</h2>
               
-              <p style="color: #4a4a4a; line-height: 1.6; margin-bottom: 15px; font-size: 16px;">
-                Türkiye Cumhuriyeti Elektronik Vize başvurunuz başarıyla alınmış ve kayıt altına alınmıştır. 
-                Başvurunuz değerlendirilmek üzere ilgili birimlere iletilmiştir.
-              </p>
+              <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 10px; margin: 20px 0; border: 1px solid #dee2e6;">
+                <p style="color: #1a1a1a; line-height: 1.7; margin: 0; font-size: 16px; text-align: center;">
+                  <strong>Türkiye Cumhuriyeti Elektronik Vize başvurunuz başarıyla alınmış ve kayıt altına alınmıştır.</strong><br>
+                  <span style="color: #666; font-size: 14px;">Başvurunuz değerlendirilmek üzere İçişleri Bakanlığı'na iletilmiştir.</span>
+                </p>
+              </div>
               
-              <div style="background-color: #f8f9fa; padding: 25px; border-radius: 8px; margin: 25px 0; border: 1px solid #e2e8f0;">
-                <h3 style="color: #DC2626; margin-top: 0; font-size: 18px; margin-bottom: 15px;">📋 Başvuru Detayları</h3>
-                <table style="width: 100%; border-collapse: collapse;">
-                  <tr>
-                    <td style="padding: 10px 0; color: #666; font-weight: bold; width: 40%;">Başvuru Referans No:</td>
-                    <td style="padding: 10px 0; color: #1a1a1a; font-weight: bold; font-size: 16px;">${applicationNumber}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 10px 0; color: #666; font-weight: bold;">Başvuru Sahibi:</td>
-                    <td style="padding: 10px 0; color: #1a1a1a;">${firstName} ${lastName}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 10px 0; color: #666; font-weight: bold;">Pasaport Numarası:</td>
-                    <td style="padding: 10px 0; color: #1a1a1a;">${applicationData.passportNumber || 'Belirtilmemiş'}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 10px 0; color: #666; font-weight: bold;">Uyruk:</td>
-                    <td style="padding: 10px 0; color: #1a1a1a;">${applicationData.nationality || 'Belirtilmemiş'}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 10px 0; color: #666; font-weight: bold;">Giriş Tarihi:</td>
-                    <td style="padding: 10px 0; color: #1a1a1a;">${applicationData.arrivalDate ? new Date(applicationData.arrivalDate).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 10px 0; color: #666; font-weight: bold;">Çıkış Tarihi:</td>
-                    <td style="padding: 10px 0; color: #1a1a1a;">${applicationData.departureDate ? new Date(applicationData.departureDate).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 10px 0; color: #666; font-weight: bold;">Ziyaret Amacı:</td>
-                    <td style="padding: 10px 0; color: #1a1a1a;">${applicationData.purposeOfVisit === 'tourism' ? 'Turizm' : applicationData.purposeOfVisit === 'business' ? 'İş' : 'Diğer'}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 10px 0; color: #666; font-weight: bold;">İşlem Türü:</td>
-                    <td style="padding: 10px 0; color: #1a1a1a;">${applicationData.processingType === 'standard' ? 'Standart İşlem' : applicationData.processingType === 'urgent' ? 'Acil İşlem' : 'Belirtilmemiş'}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 10px 0; color: #666; font-weight: bold;">Başvuru Durumu:</td>
-                    <td style="padding: 10px 0; color: #f59e0b; font-weight: bold;">⏳ İNCELEME AŞAMASINDA</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 10px 0; color: #666; font-weight: bold;">Başvuru Tarihi:</td>
-                    <td style="padding: 10px 0; color: #1a1a1a;">${new Date().toLocaleDateString('tr-TR')} ${new Date().toLocaleTimeString('tr-TR')}</td>
-                  </tr>
-                </table>
+              <!-- Application Summary -->
+              <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 20px; border-radius: 10px; margin: 25px 0; text-align: center;">
+                <h3 style="margin: 0 0 10px 0; font-size: 20px; font-weight: bold;">📋 BAŞVURU ÖZET BİLGİLERİ</h3>
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-top: 15px;">
+                  <p style="margin: 0; font-size: 18px; font-weight: bold; letter-spacing: 2px;">${applicationNumber}</p>
+                  <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Başvuru Referans Numarası</p>
+                </div>
+              </div>
+
+              <!-- Personal Information -->
+              <div style="background-color: #f8f9fa; padding: 25px; border-radius: 10px; margin: 25px 0; border: 1px solid #e2e8f0;">
+                <h3 style="color: #DC2626; margin-top: 0; font-size: 18px; margin-bottom: 20px; border-bottom: 2px solid #DC2626; padding-bottom: 10px;">👤 KİŞİSEL BİLGİLER</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                  <div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">Ad Soyad:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${firstName} ${lastName}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Doğum Tarihi:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.dateOfBirth ? new Date(applicationData.dateOfBirth).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Cinsiyet:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.gender === 'male' ? 'Erkek' : applicationData.gender === 'female' ? 'Kadın' : 'Belirtilmemiş'}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Uyruk:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.nationality || 'Belirtilmemiş'}</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">E-posta:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.email || 'Belirtilmemiş'}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Telefon:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.phone || 'Belirtilmemiş'}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Pasaport No:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.passportNumber || 'Belirtilmemiş'}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Belge Türü:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.documentType === 'passport' ? 'Pasaport' : applicationData.documentType === 'id_card' ? 'Kimlik Kartı' : 'Belirtilmemiş'}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Travel Information -->
+              <div style="background-color: #f0f9ff; padding: 25px; border-radius: 10px; margin: 25px 0; border: 1px solid #0284c7;">
+                <h3 style="color: #0284c7; margin-top: 0; font-size: 18px; margin-bottom: 20px; border-bottom: 2px solid #0284c7; padding-bottom: 10px;">✈️ SEYAHAT BİLGİLERİ</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                  <div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">Giriş Tarihi:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.arrivalDate ? new Date(applicationData.arrivalDate).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Çıkış Tarihi:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.departureDate ? new Date(applicationData.departureDate).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Kalış Süresi:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.arrivalDate && applicationData.departureDate ? Math.ceil((new Date(applicationData.departureDate) - new Date(applicationData.arrivalDate)) / (1000 * 60 * 60 * 24)) + ' gün' : 'Belirtilmemiş'}</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">Ziyaret Amacı:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.purposeOfVisit === 'tourism' ? 'Turizm' : applicationData.purposeOfVisit === 'business' ? 'İş' : applicationData.purposeOfVisit === 'transit' ? 'Transit' : 'Diğer'}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Konaklama:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.hasAccommodation ? 'Var' : 'Yok'}</td>
+                      </tr>
+                      ${applicationData.accommodationDetails ? `
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Konaklama Detayı:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.accommodationDetails}</td>
+                      </tr>
+                      ` : ''}
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Process Information -->
+              <div style="background-color: #fef3c7; padding: 25px; border-radius: 10px; margin: 25px 0; border: 1px solid #f59e0b;">
+                <h3 style="color: #92400e; margin-top: 0; font-size: 18px; margin-bottom: 20px; border-bottom: 2px solid #f59e0b; padding-bottom: 10px;">⚙️ İŞLEM BİLGİLERİ</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                  <div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">İşlem Türü:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.processingType === 'standard' ? 'Standart İşlem (1-3 gün)' : applicationData.processingType === 'urgent' ? 'Acil İşlem (24 saat)' : 'Belirtilmemiş'}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Başvuru Durumu:</td>
+                        <td style="padding: 12px 0; color: #f59e0b; font-weight: bold;">⏳ İNCELEME AŞAMASINDA</td>
+                      </tr>
+                    </table>
+                  </div>
+                  <div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">Toplam Tutar:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.totalAmount ? '$' + applicationData.totalAmount : 'Belirtilmemiş'}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Ödeme Yöntemi:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.paymentMethod === 'credit_card' ? 'Kredi Kartı' : applicationData.paymentMethod === 'bank_transfer' ? 'Banka Havalesi' : 'Belirtilmemiş'}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #f59e0b;">
+                  <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                      <td style="padding: 12px 0; color: #666; font-weight: bold; width: 22%;">Başvuru Tarihi:</td>
+                      <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${new Date().toLocaleDateString('tr-TR')} ${new Date().toLocaleTimeString('tr-TR')}</td>
+                    </tr>
+                  </table>
+                </div>
               </div>
               
               <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; margin: 25px 0; border-radius: 4px;">
