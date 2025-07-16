@@ -56,7 +56,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           application.firstName, 
           application.lastName, 
           application.applicationNumber,
-          application
+          application,
+          'en'
         );
         
         await sendEmail({

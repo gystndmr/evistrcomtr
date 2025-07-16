@@ -67,9 +67,9 @@ export function generateVisaReceivedEmail(
     </svg>
   `;
 
-  if (language === 'tr') {
+  if (language === 'en') {
     return {
-      subject: `[${applicationNumber}] Türkiye Cumhuriyeti E-Vize Başvurunuz Alındı`,
+      subject: `[${applicationNumber}] Turkey E-Visa Application Received`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -83,72 +83,72 @@ export function generateVisaReceivedEmail(
             <!-- Header -->
             <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
               ${turkeyFlagSvg}
-              <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TÜRKİYE CUMHURİYETİ</h1>
-              <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELEKTRONİK VİZE BAŞVURU SİSTEMİ</p>
-              <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">Resmi Devlet Portalı - evisatr.xyz</p>
+              <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">REPUBLIC OF TURKEY</h1>
+              <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
+              <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">Official Government Portal - evisatr.xyz</p>
             </div>
             
             <!-- Content -->
             <div style="padding: 40px 30px;">
-              <h2 style="color: #1a1a1a; margin-bottom: 20px; font-size: 22px;">Sayın ${firstName} ${lastName},</h2>
+              <h2 style="color: #1a1a1a; margin-bottom: 20px; font-size: 22px;">Dear ${firstName} ${lastName},</h2>
               
               <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 10px; margin: 20px 0; border: 1px solid #dee2e6;">
                 <p style="color: #1a1a1a; line-height: 1.7; margin: 0; font-size: 16px; text-align: center;">
-                  <strong>Türkiye Cumhuriyeti Elektronik Vize başvurunuz başarıyla alınmış ve kayıt altına alınmıştır.</strong><br>
-                  <span style="color: #666; font-size: 14px;">Başvurunuz değerlendirilmek üzere İçişleri Bakanlığı'na iletilmiştir.</span>
+                  <strong>Your Republic of Turkey Electronic Visa application has been successfully received and recorded.</strong><br>
+                  <span style="color: #666; font-size: 14px;">Your application has been forwarded to the Ministry of Interior for evaluation.</span>
                 </p>
               </div>
               
               <!-- Application Summary -->
               <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 20px; border-radius: 10px; margin: 25px 0; text-align: center;">
-                <h3 style="margin: 0 0 10px 0; font-size: 20px; font-weight: bold;">📋 BAŞVURU ÖZET BİLGİLERİ</h3>
+                <h3 style="margin: 0 0 10px 0; font-size: 20px; font-weight: bold;">📋 APPLICATION SUMMARY</h3>
                 <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-top: 15px;">
                   <p style="margin: 0; font-size: 18px; font-weight: bold; letter-spacing: 2px;">${applicationNumber}</p>
-                  <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Başvuru Referans Numarası</p>
+                  <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Application Reference Number</p>
                 </div>
               </div>
 
               <!-- Personal Information -->
               <div style="background-color: #f8f9fa; padding: 25px; border-radius: 10px; margin: 25px 0; border: 1px solid #e2e8f0;">
-                <h3 style="color: #DC2626; margin-top: 0; font-size: 18px; margin-bottom: 20px; border-bottom: 2px solid #DC2626; padding-bottom: 10px;">👤 KİŞİSEL BİLGİLER</h3>
+                <h3 style="color: #DC2626; margin-top: 0; font-size: 18px; margin-bottom: 20px; border-bottom: 2px solid #DC2626; padding-bottom: 10px;">👤 PERSONAL INFORMATION</h3>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                   <div>
                     <table style="width: 100%; border-collapse: collapse;">
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">Ad Soyad:</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">Full Name:</td>
                         <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${firstName} ${lastName}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Doğum Tarihi:</td>
-                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.dateOfBirth ? new Date(applicationData.dateOfBirth).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Date of Birth:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.dateOfBirth ? new Date(applicationData.dateOfBirth).toLocaleDateString('en-US') : 'Not specified'}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Cinsiyet:</td>
-                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.gender === 'male' ? 'Erkek' : applicationData.gender === 'female' ? 'Kadın' : 'Belirtilmemiş'}</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Gender:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.gender === 'male' ? 'Male' : applicationData.gender === 'female' ? 'Female' : 'Not specified'}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Uyruk:</td>
-                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.nationality || 'Belirtilmemiş'}</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Nationality:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.nationality || 'Not specified'}</td>
                       </tr>
                     </table>
                   </div>
                   <div>
                     <table style="width: 100%; border-collapse: collapse;">
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">E-posta:</td>
-                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.email || 'Belirtilmemiş'}</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">Email:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.email || 'Not specified'}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Telefon:</td>
-                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.phone || 'Belirtilmemiş'}</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Phone:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.phone || 'Not specified'}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Pasaport No:</td>
-                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.passportNumber || 'Belirtilmemiş'}</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Passport No:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.passportNumber || 'Not specified'}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Belge Türü:</td>
-                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.documentType === 'passport' ? 'Pasaport' : applicationData.documentType === 'id_card' ? 'Kimlik Kartı' : 'Belirtilmemiş'}</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Document Type:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.documentType === 'passport' ? 'Passport' : applicationData.documentType === 'id_card' ? 'ID Card' : 'Not specified'}</td>
                       </tr>
                     </table>
                   </div>
@@ -157,37 +157,37 @@ export function generateVisaReceivedEmail(
 
               <!-- Travel Information -->
               <div style="background-color: #f0f9ff; padding: 25px; border-radius: 10px; margin: 25px 0; border: 1px solid #0284c7;">
-                <h3 style="color: #0284c7; margin-top: 0; font-size: 18px; margin-bottom: 20px; border-bottom: 2px solid #0284c7; padding-bottom: 10px;">✈️ SEYAHAT BİLGİLERİ</h3>
+                <h3 style="color: #0284c7; margin-top: 0; font-size: 18px; margin-bottom: 20px; border-bottom: 2px solid #0284c7; padding-bottom: 10px;">✈️ TRAVEL INFORMATION</h3>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                   <div>
                     <table style="width: 100%; border-collapse: collapse;">
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">Giriş Tarihi:</td>
-                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.arrivalDate ? new Date(applicationData.arrivalDate).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">Arrival Date:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.arrivalDate ? new Date(applicationData.arrivalDate).toLocaleDateString('en-US') : 'Not specified'}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Çıkış Tarihi:</td>
-                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.departureDate ? new Date(applicationData.departureDate).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Departure Date:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.departureDate ? new Date(applicationData.departureDate).toLocaleDateString('en-US') : 'Not specified'}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Kalış Süresi:</td>
-                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.arrivalDate && applicationData.departureDate ? Math.ceil((new Date(applicationData.departureDate) - new Date(applicationData.arrivalDate)) / (1000 * 60 * 60 * 24)) + ' gün' : 'Belirtilmemiş'}</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Duration of Stay:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.arrivalDate && applicationData.departureDate ? Math.ceil((new Date(applicationData.departureDate) - new Date(applicationData.arrivalDate)) / (1000 * 60 * 60 * 24)) + ' days' : 'Not specified'}</td>
                       </tr>
                     </table>
                   </div>
                   <div>
                     <table style="width: 100%; border-collapse: collapse;">
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">Ziyaret Amacı:</td>
-                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.purposeOfVisit === 'tourism' ? 'Turizm' : applicationData.purposeOfVisit === 'business' ? 'İş' : applicationData.purposeOfVisit === 'transit' ? 'Transit' : 'Diğer'}</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">Purpose of Visit:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.purposeOfVisit === 'tourism' ? 'Tourism' : applicationData.purposeOfVisit === 'business' ? 'Business' : applicationData.purposeOfVisit === 'transit' ? 'Transit' : 'Other'}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Konaklama:</td>
-                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.hasAccommodation ? 'Var' : 'Yok'}</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Accommodation:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.hasAccommodation ? 'Yes' : 'No'}</td>
                       </tr>
                       ${applicationData.accommodationDetails ? `
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Konaklama Detayı:</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Accommodation Details:</td>
                         <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.accommodationDetails}</td>
                       </tr>
                       ` : ''}
@@ -198,29 +198,29 @@ export function generateVisaReceivedEmail(
 
               <!-- Process Information -->
               <div style="background-color: #fef3c7; padding: 25px; border-radius: 10px; margin: 25px 0; border: 1px solid #f59e0b;">
-                <h3 style="color: #92400e; margin-top: 0; font-size: 18px; margin-bottom: 20px; border-bottom: 2px solid #f59e0b; padding-bottom: 10px;">⚙️ İŞLEM BİLGİLERİ</h3>
+                <h3 style="color: #92400e; margin-top: 0; font-size: 18px; margin-bottom: 20px; border-bottom: 2px solid #f59e0b; padding-bottom: 10px;">⚙️ PROCESSING INFORMATION</h3>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                   <div>
                     <table style="width: 100%; border-collapse: collapse;">
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">İşlem Türü:</td>
-                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.processingType === 'standard' ? 'Standart İşlem (1-3 gün)' : applicationData.processingType === 'urgent' ? 'Acil İşlem (24 saat)' : 'Belirtilmemiş'}</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">Processing Type:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.processingType === 'standard' ? 'Standard Processing (1-3 days)' : applicationData.processingType === 'urgent' ? 'Urgent Processing (24 hours)' : 'Not specified'}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Başvuru Durumu:</td>
-                        <td style="padding: 12px 0; color: #f59e0b; font-weight: bold;">⏳ İNCELEME AŞAMASINDA</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Application Status:</td>
+                        <td style="padding: 12px 0; color: #f59e0b; font-weight: bold;">⏳ UNDER REVIEW</td>
                       </tr>
                     </table>
                   </div>
                   <div>
                     <table style="width: 100%; border-collapse: collapse;">
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">Toplam Tutar:</td>
-                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.totalAmount ? '$' + applicationData.totalAmount : 'Belirtilmemiş'}</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">Total Amount:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.totalAmount ? '$' + applicationData.totalAmount : 'Not specified'}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Ödeme Yöntemi:</td>
-                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.paymentMethod === 'credit_card' ? 'Kredi Kartı' : applicationData.paymentMethod === 'bank_transfer' ? 'Banka Havalesi' : 'Belirtilmemiş'}</td>
+                        <td style="padding: 12px 0; color: #666; font-weight: bold;">Payment Method:</td>
+                        <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.paymentMethod === 'credit_card' ? 'Credit Card' : applicationData.paymentMethod === 'bank_transfer' ? 'Bank Transfer' : 'Not specified'}</td>
                       </tr>
                     </table>
                   </div>
@@ -228,8 +228,8 @@ export function generateVisaReceivedEmail(
                 <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #f59e0b;">
                   <table style="width: 100%; border-collapse: collapse;">
                     <tr>
-                      <td style="padding: 12px 0; color: #666; font-weight: bold; width: 22%;">Başvuru Tarihi:</td>
-                      <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${new Date().toLocaleDateString('tr-TR')} ${new Date().toLocaleTimeString('tr-TR')}</td>
+                      <td style="padding: 12px 0; color: #666; font-weight: bold; width: 22%;">Application Date:</td>
+                      <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${new Date().toLocaleDateString('en-US')} ${new Date().toLocaleTimeString('en-US')}</td>
                     </tr>
                   </table>
                 </div>
@@ -237,53 +237,70 @@ export function generateVisaReceivedEmail(
               
               <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; margin: 25px 0; border-radius: 4px;">
                 <p style="margin: 0; color: #92400e; font-size: 15px; line-height: 1.5;">
-                  <strong>⚠️ Önemli Bilgilendirme:</strong><br>
-                  • Başvurunuzun değerlendirilmesi ortalama 1-3 iş günü sürmektedir<br>
-                  • İşlem süreci hakkında güncel bilgi almak için başvuru numaranızı kullanarak sorgulama yapabilirsiniz<br>
-                  • E-vizeniz onaylandığında size otomatik olarak bilgilendirme e-postası gönderilecektir
+                  <strong>⚠️ Important Information:</strong><br>
+                  • Your application evaluation takes an average of 1-3 business days<br>
+                  • You can check the current status of your application using your application number<br>
+                  • When your e-visa is approved, you will be automatically notified via email
                 </p>
               </div>
               
               <div style="background-color: #e0f2fe; border-left: 4px solid #0284c7; padding: 20px; margin: 25px 0; border-radius: 4px;">
-                <h4 style="margin: 0 0 10px 0; color: #0c4a6e; font-size: 16px;">📋 Gerekli Belgeler ve Kurallar:</h4>
+                <h4 style="margin: 0 0 10px 0; color: #0c4a6e; font-size: 16px;">📋 Required Documents and Rules:</h4>
                 <ul style="margin: 0; padding-left: 20px; color: #0c4a6e; font-size: 14px; line-height: 1.6;">
-                  <li>Pasaportunuzun geçerlilik süresi en az 60 gün olmalıdır</li>
-                  <li>E-vizenizi yazdırıp seyahat sırasında yanınızda bulundurmanız zorunludur</li>
-                  <li>Türkiye'ye giriş sırasında pasaportunuzla birlikte e-vizenizi göstermelisiniz</li>
-                  <li>Seyahat tarihlerinizde değişiklik olması halinde yeni başvuru yapmanız gerekebilir</li>
+                  <li>Your passport must be valid for at least 60 days</li>
+                  <li>You must print your e-visa and carry it with you during travel</li>
+                  <li>You must present your e-visa along with your passport when entering Turkey</li>
+                  <li>If your travel dates change, you may need to make a new application</li>
                 </ul>
               </div>
               
               <div style="text-align: center; margin: 30px 0;">
                 <a href="https://evisatr.xyz/status" style="background-color: #DC2626; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
-                  🔍 Başvuru Durumunu Sorgula
+                  🔍 Check Application Status
                 </a>
               </div>
               
               <div style="background-color: #f0f9ff; padding: 20px; border-radius: 6px; margin: 25px 0;">
-                <h4 style="margin: 0 0 10px 0; color: #1e40af; font-size: 16px;">💬 Müşteri Hizmetleri:</h4>
+                <h4 style="margin: 0 0 10px 0; color: #1e40af; font-size: 16px;">💬 Customer Service:</h4>
                 <p style="margin: 0; color: #1e40af; font-size: 14px; line-height: 1.6;">
-                  Herhangi bir sorunuz olması halinde <strong>7/24 müşteri hizmetlerimizle</strong> iletişime geçebilirsiniz:<br>
-                  📧 E-posta: info@evisatr.xyz<br>
-                  🌐 Web: https://evisatr.xyz
+                  If you have any questions, please contact our <strong>24/7 customer service</strong>:<br>
+                  📧 Email: info@evisatr.xyz<br>
+                  🌐 Website: https://evisatr.xyz
                 </p>
               </div>
             </div>
             
             <!-- Footer -->
-            <div style="background-color: #DC2626; color: white; padding: 25px; text-align: center;">
-              <div style="margin-bottom: 15px;">
+            <div style="background: linear-gradient(135deg, #1f2937 0%, #374151 100%); color: white; padding: 40px 30px; text-align: center; border-top: 3px solid #DC2626;">
+              <div style="margin-bottom: 20px;">
                 ${turkeyFlagSvg}
               </div>
-              <p style="margin: 0; font-size: 14px; font-weight: bold;">
-                TÜRKİYE CUMHURİYETİ E-VİZE SİSTEMİ
-              </p>
-              <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.9;">
-                Bu e-posta otomatik olarak gönderilmiştir. Lütfen yanıtlamayınız.
-              </p>
-              <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.9;">
-                © 2025 evisatr.xyz - Tüm hakları saklıdır.
-              </p>
+              <div style="margin-bottom: 20px;">
+                <h3 style="margin: 0 0 5px 0; font-size: 18px; font-weight: bold; letter-spacing: 1px;">REPUBLIC OF TURKEY</h3>
+                <p style="margin: 0; font-size: 16px; opacity: 0.9; font-weight: 500;">ELECTRONIC VISA SYSTEM</p>
+              </div>
+              
+              <div style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px; margin-top: 20px;">
+                <div style="display: flex; justify-content: center; gap: 40px; margin-bottom: 20px; flex-wrap: wrap;">
+                  <div style="text-align: center; min-width: 200px;">
+                    <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold; color: #DC2626;">Official Website</p>
+                    <p style="margin: 0; font-size: 13px; opacity: 0.8;">https://evisatr.xyz</p>
+                  </div>
+                  <div style="text-align: center; min-width: 200px;">
+                    <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold; color: #DC2626;">Customer Support</p>
+                    <p style="margin: 0; font-size: 13px; opacity: 0.8;">info@evisatr.xyz</p>
+                  </div>
+                </div>
+                
+                <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; margin-top: 15px;">
+                  <p style="margin: 0 0 5px 0; font-size: 12px; opacity: 0.7;">
+                    This email was sent automatically. Please do not reply to this email.
+                  </p>
+                  <p style="margin: 0; font-size: 12px; opacity: 0.7;">
+                    © 2025 Republic of Turkey E-Visa System. All rights reserved.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </body>
