@@ -626,6 +626,58 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Test GPay callback - for testing the callback handling logic
+  app.post("/api/payment/test-callback", async (req, res) => {
+    try {
+      // Simulate GPay callback payload following .NET pattern
+      const testPayload = {
+        status: "completed",
+        transactionId: "TEST_TXN_123456",
+        ref: "TEST_REF_789",
+        amount: 114.00,
+        orderId: "TRMD6K1VBP9YRYQ1"
+      };
+      
+      // Encode like GPay does: JSON → Base64 → URL encode
+      const jsonString = JSON.stringify(testPayload);
+      const base64Encoded = Buffer.from(jsonString, 'utf8').toString('base64');
+      const urlEncoded = encodeURIComponent(base64Encoded);
+      
+      console.log("Test GPay callback payload:", testPayload);
+      console.log("Encoded payload:", urlEncoded);
+      
+      // Simulate the callback processing
+      const { payload } = { payload: urlEncoded };
+      
+      // Following .NET pattern: URL decode → Base64 decode → JSON parse
+      const urlDecoded = decodeURIComponent(payload);
+      const base64Decoded = Buffer.from(urlDecoded, 'base64').toString('utf8');
+      const paymentData = JSON.parse(base64Decoded);
+      
+      console.log("GPay callback processed:", paymentData);
+      
+      const { status, transactionId, ref, amount, orderId } = paymentData;
+      
+      // Following .NET pattern: Update database based on payment status
+      if (status === 'completed' || status === 'successful') {
+        console.log(`✅ Payment successful for order ${orderId}: ${transactionId}`);
+        // TODO: Update application status to payment completed
+      } else if (status === 'failed' || status === 'error') {
+        console.log(`❌ Payment failed for order ${orderId}: ${transactionId}`);
+        // TODO: Update application status to payment failed
+      }
+      
+      res.json({ 
+        message: "Test callback processed successfully",
+        decodedPayload: paymentData,
+        processingStatus: "OK"
+      });
+    } catch (error) {
+      console.error("Test GPay callback error:", error);
+      res.status(500).json({ message: "Test callback processing error" });
+    }
+  });
+  
   // GloDiPay result callback - following .NET GPayResult pattern
   app.post("/api/payment/callback", async (req, res) => {
     try {
