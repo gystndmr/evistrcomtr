@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -9,8 +9,11 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Shield, Users, CreditCard, FileText, Eye, Search, Download } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Shield, Users, CreditCard, FileText, Eye, Search, Download, CheckCircle, XCircle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 import type { Application, InsuranceApplication } from "@shared/schema";
 
 interface AdminStats {
@@ -25,6 +28,8 @@ export default function Admin() {
   const [password, setPassword] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const { t } = useLanguage();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: applications = [] } = useQuery<Application[]>({
     queryKey: ["/api/admin/applications"],
@@ -74,29 +79,77 @@ export default function Admin() {
     });
   };
 
+  const updateApplicationStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: number; status: string }) => {
+      const response = await apiRequest("PATCH", `/api/admin/applications/${id}/status`, { status });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/applications"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/stats"] });
+      toast({
+        title: "Başarılı",
+        description: "Başvuru durumu güncellendi ve müşteriye e-posta gönderildi.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Hata",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateInsuranceStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: number; status: string }) => {
+      const response = await apiRequest("PATCH", `/api/admin/insurance-applications/${id}/status`, { status });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/insurance-applications"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/stats"] });
+      toast({
+        title: "Başarılı",
+        description: "Sigorta başvuru durumu güncellendi ve müşteriye e-posta gönderildi.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Hata",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const getStatusBadge = (status: string) => {
-    const statusMap = {
-      'pending': { variant: 'secondary' as const, label: 'Beklemede' },
-      'approved': { variant: 'default' as const, label: 'Onaylandı' },
-      'rejected': { variant: 'destructive' as const, label: 'Reddedildi' },
-      'completed': { variant: 'default' as const, label: 'Tamamlandı' }
-    };
-    
-    const statusInfo = statusMap[status as keyof typeof statusMap] || { variant: 'secondary' as const, label: status };
-    return <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>;
+    switch (status) {
+      case "pending":
+        return <Badge variant="secondary">Beklemede</Badge>;
+      case "approved":
+        return <Badge variant="default" className="bg-green-500">Onaylandı</Badge>;
+      case "rejected":
+        return <Badge variant="destructive">Reddedildi</Badge>;
+      default:
+        return <Badge variant="secondary">{status}</Badge>;
+    }
   };
 
   const getPaymentStatusBadge = (status: string) => {
-    const statusMap = {
-      'pending': { variant: 'secondary' as const, label: 'Beklemede' },
-      'paid': { variant: 'default' as const, label: 'Ödendi' },
-      'failed': { variant: 'destructive' as const, label: 'Başarısız' },
-      'completed': { variant: 'default' as const, label: 'Tamamlandı' }
-    };
-    
-    const statusInfo = statusMap[status as keyof typeof statusMap] || { variant: 'secondary' as const, label: status };
-    return <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>;
+    switch (status) {
+      case "pending":
+        return <Badge variant="secondary">Beklemede</Badge>;
+      case "completed":
+        return <Badge variant="default" className="bg-green-500">Tamamlandı</Badge>;
+      case "failed":
+        return <Badge variant="destructive">Başarısız</Badge>;
+      default:
+        return <Badge variant="secondary">{status}</Badge>;
+    }
   };
+
+
 
   if (!isAuthenticated) {
     return (
@@ -237,6 +290,7 @@ export default function Admin() {
                         <TableHead>Ödeme Durumu</TableHead>
                         <TableHead>Durum</TableHead>
                         <TableHead>Tarih</TableHead>
+                        <TableHead>İşlemler</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -251,6 +305,31 @@ export default function Admin() {
                           <TableCell>{getPaymentStatusBadge(app.paymentStatus)}</TableCell>
                           <TableCell>{getStatusBadge(app.status)}</TableCell>
                           <TableCell>{formatDate(app.createdAt!)}</TableCell>
+                          <TableCell>
+                            {app.status === "pending" && (
+                              <div className="flex gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="default"
+                                  onClick={() => updateApplicationStatusMutation.mutate({ id: app.id, status: "approved" })}
+                                  disabled={updateApplicationStatusMutation.isPending}
+                                  className="bg-green-500 hover:bg-green-600 text-white"
+                                >
+                                  <CheckCircle className="w-4 h-4 mr-1" />
+                                  Onayla
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => updateApplicationStatusMutation.mutate({ id: app.id, status: "rejected" })}
+                                  disabled={updateApplicationStatusMutation.isPending}
+                                >
+                                  <XCircle className="w-4 h-4 mr-1" />
+                                  Reddet
+                                </Button>
+                              </div>
+                            )}
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -280,6 +359,7 @@ export default function Admin() {
                         <TableHead>Ödeme Durumu</TableHead>
                         <TableHead>Durum</TableHead>
                         <TableHead>Tarih</TableHead>
+                        <TableHead>İşlemler</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -295,6 +375,31 @@ export default function Admin() {
                           <TableCell>{getPaymentStatusBadge(app.paymentStatus)}</TableCell>
                           <TableCell>{getStatusBadge(app.status)}</TableCell>
                           <TableCell>{formatDate(app.createdAt!)}</TableCell>
+                          <TableCell>
+                            {app.status === "pending" && (
+                              <div className="flex gap-2">
+                                <Button
+                                  size="sm"
+                                  variant="default"
+                                  onClick={() => updateInsuranceStatusMutation.mutate({ id: app.id, status: "approved" })}
+                                  disabled={updateInsuranceStatusMutation.isPending}
+                                  className="bg-green-500 hover:bg-green-600 text-white"
+                                >
+                                  <CheckCircle className="w-4 h-4 mr-1" />
+                                  Onayla
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => updateInsuranceStatusMutation.mutate({ id: app.id, status: "rejected" })}
+                                  disabled={updateInsuranceStatusMutation.isPending}
+                                >
+                                  <XCircle className="w-4 h-4 mr-1" />
+                                  Reddet
+                                </Button>
+                              </div>
+                            )}
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

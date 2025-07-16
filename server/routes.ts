@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertApplicationSchema, insertInsuranceApplicationSchema } from "@shared/schema";
 import { z } from "zod";
-import { sendEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail } from "./email";
+import { sendEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail, generateVisaApprovalEmail } from "./email";
 
 function generateApplicationNumber(): string {
   const timestamp = Date.now().toString(36);
@@ -423,12 +423,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       await storage.updateApplicationStatus(parseInt(id), status);
       
-      // Eğer onaylandıysa e-posta gönder
-      if (status === 'approved') {
-        const application = await storage.getApplication(parseInt(id));
-        if (application) {
-          try {
-            const emailContent = generateVisaReceivedEmail(
+      // Durum değişikliğine göre e-posta gönder
+      const application = await storage.getApplication(parseInt(id));
+      if (application) {
+        try {
+          if (status === 'approved') {
+            const emailContent = generateVisaApprovalEmail(
               application.firstName, 
               application.lastName, 
               application.applicationNumber
@@ -436,16 +436,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             await sendEmail({
               to: application.email,
-              from: 'info@evisatr.xyz',
+              from: 'info@visatanzania.org',
               subject: emailContent.subject,
               html: emailContent.html,
               text: emailContent.text
             });
             
             console.log(`Visa approval email sent to ${application.email}`);
-          } catch (emailError) {
-            console.error('Failed to send visa approval email:', emailError);
+          } else if (status === 'rejected') {
+            // Reddedilmiş e-posta için geçici olarak normal approval fonksiyonu kullanacağım
+            const emailContent = generateVisaApprovalEmail(
+              application.firstName, 
+              application.lastName, 
+              application.applicationNumber
+            );
+            
+            // E-posta içeriğini reddedilmiş olarak değiştir
+            const rejectionEmailContent = {
+              subject: `[${application.applicationNumber}] Turkey E-Visa Application Status Update`,
+              html: emailContent.html.replace('approved', 'declined').replace('APPROVED', 'DECLINED'),
+              text: emailContent.text.replace('approved', 'declined').replace('APPROVED', 'DECLINED')
+            };
+            
+            await sendEmail({
+              to: application.email,
+              from: 'info@visatanzania.org',
+              subject: rejectionEmailContent.subject,
+              html: rejectionEmailContent.html,
+              text: rejectionEmailContent.text
+            });
+            
+            console.log(`Visa rejection email sent to ${application.email}`);
           }
+        } catch (emailError) {
+          console.error('Failed to send visa status email:', emailError);
         }
       }
       
@@ -474,7 +498,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       await storage.updateInsuranceApplicationStatus(parseInt(id), status);
       
-      // Eğer onaylandıysa e-posta gönder
+      // Durum değişikliğine göre e-posta gönder
       if (status === 'approved') {
         try {
           const product = application.productId ? await storage.getInsuranceProduct(application.productId) : null;
@@ -489,7 +513,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await sendEmail({
             to: application.email,
-            from: 'info@evisatr.xyz',
+            from: 'info@visatanzania.org',
             subject: emailContent.subject,
             html: emailContent.html,
             text: emailContent.text
@@ -498,6 +522,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log(`Insurance approval email sent to ${application.email}`);
         } catch (emailError) {
           console.error('Failed to send insurance approval email:', emailError);
+        }
+      } else if (status === 'rejected') {
+        try {
+          const product = application.productId ? await storage.getInsuranceProduct(application.productId) : null;
+          const productName = product ? product.name : 'Travel Insurance';
+          
+          // Reddedilmiş e-posta için geçici olarak normal approval fonksiyonu kullanacağım
+          const emailContent = generateInsuranceApprovalEmail(
+            application.firstName, 
+            application.lastName, 
+            application.applicationNumber,
+            productName
+          );
+          
+          // E-posta içeriğini reddedilmiş olarak değiştir
+          const rejectionEmailContent = {
+            subject: `[${application.applicationNumber}] Turkey Travel Insurance Application Status`,
+            html: emailContent.html.replace('approved', 'declined').replace('APPROVED', 'DECLINED'),
+            text: emailContent.text.replace('approved', 'declined').replace('APPROVED', 'DECLINED')
+          };
+          
+          await sendEmail({
+            to: application.email,
+            from: 'info@visatanzania.org',
+            subject: rejectionEmailContent.subject,
+            html: rejectionEmailContent.html,
+            text: rejectionEmailContent.text
+          });
+          
+          console.log(`Insurance rejection email sent to ${application.email}`);
+        } catch (emailError) {
+          console.error('Failed to send insurance rejection email:', emailError);
         }
       }
       

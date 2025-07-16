@@ -675,6 +675,90 @@ This email was sent automatically. Please do not reply.
   }
 }
 
+export function generateVisaApprovalEmail(
+  firstName: string,
+  lastName: string,
+  applicationNumber: string
+): { subject: string; html: string; text: string } {
+  return {
+    subject: `[${applicationNumber}] Turkey E-Visa Approved`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Visa Approved</title>
+      </head>
+      <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 0;">
+          <!-- Header -->
+          <div style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; padding: 30px; text-align: center;">
+            <h1 style="margin: 0; font-size: 24px; font-weight: bold;">✅ VISA APPROVED</h1>
+            <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Your e-visa has been approved!</p>
+          </div>
+          
+          <!-- Content -->
+          <div style="padding: 30px;">
+            <h2 style="color: #1a1a1a; margin-bottom: 20px;">Dear ${firstName} ${lastName},</h2>
+            
+            <p style="color: #1a1a1a; line-height: 1.6; margin-bottom: 20px;">
+              Great news! Your Turkey e-visa application has been <strong>approved</strong> and is now ready for use.
+            </p>
+            
+            <div style="background: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="color: #0369a1; margin-top: 0;">Visa Details:</h3>
+              <p style="margin: 5px 0; color: #0369a1;"><strong>Application Number:</strong> ${applicationNumber}</p>
+              <p style="margin: 5px 0; color: #0369a1;"><strong>Applicant:</strong> ${firstName} ${lastName}</p>
+              <p style="margin: 5px 0; color: #0369a1;"><strong>Status:</strong> Approved</p>
+            </div>
+            
+            <div style="background: #fef3c7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h4 style="color: #d97706; margin-top: 0;">Important:</h4>
+              <p style="margin: 0; color: #d97706; font-size: 14px;">
+                Please print your e-visa and carry it with you when traveling to Turkey. 
+                You must present it along with your passport at the border.
+              </p>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="https://evisatr.xyz/status?ref=${applicationNumber}" style="background-color: #10B981; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
+                📄 Download Your E-Visa
+              </a>
+            </div>
+          </div>
+          
+          <!-- Footer -->
+          <div style="background: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0;">
+            <p style="margin: 0; color: #64748b; font-size: 12px;">
+              This email was sent automatically. For questions, contact us at info@evisatr.xyz
+            </p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+    text: `
+TURKEY E-VISA APPROVED
+
+Dear ${firstName} ${lastName},
+
+Great news! Your Turkey e-visa application has been approved and is now ready for use.
+
+Visa Details:
+- Application Number: ${applicationNumber}
+- Applicant: ${firstName} ${lastName}
+- Status: Approved
+
+Important: Please print your e-visa and carry it with you when traveling to Turkey. You must present it along with your passport at the border.
+
+Download your e-visa at: https://evisatr.xyz/status?ref=${applicationNumber}
+
+This email was sent automatically. For questions, contact us at info@evisatr.xyz
+    `
+  };
+}
+
 export function generateInsuranceApprovalEmail(
   firstName: string,
   lastName: string,
