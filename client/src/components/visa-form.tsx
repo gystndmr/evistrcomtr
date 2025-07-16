@@ -219,6 +219,7 @@ export function VisaForm() {
   };
   
   const steps = getDynamicSteps();
+  const totalSteps = steps.length;
 
   return (
     <div className="max-w-4xl mx-auto">
