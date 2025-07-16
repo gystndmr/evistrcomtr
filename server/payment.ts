@@ -33,17 +33,25 @@ export class GloDiPayService {
   }
 
   private generateSignature(data: any): string {
-    // Sort keys naturally like PHP ksort(SORT_NATURAL)
-    const sortedData = Object.keys(data).sort((a, b) => {
+    // Sort keys alphabetically and create query string format
+    const sortedKeys = Object.keys(data).sort((a, b) => {
       return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
-    }).reduce((result, key) => {
-      result[key] = String(data[key]).trim();
-      return result;
-    }, {} as any);
+    });
     
+    // Create string in format: key1=value1&key2=value2&...
+    const dataString = sortedKeys.map(key => {
+      const value = String(data[key]).trim();
+      return `${key}=${value}`;
+    }).join('&');
+
+    console.log('Signing data string:', dataString);
+
+    // Generate signature using RSA with MD5
     const sign = crypto.createSign('md5WithRSAEncryption');
-    sign.update(JSON.stringify(sortedData));
-    return sign.sign(this.config.privateKey, 'base64');
+    sign.update(dataString);
+    const signature = sign.sign(this.config.privateKey, 'base64');
+    
+    return signature;
   }
 
   private verifySignature(data: string, signature: string): boolean {
@@ -212,7 +220,7 @@ export class GloDiPayService {
 
 // Initialize GloDiPay service
 export const gloDiPayService = new GloDiPayService({
-  merchantId: '1100002537',
+  merchantId: '1100000026',
   publicKey: `-----BEGIN PUBLIC KEY-----
 MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA1tpp6AxHhhgdHqF2VYL7
 FpH6nZIOO0fsyyksVE389xVcABZ6VzxF2v/tpDd8FfP9mT8C0duMGG/edTkCadCy
