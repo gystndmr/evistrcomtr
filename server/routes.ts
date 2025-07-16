@@ -581,8 +581,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description: description || `E-Visa Application - ${orderId}`,
         customerEmail,
         customerName,
-        returnUrl: `https://${process.env.REPLIT_DEV_DOMAIN || 'localhost:5000'}/payment-success?payment=success`,
-        cancelUrl: `https://${process.env.REPLIT_DEV_DOMAIN || 'localhost:5000'}/payment-success?payment=cancelled`
+        returnUrl: `https://${process.env.REPLIT_DEV_DOMAIN || 'localhost:5000'}/payment/success`,
+        cancelUrl: `https://${process.env.REPLIT_DEV_DOMAIN || 'localhost:5000'}/payment/cancel`
       };
       
       const paymentResponse = await gloDiPayService.createPayment(paymentRequest);
@@ -626,16 +626,100 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Payment success callback
-  app.get("/payment/success", (req, res) => {
-    const { transaction_id, order_id } = req.query;
-    res.redirect(`/payment-success?payment=success&transaction=${transaction_id}&order=${order_id}`);
+  // GloDiPay result callback - following .NET GPayResult pattern
+  app.post("/api/payment/callback", async (req, res) => {
+    try {
+      const { payload } = req.body;
+      
+      if (!payload) {
+        console.log("GloDiPay callback: payload BOŞ GELDİ!!!");
+        return res.status(400).json({ message: "Payload yok!" });
+      }
+      
+      // Following .NET pattern: URL decode -> Base64 decode -> JSON parse
+      const urlDecoded = decodeURIComponent(payload);
+      const base64Decoded = Buffer.from(urlDecoded, 'base64').toString('utf8');
+      const paymentData = JSON.parse(base64Decoded);
+      
+      console.log("GloDiPay callback received:", paymentData);
+      
+      const { status, transactionId, ref, amount, orderId } = paymentData;
+      
+      // Following .NET pattern: Update database based on payment status
+      if (status === 'completed' || status === 'successful') {
+        console.log(`Payment successful for order ${orderId}: ${transactionId}`);
+        // TODO: Update application status to payment completed
+        // await storage.updateApplicationPaymentStatus(orderId, 'completed', amount);
+      } else if (status === 'failed' || status === 'error') {
+        console.log(`Payment failed for order ${orderId}: ${transactionId}`);
+        // TODO: Update application status to payment failed
+        // await storage.updateApplicationPaymentStatus(orderId, 'failed', amount);
+      }
+      
+      res.json({ message: "OK" });
+    } catch (error) {
+      console.error("GloDiPay callback error:", error);
+      res.status(500).json({ message: "Callback processing error" });
+    }
   });
   
-  // Payment cancel callback
-  app.get("/payment/cancel", (req, res) => {
-    const { order_id } = req.query;
-    res.redirect(`/payment-success?payment=cancelled&order=${order_id}`);
+  // Payment success callback - following .NET OdemeBasarili pattern
+  app.get("/payment/success", async (req, res) => {
+    try {
+      const { payload } = req.query;
+      
+      if (!payload) {
+        return res.redirect(`/payment-success?payment=error&message=Payload yok`);
+      }
+      
+      // Following .NET pattern: URL decode -> Base64 decode -> JSON parse
+      const urlDecoded = decodeURIComponent(payload);
+      const base64Decoded = Buffer.from(urlDecoded, 'base64').toString('utf8');
+      const paymentData = JSON.parse(base64Decoded);
+      
+      console.log("Payment success callback:", paymentData);
+      
+      const { status, transactionId, ref, amount, orderId } = paymentData;
+      
+      if (status === 'completed' || status === 'successful') {
+        // TODO: Update application status to payment successful
+        // await storage.updateApplicationPaymentStatus(orderId, 'completed', amount);
+        res.redirect(`/payment-success?payment=success&transaction=${transactionId}&order=${orderId}`);
+      } else {
+        res.redirect(`/payment-success?payment=error&transaction=${transactionId}&order=${orderId}`);
+      }
+    } catch (error) {
+      console.error("Payment success callback error:", error);
+      res.redirect(`/payment-success?payment=error&message=Processing error`);
+    }
+  });
+  
+  // Payment cancel callback - following .NET OdemeBasarisiz pattern
+  app.get("/payment/cancel", async (req, res) => {
+    try {
+      const { payload } = req.query;
+      
+      if (!payload) {
+        return res.redirect(`/payment-success?payment=cancelled&message=Payload yok`);
+      }
+      
+      // Following .NET pattern: URL decode -> Base64 decode -> JSON parse
+      const urlDecoded = decodeURIComponent(payload);
+      const base64Decoded = Buffer.from(urlDecoded, 'base64').toString('utf8');
+      const paymentData = JSON.parse(base64Decoded);
+      
+      console.log("Payment cancel callback:", paymentData);
+      
+      const { status, transactionId, ref, amount, orderId } = paymentData;
+      
+      // TODO: Update application status to payment cancelled
+      // await storage.updateApplicationPaymentStatus(orderId, 'cancelled', amount);
+      
+      res.redirect(`/payment-success?payment=cancelled&transaction=${transactionId}&order=${orderId}`);
+    } catch (error) {
+      console.error("Payment cancel callback error:", error);
+      res.redirect(`/payment-success?payment=cancelled&message=Processing error`);
+    }
   });
 
   const httpServer = createServer(app);

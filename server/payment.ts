@@ -108,19 +108,19 @@ export class GloDiPayService {
         billingFirstName: request.customerName.split(' ')[0] || 'Customer',
         billingLastName: request.customerName.split(' ')[1] || '',
         billingEmail: request.customerEmail,
-        billingCountry: 'AD', // Use AD as shown in successful GloDiPay dev conversation
-        billingStreet1: 'Güvercintepe Mah. Tekstilkent Evleri Çimen Sok. 110 A-5 107 A D.16 Başakşehir/İstanbul', // Match Baris Topal exact format
-        billingStreet2: '', // Add missing required field
-        billingCity: 'Istanbul', // Add missing required field
-        brandName: '', // Add missing required field
-        colorMode: 'default-mode', // Add missing required field
-        feeBySeller: '50', // Add missing required field (default from example)
-        logoSource: '', // Add missing required field
-        metadata: '{"key":"value"}', // Match Baris Topal exact format
-        transactionDocuments: '{"key":"value"}', // Match Baris Topal exact format
+        billingCountry: 'TR', // Use TR for Turkey as primary country
+        billingStreet1: 'Güvercintepe Mah. Tekstilkent Evleri Çimen Sok. 110 A-5 107 A D.16 Başakşehir/İstanbul',
+        billingStreet2: '',
+        billingCity: 'Istanbul',
+        brandName: '',
+        colorMode: 'default-mode',
+        feeBySeller: '50',
+        logoSource: '',
+        metadata: '{"orderId":"' + request.orderId + '","timestamp":"' + new Date().toISOString() + '"}',
+        transactionDocuments: '{"type":"visa_application","ref":"' + request.orderId + '"}',
         cancelUrl: request.cancelUrl,
         callbackUrl: request.returnUrl,
-        notificationUrl: request.returnUrl,
+        notificationUrl: `https://${process.env.REPLIT_DEV_DOMAIN || 'localhost:5000'}/api/payment/callback`,
         errorUrl: request.cancelUrl,
         paymentMethod: 'ALL',
         customerIp: '127.0.0.1' // Add missing MANDATORY field from PDF spec
