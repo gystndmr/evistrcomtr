@@ -55,7 +55,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const emailContent = generateVisaReceivedEmail(
           application.firstName, 
           application.lastName, 
-          application.applicationNumber
+          application.applicationNumber,
+          application
         );
         
         await sendEmail({

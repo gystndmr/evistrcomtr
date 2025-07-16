@@ -52,16 +52,17 @@ export function generateVisaReceivedEmail(
   firstName: string,
   lastName: string,
   applicationNumber: string,
+  applicationData: any,
   language: string = 'tr'
 ): { subject: string; html: string; text: string } {
   
   const turkeyFlagSvg = `
-    <svg width="32" height="24" viewBox="0 0 32 24" style="margin: 0 auto;">
-      <rect width="32" height="24" fill="#E30A17"/>
+    <svg width="40" height="30" viewBox="0 0 40 30" style="margin: 0 auto; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      <rect width="40" height="30" fill="#E30A17"/>
       <g fill="#FFFFFF">
-        <circle cx="10" cy="12" r="4"/>
-        <circle cx="11.5" cy="12" r="3.2" fill="#E30A17"/>
-        <path d="M18 8 L20 10 L22 8 L21 11 L24 12 L21 13 L22 16 L20 14 L18 16 L19 13 L16 12 L19 11 Z"/>
+        <circle cx="12" cy="15" r="5"/>
+        <circle cx="14" cy="15" r="4" fill="#E30A17"/>
+        <path d="M22 10 L24.5 12.5 L27 10 L25.5 13.5 L29 15 L25.5 16.5 L27 20 L24.5 17.5 L22 20 L23.5 16.5 L20 15 L23.5 13.5 Z"/>
       </g>
     </svg>
   `;
@@ -88,55 +89,107 @@ export function generateVisaReceivedEmail(
             
             <!-- Content -->
             <div style="padding: 40px 30px;">
-              <h2 style="color: #1a1a1a; margin-bottom: 20px; font-size: 20px;">Sayın ${firstName} ${lastName},</h2>
+              <h2 style="color: #1a1a1a; margin-bottom: 20px; font-size: 22px;">Sayın ${firstName} ${lastName},</h2>
               
-              <p style="color: #4a4a4a; line-height: 1.6; margin-bottom: 20px;">
-                Türkiye Cumhuriyeti E-Vize başvurunuz başarıyla alınmıştır. 
-                Başvurunuz değerlendirilmek üzere sisteme kaydedilmiştir.
+              <p style="color: #4a4a4a; line-height: 1.6; margin-bottom: 15px; font-size: 16px;">
+                Türkiye Cumhuriyeti Elektronik Vize başvurunuz başarıyla alınmış ve kayıt altına alınmıştır. 
+                Başvurunuz değerlendirilmek üzere ilgili birimlere iletilmiştir.
               </p>
               
-              <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <h3 style="color: #DC2626; margin-top: 0; font-size: 16px;">Başvuru Bilgileri</h3>
+              <div style="background-color: #f8f9fa; padding: 25px; border-radius: 8px; margin: 25px 0; border: 1px solid #e2e8f0;">
+                <h3 style="color: #DC2626; margin-top: 0; font-size: 18px; margin-bottom: 15px;">📋 Başvuru Detayları</h3>
                 <table style="width: 100%; border-collapse: collapse;">
                   <tr>
-                    <td style="padding: 8px 0; color: #666; font-weight: bold;">Başvuru Numarası:</td>
-                    <td style="padding: 8px 0; color: #1a1a1a;">${applicationNumber}</td>
+                    <td style="padding: 10px 0; color: #666; font-weight: bold; width: 40%;">Başvuru Referans No:</td>
+                    <td style="padding: 10px 0; color: #1a1a1a; font-weight: bold; font-size: 16px;">${applicationNumber}</td>
                   </tr>
                   <tr>
-                    <td style="padding: 8px 0; color: #666; font-weight: bold;">Başvuru Sahibi:</td>
-                    <td style="padding: 8px 0; color: #1a1a1a;">${firstName} ${lastName}</td>
+                    <td style="padding: 10px 0; color: #666; font-weight: bold;">Başvuru Sahibi:</td>
+                    <td style="padding: 10px 0; color: #1a1a1a;">${firstName} ${lastName}</td>
                   </tr>
                   <tr>
-                    <td style="padding: 8px 0; color: #666; font-weight: bold;">Durum:</td>
-                    <td style="padding: 8px 0; color: #f59e0b; font-weight: bold;">⏳ İNCELENİYOR</td>
+                    <td style="padding: 10px 0; color: #666; font-weight: bold;">Pasaport Numarası:</td>
+                    <td style="padding: 10px 0; color: #1a1a1a;">${applicationData.passportNumber || 'Belirtilmemiş'}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0; color: #666; font-weight: bold;">Uyruk:</td>
+                    <td style="padding: 10px 0; color: #1a1a1a;">${applicationData.nationality || 'Belirtilmemiş'}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0; color: #666; font-weight: bold;">Giriş Tarihi:</td>
+                    <td style="padding: 10px 0; color: #1a1a1a;">${applicationData.arrivalDate ? new Date(applicationData.arrivalDate).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0; color: #666; font-weight: bold;">Çıkış Tarihi:</td>
+                    <td style="padding: 10px 0; color: #1a1a1a;">${applicationData.departureDate ? new Date(applicationData.departureDate).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0; color: #666; font-weight: bold;">Ziyaret Amacı:</td>
+                    <td style="padding: 10px 0; color: #1a1a1a;">${applicationData.purposeOfVisit === 'tourism' ? 'Turizm' : applicationData.purposeOfVisit === 'business' ? 'İş' : 'Diğer'}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0; color: #666; font-weight: bold;">İşlem Türü:</td>
+                    <td style="padding: 10px 0; color: #1a1a1a;">${applicationData.processingType === 'standard' ? 'Standart İşlem' : applicationData.processingType === 'urgent' ? 'Acil İşlem' : 'Belirtilmemiş'}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0; color: #666; font-weight: bold;">Başvuru Durumu:</td>
+                    <td style="padding: 10px 0; color: #f59e0b; font-weight: bold;">⏳ İNCELEME AŞAMASINDA</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px 0; color: #666; font-weight: bold;">Başvuru Tarihi:</td>
+                    <td style="padding: 10px 0; color: #1a1a1a;">${new Date().toLocaleDateString('tr-TR')} ${new Date().toLocaleTimeString('tr-TR')}</td>
                   </tr>
                 </table>
               </div>
               
-              <div style="background-color: #e0f2fe; border-left: 4px solid #0284c7; padding: 15px; margin: 20px 0;">
-                <p style="margin: 0; color: #0c4a6e; font-size: 14px;">
-                  <strong>Bilgilendirme:</strong> Başvurunuzun işlem süreci hakkında bilgi almak için başvuru numaranızı kullanarak sorgulama yapabilirsiniz.
+              <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; margin: 25px 0; border-radius: 4px;">
+                <p style="margin: 0; color: #92400e; font-size: 15px; line-height: 1.5;">
+                  <strong>⚠️ Önemli Bilgilendirme:</strong><br>
+                  • Başvurunuzun değerlendirilmesi ortalama 1-3 iş günü sürmektedir<br>
+                  • İşlem süreci hakkında güncel bilgi almak için başvuru numaranızı kullanarak sorgulama yapabilirsiniz<br>
+                  • E-vizeniz onaylandığında size otomatik olarak bilgilendirme e-postası gönderilecektir
                 </p>
               </div>
               
+              <div style="background-color: #e0f2fe; border-left: 4px solid #0284c7; padding: 20px; margin: 25px 0; border-radius: 4px;">
+                <h4 style="margin: 0 0 10px 0; color: #0c4a6e; font-size: 16px;">📋 Gerekli Belgeler ve Kurallar:</h4>
+                <ul style="margin: 0; padding-left: 20px; color: #0c4a6e; font-size: 14px; line-height: 1.6;">
+                  <li>Pasaportunuzun geçerlilik süresi en az 60 gün olmalıdır</li>
+                  <li>E-vizenizi yazdırıp seyahat sırasında yanınızda bulundurmanız zorunludur</li>
+                  <li>Türkiye'ye giriş sırasında pasaportunuzla birlikte e-vizenizi göstermelisiniz</li>
+                  <li>Seyahat tarihlerinizde değişiklik olması halinde yeni başvuru yapmanız gerekebilir</li>
+                </ul>
+              </div>
+              
               <div style="text-align: center; margin: 30px 0;">
-                <a href="#" style="background-color: #0284c7; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
-                  Başvuru Durumunu Sorgula
+                <a href="https://evisatr.xyz/status" style="background-color: #DC2626; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
+                  🔍 Başvuru Durumunu Sorgula
                 </a>
               </div>
               
-              <p style="color: #666; font-size: 14px; line-height: 1.6;">
-                Herhangi bir sorunuz olması halinde müşteri hizmetlerimizle iletişime geçebilirsiniz.
-              </p>
+              <div style="background-color: #f0f9ff; padding: 20px; border-radius: 6px; margin: 25px 0;">
+                <h4 style="margin: 0 0 10px 0; color: #1e40af; font-size: 16px;">💬 Müşteri Hizmetleri:</h4>
+                <p style="margin: 0; color: #1e40af; font-size: 14px; line-height: 1.6;">
+                  Herhangi bir sorunuz olması halinde <strong>7/24 müşteri hizmetlerimizle</strong> iletişime geçebilirsiniz:<br>
+                  📧 E-posta: info@evisatr.xyz<br>
+                  🌐 Web: https://evisatr.xyz
+                </p>
+              </div>
             </div>
             
             <!-- Footer -->
-            <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e5e7eb;">
-              <p style="margin: 0; color: #666; font-size: 12px;">
+            <div style="background-color: #DC2626; color: white; padding: 25px; text-align: center;">
+              <div style="margin-bottom: 15px;">
+                ${turkeyFlagSvg}
+              </div>
+              <p style="margin: 0; font-size: 14px; font-weight: bold;">
+                TÜRKİYE CUMHURİYETİ E-VİZE SİSTEMİ
+              </p>
+              <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.9;">
                 Bu e-posta otomatik olarak gönderilmiştir. Lütfen yanıtlamayınız.
               </p>
-              <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">
-                © 2025 Türkiye Cumhuriyeti E-Vize Sistemi
+              <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.9;">
+                © 2025 evisatr.xyz - Tüm hakları saklıdır.
               </p>
             </div>
           </div>
@@ -144,20 +197,46 @@ export function generateVisaReceivedEmail(
         </html>
       `,
       text: `
+TÜRKİYE CUMHURİYETİ E-VİZE SİSTEMİ
+
 Sayın ${firstName} ${lastName},
 
-Türkiye Cumhuriyeti E-Vize başvurunuz başarıyla alınmıştır.
+Türkiye Cumhuriyeti Elektronik Vize başvurunuz başarıyla alınmış ve kayıt altına alınmıştır.
 
-Başvuru Numarası: ${applicationNumber}
+BAŞVURU DETAYLARI:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Başvuru Referans No: ${applicationNumber}
 Başvuru Sahibi: ${firstName} ${lastName}
-Durum: ONAYLANDI
+Pasaport Numarası: ${applicationData.passportNumber || 'Belirtilmemiş'}
+Uyruk: ${applicationData.nationality || 'Belirtilmemiş'}
+Giriş Tarihi: ${applicationData.arrivalDate ? new Date(applicationData.arrivalDate).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}
+Çıkış Tarihi: ${applicationData.departureDate ? new Date(applicationData.departureDate).toLocaleDateString('tr-TR') : 'Belirtilmemiş'}
+Ziyaret Amacı: ${applicationData.purposeOfVisit === 'tourism' ? 'Turizm' : applicationData.purposeOfVisit === 'business' ? 'İş' : 'Diğer'}
+İşlem Türü: ${applicationData.processingType === 'standard' ? 'Standart İşlem' : applicationData.processingType === 'urgent' ? 'Acil İşlem' : 'Belirtilmemiş'}
+Başvuru Durumu: İNCELEME AŞAMASINDA
+Başvuru Tarihi: ${new Date().toLocaleDateString('tr-TR')} ${new Date().toLocaleTimeString('tr-TR')}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-E-vizenizi web sitemizden indirip yazdırmanız ve seyahat sırasında yanınızda bulundurmanız gerekmektedir.
+ÖNEMLİ BİLGİLENDİRME:
+• Başvurunuzun değerlendirilmesi ortalama 1-3 iş günü sürmektedir
+• İşlem süreci hakkında güncel bilgi almak için başvuru numaranızı kullanarak sorgulama yapabilirsiniz
+• E-vizeniz onaylandığında size otomatik olarak bilgilendirme e-postası gönderilecektir
 
-Herhangi bir sorunuz olması halinde müşteri hizmetlerimizle iletişime geçebilirsiniz.
+GEREKLI BELGELER VE KURALLAR:
+• Pasaportunuzun geçerlilik süresi en az 60 gün olmalıdır
+• E-vizenizi yazdırıp seyahat sırasında yanınızda bulundurmanız zorunludur
+• Türkiye'ye giriş sırasında pasaportunuzla birlikte e-vizenizi göstermelisiniz
+• Seyahat tarihlerinizde değişiklik olması halinde yeni başvuru yapmanız gerekebilir
+
+BAŞVURU DURUMU SORGULAMA:
+https://evisatr.xyz/status
+
+MÜŞTERİ HİZMETLERİ (7/24):
+E-posta: info@evisatr.xyz
+Web: https://evisatr.xyz
 
 Bu e-posta otomatik olarak gönderilmiştir. Lütfen yanıtlamayınız.
-© 2025 Türkiye Cumhuriyeti E-Vize Sistemi
+© 2025 evisatr.xyz - Türkiye Cumhuriyeti E-Vize Sistemi
       `
     };
   } else {
