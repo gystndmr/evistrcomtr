@@ -208,4 +208,8 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - **Signature Implementation**: Implemented exact PHP signature algorithm with ksort, trim, and md5WithRSAEncryption
   - **API URL Correction**: Updated to use correct payment-sandbox.gpayprocessing.com endpoint
   - **Debug Implementation**: Added comprehensive signature generation debugging
-  - **Status**: All technical implementation complete, only signature format specification needed from GloDiPay
+  - **Working Example Analysis**: Analyzed Baris Topal's working signature example with exact field matching
+  - **customerIp Field**: Added mandatory customerIp field required by PDF specification
+  - **JSON Format**: Implemented PHP json_encode equivalent with escaped forward slashes
+  - **Field Matching**: Exact billingStreet1 and metadata format matching Baris Topal's example
+  - **Status**: All technical implementation complete, signature algorithm matches working example, only GloDiPay signature validation remains

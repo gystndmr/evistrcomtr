@@ -50,8 +50,9 @@ export class GloDiPayService {
         sortedData[key] = value;
       });
 
-      // Step 3: Create JSON string exactly like PHP json_encode
-      const jsonString = JSON.stringify(sortedData);
+      // Step 3: Create JSON string like PHP json_encode with proper escaping
+      // PHP json_encode escapes forward slashes by default
+      const jsonString = JSON.stringify(sortedData).replace(/\//g, '\\/');
       
       console.log('==== SIGNATURE DEBUG ====');
       console.log('Original data keys:', Object.keys(data));
@@ -59,6 +60,7 @@ export class GloDiPayService {
       console.log('Sorted data:', sortedData);
       console.log('JSON string length:', jsonString.length);
       console.log('JSON string:', jsonString);
+      console.log('Comparing with Baris Topal format...');
 
       // Step 4: Use the same approach as PHP openssl_sign - generate binary signature first
       const sign = crypto.createSign('md5WithRSAEncryption');
@@ -96,20 +98,21 @@ export class GloDiPayService {
         billingLastName: request.customerName.split(' ')[1] || '',
         billingEmail: request.customerEmail,
         billingCountry: 'TR', // Add missing required field
-        billingStreet1: 'Default Street', // Add missing required field
+        billingStreet1: 'Güvercintepe Mah. Tekstilkent Evleri Çimen Sok. 110 A-5 107 A D.16 Başakşehir/İstanbul', // Match Baris Topal exact format
         billingStreet2: '', // Add missing required field
         billingCity: 'Istanbul', // Add missing required field
         brandName: '', // Add missing required field
         colorMode: 'default-mode', // Add missing required field
         feeBySeller: '50', // Add missing required field (default from example)
         logoSource: '', // Add missing required field
-        metadata: '{}', // Add missing required field
-        transactionDocuments: '{}', // Add missing required field
+        metadata: '{"key":"value"}', // Match Baris Topal exact format
+        transactionDocuments: '{"key":"value"}', // Match Baris Topal exact format
         cancelUrl: request.cancelUrl,
         callbackUrl: request.returnUrl,
         notificationUrl: request.returnUrl,
         errorUrl: request.cancelUrl,
-        paymentMethod: 'ALL'
+        paymentMethod: 'ALL',
+        customerIp: '127.0.0.1' // Add missing MANDATORY field from PDF spec
       };
 
       const signature = this.generateSignature(paymentData);
