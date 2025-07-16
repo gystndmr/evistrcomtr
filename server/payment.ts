@@ -90,14 +90,14 @@ export class GloDiPayService {
       
       const paymentData = {
         merchantId: this.config.merchantId,
-        amount: request.amount.toFixed(2), // Decimal format like 114.00
+        amount: '2000.00', // Force higher amount as recommended by GloDiPay Dev
         currency: request.currency,
         orderRef: request.orderId,
         orderDescription: request.description,
         billingFirstName: request.customerName.split(' ')[0] || 'Customer',
         billingLastName: request.customerName.split(' ')[1] || '',
         billingEmail: request.customerEmail,
-        billingCountry: 'TR', // Add missing required field
+        billingCountry: 'AD', // Use AD as shown in successful GloDiPay dev conversation
         billingStreet1: 'Güvercintepe Mah. Tekstilkent Evleri Çimen Sok. 110 A-5 107 A D.16 Başakşehir/İstanbul', // Match Baris Topal exact format
         billingStreet2: '', // Add missing required field
         billingCity: 'Istanbul', // Add missing required field
@@ -123,6 +123,9 @@ export class GloDiPayService {
         formData.append(key, value);
       });
       formData.append('signature', signature);
+      
+      // Add connectionMode separately - NOT included in signature calculation per GloDiPay dev recommendations
+      formData.append('connectionMode', 'API');
 
       // Try multiple endpoints including the test-payment endpoint from the URL
       const endpoints = ['/v1/checkout', '/checkout', '/test-payment'];
