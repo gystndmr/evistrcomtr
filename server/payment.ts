@@ -33,25 +33,30 @@ export class GloDiPayService {
   }
 
   private generateSignature(data: any): string {
-    // Sort keys alphabetically and create query string format
-    const sortedKeys = Object.keys(data).sort((a, b) => {
-      return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
-    });
-    
-    // Create string in format: key1=value1&key2=value2&...
-    const dataString = sortedKeys.map(key => {
-      const value = String(data[key]).trim();
-      return `${key}=${value}`;
-    }).join('&');
+    try {
+      // Sort keys alphabetically for consistent signature
+      const sortedData = Object.keys(data).sort((a, b) => {
+        return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+      }).reduce((result, key) => {
+        result[key] = String(data[key]).trim();
+        return result;
+      }, {} as any);
 
-    console.log('Signing data string:', dataString);
+      // Create JSON string with escaped characters (like in the example)
+      const jsonString = JSON.stringify(sortedData);
+      
+      console.log('Signing JSON string:', jsonString);
 
-    // Generate signature using RSA with MD5
-    const sign = crypto.createSign('md5WithRSAEncryption');
-    sign.update(dataString);
-    const signature = sign.sign(this.config.privateKey, 'base64');
-    
-    return signature;
+      // Generate signature using RSA with MD5
+      const sign = crypto.createSign('md5WithRSAEncryption');
+      sign.update(jsonString);
+      const signature = sign.sign(this.config.privateKey, 'base64');
+      
+      return signature;
+    } catch (error) {
+      console.error('Signature generation error:', error);
+      throw new Error('Failed to generate signature');
+    }
   }
 
   private verifySignature(data: string, signature: string): boolean {
