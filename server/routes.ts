@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { insertApplicationSchema, insertInsuranceApplicationSchema } from "@shared/schema";
 import { z } from "zod";
 import { sendEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail, generateVisaApprovalEmail } from "./email";
+import { globiPayService } from "./payment";
 
 function generateApplicationNumber(): string {
   const timestamp = Date.now().toString(36);
@@ -562,6 +563,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error updating insurance application status:", error);
       res.status(500).json({ message: "Failed to update insurance application status" });
     }
+  });
+
+  // Create payment
+  app.post("/api/payment/create", async (req, res) => {
+    try {
+      const { amount, currency, orderId, description, customerEmail, customerName } = req.body;
+      
+      if (!amount || !currency || !orderId || !customerEmail || !customerName) {
+        return res.status(400).json({ message: "Missing required payment fields" });
+      }
+      
+      const paymentRequest = {
+        amount: parseFloat(amount),
+        currency,
+        orderId,
+        description: description || `E-Visa Application - ${orderId}`,
+        customerEmail,
+        customerName,
+        returnUrl: `${process.env.REPLIT_DOMAIN || 'https://localhost:5000'}/payment-success?payment=success`,
+        cancelUrl: `${process.env.REPLIT_DOMAIN || 'https://localhost:5000'}/payment-success?payment=cancelled`
+      };
+      
+      const paymentResponse = await globiPayService.createPayment(paymentRequest);
+      
+      if (paymentResponse.success) {
+        res.json({
+          success: true,
+          paymentUrl: paymentResponse.paymentUrl,
+          transactionId: paymentResponse.transactionId
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          error: paymentResponse.error
+        });
+      }
+    } catch (error) {
+      console.error("Payment creation error:", error);
+      res.status(500).json({ message: "Payment service error" });
+    }
+  });
+  
+  // Verify payment
+  app.post("/api/payment/verify", async (req, res) => {
+    try {
+      const { transactionId, signature } = req.body;
+      
+      if (!transactionId || !signature) {
+        return res.status(400).json({ message: "Missing transaction ID or signature" });
+      }
+      
+      const isValid = await globiPayService.verifyPayment(transactionId, signature);
+      
+      res.json({
+        success: isValid,
+        status: isValid ? 'verified' : 'invalid'
+      });
+    } catch (error) {
+      console.error("Payment verification error:", error);
+      res.status(500).json({ message: "Payment verification error" });
+    }
+  });
+  
+  // Payment success callback
+  app.get("/payment/success", (req, res) => {
+    const { transaction_id, order_id } = req.query;
+    res.redirect(`/payment-success?payment=success&transaction=${transaction_id}&order=${order_id}`);
+  });
+  
+  // Payment cancel callback
+  app.get("/payment/cancel", (req, res) => {
+    const { order_id } = req.query;
+    res.redirect(`/payment-success?payment=cancelled&order=${order_id}`);
   });
 
   const httpServer = createServer(app);

@@ -49,28 +49,40 @@ export default function Insurance() {
     mutationFn: async () => {
       if (!selectedProduct) throw new Error("No product selected");
       
-      await apiRequest("POST", "/api/insurance/applications", {
+      // First create the insurance application
+      const applicationResponse = await apiRequest("POST", "/api/insurance/applications", {
         ...applicationData,
         productId: selectedProduct.id,
         totalAmount: selectedProduct.price,
       });
+      const applicationData2 = await applicationResponse.json();
+      
+      // Then create payment
+      const paymentResponse = await apiRequest("POST", "/api/payment/create", {
+        amount: selectedProduct.price,
+        currency: "USD",
+        orderId: applicationData2.applicationNumber,
+        description: `Turkey Travel Insurance - ${selectedProduct.name}`,
+        customerEmail: applicationData.email,
+        customerName: `${applicationData.firstName} ${applicationData.lastName}`
+      });
+      
+      const paymentData = await paymentResponse.json();
+      
+      if (paymentData.success && paymentData.paymentUrl) {
+        // Redirect to GlobiPay payment page
+        window.location.href = paymentData.paymentUrl;
+      } else {
+        throw new Error(paymentData.error || "Payment initialization failed");
+      }
+      
+      return applicationData2;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Application Submitted",
-        description: "Your insurance application has been submitted successfully.",
+        description: `Your insurance application number is ${data.applicationNumber}. Redirecting to payment...`,
       });
-      // Reset form
-      setApplicationData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        travelDate: "",
-        returnDate: "",
-        destination: "Turkey",
-      });
-      setSelectedProduct(null);
     },
     onError: (error) => {
       toast({

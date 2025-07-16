@@ -69,19 +69,40 @@ export function VisaForm() {
 
   const createApplicationMutation = useMutation({
     mutationFn: async (data: ApplicationFormData) => {
-      const response = await apiRequest("POST", "/api/applications", {
+      // First create the application
+      const applicationResponse = await apiRequest("POST", "/api/applications", {
         ...data,
         countryId: selectedCountry?.id,
         totalAmount: calculateTotal(),
       });
-      return response.json();
+      const applicationData = await applicationResponse.json();
+      
+      // Then create payment
+      const paymentResponse = await apiRequest("POST", "/api/payment/create", {
+        amount: calculateTotal(),
+        currency: "USD",
+        orderId: applicationData.applicationNumber,
+        description: `Turkey E-Visa Application - ${applicationData.applicationNumber}`,
+        customerEmail: data.email,
+        customerName: `${data.firstName} ${data.lastName}`
+      });
+      
+      const paymentData = await paymentResponse.json();
+      
+      if (paymentData.success && paymentData.paymentUrl) {
+        // Redirect to GlobiPay payment page
+        window.location.href = paymentData.paymentUrl;
+      } else {
+        throw new Error(paymentData.error || "Payment initialization failed");
+      }
+      
+      return applicationData;
     },
     onSuccess: (data) => {
       toast({
         title: "Application Submitted",
-        description: `Your application number is ${data.applicationNumber}`,
+        description: `Your application number is ${data.applicationNumber}. Redirecting to payment...`,
       });
-      // TODO: Redirect to payment or success page
     },
     onError: (error) => {
       toast({

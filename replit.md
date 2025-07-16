@@ -179,3 +179,13 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - Customers can click email links or manually enter application numbers to track progress
   - Complete end-to-end workflow: Application → Email → Status Tracking → Admin Management
   - **Email Template Updates**: Removed government/official references, now shows "TURKEY E-VISA" and "TURKEY TRAVEL INSURANCE" for neutral business appearance
+✓ **GlobiPay Payment Integration** (July 16, 2025):
+  - Integrated GlobiPay payment gateway using provided credentials (Merchant ID: 1100002537)
+  - RSA signature-based authentication with public/private key pair
+  - Payment endpoints: /api/payment/create, /api/payment/verify
+  - Automatic redirection to GlobiPay hosted payment page after application submission
+  - Payment success/cancel callbacks redirect to /payment-success page
+  - Both visa and insurance applications now process payments through GlobiPay
+  - Payment verification system for transaction validation
+  - Professional payment success/cancel pages with application tracking links
+  - Complete payment flow: Application → Payment → Success/Cancel → Status Tracking

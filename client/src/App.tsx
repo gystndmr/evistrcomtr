@@ -9,6 +9,7 @@ import Application from "@/pages/application";
 import Insurance from "@/pages/insurance";
 import Status from "@/pages/status";
 import Admin from "@/pages/admin";
+import PaymentSuccess from "@/pages/payment-success";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/insurance" component={Insurance} />
       <Route path="/status" component={Status} />
       <Route path="/admin" component={Admin} />
+      <Route path="/payment-success" component={PaymentSuccess} />
       <Route component={NotFound} />
     </Switch>
   );
