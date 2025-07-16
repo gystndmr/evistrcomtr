@@ -70,13 +70,22 @@ export class GloDiPayService {
       
       const paymentData = {
         merchantId: this.config.merchantId,
-        amount: request.amount.toString(),
+        amount: request.amount.toFixed(2), // Decimal format like 114.00
         currency: request.currency,
         orderRef: request.orderId,
         orderDescription: request.description,
         billingFirstName: request.customerName.split(' ')[0] || 'Customer',
         billingLastName: request.customerName.split(' ')[1] || '',
         billingEmail: request.customerEmail,
+        billingCountry: 'TR', // Add missing required field
+        billingStreet1: '', // Add missing required field
+        billingStreet2: '', // Add missing required field
+        brandName: '', // Add missing required field
+        colorMode: 'default-mode', // Add missing required field
+        feeBySeller: '0', // Add missing required field
+        logoSource: '', // Add missing required field
+        metadata: '{}', // Add missing required field
+        transactionDocuments: '{}', // Add missing required field
         cancelUrl: request.cancelUrl,
         callbackUrl: request.returnUrl,
         notificationUrl: request.returnUrl,
