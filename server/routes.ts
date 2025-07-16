@@ -127,11 +127,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const product = application.productId ? await storage.getInsuranceProduct(application.productId) : null;
         const productName = product ? product.name : 'Travel Insurance';
         
+        const { generateInsuranceReceivedEmail } = await import('./email-insurance');
         const emailContent = generateInsuranceReceivedEmail(
           application.firstName, 
           application.lastName, 
           application.applicationNumber,
-          productName
+          productName,
+          application
         );
         
         await sendEmail({

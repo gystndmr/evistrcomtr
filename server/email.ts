@@ -255,9 +255,17 @@ export function generateVisaReceivedEmail(
               </div>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="https://evisatr.xyz/status" style="background-color: #DC2626; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
+                <a href="https://evisatr.xyz/status?ref=${applicationNumber}" style="background-color: #DC2626; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
                   🔍 Check Application Status
                 </a>
+              </div>
+              
+              <div style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #cbd5e1;">
+                <h4 style="margin: 0 0 10px 0; color: #475569; font-size: 16px;">📱 Quick Status Check:</h4>
+                <p style="margin: 0; color: #64748b; font-size: 14px; line-height: 1.6;">
+                  Visit <strong>https://evisatr.xyz/status</strong> and enter your application number:<br>
+                  <span style="background-color: #e2e8f0; padding: 4px 8px; border-radius: 4px; font-family: monospace; font-weight: bold; color: #1e293b;">${applicationNumber}</span>
+                </p>
               </div>
               
               <div style="background-color: #f0f9ff; padding: 20px; border-radius: 6px; margin: 25px 0;">
@@ -451,7 +459,8 @@ export function generateInsuranceReceivedEmail(
   lastName: string,
   applicationNumber: string,
   productName: string,
-  language: string = 'tr'
+  applicationData: any,
+  language: string = 'en'
 ): { subject: string; html: string; text: string } {
   
   const turkeyFlagSvg = `
@@ -465,9 +474,9 @@ export function generateInsuranceReceivedEmail(
     </svg>
   `;
 
-  if (language === 'tr') {
+  if (language === 'en') {
     return {
-      subject: "Türkiye Seyahat Sigortası Başvurunuz Alındı",
+      subject: `[${applicationNumber}] Turkey Travel Insurance Application Received`,
       html: `
         <!DOCTYPE html>
         <html>

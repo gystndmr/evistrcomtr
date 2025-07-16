@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -8,12 +8,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Search, Download, Calendar, CreditCard, User, MapPin } from "lucide-react";
+import { Search, Download, Calendar, CreditCard, User, MapPin, CheckCircle, Clock, XCircle } from "lucide-react";
 
 export default function Status() {
   const [applicationNumber, setApplicationNumber] = useState("");
   const [searchType, setSearchType] = useState<"visa" | "insurance">("visa");
   const [shouldFetch, setShouldFetch] = useState(false);
+
+  // URL parametresi ile otomatik doldurma
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const refNumber = urlParams.get('ref');
+    if (refNumber) {
+      setApplicationNumber(refNumber);
+      setShouldFetch(true);
+    }
+  }, []);
 
   const { data: application, isLoading, error } = useQuery({
     queryKey: [searchType === "visa" ? "/api/applications" : "/api/insurance/applications", applicationNumber],
@@ -39,6 +49,36 @@ export default function Status() {
         return "bg-blue-100 text-blue-800";
       default:
         return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "approved":
+        return <CheckCircle className="w-5 h-5 text-green-600" />;
+      case "pending":
+        return <Clock className="w-5 h-5 text-yellow-600" />;
+      case "rejected":
+        return <XCircle className="w-5 h-5 text-red-600" />;
+      case "processing":
+        return <Clock className="w-5 h-5 text-blue-600" />;
+      default:
+        return <Clock className="w-5 h-5 text-gray-600" />;
+    }
+  };
+
+  const getStatusMessage = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "approved":
+        return "Your application has been approved! You can download your e-visa.";
+      case "pending":
+        return "Your application is being reviewed. Please wait for further updates.";
+      case "rejected":
+        return "Your application has been rejected. Please contact support for more information.";
+      case "processing":
+        return "Your application is currently being processed.";
+      default:
+        return "Application status is being updated.";
     }
   };
 
@@ -89,7 +129,7 @@ export default function Status() {
                     id="applicationNumber"
                     value={applicationNumber}
                     onChange={(e) => setApplicationNumber(e.target.value)}
-                    placeholder="Enter your application number (e.g., TR12345678)"
+                    placeholder="Enter your application number (e.g., TRMD57H74SN6WWYA)"
                     required
                   />
                 </div>
@@ -114,12 +154,26 @@ export default function Status() {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span>Application Details</span>
-                  <Badge className={getStatusColor(application.status)}>
-                    {application.status.toUpperCase()}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    {getStatusIcon(application.status)}
+                    <Badge className={getStatusColor(application.status)}>
+                      {application.status.toUpperCase()}
+                    </Badge>
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* Status Message */}
+                <div className={`p-4 rounded-lg border ${
+                  application.status === 'approved' ? 'bg-green-50 border-green-200' :
+                  application.status === 'pending' ? 'bg-yellow-50 border-yellow-200' :
+                  application.status === 'rejected' ? 'bg-red-50 border-red-200' :
+                  'bg-blue-50 border-blue-200'
+                }`}>
+                  <p className="text-sm font-medium text-gray-800">
+                    {getStatusMessage(application.status)}
+                  </p>
+                </div>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div className="flex items-center space-x-2">
