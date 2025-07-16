@@ -581,8 +581,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description: description || `E-Visa Application - ${orderId}`,
         customerEmail,
         customerName,
-        returnUrl: `${process.env.REPLIT_DOMAIN || 'https://localhost:5000'}/payment-success?payment=success`,
-        cancelUrl: `${process.env.REPLIT_DOMAIN || 'https://localhost:5000'}/payment-success?payment=cancelled`
+        returnUrl: `https://${process.env.REPLIT_DEV_DOMAIN || 'localhost:5000'}/payment-success?payment=success`,
+        cancelUrl: `https://${process.env.REPLIT_DEV_DOMAIN || 'localhost:5000'}/payment-success?payment=cancelled`
       };
       
       const paymentResponse = await gloDiPayService.createPayment(paymentRequest);
