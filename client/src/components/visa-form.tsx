@@ -49,6 +49,7 @@ export function VisaForm() {
   const [showPrerequisites, setShowPrerequisites] = useState(false);
   const [hasSupportingDocument, setHasSupportingDocument] = useState<boolean | null>(null);
   const [supportingDocumentDetails, setSupportingDocumentDetails] = useState<any>(null);
+  const [documentProcessingType, setDocumentProcessingType] = useState("");
   const { toast } = useToast();
 
   const form = useForm<ApplicationFormData>({
@@ -92,8 +93,28 @@ export function VisaForm() {
   });
 
   const calculateTotal = () => {
-    const baseFee = selectedCountry?.visaFee ? parseFloat(selectedCountry.visaFee) : 60;
-    const processingFee = processingTypes.find(p => p.value === form.watch("processingType"))?.price || 0;
+    const baseFee = selectedCountry?.visaFee ? parseFloat(selectedCountry.visaFee) : 35;
+    let processingFee = 0;
+    
+    if (hasSupportingDocument === true && documentProcessingType) {
+      // Document processing fees
+      const documentProcessingTypes = [
+        { value: "slow", price: 50 },
+        { value: "standard", price: 115 },
+        { value: "fast", price: 165 },
+        { value: "super_fast_24", price: 280 },
+        { value: "super_fast_12", price: 330 },
+        { value: "super_fast_4", price: 410 },
+        { value: "super_fast_1", price: 654 }
+      ];
+      
+      const selectedProcessing = documentProcessingTypes.find(p => p.value === documentProcessingType);
+      processingFee = (selectedProcessing?.price || 0) + 69; // Document PDF fee
+    } else if (hasSupportingDocument === false) {
+      // Standard processing fees for non-supporting document applications
+      processingFee = processingTypes.find(p => p.value === form.watch("processingType"))?.price || 0;
+    }
+    
     return baseFee + processingFee;
   };
 
@@ -102,6 +123,7 @@ export function VisaForm() {
     // Reset supporting document state when country changes
     setHasSupportingDocument(null);
     setSupportingDocumentDetails(null);
+    setDocumentProcessingType("");
   };
 
   const handleNextStep = () => {
@@ -257,6 +279,7 @@ export function VisaForm() {
                   <SupportingDocumentCheck
                     onHasSupportingDocument={setHasSupportingDocument}
                     onDocumentDetailsChange={setSupportingDocumentDetails}
+                    onProcessingTypeChange={setDocumentProcessingType}
                   />
                 </div>
               )}
@@ -293,7 +316,7 @@ export function VisaForm() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {processingTypes.map((type) => (
+                              {processingTypes.filter(type => hasSupportingDocument === false || type.value !== "standard").map((type) => (
                                 <SelectItem key={type.value} value={type.value}>
                                   {type.label} {type.price > 0 && `(+$${type.price})`}
                                 </SelectItem>
@@ -489,6 +512,52 @@ export function VisaForm() {
                 </div>
               )}
 
+              {/* Payment Summary */}
+              {currentStep === totalSteps && (
+                <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                  <h4 className="font-medium text-gray-900 mb-2">Payment Summary</h4>
+                  <div className="text-sm text-gray-700 space-y-1">
+                    <div className="flex justify-between">
+                      <span>Visa Fee:</span>
+                      <span>${selectedCountry?.visaFee || '35.00'}</span>
+                    </div>
+                    {hasSupportingDocument === true && documentProcessingType && (
+                      <>
+                        <div className="flex justify-between">
+                          <span>Document Processing:</span>
+                          <span>${(() => {
+                            const documentProcessingTypes = [
+                              { value: "slow", price: 50 },
+                              { value: "standard", price: 115 },
+                              { value: "fast", price: 165 },
+                              { value: "super_fast_24", price: 280 },
+                              { value: "super_fast_12", price: 330 },
+                              { value: "super_fast_4", price: 410 },
+                              { value: "super_fast_1", price: 654 }
+                            ];
+                            return documentProcessingTypes.find(p => p.value === documentProcessingType)?.price || 0;
+                          })()}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Document PDF Fee:</span>
+                          <span>$69</span>
+                        </div>
+                      </>
+                    )}
+                    {hasSupportingDocument === false && (
+                      <div className="flex justify-between">
+                        <span>Processing Fee:</span>
+                        <span>${processingTypes.find(p => p.value === form.watch("processingType"))?.price || 0}</span>
+                      </div>
+                    )}
+                    <div className="border-t pt-2 flex justify-between font-bold">
+                      <span>Total:</span>
+                      <span>${calculateTotal().toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Navigation Buttons */}
               <div className="flex justify-between mt-8">
                 {currentStep > 1 && (
@@ -498,7 +567,7 @@ export function VisaForm() {
                   </Button>
                 )}
                 
-                {currentStep < 4 ? (
+                {currentStep < totalSteps ? (
                   <Button type="button" onClick={handleNextStep} className="ml-auto">
                     Next Step
                     <ArrowRight className="w-4 h-4 ml-2" />
@@ -510,7 +579,7 @@ export function VisaForm() {
                     disabled={createApplicationMutation.isPending}
                   >
                     <CreditCard className="w-4 h-4 mr-2" />
-                    {createApplicationMutation.isPending ? "Processing..." : "Submit Application & Pay"}
+                    {createApplicationMutation.isPending ? "Processing..." : `Submit Application & Pay $${calculateTotal().toFixed(2)}`}
                   </Button>
                 )}
               </div>

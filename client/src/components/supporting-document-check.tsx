@@ -10,11 +10,13 @@ import { CheckCircle, AlertTriangle } from "lucide-react";
 interface SupportingDocumentCheckProps {
   onHasSupportingDocument: (hasDocument: boolean) => void;
   onDocumentDetailsChange: (details: any) => void;
+  onProcessingTypeChange: (processingType: string) => void;
 }
 
 export function SupportingDocumentCheck({ 
   onHasSupportingDocument, 
-  onDocumentDetailsChange 
+  onDocumentDetailsChange,
+  onProcessingTypeChange
 }: SupportingDocumentCheckProps) {
   const [hasDocument, setHasDocument] = useState<boolean | null>(null);
   const [documentType, setDocumentType] = useState("");
@@ -24,10 +26,30 @@ export function SupportingDocumentCheck({
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [isUnlimited, setIsUnlimited] = useState(false);
+  const [processingType, setProcessingType] = useState("");
+
+  const documentProcessingTypes = [
+    { value: "slow", label: "Slow Process (7 days)", price: 50 },
+    { value: "standard", label: "Standard Process (4 days)", price: 115 },
+    { value: "fast", label: "Fast Process (2 days)", price: 165 },
+    { value: "super_fast_24", label: "Super Fast - 24 hours", price: 280 },
+    { value: "super_fast_12", label: "Super Fast - 12 hours", price: 330 },
+    { value: "super_fast_4", label: "Super Fast - 4 hours", price: 410 },
+    { value: "super_fast_1", label: "Super Fast - 1 hour", price: 654 }
+  ];
 
   const handleHasDocumentChange = (value: boolean) => {
     setHasDocument(value);
     onHasSupportingDocument(value);
+    if (!value) {
+      setProcessingType("");
+      onProcessingTypeChange("");
+    }
+  };
+
+  const handleProcessingTypeChange = (type: string) => {
+    setProcessingType(type);
+    onProcessingTypeChange(type);
   };
 
   const handleDocumentTypeChange = (type: string) => {
@@ -49,6 +71,7 @@ export function SupportingDocumentCheck({
       documentNumber,
       startDate,
       endDate: isUnlimited ? "unlimited" : endDate,
+      processingType,
     };
     onDocumentDetailsChange(details);
   };
@@ -231,6 +254,39 @@ export function SupportingDocumentCheck({
                         />
                         <span className="text-sm">Unlimited</span>
                       </label>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Processing Type Selection */}
+              {documentType && (
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="processingType">Processing Type *</Label>
+                    <Select onValueChange={handleProcessingTypeChange}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select processing type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {documentProcessingTypes.map((type) => (
+                          <SelectItem key={type.value} value={type.value}>
+                            {type.label} - ${type.price}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {processingType && (
+                    <div className="bg-blue-50 p-4 rounded-lg">
+                      <h4 className="font-medium text-blue-900 mb-2">Processing Fee Summary:</h4>
+                      <div className="text-sm text-blue-800">
+                        <p>• Selected: {documentProcessingTypes.find(t => t.value === processingType)?.label}</p>
+                        <p>• Processing Fee: ${documentProcessingTypes.find(t => t.value === processingType)?.price}</p>
+                        <p>• Document PDF Fee: $69</p>
+                        <p className="font-bold">• Total Additional Cost: ${(documentProcessingTypes.find(t => t.value === processingType)?.price || 0) + 69}</p>
+                      </div>
                     </div>
                   )}
                 </div>
