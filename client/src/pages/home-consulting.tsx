@@ -1,7 +1,5 @@
 import { Link } from "wouter";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { MapPin, Phone, Mail, Calendar, Users, Star } from "lucide-react";
 
@@ -10,7 +8,6 @@ export default function HomeConsulting() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       
       {/* Hero Section */}
       <section className="relative h-[80vh] bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 overflow-hidden">
@@ -147,7 +144,13 @@ export default function HomeConsulting() {
         </div>
       </section>
 
-      <Footer />
+      {/* Simple Footer */}
+      <footer className="bg-gray-800 text-white py-8">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <p className="mb-2">© 2025 Türkiye Seyahat Danışmanlığı</p>
+          <p className="text-gray-400">info@evisatr.xyz</p>
+        </div>
+      </footer>
     </div>
   );
 }
