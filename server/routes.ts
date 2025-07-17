@@ -624,6 +624,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log('Generated signature:', signature);
       console.log('Expected signature from Baris:', 'Pq+xaOykMkFyhUEATfTWmEv/odq3wbwMArqi0UGMYhwjw6C0Gk76nT+32g2dNtmrbB6I/u/6OokPmhJxdNtFfs9yBC6RwkXK4KF+qvCYa3QNUvdve1PvJiDpk+3krIlMCnFpa1c3e0+L+IybvuGzIa/59uU1m1RLLnjRmX8m35Inuv2MYCKCyCsSwU3Y22Nf5811ihYQHYid1++6L1p8yCeBzXAJijMnc7G5E7r+5RXX0QdMWor7Bv+D8+etZxto++/LNIcJNeywj2TO6QnxpoCYAJEuoE9AYdQYruiaAnVIQfNwZ8z5iTKKb6e5SqIZo3INrUyZlOIlY0Tx/i2ZQi4+qHOtp0i/ErtbsZZ3NlfC44WsDFlc7T8NENsjCdHzoODZfO8pbHxeLb4KHllj8WNMaKgg2C9dhRiX1+XNY6ET5JJgkSYk1USNfCW2sx5E/4qKBTCPMoLFjZELa72FsiASmVMbT8qYE3ltI5KkDaBBkqk2M3bDkLIuQ5DVe5MXaRy2ipsQqzw1y4Aa0ngL/6pBHtpOZ9zpHb41nedRHy6O+vjlVTem6UuQUgCuDFk9Hote6W/qJIqYa3/DGAW02/porOTv6B0ujjNuiuK/4pOI1EavbTu8UbtU2VQUBIAIelHTh5TNQEbi+cmSCqYmW2/RvUMglr1U07pKzYmW3Ic=');
+      
+      // Now test with GPay API directly
+      console.log('=== TESTING WITH GPAY API ===');
+      try {
+        const apiResponse = await gPayService.createPayment({
+          orderRef: testData.orderRef,
+          amount: parseFloat(testData.amount),
+          currency: testData.currency,
+          orderDescription: testData.orderDescription,
+          cancelUrl: testData.cancelUrl,
+          callbackUrl: testData.callbackUrl,
+          notificationUrl: testData.notificationUrl,
+          errorUrl: testData.errorUrl,
+          paymentMethod: testData.paymentMethod,
+          feeBySeller: parseInt(testData.feeBySeller),
+          billingFirstName: testData.billingFirstName,
+          billingLastName: testData.billingLastName,
+          billingStreet1: testData.billingStreet1,
+          billingStreet2: testData.billingStreet2,
+          billingCity: "Test City",
+          billingCountry: testData.billingCountry,
+          billingEmail: testData.billingEmail,
+          merchantId: testData.merchantId
+        });
+        
+        console.log('=== GPay API Response ===');
+        console.log('API Response:', JSON.stringify(apiResponse, null, 2));
+        console.log('=== End GPay API Response ===');
+        
+      } catch (apiError) {
+        console.error('=== GPay API Error ===');
+        console.error('Error details:', apiError);
+        console.error('Error message:', apiError.message);
+        console.error('Error stack:', apiError.stack);
+        console.error('=== End GPay API Error ===');
+      }
+      
       console.log('=== END BARIS TOPAL TEST ===');
 
       res.json({
