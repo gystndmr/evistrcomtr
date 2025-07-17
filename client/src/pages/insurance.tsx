@@ -224,14 +224,22 @@ export default function Insurance() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-20 h-20 mb-6">
-              <svg width="80" height="56" viewBox="0 0 80 56" className="w-full h-full">
-                <rect width="80" height="56" fill="#E30A17"/>
-                <g fill="#FFFFFF">
-                  <circle cx="24" cy="28" r="10"/>
-                  <circle cx="28" cy="28" r="8" fill="#E30A17"/>
-                  <path d="M44 20 L49 25 L54 20 L52 27 L58 28 L52 29 L54 36 L49 31 L44 36 L46 29 L40 28 L46 27 Z"/>
-                </g>
-              </svg>
+              <div className="w-20 h-14 shadow-lg">
+                <svg width="80" height="56" viewBox="0 0 300 200" className="w-full h-full" style={{filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'}}>
+                  <defs>
+                    <linearGradient id="insuranceFlagGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style={{stopColor: '#E30A17', stopOpacity: 1}} />
+                      <stop offset="100%" style={{stopColor: '#C41E3A', stopOpacity: 1}} />
+                    </linearGradient>
+                  </defs>
+                  <rect width="300" height="200" fill="url(#insuranceFlagGradient)" rx="4"/>
+                  <g fill="#FFFFFF">
+                    <circle cx="90" cy="100" r="35" fill="#FFFFFF"/>
+                    <circle cx="103" cy="100" r="28" fill="#E30A17"/>
+                    <polygon points="165,70 175,85 192,80 185,95 200,100 185,105 192,120 175,115 165,130 170,105 155,100 170,95" fill="#FFFFFF"/>
+                  </g>
+                </svg>
+              </div>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Republic of Turkey</h1>
             <h2 className="text-xl md:text-2xl mb-2 opacity-90">Travel Insurance Services</h2>

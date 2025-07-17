@@ -24,13 +24,19 @@ export function Header() {
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-10 h-7">
-                <svg width="40" height="28" viewBox="0 0 40 28" className="w-full h-full">
-                  <rect width="40" height="28" fill="#E30A17"/>
+              <div className="w-10 h-7 shadow-sm">
+                <svg width="40" height="28" viewBox="0 0 300 200" className="w-full h-full" style={{filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))'}}>
+                  <defs>
+                    <linearGradient id="flagGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style={{stopColor: '#E30A17', stopOpacity: 1}} />
+                      <stop offset="100%" style={{stopColor: '#C41E3A', stopOpacity: 1}} />
+                    </linearGradient>
+                  </defs>
+                  <rect width="300" height="200" fill="url(#flagGradient)" rx="2"/>
                   <g fill="#FFFFFF">
-                    <circle cx="12" cy="14" r="5"/>
-                    <circle cx="14" cy="14" r="4" fill="#E30A17"/>
-                    <path d="M22 10 L24.5 12.5 L27 10 L26 13.5 L29 14 L26 14.5 L27 18 L24.5 15.5 L22 18 L23 14.5 L20 14 L23 13.5 Z"/>
+                    <circle cx="90" cy="100" r="35" fill="#FFFFFF"/>
+                    <circle cx="103" cy="100" r="28" fill="#E30A17"/>
+                    <polygon points="165,70 175,85 192,80 185,95 200,100 185,105 192,120 175,115 165,130 170,105 155,100 170,95" fill="#FFFFFF"/>
                   </g>
                 </svg>
               </div>

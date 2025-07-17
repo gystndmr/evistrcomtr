@@ -142,13 +142,19 @@ export function Footer() {
           
           <div className="text-center text-sm text-neutral-400">
             <div className="flex items-center justify-center mb-4">
-              <div className="w-8 h-5 mr-3">
-                <svg width="32" height="20" viewBox="0 0 32 20" className="w-full h-full">
-                  <rect width="32" height="20" fill="#E30A17"/>
+              <div className="w-8 h-5 mr-3 shadow-sm">
+                <svg width="32" height="20" viewBox="0 0 300 200" className="w-full h-full" style={{filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.2))'}}>
+                  <defs>
+                    <linearGradient id="footerFlagGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" style={{stopColor: '#E30A17', stopOpacity: 1}} />
+                      <stop offset="100%" style={{stopColor: '#C41E3A', stopOpacity: 1}} />
+                    </linearGradient>
+                  </defs>
+                  <rect width="300" height="200" fill="url(#footerFlagGradient)" rx="3"/>
                   <g fill="#FFFFFF">
-                    <circle cx="10" cy="10" r="3.5"/>
-                    <circle cx="11.2" cy="10" r="2.8" fill="#E30A17"/>
-                    <path d="M18 7 L20 9 L22 7 L21 10 L24 10 L21 10 L22 13 L20 11 L18 13 L19 10 L16 10 L19 10 Z"/>
+                    <circle cx="90" cy="100" r="35" fill="#FFFFFF"/>
+                    <circle cx="103" cy="100" r="28" fill="#E30A17"/>
+                    <polygon points="165,70 175,85 192,80 185,95 200,100 185,105 192,120 175,115 165,130 170,105 155,100 170,95" fill="#FFFFFF"/>
                   </g>
                 </svg>
               </div>
