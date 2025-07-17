@@ -590,7 +590,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Test signature generation with Baris Topal's working example format
   app.post("/api/payment/test-signature", async (req, res) => {
     try {
-      // Use Baris Topal's exact working example data structure + mandatory fields
+      // Use Baris Topal's exact working example data structure + mandatory customerIp
       const testData = {
         amount: "5489.75",
         billingCountry: "AD",
@@ -604,7 +604,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         cancelUrl: "https://localhost:7092/Odeme/GPayResult",
         colorMode: "default-mode",
         currency: "TRY",
-        customerId: "CUST_123456789", // Customer ID field that GPay expects
         customerIp: "127.0.0.1", // MANDATORY field from specification
         errorUrl: "https://localhost:7092/Odeme/GPayResult",
         feeBySeller: "50",
@@ -649,7 +648,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           billingCountry: testData.billingCountry,
           billingEmail: testData.billingEmail,
           customerIp: testData.customerIp, // Mandatory field
-          customerId: testData.customerId, // Customer ID field that GPay expects
           merchantId: testData.merchantId
         });
         
@@ -734,7 +732,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         billingCountry: "US", // US for USD currency
         billingEmail: customerEmail,
         customerIp: req.ip || req.connection?.remoteAddress || "127.0.0.1", // Mandatory field
-        customerId: `CUST_${finalOrderRef}`, // Customer ID field that GPay expects
         brandName: "",
         colorMode: "default-mode",
         connectionMode: "API", // GPay requirement for JSON response
