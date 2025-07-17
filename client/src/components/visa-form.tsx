@@ -55,6 +55,12 @@ export function VisaForm() {
   // Removed paymentData state - now using direct redirects
   const [showRetry, setShowRetry] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
+  const [prerequisites, setPrerequisites] = useState({
+    ordinaryPassport: false,
+    validPassport: false,
+    enterWithin3Months: false,
+    stayWithin30Days: false,
+  });
   const { toast } = useToast();
 
   const form = useForm<ApplicationFormData>({
@@ -131,7 +137,7 @@ export function VisaForm() {
     const baseFee = selectedCountry?.visaFee ? parseFloat(selectedCountry.visaFee) : 35;
     let processingFee = 0;
     
-    if (hasSupportingDocument === true && supportingDocumentDetails?.processingType) {
+    if (hasSupportingDocument === true && documentProcessingType) {
       // Document processing fees
       const documentProcessingTypes = [
         { value: "slow", price: 50 },
@@ -143,7 +149,7 @@ export function VisaForm() {
         { value: "urgent_1", price: 645 }
       ];
       
-      const selectedProcessing = documentProcessingTypes.find(p => p.value === supportingDocumentDetails.processingType);
+      const selectedProcessing = documentProcessingTypes.find(p => p.value === documentProcessingType);
       processingFee = (selectedProcessing?.price || 0) + 69; // Document PDF fee
     } else if (hasSupportingDocument === false) {
       // Standard processing fees for non-supporting document applications
@@ -197,11 +203,10 @@ export function VisaForm() {
       if (hasSupportingDocument === true) {
         // Check if supporting document details are filled
         if (!supportingDocumentDetails || 
-            !supportingDocumentDetails.documentType || 
-            !supportingDocumentDetails.processingType) {
+            !supportingDocumentDetails.documentType) {
           toast({
             title: "Missing Information",
-            description: "Please complete all supporting document fields including document type and processing type",
+            description: "Please complete all supporting document fields including document type",
             variant: "destructive",
           });
           return;
@@ -212,7 +217,6 @@ export function VisaForm() {
     // Step 3: Arrival Information
     if (currentStep === 3) {
       const arrivalDate = form.getValues("arrivalDate");
-      const processingType = form.getValues("processingType");
       
       if (!arrivalDate) {
         toast({
@@ -223,22 +227,40 @@ export function VisaForm() {
         return;
       }
       
-      if (!processingType) {
-        toast({
-          title: "Processing Type Required",
-          description: "Please select your visa processing type",
-          variant: "destructive",
-        });
-        return;
+      // Check processing type based on supporting document status
+      if (hasSupportingDocument === true) {
+        if (!documentProcessingType) {
+          toast({
+            title: "Processing Type Required",
+            description: "Please select a processing type",
+            variant: "destructive",
+          });
+          return;
+        }
+      } else if (hasSupportingDocument === false) {
+        const processingType = form.getValues("processingType");
+        if (!processingType) {
+          toast({
+            title: "Processing Type Required",
+            description: "Please select a processing type",
+            variant: "destructive",
+          });
+          return;
+        }
       }
     }
     
     // Step 4: Prerequisites (only if supporting document exists)
     if (currentStep === 4 && selectedCountry?.isEligible && hasSupportingDocument === true) {
-      if (!showPrerequisites) {
+      const allPrerequisitesMet = prerequisites.ordinaryPassport && 
+                                  prerequisites.validPassport && 
+                                  prerequisites.enterWithin3Months && 
+                                  prerequisites.stayWithin30Days;
+                                  
+      if (!allPrerequisitesMet) {
         toast({
           title: "Prerequisites Required",
-          description: "Please review and confirm the prerequisites before proceeding",
+          description: "Please confirm all prerequisites before proceeding",
           variant: "destructive",
         });
         return;
@@ -437,7 +459,6 @@ export function VisaForm() {
                   <SupportingDocumentCheck
                     onHasSupportingDocument={setHasSupportingDocument}
                     onDocumentDetailsChange={setSupportingDocumentDetails}
-                    onProcessingTypeChange={setDocumentProcessingType}
                   />
                 </div>
               )}
@@ -445,7 +466,7 @@ export function VisaForm() {
               {/* Step 3: Travel Information */}
               {currentStep === 3 && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Step 2: Travel Information</h3>
+                  <h3 className="text-lg font-semibold mb-4">Step 3: Travel Information</h3>
                   <div className="grid md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
@@ -461,30 +482,82 @@ export function VisaForm() {
                       )}
                     />
                     
-                    <FormField
-                      control={form.control}
-                      name="processingType"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Processing Type *</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select processing type" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {processingTypes.filter(type => hasSupportingDocument === false || type.value !== "standard").map((type) => (
-                                <SelectItem key={type.value} value={type.value}>
-                                  {type.label} {type.price > 0 && `(+$${type.price})`}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    {/* Processing Type for supporting document applications */}
+                    {hasSupportingDocument === true && (
+                      <div className="space-y-4">
+                        <Label htmlFor="processingType">Processing Type *</Label>
+                        <Select onValueChange={setDocumentProcessingType}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select processing type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="slow">Slow Processing (7 days) - $50</SelectItem>
+                            <SelectItem value="standard">Standard Processing (4 days) - $115</SelectItem>
+                            <SelectItem value="fast">Fast Processing (2 days) - $165</SelectItem>
+                            <SelectItem value="urgent_24">Urgent Processing (24 hours) - $280</SelectItem>
+                            <SelectItem value="urgent_12">Urgent Processing (12 hours) - $330</SelectItem>
+                            <SelectItem value="urgent_4">Urgent Processing (4 hours) - $410</SelectItem>
+                            <SelectItem value="urgent_1">Urgent Processing (1 hour) - $645</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        
+                        {documentProcessingType && (
+                          <div className="bg-blue-50 p-4 rounded-lg">
+                            <h4 className="font-medium text-blue-900 mb-2">Processing Fee Summary:</h4>
+                            <div className="text-sm text-blue-800">
+                              <p>• Selected: {documentProcessingType}</p>
+                              <p>• Processing Fee: ${
+                                documentProcessingType === "slow" ? 50 :
+                                documentProcessingType === "standard" ? 115 :
+                                documentProcessingType === "fast" ? 165 :
+                                documentProcessingType === "urgent_24" ? 280 :
+                                documentProcessingType === "urgent_12" ? 330 :
+                                documentProcessingType === "urgent_4" ? 410 :
+                                documentProcessingType === "urgent_1" ? 645 : 0
+                              }</p>
+                              <p>• Document PDF Fee: $69</p>
+                              <p className="font-bold">• Total Additional Cost: ${(
+                                documentProcessingType === "slow" ? 50 :
+                                documentProcessingType === "standard" ? 115 :
+                                documentProcessingType === "fast" ? 165 :
+                                documentProcessingType === "urgent_24" ? 280 :
+                                documentProcessingType === "urgent_12" ? 330 :
+                                documentProcessingType === "urgent_4" ? 410 :
+                                documentProcessingType === "urgent_1" ? 645 : 0
+                              ) + 69}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    {/* Standard processing type for non-supporting document applications */}
+                    {hasSupportingDocument === false && (
+                      <FormField
+                        control={form.control}
+                        name="processingType"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Processing Type *</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select processing type" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {processingTypes.filter(type => hasSupportingDocument === false || type.value !== "standard").map((type) => (
+                                  <SelectItem key={type.value} value={type.value}>
+                                    {type.label} {type.price > 0 && `(+$${type.price})`}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
                   </div>
                 </div>
               )}
@@ -498,19 +571,39 @@ export function VisaForm() {
                       <h4 className="font-medium text-blue-900 mb-2">Please confirm you meet the following criteria:</h4>
                       <div className="space-y-2">
                         <label className="flex items-center">
-                          <input type="checkbox" className="mr-2" required />
+                          <input 
+                            type="checkbox" 
+                            className="mr-2" 
+                            checked={prerequisites.ordinaryPassport}
+                            onChange={(e) => setPrerequisites({...prerequisites, ordinaryPassport: e.target.checked})}
+                          />
                           <span className="text-sm text-blue-800">You have an ordinary passport (not diplomatic or service passport)</span>
                         </label>
                         <label className="flex items-center">
-                          <input type="checkbox" className="mr-2" required />
+                          <input 
+                            type="checkbox" 
+                            className="mr-2" 
+                            checked={prerequisites.validPassport}
+                            onChange={(e) => setPrerequisites({...prerequisites, validPassport: e.target.checked})}
+                          />
                           <span className="text-sm text-blue-800">Your passport is valid for at least 6 months</span>
                         </label>
                         <label className="flex items-center">
-                          <input type="checkbox" className="mr-2" required />
+                          <input 
+                            type="checkbox" 
+                            className="mr-2" 
+                            checked={prerequisites.enterWithin3Months}
+                            onChange={(e) => setPrerequisites({...prerequisites, enterWithin3Months: e.target.checked})}
+                          />
                           <span className="text-sm text-blue-800">You will enter Turkey within 3 months of visa issuance</span>
                         </label>
                         <label className="flex items-center">
-                          <input type="checkbox" className="mr-2" required />
+                          <input 
+                            type="checkbox" 
+                            className="mr-2" 
+                            checked={prerequisites.stayWithin30Days}
+                            onChange={(e) => setPrerequisites({...prerequisites, stayWithin30Days: e.target.checked})}
+                          />
                           <span className="text-sm text-blue-800">Your stay will not exceed 30 days in a 180-day period</span>
                         </label>
                       </div>
@@ -522,7 +615,7 @@ export function VisaForm() {
                         <p>• Your e-visa will be valid for 180 days from your arrival date</p>
                         <p>• Maximum stay: 30 days per entry</p>
                         <p>• Single entry visa</p>
-                        <p>• Visa fee: ${selectedCountry?.visaFee || '60'}</p>
+                        <p>• Total cost: ${calculateTotal()}</p>
                       </div>
                     </div>
                   </div>

@@ -10,13 +10,11 @@ import { CheckCircle, AlertTriangle } from "lucide-react";
 interface SupportingDocumentCheckProps {
   onHasSupportingDocument: (hasDocument: boolean) => void;
   onDocumentDetailsChange: (details: any) => void;
-  onProcessingTypeChange: (processingType: string) => void;
 }
 
 export function SupportingDocumentCheck({ 
   onHasSupportingDocument, 
-  onDocumentDetailsChange,
-  onProcessingTypeChange
+  onDocumentDetailsChange
 }: SupportingDocumentCheckProps) {
   const [hasDocument, setHasDocument] = useState<boolean | null>(null);
   const [documentType, setDocumentType] = useState("");
@@ -28,28 +26,12 @@ export function SupportingDocumentCheck({
   const [isUnlimited, setIsUnlimited] = useState(false);
   const [processingType, setProcessingType] = useState("");
 
-  const documentProcessingTypes = [
-    { value: "slow", label: "Slow Processing (7 days)", price: 50 },
-    { value: "standard", label: "Standard Processing (4 days)", price: 115 },
-    { value: "fast", label: "Fast Processing (2 days)", price: 165 },
-    { value: "urgent_24", label: "Urgent Processing (24 hours)", price: 280 },
-    { value: "urgent_12", label: "Urgent Processing (12 hours)", price: 330 },
-    { value: "urgent_4", label: "Urgent Processing (4 hours)", price: 410 },
-    { value: "urgent_1", label: "Urgent Processing (1 hour)", price: 645 }
-  ];
-
   const handleHasDocumentChange = (value: boolean) => {
     setHasDocument(value);
     onHasSupportingDocument(value);
     if (!value) {
       setProcessingType("");
-      onProcessingTypeChange("");
     }
-  };
-
-  const handleProcessingTypeChange = (type: string) => {
-    setProcessingType(type);
-    onProcessingTypeChange(type);
   };
 
   const handleDocumentTypeChange = (type: string) => {
@@ -71,7 +53,6 @@ export function SupportingDocumentCheck({
       documentNumber,
       startDate,
       endDate: isUnlimited ? "unlimited" : endDate,
-      processingType,
     };
     onDocumentDetailsChange(details);
   };
@@ -264,38 +245,7 @@ export function SupportingDocumentCheck({
                 </div>
               )}
 
-              {/* Processing Type Selection */}
-              {documentType && (
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="processingType">Processing Type *</Label>
-                    <Select onValueChange={handleProcessingTypeChange}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select processing type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {documentProcessingTypes.map((type) => (
-                          <SelectItem key={type.value} value={type.value}>
-                            {type.label} - ${type.price}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
 
-                  {processingType && (
-                    <div className="bg-blue-50 p-4 rounded-lg">
-                      <h4 className="font-medium text-blue-900 mb-2">Processing Fee Summary:</h4>
-                      <div className="text-sm text-blue-800">
-                        <p>• Selected: {documentProcessingTypes.find(t => t.value === processingType)?.label}</p>
-                        <p>• Processing Fee: ${documentProcessingTypes.find(t => t.value === processingType)?.price}</p>
-                        <p>• Document PDF Fee: $69</p>
-                        <p className="font-bold">• Total Additional Cost: ${(documentProcessingTypes.find(t => t.value === processingType)?.price || 0) + 69}</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
 
               {documentType === "residence" && (
                 <div className="space-y-4">
