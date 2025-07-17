@@ -8,6 +8,7 @@ import evisatrLogo from "@/assets/evisatr-logo.png";
 import turkeyOfficialLogo from "@/assets/turkey-official-logo.png";
 import tursabLogo from "@/assets/tursab-logo.png";
 import newTurkeyEmblem from "@assets/ChatGPT Image 18 Tem 2025 02_01_43_1752793336494.png";
+import newTursabLogo from "@assets/ChatGPT Image 18 Tem 2025 02_03_20_1752793768129.png";
 
 export function Footer() {
   return (
@@ -163,8 +164,8 @@ export function Footer() {
                 className="w-32 h-32 flex items-center justify-center hover:opacity-80 transition-opacity"
               >
                 <img 
-                  src={tursabLogo} 
-                  alt="TURSAB - Türkiye Seyahat Acentaları Birliği" 
+                  src={newTursabLogo} 
+                  alt="TURSAB Dijital Doğrulama Sistemi - Belge No: 5778" 
                   className="w-full h-full object-contain"
                 />
               </a>
