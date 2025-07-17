@@ -597,7 +597,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         billingEmail: "hasantopal0234@gmail.com",
         billingFirstName: "Baris Hasan",
         billingLastName: "Topal",
-        billingStreet1: "Güvercintepe Mah. Tekstilkent Evleri Çimen Sok. 110 A-5 107 A D.16 Başakşehir/İstanbul",
+        billingStreet1: "abc",
         billingStreet2: "",
         brandName: "",
         callbackUrl: "https://localhost:7092/Odeme/GPayResult",
