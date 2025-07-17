@@ -339,10 +339,16 @@ export function VisaForm() {
     }
     
     setCurrentStep(currentStep + 1);
+    
+    // Scroll to top of page for better user experience
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handlePrevStep = () => {
     setCurrentStep(currentStep - 1);
+    
+    // Scroll to top of page for better user experience
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleInsuranceRedirect = () => {
@@ -819,7 +825,7 @@ export function VisaForm() {
                 )}
                 
                 {currentStep < totalSteps ? (
-                  <Button type="button" onClick={handleNextStep} className="ml-auto">
+                  <Button type="button" onClick={handleNextStep} className="ml-auto bg-primary hover:bg-primary/90 text-white">
                     Next Step
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
