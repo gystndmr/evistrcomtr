@@ -14,33 +14,46 @@ export default function DebugPayment() {
   const testPaymentAPI = async () => {
     setLoading(true);
     try {
-      const response = await apiRequest("POST", "/api/payment/create", {
-        amount: 114,
-        currency: "USD",
-        orderId: "DEBUG-TEST-" + Date.now(),
-        description: "Debug Test Payment",
-        customerEmail: "debug@test.com",
-        customerName: "Debug Test"
+      const response = await fetch("/api/payment/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: 114,
+          currency: "USD",
+          orderId: "DEBUG-TEST-" + Date.now(),
+          description: "Debug Test Payment",
+          customerEmail: "debug@test.com",
+          customerName: "Debug Test"
+        })
       });
       
       const data = await response.json();
       setResult(JSON.stringify(data, null, 2));
       
       if (data.success && data.paymentUrl) {
+        setResult(prev => prev + "\n\nRedirecting in 3 seconds...");
         setTimeout(() => {
           window.location.href = data.paymentUrl;
-        }, 2000);
+        }, 3000);
       }
     } catch (error) {
-      setResult(`Error: ${error}`);
+      setResult(`API Error: ${error instanceof Error ? error.message : String(error)}`);
     }
     setLoading(false);
   };
 
   const testDirectRedirect = () => {
     const url = `https://getvisa.gpayprocessing.com/checkout/${transactionId}`;
-    setResult(`Redirecting to: ${url}`);
-    window.location.href = url;
+    setResult(`Testing redirect to: ${url}\n\nRedirecting in 2 seconds...`);
+    setTimeout(() => {
+      try {
+        window.location.href = url;
+      } catch (error) {
+        setResult(prev => prev + `\n\nRedirect Error: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }, 2000);
   };
 
   return (
