@@ -145,14 +145,16 @@ export function Footer() {
           </div>
           
           <div className="text-center text-sm text-neutral-400">
+            {/* Official Turkish Government E-Visa Logo */}
             <div className="flex items-center justify-center mb-4">
-              <div className="w-48 h-20 shadow-sm">
-                <img src={evisatrLogo} alt="evisatr.xyz" className="w-full h-full object-contain" />
+              <div className="w-32 h-32 flex items-center justify-center">
+                <img 
+                  src={turkeyOfficialLogo} 
+                  alt="Türkiye Cumhuriyeti E-Vize" 
+                  className="w-full h-full object-contain"
+                />
               </div>
             </div>
-            
-
-            
             <p>&copy; 2024 Turkey E-Visa Application Service. All rights reserved.</p>
             <p className="mt-2">Professional Visa Application Service</p>
             <p className="mt-1 text-xs">Fast, reliable and secure visa processing</p>
