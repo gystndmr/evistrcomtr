@@ -587,45 +587,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Test signature generation with detailed JSON logging
+  // Test signature generation with Baris Topal's working example format
   app.post("/api/payment/test-signature", async (req, res) => {
     try {
+      // Use Baris Topal's exact working example data structure
       const testData = {
-        orderRef: "TEST_ORDER_001",
-        amount: "2000.00",
-        currency: "USD",
-        orderDescription: "Test payment",
-        cancelUrl: "http://localhost:5000/payment/cancel",
-        callbackUrl: "http://localhost:5000/api/payment/callback",
-        notificationUrl: "http://localhost:5000/api/payment/callback",
-        errorUrl: "http://localhost:5000/payment/cancel",
-        paymentMethod: "ALL",
-        feeBySeller: 50,
-        billingFirstName: "Test",
-        billingLastName: "User",
-        billingStreet1: "123 Main Street",
+        amount: "5489.75",
+        billingCountry: "AD",
+        billingEmail: "hasantopal0234@gmail.com",
+        billingFirstName: "Baris Hasan",
+        billingLastName: "Topal",
+        billingStreet1: "Güvercintepe Mah. Tekstilkent Evleri Çimen Sok. 110 A-5 107 A D.16 Başakşehir/İstanbul",
         billingStreet2: "",
-        billingCity: "Test City",
-        billingCountry: "US",
-        billingEmail: "test@example.com",
         brandName: "",
+        callbackUrl: "https://localhost:7092/Odeme/GPayResult",
+        cancelUrl: "https://localhost:7092/Odeme/GPayResult",
         colorMode: "default-mode",
-        connectionMode: "API",
-        merchantId: process.env.GPAY_MERCHANT_ID
+        currency: "TRY",
+        errorUrl: "https://localhost:7092/Odeme/GPayResult",
+        feeBySeller: "50",
+        logoSource: "",
+        merchantId: "1100000026",
+        metadata: "{\"key\":\"value\"}",
+        notificationUrl: "https://localhost:7092/Odeme/GPayResult",
+        orderDescription: "VIZE BASVURU",
+        orderRef: "d9750380-282d-48a3-928d-f65df184cb5f",
+        paymentMethod: "ALL",
+        transactionDocuments: "{\"key\":\"value\"}"
       };
 
-      console.log('=== TEST SIGNATURE ENDPOINT ===');
+      console.log('=== BARIS TOPAL EXACT EXAMPLE TEST ===');
       console.log('Test data before signature:', JSON.stringify(testData, null, 2));
 
       // Generate signature using our implementation
       const signature = gPayService.generateSignature(testData);
 
       console.log('Generated signature:', signature);
-      console.log('=== END TEST SIGNATURE ===');
+      console.log('Expected signature from Baris:', 'Pq+xaOykMkFyhUEATfTWmEv/odq3wbwMArqi0UGMYhwjw6C0Gk76nT+32g2dNtmrbB6I/u/6OokPmhJxdNtFfs9yBC6RwkXK4KF+qvCYa3QNUvdve1PvJiDpk+3krIlMCnFpa1c3e0+L+IybvuGzIa/59uU1m1RLLnjRmX8m35Inuv2MYCKCyCsSwU3Y22Nf5811ihYQHYid1++6L1p8yCeBzXAJijMnc7G5E7r+5RXX0QdMWor7Bv+D8+etZxto++/LNIcJNeywj2TO6QnxpoCYAJEuoE9AYdQYruiaAnVIQfNwZ8z5iTKKb6e5SqIZo3INrUyZlOIlY0Tx/i2ZQi4+qHOtp0i/ErtbsZZ3NlfC44WsDFlc7T8NENsjCdHzoODZfO8pbHxeLb4KHllj8WNMaKgg2C9dhRiX1+XNY6ET5JJgkSYk1USNfCW2sx5E/4qKBTCPMoLFjZELa72FsiASmVMbT8qYE3ltI5KkDaBBkqk2M3bDkLIuQ5DVe5MXaRy2ipsQqzw1y4Aa0ngL/6pBHtpOZ9zpHb41nedRHy6O+vjlVTem6UuQUgCuDFk9Hote6W/qJIqYa3/DGAW02/porOTv6B0ujjNuiuK/4pOI1EavbTu8UbtU2VQUBIAIelHTh5TNQEbi+cmSCqYmW2/RvUMglr1U07pKzYmW3Ic=');
+      console.log('=== END BARIS TOPAL TEST ===');
 
       res.json({
         data: testData,
         signature: signature,
+        expectedSignature: 'Pq+xaOykMkFyhUEATfTWmEv/odq3wbwMArqi0UGMYhwjw6C0Gk76nT+32g2dNtmrbB6I/u/6OokPmhJxdNtFfs9yBC6RwkXK4KF+qvCYa3QNUvdve1PvJiDpk+3krIlMCnFpa1c3e0+L+IybvuGzIa/59uU1m1RLLnjRmX8m35Inuv2MYCKCyCsSwU3Y22Nf5811ihYQHYid1++6L1p8yCeBzXAJijMnc7G5E7r+5RXX0QdMWor7Bv+D8+etZxto++/LNIcJNeywj2TO6QnxpoCYAJEuoE9AYdQYruiaAnVIQfNwZ8z5iTKKb6e5SqIZo3INrUyZlOIlY0Tx/i2ZQi4+qHOtp0i/ErtbsZZ3NlfC44WsDFlc7T8NENsjCdHzoODZfO8pbHxeLb4KHllj8WNMaKgg2C9dhRiX1+XNY6ET5JJgkSYk1USNfCW2sx5E/4qKBTCPMoLFjZELa72FsiASmVMbT8qYE3ltI5KkDaBBkqk2M3bDkLIuQ5DVe5MXaRy2ipsQqzw1y4Aa0ngL/6pBHtpOZ9zpHb41nedRHy6O+vjlVTem6UuQUgCuDFk9Hote6W/qJIqYa3/DGAW02/porOTv6B0ujjNuiuK/4pOI1EavbTu8UbtU2VQUBIAIelHTh5TNQEbi+cmSCqYmW2/RvUMglr1U07pKzYmW3Ic=',
         dataJson: JSON.stringify(testData),
         sortedKeys: Object.keys(testData).sort()
       });
