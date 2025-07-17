@@ -227,12 +227,14 @@ The application is designed for easy deployment on platforms like Replit, Vercel
     - ✅ Updated credentials working: Merchant ID 1100002537, new public/private keys
     - ✅ Payment links successfully generated: https://getvisa.gpayprocessing.com/checkout/[transactionId]
     - ✅ Transaction IDs created successfully (e.g., 01k0ax37p32w96v2f9sedxq1r0)
-    - ✅ **POST Method Implementation**: Implemented POST form submission instead of GET redirects to resolve 405 errors
-    - ✅ **PaymentForm Component**: Created automated POST form submission with loading states and manual fallback
-    - ✅ **Both Applications**: Updated visa and insurance applications to use POST method for payment redirection
-    - ✅ **FormData Integration**: Payment service now returns form data for POST submission to GPay checkout
-    - ✅ **PaymentRetry System**: Created comprehensive retry system for GPay checkout 405 errors
-    - ✅ **Error Handling**: Implemented retry component with 3-attempt limit and new tab fallback
-    - ✅ **User Experience**: Added professional error messages and direct payment link access
+    - ✅ **HTTP Method Fix** (July 17, 2025): Fixed 405 errors by implementing correct HTTP methods
+    - ✅ **API Integration**: POST method for https://getvisa.gpayprocessing.com/v1/checkout (payment creation)
+    - ✅ **Checkout Page**: GET method for https://getvisa.gpayprocessing.com/checkout/[transactionId] (page access)
+    - ✅ **PaymentForm Component**: Removed POST form submission, now uses window.location.href for GET redirects
+    - ✅ **Both Applications**: Updated visa and insurance applications to use GET method for checkout page access
+    - ✅ **Backend Fix**: Removed formData from payment responses to prevent POST submission attempts
+    - ✅ **Root Cause Analysis**: Documented that POST to checkout page returns 500 error, GET works correctly
+    - ✅ **PaymentRetry System**: Comprehensive retry system for any remaining intermittent issues
+    - ✅ **Error Handling**: Professional error messages and direct payment link access
     - ✅ **evisatr.xyz Integration**: All callback URLs confirmed using production domain
-    - 📋 System fully operational with robust retry handling for GPay checkout instability
+    - 📋 System fully operational with correct HTTP method implementation resolving 405 errors

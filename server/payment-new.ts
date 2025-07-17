@@ -187,8 +187,8 @@ export class GloDiPayService {
         return {
           success: true,
           paymentUrl: paymentUrl || `${this.config.apiUrl}/payment/${request.orderId}`,
-          transactionId: request.orderId,
-          formData: sortedParams // Include form data for POST submission
+          transactionId: request.orderId
+          // Remove formData - GPay checkout page only accepts GET method
         };
       }
 
@@ -202,8 +202,8 @@ export class GloDiPayService {
           return {
             success: true,
             paymentUrl: `${this.config.apiUrl}/v1/checkout`,
-            transactionId: request.orderId,
-            formData: sortedParams // Include form data for POST submission
+            transactionId: request.orderId
+            // Remove formData - GPay checkout page only accepts GET method
           };
         }
         
@@ -213,16 +213,16 @@ export class GloDiPayService {
           return {
             success: true,
             paymentUrl: result.paymentLink || result.paymentUrl || `${this.config.apiUrl}/checkout/${result.transactionId}`,
-            transactionId: result.transactionId || request.orderId,
-            formData: sortedParams // Include form data for POST submission
+            transactionId: result.transactionId || request.orderId
+            // Remove formData - GPay checkout page only accepts GET method
           };
         } catch {
           // Return success with response text
           return {
             success: true,
             paymentUrl: `${this.config.apiUrl}/v1/checkout`,
-            transactionId: request.orderId,
-            formData: sortedParams // Include form data for POST submission
+            transactionId: request.orderId
+            // Remove formData - GPay checkout page only accepts GET method
           };
         }
       }

@@ -75,24 +75,16 @@ export default function Insurance() {
       const paymentData = await paymentResponse.json();
       
       if (paymentData.success && paymentData.paymentUrl) {
-        // Check if we have form data for POST submission or direct URL
-        if (paymentData.formData) {
-          // POST form submission
-          setPaymentData({
-            paymentUrl: paymentData.paymentUrl,
-            formData: paymentData.formData
-          });
-        } else {
-          // Direct URL redirect (JSON response with paymentLink)
-          setCurrentOrderId(applicationData2.applicationNumber);
-          
-          // Try direct redirect first
-          try {
-            window.location.href = paymentData.paymentUrl;
-          } catch (error) {
-            // If direct redirect fails, show retry component
-            setShowRetry(true);
-          }
+        // GPay checkout page only accepts GET method
+        // Direct URL redirect using GET
+        setCurrentOrderId(applicationData2.applicationNumber);
+        
+        // Try direct redirect first
+        try {
+          window.location.href = paymentData.paymentUrl;
+        } catch (error) {
+          // If direct redirect fails, show retry component
+          setShowRetry(true);
         }
       } else {
         throw new Error(paymentData.error || "Payment initialization failed");
