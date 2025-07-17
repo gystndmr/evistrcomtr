@@ -574,6 +574,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Missing required payment fields" });
       }
       
+      // Get current domain for callback URLs
+      const currentDomain = req.get('host') || 'localhost:5000';
+      const protocol = req.secure || req.get('x-forwarded-proto') === 'https' ? 'https' : 'http';
+      const baseUrl = `${protocol}://${currentDomain}`;
+      
       const paymentRequest = {
         amount: parseFloat(amount),
         currency,
@@ -581,8 +586,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description: description || `E-Visa Application - ${orderId}`,
         customerEmail,
         customerName,
-        returnUrl: `https://evisatr.xyz/payment/success`,
-        cancelUrl: `https://evisatr.xyz/payment/cancel`
+        returnUrl: `${baseUrl}/payment-success?payment=success&order=${orderId}`,
+        cancelUrl: `${baseUrl}/payment-success?payment=cancelled&order=${orderId}`
       };
       
       const paymentResponse = await gloDiPayService.createPayment(paymentRequest);
