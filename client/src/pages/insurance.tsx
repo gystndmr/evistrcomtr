@@ -26,7 +26,7 @@ export default function Insurance() {
     returnDate: "",
     destination: "Turkey",
   });
-  const [paymentData, setPaymentData] = useState<{paymentUrl: string; formData: any} | null>(null);
+  // Removed paymentData state - now using direct redirects
   const [showRetry, setShowRetry] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
   const { toast } = useToast();
@@ -326,24 +326,10 @@ export default function Insurance() {
 
       <Footer />
       
-      {/* Payment Form Modal */}
-      {paymentData && (
-        <PaymentForm
-          paymentUrl={paymentData.paymentUrl}
-          formData={paymentData.formData}
-          onSubmit={() => {
-            toast({
-              title: "Redirecting to Payment",
-              description: "Please complete your payment on the secure payment page.",
-            });
-          }}
-        />
-      )}
-      
       {/* Payment Retry Component */}
-      {showRetry && paymentData && (
+      {showRetry && currentOrderId && (
         <PaymentRetry
-          paymentUrl={paymentData.paymentUrl}
+          paymentUrl={`https://getvisa.gpayprocessing.com/checkout/${currentOrderId}`}
           orderId={currentOrderId}
           onRetry={() => {
             setShowRetry(false);
