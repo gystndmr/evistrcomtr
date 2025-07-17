@@ -51,7 +51,8 @@ export class GPayService {
   private createRFC8259JSON(data: Record<string, any>): string {
     const escapeUnicode = (str: string): string => {
       return str.replace(/[\u0080-\uFFFF]/g, (match) => {
-        return '\\u' + ('0000' + match.charCodeAt(0).toString(16)).slice(-4);
+        const code = match.charCodeAt(0);
+        return '\\u' + ('0000' + code.toString(16).toUpperCase()).slice(-4);
       });
     };
 
@@ -71,7 +72,17 @@ export class GPayService {
     };
 
     const processedData = processValue(data);
-    return JSON.stringify(processedData);
+    const jsonResult = JSON.stringify(processedData);
+    
+    // Debug: Check for Turkish characters in the result
+    console.log('=== RFC 8259 JSON Processing ===');
+    console.log('Original orderDescription:', data.orderDescription);
+    console.log('Processed orderDescription:', processedData.orderDescription);
+    console.log('Final JSON contains Ş:', jsonResult.includes('Ş'));
+    console.log('Final JSON contains \\u015E:', jsonResult.includes('\\u015E'));
+    console.log('=== End RFC 8259 Processing ===');
+    
+    return jsonResult;
   }
 
   // Generate signature following PHP Security.php logic
