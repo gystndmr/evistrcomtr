@@ -223,12 +223,15 @@ export default function Insurance() {
       <section className="bg-gradient-to-r from-red-700 to-red-800 text-white py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-6 shadow-lg p-3">
-              <img 
-                src={turkeyFlag} 
-                alt="Republic of Turkey Flag" 
-                className="w-full h-full object-cover rounded-full"
-              />
+            <div className="inline-flex items-center justify-center w-20 h-20 mb-6">
+              <svg width="80" height="56" viewBox="0 0 80 56" className="w-full h-full">
+                <rect width="80" height="56" fill="#E30A17"/>
+                <g fill="#FFFFFF">
+                  <circle cx="24" cy="28" r="10"/>
+                  <circle cx="28" cy="28" r="8" fill="#E30A17"/>
+                  <path d="M44 20 L49 25 L54 20 L52 27 L58 28 L52 29 L54 36 L49 31 L44 36 L46 29 L40 28 L46 27 Z"/>
+                </g>
+              </svg>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Republic of Turkey</h1>
             <h2 className="text-xl md:text-2xl mb-2 opacity-90">Travel Insurance Services</h2>

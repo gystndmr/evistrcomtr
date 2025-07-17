@@ -142,23 +142,26 @@ export function Footer() {
           
           <div className="text-center text-sm text-neutral-400">
             <div className="flex items-center justify-center mb-4">
-              <div className="w-8 h-5 rounded-sm overflow-hidden mr-3">
-                <img 
-                  src={turkeyFlag} 
-                  alt="Turkey Flag" 
-                  className="w-full h-full object-cover"
-                />
+              <div className="w-8 h-5 mr-3">
+                <svg width="32" height="20" viewBox="0 0 32 20" className="w-full h-full">
+                  <rect width="32" height="20" fill="#E30A17"/>
+                  <g fill="#FFFFFF">
+                    <circle cx="10" cy="10" r="3.5"/>
+                    <circle cx="11.2" cy="10" r="2.8" fill="#E30A17"/>
+                    <path d="M18 7 L20 9 L22 7 L21 10 L24 10 L21 10 L22 13 L20 11 L18 13 L19 10 L16 10 L19 10 Z"/>
+                  </g>
+                </svg>
               </div>
               <span className="font-medium text-white">Turkey E-Visa Service</span>
             </div>
             
             {/* Official Turkish Government Emblem */}
             <div className="flex items-center justify-center mb-4">
-              <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+              <div className="w-16 h-16 flex items-center justify-center">
                 <img 
                   src={turkeyEmblem} 
                   alt="Turkish Government Emblem" 
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain filter brightness-0 invert"
                 />
               </div>
             </div>

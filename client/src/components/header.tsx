@@ -24,12 +24,15 @@ export function Header() {
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-10 h-7 rounded-sm overflow-hidden">
-                <img 
-                  src={turkeyFlag} 
-                  alt="Turkey Flag" 
-                  className="w-full h-full object-cover"
-                />
+              <div className="w-10 h-7">
+                <svg width="40" height="28" viewBox="0 0 40 28" className="w-full h-full">
+                  <rect width="40" height="28" fill="#E30A17"/>
+                  <g fill="#FFFFFF">
+                    <circle cx="12" cy="14" r="5"/>
+                    <circle cx="14" cy="14" r="4" fill="#E30A17"/>
+                    <path d="M22 10 L24.5 12.5 L27 10 L26 13.5 L29 14 L26 14.5 L27 18 L24.5 15.5 L22 18 L23 14.5 L20 14 L23 13.5 Z"/>
+                  </g>
+                </svg>
               </div>
               <div className="flex flex-col">
                 <div className="text-xl font-bold text-neutral-800">Turkey E-Visa</div>
