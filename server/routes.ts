@@ -664,11 +664,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log('=== END BARIS TOPAL TEST ===');
 
       res.json({
-        data: testData,
+        requestUrl: "https://payment-sandbox.gpayprocessing.com/v1/checkout",
+        httpMethod: "POST",
+        contentType: "application/x-www-form-urlencoded",
+        jsonPayloadForSignature: JSON.stringify(testData),
         signature: signature,
         expectedSignature: 'Pq+xaOykMkFyhUEATfTWmEv/odq3wbwMArqi0UGMYhwjw6C0Gk76nT+32g2dNtmrbB6I/u/6OokPmhJxdNtFfs9yBC6RwkXK4KF+qvCYa3QNUvdve1PvJiDpk+3krIlMCnFpa1c3e0+L+IybvuGzIa/59uU1m1RLLnjRmX8m35Inuv2MYCKCyCsSwU3Y22Nf5811ihYQHYid1++6L1p8yCeBzXAJijMnc7G5E7r+5RXX0QdMWor7Bv+D8+etZxto++/LNIcJNeywj2TO6QnxpoCYAJEuoE9AYdQYruiaAnVIQfNwZ8z5iTKKb6e5SqIZo3INrUyZlOIlY0Tx/i2ZQi4+qHOtp0i/ErtbsZZ3NlfC44WsDFlc7T8NENsjCdHzoODZfO8pbHxeLb4KHllj8WNMaKgg2C9dhRiX1+XNY6ET5JJgkSYk1USNfCW2sx5E/4qKBTCPMoLFjZELa72FsiASmVMbT8qYE3ltI5KkDaBBkqk2M3bDkLIuQ5DVe5MXaRy2ipsQqzw1y4Aa0ngL/6pBHtpOZ9zpHb41nedRHy6O+vjlVTem6UuQUgCuDFk9Hote6W/qJIqYa3/DGAW02/porOTv6B0ujjNuiuK/4pOI1EavbTu8UbtU2VQUBIAIelHTh5TNQEbi+cmSCqYmW2/RvUMglr1U07pKzYmW3Ic=',
-        dataJson: JSON.stringify(testData),
-        sortedKeys: Object.keys(testData).sort()
+        formDataParameters: testData,
+        sortedKeys: Object.keys(testData).sort(),
+        merchantId: "1100000026",
+        signatureAlgorithm: "md5WithRSAEncryption"
       });
     } catch (error) {
       console.error('Test signature error:', error);
