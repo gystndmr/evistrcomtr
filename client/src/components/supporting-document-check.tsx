@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -75,6 +75,11 @@ export function SupportingDocumentCheck({
     };
     onDocumentDetailsChange(details);
   };
+
+  // Auto-update details when any field changes
+  useEffect(() => {
+    handleDetailsChange();
+  }, [documentType, visaCountry, residenceCountry, documentNumber, startDate, endDate, isUnlimited, processingType]);
 
   const visaCountries = [
     { code: "IRL", name: "Ireland" },
@@ -349,7 +354,8 @@ export function SupportingDocumentCheck({
                   disabled={!documentNumber || (!isUnlimited && !endDate) || 
                     (documentType === "visa" && !visaCountry) || 
                     (documentType === "residence" && !residenceCountry) ||
-                    (documentType === "visa" && visaCountry === "SCHENGEN" && !startDate)
+                    (documentType === "visa" && visaCountry === "SCHENGEN" && !startDate) ||
+                    !processingType
                   }
                 >
                   Continue with Supporting Document

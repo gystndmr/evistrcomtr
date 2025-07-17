@@ -192,6 +192,19 @@ export function VisaForm() {
         window.location.href = "/insurance";
         return;
       }
+      if (hasSupportingDocument === true) {
+        // Check if supporting document details are filled
+        if (!supportingDocumentDetails || 
+            !supportingDocumentDetails.documentType || 
+            !supportingDocumentDetails.processingType) {
+          toast({
+            title: "Missing Information",
+            description: "Please complete all supporting document fields including document type and processing type",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
     }
     
     setCurrentStep(currentStep + 1);
