@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { insertApplicationSchema, insertInsuranceApplicationSchema } from "@shared/schema";
 import { z } from "zod";
 import { sendEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail, generateVisaApprovalEmail } from "./email";
-// Payment integration will be rebuilt from scratch
+import { gPayService } from "./payment-simple";
 
 function generateApplicationNumber(): string {
   const timestamp = Date.now().toString(36);
@@ -565,19 +565,203 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Payment APIs removed - will be rebuilt from scratch
+  // GPay Payment Integration - New Implementation
+  
+  // Test GPay configuration
+  app.get("/api/payment/test-config", async (req, res) => {
+    try {
+      const config = {
+        hasPublicKey: !!(process.env.GPAY_PUBLIC_KEY),
+        hasPrivateKey: !!(process.env.GPAY_PRIVATE_KEY),
+        hasMerchantId: !!(process.env.GPAY_MERCHANT_ID),
+        merchantId: process.env.GPAY_MERCHANT_ID || "Not set",
+        baseUrl: process.env.NODE_ENV === 'production' 
+          ? "https://payment.gpayprocessing.com" 
+          : "https://payment-sandbox.gpayprocessing.com",
+        environment: process.env.NODE_ENV || "development"
+      };
+      
+      res.json(config);
+    } catch (error) {
+      res.status(500).json({ error: "Configuration check failed" });
+    }
+  });
+  
+  // Create payment - following PHP merchant example
+  app.post("/api/payment/create", async (req, res) => {
+    try {
+      const { 
+        orderRef, 
+        amount, 
+        currency = "USD", 
+        orderDescription, 
+        customerEmail, 
+        customerName 
+      } = req.body;
+      
+      if (!orderRef || !amount || !customerEmail || !customerName) {
+        return res.status(400).json({ 
+          success: false, 
+          error: "Missing required fields: orderRef, amount, customerEmail, customerName" 
+        });
+      }
 
-  // Payment creation API removed
-  
-  // Payment verification API removed
-  
-  // Test callback API removed
-  
-  // Payment callback API removed
-  
-  // Payment success callback removed
-  
-  // Payment cancel callback removed
+      // Create URLs for callbacks
+      const baseUrl = process.env.NODE_ENV === 'development' 
+        ? 'http://localhost:5000' 
+        : 'https://evisatr.xyz';
+      
+      const paymentRequest = {
+        orderRef,
+        amount: parseFloat(amount.toString()),
+        currency,
+        orderDescription: orderDescription || `E-Visa Application - ${orderRef}`,
+        cancelUrl: `${baseUrl}/payment/cancel`,
+        callbackUrl: `${baseUrl}/api/payment/callback`,
+        notificationUrl: `${baseUrl}/api/payment/callback`,
+        errorUrl: `${baseUrl}/payment/cancel`,
+        paymentMethod: "ALL", // Allow all payment methods
+        feeBySeller: 50, // 50% fee by seller
+        billingFirstName: customerName.split(' ')[0] || customerName,
+        billingLastName: customerName.split(' ').slice(1).join(' ') || 'Customer',
+        billingStreet1: "Not provided",
+        billingCity: "Not provided",
+        billingCountry: "TR", // Turkey
+        billingEmail: customerEmail,
+        merchantId: "" // Will be set from environment
+      };
+
+      const response = await gPayService.createPayment(paymentRequest);
+      
+      if (response.success) {
+        res.json({
+          success: true,
+          paymentUrl: response.paymentUrl,
+          transactionId: response.transactionId
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          error: response.error
+        });
+      }
+      
+    } catch (error) {
+      console.error("Payment creation error:", error);
+      res.status(500).json({ 
+        success: false, 
+        error: "Payment service error" 
+      });
+    }
+  });
+
+  // GPay callback handler
+  app.post("/api/payment/callback", async (req, res) => {
+    try {
+      const { payload } = req.body;
+      
+      if (!payload) {
+        console.log("GPay callback: Missing payload");
+        return res.status(400).json({ message: "Missing payload" });
+      }
+
+      // Parse callback payload
+      const paymentData = gPayService.parseCallback(payload);
+      
+      if (!paymentData) {
+        console.log("GPay callback: Invalid payload format");
+        return res.status(400).json({ message: "Invalid payload format" });
+      }
+
+      console.log("GPay callback received:", paymentData);
+      
+      // Verify signature if present
+      if (paymentData.signature) {
+        const isValidSignature = gPayService.verifySignature(paymentData);
+        if (!isValidSignature) {
+          console.log("GPay callback: Invalid signature");
+          return res.status(400).json({ message: "Invalid signature" });
+        }
+      }
+
+      const { status, transactionId, amount, orderRef } = paymentData;
+      
+      // Update application status based on payment result
+      if (status === 'completed' || status === 'successful' || status === 'approved') {
+        console.log(`✅ Payment successful for order ${orderRef}: ${transactionId}`);
+        // TODO: Update application status to payment completed
+        // await storage.updateApplicationPaymentStatus(orderRef, 'completed', amount);
+      } else if (status === 'failed' || status === 'error' || status === 'declined') {
+        console.log(`❌ Payment failed for order ${orderRef}: ${transactionId}`);
+        // TODO: Update application status to payment failed
+        // await storage.updateApplicationPaymentStatus(orderRef, 'failed', amount);
+      }
+      
+      res.json({ message: "OK" });
+      
+    } catch (error) {
+      console.error("GPay callback error:", error);
+      res.status(500).json({ message: "Callback processing error" });
+    }
+  });
+
+  // Payment success page handler
+  app.get("/payment/success", async (req, res) => {
+    try {
+      const { payload } = req.query;
+      
+      if (!payload) {
+        return res.redirect(`/payment-success?payment=error&message=Missing payment data`);
+      }
+
+      const paymentData = gPayService.parseCallback(payload as string);
+      
+      if (!paymentData) {
+        return res.redirect(`/payment-success?payment=error&message=Invalid payment data`);
+      }
+
+      console.log("Payment success callback:", paymentData);
+      
+      const { status, transactionId, orderRef } = paymentData;
+      
+      if (status === 'completed' || status === 'successful' || status === 'approved') {
+        res.redirect(`/payment-success?payment=success&transaction=${transactionId}&order=${orderRef}`);
+      } else {
+        res.redirect(`/payment-success?payment=error&transaction=${transactionId}&order=${orderRef}`);
+      }
+      
+    } catch (error) {
+      console.error("Payment success callback error:", error);
+      res.redirect(`/payment-success?payment=error&message=Processing error`);
+    }
+  });
+
+  // Payment cancel page handler
+  app.get("/payment/cancel", async (req, res) => {
+    try {
+      const { payload } = req.query;
+      
+      if (!payload) {
+        return res.redirect(`/payment-success?payment=cancelled&message=Payment cancelled`);
+      }
+
+      const paymentData = gPayService.parseCallback(payload as string);
+      
+      if (!paymentData) {
+        return res.redirect(`/payment-success?payment=cancelled&message=Payment cancelled`);
+      }
+
+      console.log("Payment cancel callback:", paymentData);
+      
+      const { transactionId, orderRef } = paymentData;
+      
+      res.redirect(`/payment-success?payment=cancelled&transaction=${transactionId}&order=${orderRef}`);
+      
+    } catch (error) {
+      console.error("Payment cancel callback error:", error);
+      res.redirect(`/payment-success?payment=cancelled&message=Payment cancelled`);
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
