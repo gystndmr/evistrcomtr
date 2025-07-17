@@ -155,7 +155,7 @@ export function VisaForm() {
     }
     
     // Standard processing fees (always applies)
-    processingFee = processingTypes.find(p => p.value === form.watch("processingType"))?.price || 0;
+    processingFee = processingTypes.find(p => p.value === (form.watch("processingType") || "standard"))?.price || 25;
     
     return baseFee + documentFee + processingFee;
   };
@@ -752,7 +752,11 @@ export function VisaForm() {
                       )}
                       <div className="flex justify-between">
                         <span>Processing Fee</span>
-                        <span>${processingTypes.find(p => p.value === form.watch("processingType"))?.price || 0}</span>
+                        <span>${(() => {
+                          const processingType = form.watch("processingType") || "standard";
+                          const selectedProcessing = processingTypes.find(p => p.value === processingType);
+                          return selectedProcessing?.price || 25;
+                        })()}</span>
                       </div>
                       <div className="border-t pt-2 mt-2">
                         <div className="flex justify-between font-semibold">
@@ -806,7 +810,11 @@ export function VisaForm() {
                     )}
                     <div className="flex justify-between">
                       <span>Processing Fee:</span>
-                      <span>${processingTypes.find(p => p.value === form.watch("processingType"))?.price || 0}</span>
+                      <span>${(() => {
+                        const processingType = form.watch("processingType") || "standard";
+                        const selectedProcessing = processingTypes.find(p => p.value === processingType);
+                        return selectedProcessing?.price || 25;
+                      })()}</span>
                     </div>
                     <div className="border-t pt-2 flex justify-between font-bold">
                       <span>Total:</span>
