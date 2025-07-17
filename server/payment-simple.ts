@@ -29,6 +29,7 @@ export interface PaymentRequest {
   billingZipCode?: string;
   billingPhone?: string;
   billingEmail?: string;
+  customerIp: string; // MANDATORY field from specification
   merchantId: string;
 }
 

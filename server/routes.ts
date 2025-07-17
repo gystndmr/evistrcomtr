@@ -590,7 +590,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Test signature generation with Baris Topal's working example format
   app.post("/api/payment/test-signature", async (req, res) => {
     try {
-      // Use Baris Topal's exact working example data structure
+      // Use Baris Topal's exact working example data structure + mandatory customerIp
       const testData = {
         amount: "5489.75",
         billingCountry: "AD",
@@ -604,6 +604,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         cancelUrl: "https://localhost:7092/Odeme/GPayResult",
         colorMode: "default-mode",
         currency: "TRY",
+        customerIp: "127.0.0.1", // MANDATORY field from specification
         errorUrl: "https://localhost:7092/Odeme/GPayResult",
         feeBySeller: "50",
         logoSource: "",
@@ -646,6 +647,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           billingCity: "Test City",
           billingCountry: testData.billingCountry,
           billingEmail: testData.billingEmail,
+          customerIp: testData.customerIp, // Add mandatory field
           merchantId: testData.merchantId
         });
         
