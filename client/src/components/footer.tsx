@@ -5,6 +5,7 @@ import turkeyEmblem from "@assets/Ekran Resmi 2025-07-15 17.05.26_1752588365236.
 import turkeyLogo from "@/assets/turkey-logo.png";
 import evisaLogo from "@/assets/evisa-logo.png";
 import evisatrLogo from "@/assets/evisatr-logo.png";
+import turkeyOfficialLogo from "@/assets/turkey-official-logo.png";
 
 export function Footer() {
   return (
@@ -150,13 +151,13 @@ export function Footer() {
               </div>
             </div>
             
-            {/* Official Turkish Government Emblem */}
+            {/* Official Turkish Government E-Visa Logo */}
             <div className="flex items-center justify-center mb-4">
-              <div className="w-16 h-16 flex items-center justify-center">
+              <div className="w-32 h-32 flex items-center justify-center">
                 <img 
-                  src={turkeyEmblem} 
-                  alt="Turkish Government Emblem" 
-                  className="w-full h-full object-contain filter brightness-0 invert"
+                  src={turkeyOfficialLogo} 
+                  alt="Türkiye Cumhuriyeti E-Vize" 
+                  className="w-full h-full object-contain"
                 />
               </div>
             </div>
