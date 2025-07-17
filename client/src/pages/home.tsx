@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { IdCard, CreditCard, Download, Shield, Star, Crown, Search } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
+import turkeySymbolRed from "@/assets/turkey-symbol-red.png";
 import cappadociaImg from "../../../attached_assets/pexels-musaortac-14186574_1752590100661.jpg";
 import ephesusImg from "../../../attached_assets/pexels-hilal-tosun-54875889-33011223_1752590240668.jpg";
 import antalyaImg from "../../../attached_assets/pexels-mikhail-nilov-8322807_1752590250012.jpg";
@@ -66,11 +67,11 @@ export default function Home() {
         {/* Main Content */}
         <div className="relative z-10 flex items-center justify-center h-full">
           <div className="text-center text-white px-4 max-w-4xl mx-auto">
-            <div className="inline-flex items-center justify-center w-20 h-20 mb-8">
+            <div className="inline-flex items-center justify-center w-24 h-24 mb-8">
               <img 
-                src={turkeyFlag} 
-                alt="Turkey Flag" 
-                className="w-full h-full object-contain opacity-90 drop-shadow-2xl"
+                src={turkeySymbolRed} 
+                alt="Turkey Symbol" 
+                className="w-full h-full object-contain drop-shadow-2xl"
               />
             </div>
             
