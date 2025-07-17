@@ -2,6 +2,10 @@
 
 ## Our Working Integration (Merchant ID: 1100002537)
 
+### ✅ CORRECT HTTP METHOD USAGE:
+- **POST** → https://getvisa.gpayprocessing.com/v1/checkout (Payment creation API)
+- **GET** → https://getvisa.gpayprocessing.com/checkout/{transactionId} (Checkout page access)
+
 ### 1. Payment Creation API Call
 ```javascript
 // POST /api/payment/create
@@ -29,88 +33,92 @@ const createPayment = async (applicationData) => {
 
 ### 2. Backend Payment Service (Node.js)
 ```javascript
-// server/payment-new.ts
+// server/payment-new.ts - CORRECT IMPLEMENTATION
 import crypto from 'crypto';
 
 const MERCHANT_ID = '1100002537';
-const API_URL = 'https://getvisa.gpayprocessing.com/v1/checkout';
+const API_URL = 'https://getvisa.gpayprocessing.com'; // Base URL
 
 export const gloDiPayService = {
   async createPayment(paymentData) {
-    const transactionId = generateTransactionId();
-    
-    const requestData = {
+    // Build payment parameters
+    const parameters = {
       merchantId: MERCHANT_ID,
-      amount: paymentData.amount,
+      orderRef: paymentData.orderId,
+      amount: paymentData.amount.toFixed(2),
       currency: paymentData.currency,
-      orderId: paymentData.orderId,
-      description: paymentData.description,
-      customerEmail: paymentData.customerEmail,
-      customerName: paymentData.customerName,
-      customerIp: paymentData.customerIp || '127.0.0.1',
-      billingCountry: paymentData.billingCountry || 'TR',
-      billingStreet1: 'Test Address',
-      successUrl: `https://evisatr.xyz/payment-success?ref=${paymentData.orderId}`,
       cancelUrl: `https://evisatr.xyz/payment-cancel?ref=${paymentData.orderId}`,
-      transactionId: transactionId,
-      metadata: JSON.stringify({ applicationId: paymentData.orderId })
+      callbackUrl: `https://evisatr.xyz/payment-success?ref=${paymentData.orderId}`,
+      notificationUrl: `https://evisatr.xyz/payment-success?ref=${paymentData.orderId}`,
+      errorUrl: `https://evisatr.xyz/payment-cancel?ref=${paymentData.orderId}`,
+      orderDescription: paymentData.description,
+      paymentMethod: 'ALL',
+      billingCountry: 'TR',
+      billingCity: 'Istanbul',
+      billingStreet1: 'Default Address',
+      billingEmail: paymentData.customerEmail,
+      billingFirstName: paymentData.customerName?.split(' ')[0] || '',
+      billingLastName: paymentData.customerName?.split(' ').slice(1).join(' ') || ''
     };
 
-    // Generate signature
-    const signature = generateSignature(requestData);
-    requestData.signature = signature;
+    // Generate JSON and signature
+    const jsonData = JSON.stringify(parameters, null, 0).replace(/\//g, '\\/');
+    const signature = generateSignature(jsonData);
+    
+    // Add signature to parameters
+    parameters.signature = signature;
 
-    // Make API request
-    const response = await fetch(API_URL, {
+    // ✅ CORRECT: Use POST method to /v1/checkout for payment creation
+    const response = await fetch(`${API_URL}/v1/checkout`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
-      body: new URLSearchParams(requestData).toString()
+      body: new URLSearchParams(parameters).toString(),
+      redirect: 'manual'
     });
 
-    const result = await response.json();
-    
+    if (response.status === 302 || response.status === 301) {
+      // Success redirect
+      const paymentUrl = response.headers.get('location');
+      return {
+        success: true,
+        paymentUrl: paymentUrl, // This will be /checkout/{transactionId}
+        transactionId: paymentData.orderId
+      };
+    }
+
+    // Handle other responses
+    const responseText = await response.text();
     return {
       success: true,
-      transactionId: transactionId,
-      paymentUrl: `https://getvisa.gpayprocessing.com/checkout/${transactionId}`
+      paymentUrl: `${API_URL}/checkout/${paymentData.orderId}`,
+      transactionId: paymentData.orderId
     };
   }
 };
 
-function generateSignature(data) {
+function generateSignature(jsonData) {
   const privateKey = process.env.GPAY_PRIVATE_KEY;
-  const sortedData = Object.keys(data)
-    .filter(key => key !== 'signature')
-    .sort()
-    .reduce((obj, key) => {
-      obj[key] = data[key];
-      return obj;
-    }, {});
-
-  const queryString = Object.entries(sortedData)
-    .map(([key, value]) => `${key}=${value}`)
-    .join('&');
-
-  const sign = crypto.createSign('md5WithRSAEncryption');
-  sign.update(queryString);
-  return sign.sign(privateKey, 'base64');
+  const dataBuffer = Buffer.from(jsonData, 'utf8');
+  const signature = crypto.sign('md5WithRSAEncryption', dataBuffer, privateKey);
+  return signature.toString('base64');
 }
 ```
 
 ### 3. Frontend Payment Redirect (WORKING)
 ```javascript
-// This is the CORRECT way that works
+// ✅ CORRECT: After payment creation, redirect user to checkout page with GET
 const handlePaymentRedirect = (paymentData) => {
-  // ✅ CORRECT: Use GET redirect
+  // paymentData.paymentUrl = https://getvisa.gpayprocessing.com/checkout/{transactionId}
+  // This uses GET method to access the checkout page
   window.location.href = paymentData.paymentUrl;
-  
-  // ❌ WRONG: These cause 405/500 errors
-  // fetch(paymentData.paymentUrl, { method: 'POST' });
-  // form.submit();
-  // window.location.replace(paymentData.paymentUrl);
 };
+
+// ❌ WRONG: These cause 405/500 errors on checkout page
+// fetch(paymentData.paymentUrl, { method: 'POST' });    // 500 error
+// form.submit();                                         // May use POST
+// window.location.replace(paymentData.paymentUrl);       // May have cache issues
 ```
 
 ### 4. Payment Success/Cancel Pages
@@ -201,11 +209,25 @@ YWHKtut... (truncated for security)
 ```
 
 ## Complete Request Example
+
+### ✅ CORRECT: Payment Creation (POST to /v1/checkout)
 ```
 POST https://getvisa.gpayprocessing.com/v1/checkout
 Content-Type: application/x-www-form-urlencoded
 
-merchantId=1100002537&amount=2000&currency=USD&orderId=EVT-1752743463525&description=Turkey%20E-Visa%20Payment&customerEmail=test@example.com&customerName=Test%20Customer&customerIp=127.0.0.1&billingCountry=TR&billingStreet1=Test%20Address&successUrl=https://evisatr.xyz/payment-success&cancelUrl=https://evisatr.xyz/payment-cancel&transactionId=01k0bscw2s4pza3m8asegewrnq&metadata=%7B%22applicationId%22%3A%22EVT-1752743463525%22%7D&signature=BASE64_SIGNATURE_HERE
+merchantId=1100002537&orderRef=EVT-1752743463525&amount=20.00&currency=USD&cancelUrl=https://evisatr.xyz/payment-cancel&callbackUrl=https://evisatr.xyz/payment-success&notificationUrl=https://evisatr.xyz/payment-success&errorUrl=https://evisatr.xyz/payment-cancel&orderDescription=Turkey%20E-Visa%20Payment&paymentMethod=ALL&billingCountry=TR&billingCity=Istanbul&billingStreet1=Default%20Address&billingEmail=test@example.com&billingFirstName=Test&billingLastName=Customer&signature=BASE64_SIGNATURE_HERE
+```
+
+### ✅ CORRECT: Checkout Page Access (GET to /checkout/{transactionId})
+```
+GET https://getvisa.gpayprocessing.com/checkout/01k0bscw2s4pza3m8asegewrnq
+```
+
+### ❌ WRONG: These cause 405/500 errors
+```
+POST https://getvisa.gpayprocessing.com/checkout/01k0bscw2s4pza3m8asegewrnq  // 500 error
+PUT https://getvisa.gpayprocessing.com/checkout/01k0bscw2s4pza3m8asegewrnq   // 405 error
+DELETE https://getvisa.gpayprocessing.com/checkout/01k0bscw2s4pza3m8asegewrnq // 405 error
 ```
 
 ## Issues Found
