@@ -217,24 +217,7 @@ export class GloDiPayService {
           console.log('   Technical details: Implementation follows PHP specification exactly');
           console.log('   Status: Server-side validation issue requiring GPay support');
           
-          // Technical support contacted - using mock while resolving live API
-          console.log('💳 GPay API still returning 500 error despite technical support guidance');
-          console.log('   - Amount adjusted to < 2000 USD ✓');
-          console.log('   - Currency set to USD ✓');
-          console.log('   - Using production endpoint ✓');
-          console.log('   - Proper signature generation ✓');
-          console.log('   - Issue: Server-side 500 error requires further GPay investigation');
-          
-          // Use mock payment page while technical support investigates
-          const mockGPayUrl = `${process.env.REPLIT_DEV_DOMAIN ? `https://${process.env.REPLIT_DEV_DOMAIN}` : 'http://localhost:5000'}/mock-gpay-payment?order=${request.orderId}&amount=${request.amount}&merchant=${this.config.merchantId}&return=${encodeURIComponent(request.returnUrl)}&cancel=${encodeURIComponent(request.cancelUrl)}`;
-          
-          return {
-            success: true,
-            paymentUrl: mockGPayUrl,
-            transactionId: request.orderId
-          };
-          
-          // Original error handling remains for debugging
+          // Return proper error for debugging - no mock system
           return {
             success: false,
             error: 'Signature validation failed - requires GPay technical support'
@@ -347,5 +330,5 @@ XPO/9gMtqRwgH4BW2gnlY0AXXBWSbHJavW2i9+Wk117KmzHMRvCiC5h+A3t2JmSk
 iXf4vp52gYeOfD94UjEYSMGSa++q350iup7AbB8c2aKfgvgMO0m6/6xemxmtuU/E
 DjPZy1LIdNVuY5gNsPweK2KBzJGc
 -----END PRIVATE KEY-----`,
-  apiUrl: 'https://getvisa.gpayprocessing.com' // Use production endpoint as provided
+  apiUrl: 'https://getvisa.gpayprocessing.com'
 });
