@@ -116,6 +116,95 @@ export default function Insurance() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate all required fields
+    if (!selectedProduct) {
+      toast({
+        title: "Product Selection Required",
+        description: "Please select an insurance product before proceeding",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!applicationData.firstName.trim()) {
+      toast({
+        title: "First Name Required",
+        description: "Please enter your first name",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!applicationData.lastName.trim()) {
+      toast({
+        title: "Last Name Required", 
+        description: "Please enter your last name",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!applicationData.email.trim()) {
+      toast({
+        title: "Email Required",
+        description: "Please enter your email address",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(applicationData.email)) {
+      toast({
+        title: "Invalid Email Format",
+        description: "Please enter a valid email address",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!applicationData.phone.trim()) {
+      toast({
+        title: "Phone Number Required",
+        description: "Please enter your phone number",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!applicationData.travelDate) {
+      toast({
+        title: "Travel Date Required",
+        description: "Please enter your travel date",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!applicationData.returnDate) {
+      toast({
+        title: "Return Date Required",
+        description: "Please enter your return date",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Date validation - return date must be after travel date
+    const travelDate = new Date(applicationData.travelDate);
+    const returnDate = new Date(applicationData.returnDate);
+    
+    if (returnDate <= travelDate) {
+      toast({
+        title: "Invalid Date Range",
+        description: "Return date must be after travel date",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     createApplicationMutation.mutate();
   };
 

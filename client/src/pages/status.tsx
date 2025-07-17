@@ -32,9 +32,20 @@ export default function Status() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (applicationNumber.trim()) {
-      setShouldFetch(true);
+    
+    // Validate application number
+    if (!applicationNumber.trim()) {
+      alert("Please enter your application number");
+      return;
     }
+    
+    // Basic format validation (should be at least 6 characters)
+    if (applicationNumber.trim().length < 6) {
+      alert("Application number must be at least 6 characters long");
+      return;
+    }
+    
+    setShouldFetch(true);
   };
 
   const getStatusColor = (status: string) => {

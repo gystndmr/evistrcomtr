@@ -162,6 +162,7 @@ export function VisaForm() {
   };
 
   const handleNextStep = () => {
+    // Step 1: Country and Document Type Selection
     if (currentStep === 1) {
       if (!selectedCountry || !selectedDocumentType) {
         toast({
@@ -178,6 +179,7 @@ export function VisaForm() {
       }
     }
     
+    // Step 2: Supporting Document Check
     if (currentStep === 2) {
       if (hasSupportingDocument === null) {
         toast({
@@ -204,6 +206,113 @@ export function VisaForm() {
           });
           return;
         }
+      }
+    }
+    
+    // Step 3: Arrival Information
+    if (currentStep === 3) {
+      const arrivalDate = form.getValues("arrivalDate");
+      const processingType = form.getValues("processingType");
+      
+      if (!arrivalDate) {
+        toast({
+          title: "Arrival Date Required",
+          description: "Please enter your arrival date to Turkey",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!processingType) {
+        toast({
+          title: "Processing Type Required",
+          description: "Please select your visa processing type",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+    
+    // Step 4: Prerequisites (only if supporting document exists)
+    if (currentStep === 4 && selectedCountry?.isEligible && hasSupportingDocument === true) {
+      if (!showPrerequisites) {
+        toast({
+          title: "Prerequisites Required",
+          description: "Please review and confirm the prerequisites before proceeding",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+    
+    // Step 5: Personal Information (with supporting document) OR Step 4 (without)
+    const personalInfoStep = (selectedCountry?.isEligible && hasSupportingDocument === true) ? 5 : 4;
+    if (currentStep === personalInfoStep) {
+      const formData = form.getValues();
+      
+      if (!formData.firstName.trim()) {
+        toast({
+          title: "First Name Required",
+          description: "Please enter your first name",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!formData.lastName.trim()) {
+        toast({
+          title: "Last Name Required", 
+          description: "Please enter your last name",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!formData.email.trim()) {
+        toast({
+          title: "Email Required",
+          description: "Please enter your email address",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Email format validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        toast({
+          title: "Invalid Email Format",
+          description: "Please enter a valid email address",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!formData.phone.trim()) {
+        toast({
+          title: "Phone Number Required",
+          description: "Please enter your phone number",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!formData.passportNumber.trim()) {
+        toast({
+          title: "Passport Number Required",
+          description: "Please enter your passport number",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!formData.dateOfBirth) {
+        toast({
+          title: "Date of Birth Required",
+          description: "Please enter your date of birth",
+          variant: "destructive",
+        });
+        return;
       }
     }
     
