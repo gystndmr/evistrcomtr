@@ -3,6 +3,7 @@ import { Star } from "lucide-react";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
 import turkeyEmblem from "@assets/Ekran Resmi 2025-07-15 17.05.26_1752588365236.png";
 import turkeyLogo from "@/assets/turkey-logo.png";
+import evisaLogo from "@/assets/evisa-logo.png";
 
 export function Footer() {
   return (
@@ -143,10 +144,9 @@ export function Footer() {
           
           <div className="text-center text-sm text-neutral-400">
             <div className="flex items-center justify-center mb-4">
-              <div className="w-8 h-8 mr-3 shadow-sm">
-                <img src={turkeyLogo} alt="Turkey Coat of Arms" className="w-full h-full object-contain" />
+              <div className="w-32 h-12 mr-3 shadow-sm">
+                <img src={evisaLogo} alt="E-VISA Turkey" className="w-full h-full object-contain" />
               </div>
-              <span className="font-medium text-white">Turkey E-Visa Service</span>
             </div>
             
             {/* Official Turkish Government Emblem */}
