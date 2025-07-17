@@ -664,6 +664,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         billingEmail: customerEmail,
         brandName: "",
         colorMode: "default-mode",
+        connectionMode: "API", // GPay requirement for JSON response
         merchantId: "" // Will be set from environment
       };
 

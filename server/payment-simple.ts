@@ -128,6 +128,12 @@ export class GPayService {
         }
       });
       formData.append('signature', signature);
+      
+      // Debug: Log the form data being sent
+      console.log('=== Sending to GPay ===');
+      console.log('URL:', `${this.config.baseUrl}/v1/checkout`);
+      console.log('Form Data:', formData.toString());
+      console.log('=== End Sending Data ===');
 
       // Make POST request to GPay checkout endpoint
       const response = await fetch(`${this.config.baseUrl}/v1/checkout`, {
@@ -151,14 +157,38 @@ export class GPayService {
         }
       }
 
-      // Handle other response types
+      // Handle other response types - with connectionMode=API, expect JSON
       const responseText = await response.text();
-      console.log('GPay response:', response.status, responseText);
+      console.log('=== GPay Response Details ===');
+      console.log('Status:', response.status);
+      console.log('Response:', responseText);
+      console.log('Headers:', Object.fromEntries(response.headers.entries()));
+      console.log('=== End GPay Response ===');
 
-      return {
-        success: false,
-        error: `GPay API returned status ${response.status}: ${responseText}`
-      };
+      try {
+        // Try to parse JSON response (connectionMode=API should return JSON)
+        const jsonResponse = JSON.parse(responseText);
+        console.log('GPay JSON response:', jsonResponse);
+        
+        if (jsonResponse.success) {
+          return {
+            success: true,
+            paymentUrl: jsonResponse.paymentUrl || jsonResponse.redirect_url,
+            transactionId: request.orderRef
+          };
+        } else {
+          return {
+            success: false,
+            error: jsonResponse.error || jsonResponse.message || 'GPay API error'
+          };
+        }
+      } catch (parseError) {
+        // If not JSON, return as text error
+        return {
+          success: false,
+          error: `GPay API returned status ${response.status}: ${responseText}`
+        };
+      }
 
     } catch (error) {
       console.error('GPay payment creation error:', error);
