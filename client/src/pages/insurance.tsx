@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Shield, CheckCircle, Calendar, MapPin, Star, Crown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { PaymentForm } from "@/components/payment-form";
+// PaymentForm removed - now using direct redirects
 import { PaymentRetry } from "@/components/payment-retry";
 import type { InsuranceProduct } from "@shared/schema";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";

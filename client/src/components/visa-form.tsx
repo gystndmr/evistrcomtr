@@ -14,7 +14,7 @@ import { CountrySelector } from "./country-selector";
 import { SupportingDocs } from "./supporting-docs";
 import { SupportingDocumentCheck } from "./supporting-document-check";
 import { InsuranceModal } from "./insurance-modal";
-import { PaymentForm } from "./payment-form";
+// PaymentForm removed - now using direct redirects
 import { PaymentRetry } from "./payment-retry";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";

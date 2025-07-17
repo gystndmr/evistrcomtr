@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GPay Payment Debug</title>
+</head>
+<body>
+    <h1>GPay Payment Test</h1>
+    <button onclick="testPayment()">Test Payment Redirect</button>
+    <div id="result"></div>
+    
+    <script>
+        function testPayment() {
+            const paymentUrl = "https://getvisa.gpayprocessing.com/checkout/01k0c2zxvymffgs5q4m62cmzmx";
+            document.getElementById('result').innerHTML = "Redirecting to: " + paymentUrl;
+            
+            try {
+                window.location.href = paymentUrl;
+            } catch (error) {
+                document.getElementById('result').innerHTML = "Error: " + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
