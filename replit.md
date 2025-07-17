@@ -227,5 +227,6 @@ The application is designed for easy deployment on platforms like Replit, Vercel
     - ✅ Updated credentials working: Merchant ID 1100002537, new public/private keys
     - ✅ Payment links successfully generated: https://getvisa.gpayprocessing.com/checkout/[transactionId]
     - ✅ Transaction IDs created successfully (e.g., 01k0ax37p32w96v2f9sedxq1r0)
-    - ❌ GPay checkout page returns 405 Method Not Allowed error - requires GloDiPay technical support
-    - 📋 System fully operational except for GPay checkout page 405 error blocking payment completion
+    - ❌ GPay checkout page intermittent 405 Method Not Allowed errors - requires GloDiPay technical support
+    - 📋 System fully operational except for GPay checkout page intermittent 405 errors blocking payment completion
+    - 🔄 Checkout page sometimes returns 200 OK, sometimes 405 - server-side instability on GPay
