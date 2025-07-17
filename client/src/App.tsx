@@ -10,6 +10,7 @@ import Insurance from "@/pages/insurance";
 import Status from "@/pages/status";
 import Admin from "@/pages/admin";
 import PaymentSuccess from "@/pages/payment-success";
+import PaymentCancel from "@/pages/payment-cancel";
 import MockGPayPayment from "@/pages/mock-gpay-payment";
 import DebugPayment from "@/pages/debug-payment";
 import NotFound from "@/pages/not-found";
@@ -23,6 +24,7 @@ function Router() {
       <Route path="/status" component={Status} />
       <Route path="/admin" component={Admin} />
       <Route path="/payment-success" component={PaymentSuccess} />
+      <Route path="/payment-cancel" component={PaymentCancel} />
       <Route path="/mock-gpay-payment" component={MockGPayPayment} />
       <Route path="/debug-payment" component={DebugPayment} />
       <Route component={NotFound} />
