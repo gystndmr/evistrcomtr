@@ -36,10 +36,10 @@ const applicationSchema = z.object({
 type ApplicationFormData = z.infer<typeof applicationSchema>;
 
 const processingTypes = [
-  { value: "standard", label: "Standard Processing (5-7 days)", price: 0 },
-  { value: "fast", label: "Fast Processing (1-3 days)", price: 50 },
-  { value: "express", label: "Express Processing (24 hours)", price: 150 },
-  { value: "urgent", label: "Urgent Processing (4 hours)", price: 270 },
+  { value: "standard", label: "Standard Processing (5-7 days)", price: 25 },
+  { value: "fast", label: "Fast Processing (1-3 days)", price: 75 },
+  { value: "express", label: "Express Processing (24 hours)", price: 175 },
+  { value: "urgent", label: "Urgent Processing (4 hours)", price: 295 },
 ];
 
 export function VisaForm() {
@@ -555,9 +555,9 @@ export function VisaForm() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {processingTypes.filter(type => hasSupportingDocument === false || type.value !== "standard").map((type) => (
+                                {processingTypes.map((type) => (
                                   <SelectItem key={type.value} value={type.value}>
-                                    {type.label} {type.price > 0 && `(+$${type.price})`}
+                                    {type.label} - ${type.price}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
