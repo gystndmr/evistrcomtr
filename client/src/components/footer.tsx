@@ -61,19 +61,19 @@ export function Footer() {
             <h3 className="text-lg font-semibold mb-4">Support</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <a href="mailto:info@evisatr.xyz" className="hover:text-primary transition-colors">
                   Contact Us
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <a href="mailto:info@evisatr.xyz" className="hover:text-primary transition-colors">
                   Live Chat
-                </Link>
+                </a>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <a href="mailto:info@evisatr.xyz" className="hover:text-primary transition-colors">
                   Help Center
-                </Link>
+                </a>
               </li>
             </ul>
           </div>
