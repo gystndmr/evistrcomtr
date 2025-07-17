@@ -356,6 +356,22 @@ export function VisaForm() {
   };
 
   const onSubmit = (data: ApplicationFormData) => {
+    console.log("Form submitted with data:", data);
+    console.log("Form errors:", form.formState.errors);
+    
+    // Additional validation for payment step
+    if (currentStep === totalSteps) {
+      const errors = form.formState.errors;
+      if (Object.keys(errors).length > 0) {
+        toast({
+          title: "Form Validation Error",
+          description: "Please fill in all required fields correctly",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+    
     createApplicationMutation.mutate(data);
   };
 
@@ -807,27 +823,39 @@ export function VisaForm() {
               )}
 
               {/* Navigation Buttons */}
-              <div className="flex justify-between mt-8">
+              <div className="flex flex-col sm:flex-row justify-between gap-4 mt-8">
                 {currentStep > 1 && (
-                  <Button type="button" variant="outline" onClick={handlePrevStep}>
+                  <Button type="button" variant="outline" onClick={handlePrevStep} className="order-2 sm:order-1">
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Previous
                   </Button>
                 )}
                 
                 {currentStep < totalSteps ? (
-                  <Button type="button" onClick={handleNextStep} className="ml-auto bg-primary hover:bg-primary/90 text-white">
+                  <Button type="button" onClick={handleNextStep} className="order-1 sm:order-2 sm:ml-auto bg-primary hover:bg-primary/90 text-white">
                     Next Step
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 ) : (
                   <Button 
                     type="submit" 
-                    className="ml-auto bg-secondary hover:bg-secondary/90 whitespace-nowrap"
+                    className="order-1 sm:order-2 sm:ml-auto bg-secondary hover:bg-secondary/90 text-sm sm:text-base px-4 py-2 text-white"
                     disabled={createApplicationMutation.isPending}
+                    onClick={(e) => {
+                      console.log("Payment button clicked");
+                      console.log("Form state:", form.formState);
+                      console.log("Form errors:", form.formState.errors);
+                      console.log("Current step:", currentStep, "Total steps:", totalSteps);
+                    }}
                   >
                     <CreditCard className="w-4 h-4 mr-2" />
-                    {createApplicationMutation.isPending ? "Processing..." : `Submit Application & Pay $${calculateTotal().toFixed(2)}`}
+                    <span className="hidden sm:inline">
+                      {createApplicationMutation.isPending ? "Processing..." : "Submit Application & Pay $"}
+                    </span>
+                    <span className="sm:hidden">
+                      {createApplicationMutation.isPending ? "Processing..." : "Pay $"}
+                    </span>
+                    {!createApplicationMutation.isPending && calculateTotal().toFixed(2)}
                   </Button>
                 )}
               </div>
