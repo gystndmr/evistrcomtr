@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 
 interface PaymentFormProps {
   paymentUrl: string;
-  formData: Record<string, string>;
+  formData?: Record<string, string>;
   onSubmit?: () => void;
 }
 
@@ -11,11 +11,11 @@ export function PaymentForm({ paymentUrl, formData, onSubmit }: PaymentFormProps
 
   useEffect(() => {
     // Auto-submit the form when component mounts
-    if (formRef.current) {
+    if (formRef.current && formData) {
       onSubmit?.();
       formRef.current.submit();
     }
-  }, [onSubmit]);
+  }, [onSubmit, formData]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
@@ -32,7 +32,7 @@ export function PaymentForm({ paymentUrl, formData, onSubmit }: PaymentFormProps
         method="POST"
         style={{ display: formRef.current ? 'none' : 'block' }}
       >
-        {Object.entries(formData).map(([key, value]) => (
+        {formData && Object.entries(formData).map(([key, value]) => (
           <input
             key={key}
             type="hidden"
