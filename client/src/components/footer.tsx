@@ -151,8 +151,8 @@ export function Footer() {
             <div className="flex items-center justify-center gap-8 mb-4">
               <div className="w-32 h-32 flex items-center justify-center">
                 <img 
-                  src={turkeyOfficialLogo} 
-                  alt="Türkiye Cumhuriyeti E-Vize" 
+                  src={newTurkeyEmblem} 
+                  alt="Türkiye Cumhuriyeti Arması" 
                   className="w-full h-full object-contain"
                 />
               </div>
@@ -163,8 +163,8 @@ export function Footer() {
                 className="w-32 h-32 flex items-center justify-center hover:opacity-80 transition-opacity"
               >
                 <img 
-                  src={newTurkeyEmblem} 
-                  alt="Türkiye Cumhuriyeti Arması" 
+                  src={tursabLogo} 
+                  alt="TURSAB - Türkiye Seyahat Acentaları Birliği" 
                   className="w-full h-full object-contain"
                 />
               </a>
