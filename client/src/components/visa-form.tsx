@@ -356,13 +356,21 @@ export function VisaForm() {
   };
 
   const onSubmit = (data: ApplicationFormData) => {
+    console.log("=== FORM SUBMIT DEBUG ===");
     console.log("Form submitted with data:", data);
     console.log("Form errors:", form.formState.errors);
+    console.log("Current step:", currentStep, "Total steps:", totalSteps);
+    console.log("Form valid:", form.formState.isValid);
+    console.log("Selected country:", selectedCountry);
+    console.log("Has supporting document:", hasSupportingDocument);
+    console.log("Supporting document details:", supportingDocumentDetails);
+    console.log("=== END FORM SUBMIT DEBUG ===");
     
     // Additional validation for payment step
     if (currentStep === totalSteps) {
       const errors = form.formState.errors;
       if (Object.keys(errors).length > 0) {
+        console.log("Form validation failed:", errors);
         toast({
           title: "Form Validation Error",
           description: "Please fill in all required fields correctly",
@@ -372,6 +380,7 @@ export function VisaForm() {
       }
     }
     
+    console.log("Starting payment mutation...");
     createApplicationMutation.mutate(data);
   };
 
