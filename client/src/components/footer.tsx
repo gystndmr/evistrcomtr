@@ -28,11 +28,7 @@ export function Footer() {
                   Check Status
                 </Link>
               </li>
-              <li>
-                <Link href="/status" className="hover:text-primary transition-colors">
-                  Download E-Visa
-                </Link>
-              </li>
+
             </ul>
           </div>
           
@@ -82,17 +78,17 @@ export function Footer() {
             <h3 className="text-lg font-semibold mb-4">Legal</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link href="/terms" className="hover:text-primary transition-colors">
                   Terms & Conditions
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link href="/privacy" className="hover:text-primary transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link href="/refund" className="hover:text-primary transition-colors">
                   Refund Policy
                 </Link>
               </li>

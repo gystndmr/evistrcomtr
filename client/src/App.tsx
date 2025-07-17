@@ -16,6 +16,9 @@ import DebugPayment from "@/pages/debug-payment";
 import FAQ from "@/pages/faq";
 import Requirements from "@/pages/requirements";
 import ProcessingTimes from "@/pages/processing-times";
+import Terms from "@/pages/terms";
+import Privacy from "@/pages/privacy";
+import Refund from "@/pages/refund";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -33,6 +36,9 @@ function Router() {
       <Route path="/faq" component={FAQ} />
       <Route path="/requirements" component={Requirements} />
       <Route path="/processing-times" component={ProcessingTimes} />
+      <Route path="/terms" component={Terms} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/refund" component={Refund} />
       <Route component={NotFound} />
     </Switch>
   );
