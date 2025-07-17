@@ -60,7 +60,7 @@ export function SupportingDocumentCheck({
   // Auto-update details when any field changes
   useEffect(() => {
     handleDetailsChange();
-  }, [documentType, visaCountry, residenceCountry, documentNumber, startDate, endDate, isUnlimited, processingType]);
+  }, [documentType, visaCountry, residenceCountry, documentNumber, startDate, endDate, isUnlimited]);
 
   const visaCountries = [
     { code: "IRL", name: "Ireland" },
@@ -297,20 +297,7 @@ export function SupportingDocumentCheck({
                 </div>
               )}
 
-              {documentType && (
-                <Button 
-                  onClick={handleDetailsChange}
-                  className="w-full"
-                  disabled={!documentNumber || (!isUnlimited && !endDate) || 
-                    (documentType === "visa" && !visaCountry) || 
-                    (documentType === "residence" && !residenceCountry) ||
-                    (documentType === "visa" && visaCountry === "SCHENGEN" && !startDate) ||
-                    !processingType
-                  }
-                >
-                  Continue with Supporting Document
-                </Button>
-              )}
+
             </div>
           )}
         </CardContent>
