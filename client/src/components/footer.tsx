@@ -6,6 +6,7 @@ import turkeyLogo from "@/assets/turkey-logo.png";
 import evisaLogo from "@/assets/evisa-logo.png";
 import evisatrLogo from "@/assets/evisatr-logo.png";
 import turkeyOfficialLogo from "@/assets/turkey-official-logo.png";
+import tursabLogo from "@/assets/tursab-logo.png";
 
 export function Footer() {
   return (
@@ -145,8 +146,8 @@ export function Footer() {
           </div>
           
           <div className="text-center text-sm text-neutral-400">
-            {/* Official Turkish Government E-Visa Logo */}
-            <div className="flex items-center justify-center mb-4">
+            {/* Official Turkish Government E-Visa Logo and TURSAB */}
+            <div className="flex items-center justify-center gap-8 mb-4">
               <div className="w-32 h-32 flex items-center justify-center">
                 <img 
                   src={turkeyOfficialLogo} 
@@ -154,6 +155,18 @@ export function Footer() {
                   className="w-full h-full object-contain"
                 />
               </div>
+              <a 
+                href="https://www.tursab.org.tr/acenta-arama" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-32 h-32 flex items-center justify-center hover:opacity-80 transition-opacity"
+              >
+                <img 
+                  src={tursabLogo} 
+                  alt="TURSAB - Türkiye Seyahat Acentaları Birliği" 
+                  className="w-full h-full object-contain"
+                />
+              </a>
             </div>
             <p>&copy; 2024 Turkey E-Visa Application Service. All rights reserved.</p>
             <p className="mt-2">Professional Visa Application Service</p>
