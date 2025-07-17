@@ -667,10 +667,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           transactionId: response.transactionId
         });
       } else {
-        res.status(400).json({
+        // GPay hata mesajını direkt göster
+        res.json({
           success: false,
           error: response.error,
-          details: response.details || "GPay signature validation failed"
+          paymentUrl: response.paymentUrl || `${baseUrl}/payment-cancel?error=${encodeURIComponent(response.error)}`
         });
       }
       
