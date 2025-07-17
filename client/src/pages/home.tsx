@@ -92,13 +92,13 @@ export default function Home() {
               <Link href="/application">
                 <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-10 py-6 text-xl font-semibold shadow-2xl border-2 border-red-600 hover:border-red-700">
                   <IdCard className="w-6 h-6 mr-3" />
-                  Apply for e-Visa
+{t('home.buttons.apply')}
                 </Button>
               </Link>
               <Link href="/status">
                 <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-red-600 px-10 py-6 text-xl font-semibold bg-transparent shadow-2xl">
                   <Search className="w-6 h-6 mr-3" />
-                  Check Application Status
+{t('home.buttons.check')}
                 </Button>
               </Link>
             </div>
@@ -121,24 +121,24 @@ export default function Home() {
               <div className="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold text-xl">1</span>
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">Complete Application</h3>
-              <p className="text-sm sm:text-base text-neutral-600 px-2">Fill out the visa application form with your correct information</p>
+              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">{t('home.steps.complete')}</h3>
+              <p className="text-sm sm:text-base text-neutral-600 px-2">{t('home.steps.complete.desc')}</p>
             </div>
             
             <div className="text-center sm:flex-1 max-w-xs mx-auto sm:mx-0">
               <div className="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold text-xl">2</span>
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">Make Payment</h3>
-              <p className="text-sm sm:text-base text-neutral-600 px-2">Pay securely with your credit card or debit card</p>
+              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">{t('home.steps.payment')}</h3>
+              <p className="text-sm sm:text-base text-neutral-600 px-2">{t('home.steps.payment.desc')}</p>
             </div>
             
             <div className="text-center sm:flex-1 max-w-xs mx-auto sm:mx-0">
               <div className="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <span className="text-white font-bold text-xl">3</span>
               </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">Download E-Visa</h3>
-              <p className="text-sm sm:text-base text-neutral-600 px-2">Download your e-visa when application is completed successfully</p>
+              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">{t('home.steps.download')}</h3>
+              <p className="text-sm sm:text-base text-neutral-600 px-2">{t('home.steps.download.desc')}</p>
             </div>
           </div>
         </div>
