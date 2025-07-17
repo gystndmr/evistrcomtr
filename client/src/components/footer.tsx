@@ -8,7 +8,7 @@ import evisatrLogo from "@/assets/evisatr-logo.png";
 import turkeyOfficialLogo from "@/assets/turkey-official-logo.png";
 import tursabLogo from "@/assets/tursab-logo.png";
 import newTurkeyEmblem from "@assets/ChatGPT Image 18 Tem 2025 02_01_43_1752793336494.png";
-import newTursabLogo from "@assets/ChatGPT Image 18 Tem 2025 02_03_20_1752793768129.png";
+import newTursabLogo from "@assets/ChatGPT Image 18 Tem 2025 02_14_48_1752794298044.png";
 
 export function Footer() {
   return (
