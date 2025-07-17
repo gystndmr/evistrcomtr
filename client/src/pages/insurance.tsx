@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Shield, CheckCircle, Calendar, MapPin, Star, Crown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { PaymentForm } from "@/components/payment-form";
 import type { InsuranceProduct } from "@shared/schema";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
 
@@ -24,6 +25,7 @@ export default function Insurance() {
     returnDate: "",
     destination: "Turkey",
   });
+  const [paymentData, setPaymentData] = useState<{paymentUrl: string; formData: any} | null>(null);
   const { toast } = useToast();
 
   const { data: products = [] } = useQuery({
@@ -70,8 +72,11 @@ export default function Insurance() {
       const paymentData = await paymentResponse.json();
       
       if (paymentData.success && paymentData.paymentUrl) {
-        // Redirect to GloDiPay payment page
-        window.location.href = paymentData.paymentUrl;
+        // Set payment data for POST form submission
+        setPaymentData({
+          paymentUrl: paymentData.paymentUrl,
+          formData: paymentData.formData
+        });
       } else {
         throw new Error(paymentData.error || "Payment initialization failed");
       }
@@ -311,6 +316,20 @@ export default function Insurance() {
       </section>
 
       <Footer />
+      
+      {/* Payment Form Modal */}
+      {paymentData && (
+        <PaymentForm
+          paymentUrl={paymentData.paymentUrl}
+          formData={paymentData.formData}
+          onSubmit={() => {
+            toast({
+              title: "Redirecting to Payment",
+              description: "Please complete your payment on the secure payment page.",
+            });
+          }}
+        />
+      )}
     </div>
   );
 }

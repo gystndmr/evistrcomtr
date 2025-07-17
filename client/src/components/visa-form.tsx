@@ -14,6 +14,7 @@ import { CountrySelector } from "./country-selector";
 import { SupportingDocs } from "./supporting-docs";
 import { SupportingDocumentCheck } from "./supporting-document-check";
 import { InsuranceModal } from "./insurance-modal";
+import { PaymentForm } from "./payment-form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { ArrowLeft, ArrowRight, CreditCard } from "lucide-react";
@@ -50,6 +51,7 @@ export function VisaForm() {
   const [hasSupportingDocument, setHasSupportingDocument] = useState<boolean | null>(null);
   const [supportingDocumentDetails, setSupportingDocumentDetails] = useState<any>(null);
   const [documentProcessingType, setDocumentProcessingType] = useState("");
+  const [paymentData, setPaymentData] = useState<{paymentUrl: string; formData: any} | null>(null);
   const { toast } = useToast();
 
   const form = useForm<ApplicationFormData>({
@@ -90,8 +92,11 @@ export function VisaForm() {
       const paymentData = await paymentResponse.json();
       
       if (paymentData.success && paymentData.paymentUrl) {
-        // Redirect to GloDiPay payment page
-        window.location.href = paymentData.paymentUrl;
+        // Set payment data for POST form submission
+        setPaymentData({
+          paymentUrl: paymentData.paymentUrl,
+          formData: paymentData.formData
+        });
       } else {
         throw new Error(paymentData.error || "Payment initialization failed");
       }
@@ -615,6 +620,20 @@ export function VisaForm() {
         onClose={() => setShowInsuranceModal(false)}
         onGetInsurance={handleInsuranceRedirect}
       />
+      
+      {/* Payment Form Modal */}
+      {paymentData && (
+        <PaymentForm
+          paymentUrl={paymentData.paymentUrl}
+          formData={paymentData.formData}
+          onSubmit={() => {
+            toast({
+              title: "Redirecting to Payment",
+              description: "Please complete your payment on the secure payment page.",
+            });
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -22,6 +22,7 @@ export interface PaymentResponse {
   success: boolean;
   paymentUrl?: string;
   transactionId?: string;
+  formData?: any;
   error?: string;
 }
 
@@ -186,7 +187,8 @@ export class GloDiPayService {
         return {
           success: true,
           paymentUrl: paymentUrl || `${this.config.apiUrl}/payment/${request.orderId}`,
-          transactionId: request.orderId
+          transactionId: request.orderId,
+          formData: sortedParams // Include form data for POST submission
         };
       }
 
@@ -200,7 +202,8 @@ export class GloDiPayService {
           return {
             success: true,
             paymentUrl: `${this.config.apiUrl}/v1/checkout`,
-            transactionId: request.orderId
+            transactionId: request.orderId,
+            formData: sortedParams // Include form data for POST submission
           };
         }
         
@@ -209,15 +212,17 @@ export class GloDiPayService {
           const result = JSON.parse(responseText);
           return {
             success: true,
-            paymentUrl: result.paymentUrl || `${this.config.apiUrl}/payment/${request.orderId}`,
-            transactionId: result.transactionId || request.orderId
+            paymentUrl: result.paymentLink || result.paymentUrl || `${this.config.apiUrl}/checkout/${result.transactionId}`,
+            transactionId: result.transactionId || request.orderId,
+            formData: sortedParams // Include form data for POST submission
           };
         } catch {
           // Return success with response text
           return {
             success: true,
             paymentUrl: `${this.config.apiUrl}/v1/checkout`,
-            transactionId: request.orderId
+            transactionId: request.orderId,
+            formData: sortedParams // Include form data for POST submission
           };
         }
       }
