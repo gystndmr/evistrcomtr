@@ -329,6 +329,16 @@ export default function Admin() {
                                 </Button>
                               </div>
                             )}
+                            {app.status === "approved" && (
+                              <div className="text-green-600 font-medium">
+                                ✓ Onaylandı & E-posta Gönderildi
+                              </div>
+                            )}
+                            {app.status === "rejected" && (
+                              <div className="text-red-600 font-medium">
+                                ✗ Reddedildi & E-posta Gönderildi
+                              </div>
+                            )}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -397,6 +407,16 @@ export default function Admin() {
                                   <XCircle className="w-4 h-4 mr-1" />
                                   Reddet
                                 </Button>
+                              </div>
+                            )}
+                            {app.status === "approved" && (
+                              <div className="text-green-600 font-medium">
+                                ✓ Onaylandı & E-posta Gönderildi
+                              </div>
+                            )}
+                            {app.status === "rejected" && (
+                              <div className="text-red-600 font-medium">
+                                ✗ Reddedildi & E-posta Gönderildi
                               </div>
                             )}
                           </TableCell>

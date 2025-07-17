@@ -131,19 +131,19 @@ export function VisaForm() {
     const baseFee = selectedCountry?.visaFee ? parseFloat(selectedCountry.visaFee) : 35;
     let processingFee = 0;
     
-    if (hasSupportingDocument === true && documentProcessingType) {
+    if (hasSupportingDocument === true && supportingDocumentDetails?.processingType) {
       // Document processing fees
       const documentProcessingTypes = [
         { value: "slow", price: 50 },
         { value: "standard", price: 115 },
         { value: "fast", price: 165 },
-        { value: "super_fast_24", price: 280 },
-        { value: "super_fast_12", price: 330 },
-        { value: "super_fast_4", price: 410 },
-        { value: "super_fast_1", price: 654 }
+        { value: "urgent_24", price: 280 },
+        { value: "urgent_12", price: 330 },
+        { value: "urgent_4", price: 410 },
+        { value: "urgent_1", price: 645 }
       ];
       
-      const selectedProcessing = documentProcessingTypes.find(p => p.value === documentProcessingType);
+      const selectedProcessing = documentProcessingTypes.find(p => p.value === supportingDocumentDetails.processingType);
       processingFee = (selectedProcessing?.price || 0) + 69; // Document PDF fee
     } else if (hasSupportingDocument === false) {
       // Standard processing fees for non-supporting document applications
@@ -679,7 +679,7 @@ export function VisaForm() {
                       <span>Visa Fee:</span>
                       <span>${selectedCountry?.visaFee || '35.00'}</span>
                     </div>
-                    {hasSupportingDocument === true && documentProcessingType && (
+                    {hasSupportingDocument === true && supportingDocumentDetails?.processingType && (
                       <>
                         <div className="flex justify-between">
                           <span>Document Processing:</span>
@@ -688,12 +688,12 @@ export function VisaForm() {
                               { value: "slow", price: 50 },
                               { value: "standard", price: 115 },
                               { value: "fast", price: 165 },
-                              { value: "super_fast_24", price: 280 },
-                              { value: "super_fast_12", price: 330 },
-                              { value: "super_fast_4", price: 410 },
-                              { value: "super_fast_1", price: 654 }
+                              { value: "urgent_24", price: 280 },
+                              { value: "urgent_12", price: 330 },
+                              { value: "urgent_4", price: 410 },
+                              { value: "urgent_1", price: 645 }
                             ];
-                            return documentProcessingTypes.find(p => p.value === documentProcessingType)?.price || 0;
+                            return documentProcessingTypes.find(p => p.value === supportingDocumentDetails.processingType)?.price || 0;
                           })()}</span>
                         </div>
                         <div className="flex justify-between">
@@ -733,7 +733,7 @@ export function VisaForm() {
                 ) : (
                   <Button 
                     type="submit" 
-                    className="ml-auto bg-secondary hover:bg-secondary/90"
+                    className="ml-auto bg-secondary hover:bg-secondary/90 whitespace-nowrap"
                     disabled={createApplicationMutation.isPending}
                   >
                     <CreditCard className="w-4 h-4 mr-2" />

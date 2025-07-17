@@ -29,13 +29,13 @@ export function SupportingDocumentCheck({
   const [processingType, setProcessingType] = useState("");
 
   const documentProcessingTypes = [
-    { value: "slow", label: "Slow Process (7 days)", price: 50 },
-    { value: "standard", label: "Standard Process (4 days)", price: 115 },
-    { value: "fast", label: "Fast Process (2 days)", price: 165 },
-    { value: "super_fast_24", label: "Super Fast - 24 hours", price: 280 },
-    { value: "super_fast_12", label: "Super Fast - 12 hours", price: 330 },
-    { value: "super_fast_4", label: "Super Fast - 4 hours", price: 410 },
-    { value: "super_fast_1", label: "Super Fast - 1 hour", price: 654 }
+    { value: "slow", label: "Slow Processing (7 days)", price: 50 },
+    { value: "standard", label: "Standard Processing (4 days)", price: 115 },
+    { value: "fast", label: "Fast Processing (2 days)", price: 165 },
+    { value: "urgent_24", label: "Urgent Processing (24 hours)", price: 280 },
+    { value: "urgent_12", label: "Urgent Processing (12 hours)", price: 330 },
+    { value: "urgent_4", label: "Urgent Processing (4 hours)", price: 410 },
+    { value: "urgent_1", label: "Urgent Processing (1 hour)", price: 645 }
   ];
 
   const handleHasDocumentChange = (value: boolean) => {

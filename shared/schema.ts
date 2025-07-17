@@ -35,6 +35,7 @@ export const applications = pgTable("applications", {
   status: text("status").notNull().default("pending"),
   totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull(),
   paymentStatus: text("payment_status").notNull().default("pending"),
+  pdfAttachment: text("pdf_attachment"), // For admin uploaded PDF files
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -64,6 +65,7 @@ export const insuranceApplications = pgTable("insurance_applications", {
   totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull(),
   paymentStatus: text("payment_status").notNull().default("pending"),
   status: text("status").notNull().default("pending"),
+  pdfAttachment: text("pdf_attachment"), // For admin uploaded PDF files
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
