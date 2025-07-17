@@ -84,7 +84,7 @@ export function VisaForm() {
       const applicationResponse = await apiRequest("POST", "/api/applications", {
         ...data,
         countryId: selectedCountry?.id,
-        totalAmount: calculateTotal(),
+        totalAmount: calculateTotal().toString(),
       });
       const applicationData = await applicationResponse.json();
       
@@ -356,31 +356,6 @@ export function VisaForm() {
   };
 
   const onSubmit = (data: ApplicationFormData) => {
-    console.log("=== FORM SUBMIT DEBUG ===");
-    console.log("Form submitted with data:", data);
-    console.log("Form errors:", form.formState.errors);
-    console.log("Current step:", currentStep, "Total steps:", totalSteps);
-    console.log("Form valid:", form.formState.isValid);
-    console.log("Selected country:", selectedCountry);
-    console.log("Has supporting document:", hasSupportingDocument);
-    console.log("Supporting document details:", supportingDocumentDetails);
-    console.log("=== END FORM SUBMIT DEBUG ===");
-    
-    // Additional validation for payment step
-    if (currentStep === totalSteps) {
-      const errors = form.formState.errors;
-      if (Object.keys(errors).length > 0) {
-        console.log("Form validation failed:", errors);
-        toast({
-          title: "Form Validation Error",
-          description: "Please fill in all required fields correctly",
-          variant: "destructive",
-        });
-        return;
-      }
-    }
-    
-    console.log("Starting payment mutation...");
     createApplicationMutation.mutate(data);
   };
 
@@ -757,10 +732,29 @@ export function VisaForm() {
                         <span>E-Visa Application Fee</span>
                         <span>${selectedCountry?.visaFee || "60.00"}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Processing Fee</span>
-                        <span>${processingTypes.find(p => p.value === form.watch("processingType"))?.price || 0}</span>
-                      </div>
+                      {hasSupportingDocument === true && supportingDocumentDetails?.processingType && (
+                        <div className="flex justify-between">
+                          <span>PDF Document Fee</span>
+                          <span>${(() => {
+                            const documentProcessingTypes = [
+                              { value: "slow", price: 50 },
+                              { value: "standard", price: 115 },
+                              { value: "fast", price: 165 },
+                              { value: "urgent_24", price: 280 },
+                              { value: "urgent_12", price: 330 },
+                              { value: "urgent_4", price: 410 },
+                              { value: "urgent_1", price: 645 }
+                            ];
+                            return documentProcessingTypes.find(p => p.value === supportingDocumentDetails.processingType)?.price || 0;
+                          })()}</span>
+                        </div>
+                      )}
+                      {hasSupportingDocument === false && (
+                        <div className="flex justify-between">
+                          <span>Processing Fee</span>
+                          <span>${processingTypes.find(p => p.value === form.watch("processingType"))?.price || 0}</span>
+                        </div>
+                      )}
                       <div className="border-t pt-2 mt-2">
                         <div className="flex justify-between font-semibold">
                           <span>Total Amount</span>
@@ -852,14 +846,17 @@ export function VisaForm() {
                     disabled={createApplicationMutation.isPending}
                     onClick={(e) => {
                       e.preventDefault();
-                      alert("Buton çalışıyor! GPay'e yönlendiriliyor...");
                       
                       // Form validation kontrolü
                       const formData = form.getValues();
                       const errors = form.formState.errors;
                       
                       if (Object.keys(errors).length > 0) {
-                        alert("Form hatası var: " + JSON.stringify(errors));
+                        toast({
+                          title: "Form Validation Error",
+                          description: "Please fill in all required fields correctly",
+                          variant: "destructive",
+                        });
                         return;
                       }
                       
