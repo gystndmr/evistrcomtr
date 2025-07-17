@@ -66,11 +66,11 @@ export default function Home() {
         {/* Main Content */}
         <div className="relative z-10 flex items-center justify-center h-full">
           <div className="text-center text-white px-4 max-w-4xl mx-auto">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-8 shadow-2xl p-3">
+            <div className="inline-flex items-center justify-center w-20 h-20 mb-8">
               <img 
                 src={turkeyFlag} 
                 alt="Turkey Flag" 
-                className="w-full h-full object-cover rounded-full"
+                className="w-full h-full object-contain opacity-90 drop-shadow-2xl"
               />
             </div>
             
