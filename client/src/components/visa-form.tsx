@@ -92,11 +92,17 @@ export function VisaForm() {
       const paymentData = await paymentResponse.json();
       
       if (paymentData.success && paymentData.paymentUrl) {
-        // Set payment data for POST form submission
-        setPaymentData({
-          paymentUrl: paymentData.paymentUrl,
-          formData: paymentData.formData
-        });
+        // Check if we have form data for POST submission or direct URL
+        if (paymentData.formData) {
+          // POST form submission
+          setPaymentData({
+            paymentUrl: paymentData.paymentUrl,
+            formData: paymentData.formData
+          });
+        } else {
+          // Direct URL redirect (JSON response with paymentLink)
+          window.location.href = paymentData.paymentUrl;
+        }
       } else {
         throw new Error(paymentData.error || "Payment initialization failed");
       }
