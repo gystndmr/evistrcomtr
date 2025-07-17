@@ -661,19 +661,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const response = await gPayService.createPayment(paymentRequest);
       
       if (response.success) {
-        // For sandbox testing, create a mock successful payment URL
-        const mockSuccessUrl = `${baseUrl}/payment-success?payment=success&transaction=${response.transactionId}&order=${orderRef}`;
-        
         res.json({
           success: true,
-          paymentUrl: mockSuccessUrl,
-          transactionId: response.transactionId,
-          note: "Sandbox test - signature validation pending with GPay team"
+          paymentUrl: response.paymentUrl,
+          transactionId: response.transactionId
         });
       } else {
         res.status(400).json({
           success: false,
-          error: response.error
+          error: response.error,
+          details: response.details || "GPay signature validation failed"
         });
       }
       
