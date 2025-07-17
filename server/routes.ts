@@ -4,8 +4,7 @@ import { storage } from "./storage";
 import { insertApplicationSchema, insertInsuranceApplicationSchema } from "@shared/schema";
 import { z } from "zod";
 import { sendEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail, generateVisaApprovalEmail } from "./email";
-import { gloDiPayService } from "./payment-new";
-import { testGPayCheckoutBehavior, analyzeGPay405Error } from "./gpay-debug";
+// Payment integration will be rebuilt from scratch
 
 function generateApplicationNumber(): string {
   const timestamp = Date.now().toString(36);
