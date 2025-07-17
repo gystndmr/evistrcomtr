@@ -30,6 +30,7 @@ export interface PaymentRequest {
   billingPhone?: string;
   billingEmail?: string;
   customerIp: string; // MANDATORY field from specification
+  customerId?: string; // Customer ID field that GPay expects
   merchantId: string;
 }
 
