@@ -40,17 +40,17 @@ export function Footer() {
             <h3 className="text-lg font-semibold mb-4">Information</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link href="/faq" className="hover:text-primary transition-colors">
                   FAQ
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link href="/requirements" className="hover:text-primary transition-colors">
                   Requirements
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-primary transition-colors">
+                <Link href="/processing-times" className="hover:text-primary transition-colors">
                   Processing Times
                 </Link>
               </li>

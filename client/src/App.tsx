@@ -13,6 +13,9 @@ import PaymentSuccess from "@/pages/payment-success";
 import PaymentCancel from "@/pages/payment-cancel";
 import MockGPayPayment from "@/pages/mock-gpay-payment";
 import DebugPayment from "@/pages/debug-payment";
+import FAQ from "@/pages/faq";
+import Requirements from "@/pages/requirements";
+import ProcessingTimes from "@/pages/processing-times";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -27,6 +30,9 @@ function Router() {
       <Route path="/payment-cancel" component={PaymentCancel} />
       <Route path="/mock-gpay-payment" component={MockGPayPayment} />
       <Route path="/debug-payment" component={DebugPayment} />
+      <Route path="/faq" component={FAQ} />
+      <Route path="/requirements" component={Requirements} />
+      <Route path="/processing-times" component={ProcessingTimes} />
       <Route component={NotFound} />
     </Switch>
   );
