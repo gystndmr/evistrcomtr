@@ -47,119 +47,84 @@ export class GPayService {
     this.config = config;
   }
 
-  // Create RFC 8259 compliant JSON with proper Unicode escaping
-  private createRFC8259JSON(data: Record<string, any>): string {
-    const escapeUnicode = (str: string): string => {
-      return str.replace(/[\u0080-\uFFFF]/g, (match) => {
-        const code = match.charCodeAt(0);
-        return '\\u' + ('0000' + code.toString(16).toUpperCase()).slice(-4);
-      });
-    };
+  // Trim recursively like PHP trim
+  private trimRecursive(obj: any): any {
+    if (typeof obj !== 'object' || obj === null) {
+      return typeof obj === 'string' ? obj.trim() : obj;
+    }
 
-    const processValue = (value: any): any => {
-      if (typeof value === 'string') {
-        return escapeUnicode(value);
-      } else if (Array.isArray(value)) {
-        return value.map(processValue);
-      } else if (typeof value === 'object' && value !== null) {
-        const result: Record<string, any> = {};
-        Object.keys(value).forEach(key => {
-          result[key] = processValue(value[key]);
-        });
-        return result;
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.trimRecursive(item));
+    }
+
+    const result: Record<string, any> = {};
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        result[key] = this.trimRecursive(obj[key]);
       }
-      return value;
-    };
-
-    const processedData = processValue(data);
-    const jsonResult = JSON.stringify(processedData);
-    
-    // Debug: Check for Turkish characters in the result
-    console.log('=== RFC 8259 JSON Processing ===');
-    console.log('Original orderDescription:', data.orderDescription);
-    console.log('Processed orderDescription:', processedData.orderDescription);
-    console.log('Final JSON contains Ş:', jsonResult.includes('Ş'));
-    console.log('Final JSON contains \\u015E:', jsonResult.includes('\\u015E'));
-    console.log('=== End RFC 8259 Processing ===');
-    
-    return jsonResult;
+    }
+    return result;
   }
 
-  // Generate signature following PHP Security.php logic
+  // Generate signature exactly like the provided Node.js example
   public generateSignature(data: Record<string, any>): string {
-    // Remove signature field if exists
-    const cleanData = { ...data };
-    delete cleanData.signature;
-
-    // Sort keys naturally (like PHP ksort)
-    const sortedKeys = Object.keys(cleanData).sort();
-    const sortedData: Record<string, any> = {};
+    // Clone data to avoid modifying original
+    const clonedData = JSON.parse(JSON.stringify(data));
     
-    sortedKeys.forEach(key => {
-      const value = cleanData[key];
-      // Trim string values (like PHP trim)
-      sortedData[key] = typeof value === 'string' ? value.trim() : value;
+    // Convert all numbers to strings (like in the example)
+    Object.keys(clonedData).forEach(key => {
+      if (typeof clonedData[key] === 'number') {
+        clonedData[key] = String(clonedData[key]);
+      }
     });
-
-    // Create JSON string with proper Unicode escaping following RFC 8259
-    const jsonString = this.createRFC8259JSON(sortedData);
     
-    console.log('=== Inside generateSignature ===');
+    // Sort keys with localeCompare like in the example
+    const sortedData: Record<string, any> = {};
+    Object.keys(clonedData)
+      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
+      .forEach(key => {
+        sortedData[key] = clonedData[key];
+      });
+    
+    // Apply recursive trimming like in the example
+    const trimmedData = this.trimRecursive(sortedData);
+    
+    // Create JSON and escape forward slashes like in the example
+    const jsonData = JSON.stringify(trimmedData).replace(/\//g, '\\/');
+    
+    console.log('=== Signature Generation (Node.js Example Style) ===');
     console.log('Original data:', JSON.stringify(data, null, 2));
-    console.log('Clean data (no signature):', JSON.stringify(cleanData, null, 2));
-    console.log('Sorted keys:', sortedKeys);
-    console.log('Sorted data:', JSON.stringify(sortedData, null, 2));
-    console.log('JSON string for signing (RFC 8259):', jsonString);
-    console.log('Unicode test - checking for Turkish characters in orderDescription:', data.orderDescription || 'N/A');
-    console.log('=== End generateSignature ===');
+    console.log('After number conversion:', JSON.stringify(clonedData, null, 2));
+    console.log('After sorting:', JSON.stringify(sortedData, null, 2));
+    console.log('After trimming:', JSON.stringify(trimmedData, null, 2));
+    console.log('Final JSON for signing:', jsonData);
+    console.log('=== End Signature Generation ===');
     
     // Sign with private key using md5WithRSAEncryption
     const sign = crypto.createSign('md5WithRSAEncryption');
-    sign.update(jsonString);
+    sign.update(jsonData);
     const signature = sign.sign(this.config.privateKey, 'base64');
     
     return signature;
   }
 
-  // Verify signature for callbacks
+  // Verify signature for callbacks using same logic as generateSignature
   public verifySignature(data: Record<string, any>): boolean {
     const signature = data.signature;
     if (!signature) {
       return false;
     }
 
-    // Remove signature from data
-    const cleanData = { ...data };
-    delete cleanData.signature;
-
-    // Sort and trim like generateSignature
-    const sortedKeys = Object.keys(cleanData).sort();
-    const sortedData: Record<string, any> = {};
+    // Use the same signature generation logic
+    const expectedSignature = this.generateSignature(data);
     
-    sortedKeys.forEach(key => {
-      const value = cleanData[key];
-      sortedData[key] = typeof value === 'string' ? value.trim() : value;
-    });
-
-    // Create JSON string with proper Unicode escaping following RFC 8259
-    const jsonString = this.createRFC8259JSON(sortedData);
-    
-    // Verify with public key
-    const verify = crypto.createVerify('md5WithRSAEncryption');
-    verify.update(jsonString);
-    
-    try {
-      return verify.verify(this.config.publicKey, signature, 'base64');
-    } catch (error) {
-      console.error('Signature verification error:', error);
-      return false;
-    }
+    return signature === expectedSignature;
   }
 
   // Create payment following PHP PaymentConfirmation.php logic
   async createPayment(request: PaymentRequest): Promise<PaymentResponse> {
     try {
-      // Add merchantId to request
+      // Add merchantId to request - ONLY use fields that exist in request
       const paymentData = {
         ...request,
         merchantId: this.config.merchantId

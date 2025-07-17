@@ -732,9 +732,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         billingCountry: "US", // US for USD currency
         billingEmail: customerEmail,
         customerIp: req.ip || req.connection?.remoteAddress || "127.0.0.1", // Mandatory field
-        brandName: "",
-        colorMode: "default-mode",
-        connectionMode: "API", // GPay requirement for JSON response
         merchantId: "" // Will be set from environment
       };
 
