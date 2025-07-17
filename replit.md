@@ -253,8 +253,14 @@ The application is designed for easy deployment on platforms like Replit, Vercel
    - ✅ **Production Ready**: System fully operational with real transaction IDs and payment processing
    - ✅ **Production Deployment Complete** (July 17, 2025): Successfully transitioned to production credentials
      - Production Merchant ID: 1100002537
-     - Production API endpoint: https://payment.gpayprocessing.com
+     - Production API endpoint: https://getvisa.gpayprocessing.com (DNS fixed)
      - Production domain callbacks: https://evisatr.xyz
      - Real amount processing (no longer hardcoded to 2000)
      - Signature generation working with production private key
      - System ready for live deployment on evisatr.xyz
+     - ✅ **DNS Issue Resolution** (July 17, 2025): Fixed payment.gpayprocessing.com DNS problem
+       - Switched to working endpoint: getvisa.gpayprocessing.com
+       - Same SSL certificate, same API functionality
+       - Payment URL generation now working successfully
+       - Transaction IDs created: 01k0cnza3xhmnja0rdzsr8kxnj (example)
+       - System fully operational for both visa and insurance payments

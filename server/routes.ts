@@ -576,7 +576,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         hasMerchantId: !!(process.env.GPAY_MERCHANT_ID),
         merchantId: process.env.GPAY_MERCHANT_ID || "Not set",
         baseUrl: (process.env.NODE_ENV === 'production' || process.env.GPAY_MERCHANT_ID === '1100002537')
-          ? "https://payment.gpayprocessing.com" 
+          ? "https://getvisa.gpayprocessing.com" 
           : "https://payment-sandbox.gpayprocessing.com",
         environment: process.env.NODE_ENV || "development"
       };

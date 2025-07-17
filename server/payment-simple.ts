@@ -243,7 +243,7 @@ function getGPayConfig(): GPayConfig {
   
   return {
     baseUrl: isProduction 
-      ? "https://payment.gpayprocessing.com" 
+      ? "https://getvisa.gpayprocessing.com" 
       : "https://payment-sandbox.gpayprocessing.com",
     merchantId: process.env.GPAY_MERCHANT_ID || "xxxxxxxxxx",
     publicKey: process.env.GPAY_PUBLIC_KEY || "",
