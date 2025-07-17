@@ -7,6 +7,7 @@ import evisaLogo from "@/assets/evisa-logo.png";
 import evisatrLogo from "@/assets/evisatr-logo.png";
 import turkeyOfficialLogo from "@/assets/turkey-official-logo.png";
 import tursabLogo from "@/assets/tursab-logo.png";
+import newTurkeyEmblem from "@assets/ChatGPT Image 18 Tem 2025 02_01_43_1752793336494.png";
 
 export function Footer() {
   return (
@@ -162,8 +163,8 @@ export function Footer() {
                 className="w-32 h-32 flex items-center justify-center hover:opacity-80 transition-opacity"
               >
                 <img 
-                  src={tursabLogo} 
-                  alt="TURSAB - Türkiye Seyahat Acentaları Birliği" 
+                  src={newTurkeyEmblem} 
+                  alt="Türkiye Cumhuriyeti Arması" 
                   className="w-full h-full object-contain"
                 />
               </a>
