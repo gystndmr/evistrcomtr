@@ -140,7 +140,7 @@ export function VisaForm() {
     let documentFee = 0;
     
     if (hasSupportingDocument === true && documentProcessingType) {
-      // Document PDF fees
+      // Document PDF fees (supporting document processing)
       const documentProcessingTypes = [
         { value: "slow", price: 50 },
         { value: "standard", price: 115 },
@@ -153,10 +153,11 @@ export function VisaForm() {
       
       const selectedProcessing = documentProcessingTypes.find(p => p.value === documentProcessingType);
       documentFee = selectedProcessing?.price || 0;
+    } else {
+      // Standard e-visa processing fees (when no supporting document)
+      const selectedProcessingType = form.watch("processingType") || "standard";
+      processingFee = processingTypes.find(p => p.value === selectedProcessingType)?.price || 25;
     }
-    
-    // Standard processing fees (always applies)
-    processingFee = processingTypes.find(p => p.value === (form.watch("processingType") || "standard"))?.price || 25;
     
     return baseFee + documentFee + processingFee;
   };
@@ -755,9 +756,13 @@ export function VisaForm() {
                       <div className="flex justify-between">
                         <span>Processing Fee</span>
                         <span>${(() => {
-                          const processingType = form.watch("processingType") || "standard";
-                          const selectedProcessing = processingTypes.find(p => p.value === processingType);
-                          return selectedProcessing?.price || 25;
+                          if (hasSupportingDocument === true) {
+                            return 0; // No separate processing fee for supporting documents
+                          } else {
+                            const processingType = form.watch("processingType") || "standard";
+                            const selectedProcessing = processingTypes.find(p => p.value === processingType);
+                            return selectedProcessing?.price || 25;
+                          }
                         })()}</span>
                       </div>
                       <div className="border-t pt-2 mt-2">
@@ -813,9 +818,13 @@ export function VisaForm() {
                     <div className="flex justify-between">
                       <span>Processing Fee:</span>
                       <span>${(() => {
-                        const processingType = form.watch("processingType") || "standard";
-                        const selectedProcessing = processingTypes.find(p => p.value === processingType);
-                        return selectedProcessing?.price || 25;
+                        if (hasSupportingDocument === true) {
+                          return 0; // No separate processing fee for supporting documents
+                        } else {
+                          const processingType = form.watch("processingType") || "standard";
+                          const selectedProcessing = processingTypes.find(p => p.value === processingType);
+                          return selectedProcessing?.price || 25;
+                        }
                       })()}</span>
                     </div>
                     <div className="border-t pt-2 flex justify-between font-bold">

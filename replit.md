@@ -281,3 +281,10 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - **Real-time Feedback**: Error messages with specific field requirements
   - **Business Critical**: Ensures complete customer data collection before payment processing
   - **Auto-validation**: Supporting document fields update automatically on selection changes
+✅ **Processing Fee System Correction** (July 17, 2025):
+  - Fixed processing fee calculation to reflect Step 3 selections accurately
+  - **Updated Processing Fee Structure**: Standard $25, Fast $75, Express $175, Urgent $295
+  - **Supporting Document Logic**: PDF Document Fee includes processing (no separate processing fee shown)
+  - **Non-Supporting Document Logic**: Separate processing fee based on Step 3 selection
+  - **Payment Display**: Processing fees now correctly reflect user's Step 3 processing type choice
+  - **calculateTotal Function**: Properly differentiates between supporting document and regular processing fees
