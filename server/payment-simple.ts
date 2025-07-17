@@ -47,6 +47,33 @@ export class GPayService {
     this.config = config;
   }
 
+  // Create RFC 8259 compliant JSON with proper Unicode escaping
+  private createRFC8259JSON(data: Record<string, any>): string {
+    const escapeUnicode = (str: string): string => {
+      return str.replace(/[\u0080-\uFFFF]/g, (match) => {
+        return '\\u' + ('0000' + match.charCodeAt(0).toString(16)).slice(-4);
+      });
+    };
+
+    const processValue = (value: any): any => {
+      if (typeof value === 'string') {
+        return escapeUnicode(value);
+      } else if (Array.isArray(value)) {
+        return value.map(processValue);
+      } else if (typeof value === 'object' && value !== null) {
+        const result: Record<string, any> = {};
+        Object.keys(value).forEach(key => {
+          result[key] = processValue(value[key]);
+        });
+        return result;
+      }
+      return value;
+    };
+
+    const processedData = processValue(data);
+    return JSON.stringify(processedData);
+  }
+
   // Generate signature following PHP Security.php logic
   public generateSignature(data: Record<string, any>): string {
     // Remove signature field if exists
@@ -63,15 +90,16 @@ export class GPayService {
       sortedData[key] = typeof value === 'string' ? value.trim() : value;
     });
 
-    // Create JSON string with escaped characters (like Baris example)
-    const jsonString = JSON.stringify(sortedData);
+    // Create JSON string with proper Unicode escaping following RFC 8259
+    const jsonString = this.createRFC8259JSON(sortedData);
     
     console.log('=== Inside generateSignature ===');
     console.log('Original data:', JSON.stringify(data, null, 2));
     console.log('Clean data (no signature):', JSON.stringify(cleanData, null, 2));
     console.log('Sorted keys:', sortedKeys);
     console.log('Sorted data:', JSON.stringify(sortedData, null, 2));
-    console.log('JSON string for signing:', jsonString);
+    console.log('JSON string for signing (RFC 8259):', jsonString);
+    console.log('Unicode test - checking for Turkish characters in orderDescription:', data.orderDescription || 'N/A');
     console.log('=== End generateSignature ===');
     
     // Sign with private key using md5WithRSAEncryption
@@ -102,7 +130,8 @@ export class GPayService {
       sortedData[key] = typeof value === 'string' ? value.trim() : value;
     });
 
-    const jsonString = JSON.stringify(sortedData);
+    // Create JSON string with proper Unicode escaping following RFC 8259
+    const jsonString = this.createRFC8259JSON(sortedData);
     
     // Verify with public key
     const verify = crypto.createVerify('md5WithRSAEncryption');

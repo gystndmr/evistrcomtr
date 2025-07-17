@@ -611,7 +611,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         merchantId: "1100000026",
         metadata: "{\"key\":\"value\"}",
         notificationUrl: "https://localhost:7092/Odeme/GPayResult",
-        orderDescription: "VIZE BASVURU",
+        orderDescription: "VIZE BAŞVURU",
         orderRef: "d9750380-282d-48a3-928d-f65df184cb5f",
         paymentMethod: "ALL",
         transactionDocuments: "{\"key\":\"value\"}"
