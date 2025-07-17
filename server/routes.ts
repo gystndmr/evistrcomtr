@@ -619,17 +619,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { 
         orderRef, 
+        orderId, // Support both orderRef and orderId
         amount, 
         currency = "USD", 
         orderDescription, 
+        description, // Support both orderDescription and description
         customerEmail, 
         customerName 
       } = req.body;
       
-      if (!orderRef || !amount || !customerEmail || !customerName) {
+      // Use orderRef or orderId (support both)
+      const finalOrderRef = orderRef || orderId;
+      const finalDescription = orderDescription || description;
+      
+      if (!finalOrderRef || !customerEmail || !customerName) {
         return res.status(400).json({ 
           success: false, 
-          error: "Missing required fields: orderRef, amount, customerEmail, customerName" 
+          error: "Missing required fields: orderRef/orderId, customerEmail, customerName" 
         });
       }
 
@@ -639,10 +645,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         : 'https://evisatr.xyz';
       
       const paymentRequest = {
-        orderRef,
-        amount: parseFloat(amount.toString()),
-        currency,
-        orderDescription: orderDescription || `E-Visa Application - ${orderRef}`,
+        orderRef: finalOrderRef,
+        amount: "2000.00", // Test amount as requested
+        currency: "USD", // Fixed currency
+        orderDescription: finalDescription || `E-Visa Application - ${finalOrderRef}`,
         cancelUrl: `${baseUrl}/payment/cancel`,
         callbackUrl: `${baseUrl}/api/payment/callback`,
         notificationUrl: `${baseUrl}/api/payment/callback`,
@@ -651,10 +657,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         feeBySeller: 50, // 50% fee by seller
         billingFirstName: customerName.split(' ')[0] || customerName,
         billingLastName: customerName.split(' ').slice(1).join(' ') || 'Customer',
-        billingStreet1: "Not provided",
-        billingCity: "Not provided",
-        billingCountry: "TR", // Turkey
+        billingStreet1: "123 Main Street", // Required field from Baris example
+        billingStreet2: "",
+        billingCity: "Test City",
+        billingCountry: "US", // US for USD currency
         billingEmail: customerEmail,
+        brandName: "",
+        colorMode: "default-mode",
         merchantId: "" // Will be set from environment
       };
 

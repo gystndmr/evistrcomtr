@@ -62,7 +62,7 @@ export class GPayService {
       sortedData[key] = typeof value === 'string' ? value.trim() : value;
     });
 
-    // Create JSON string
+    // Create JSON string with escaped characters (like Baris example)
     const jsonString = JSON.stringify(sortedData);
     
     // Sign with private key using md5WithRSAEncryption
