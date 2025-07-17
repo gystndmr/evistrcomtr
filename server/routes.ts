@@ -575,7 +575,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         hasPrivateKey: !!(process.env.GPAY_PRIVATE_KEY),
         hasMerchantId: !!(process.env.GPAY_MERCHANT_ID),
         merchantId: process.env.GPAY_MERCHANT_ID || "Not set",
-        baseUrl: process.env.NODE_ENV === 'production' 
+        baseUrl: (process.env.NODE_ENV === 'production' || process.env.GPAY_MERCHANT_ID === '1100002537')
           ? "https://payment.gpayprocessing.com" 
           : "https://payment-sandbox.gpayprocessing.com",
         environment: process.env.NODE_ENV || "development"
@@ -708,14 +708,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Create URLs for callbacks
-      const baseUrl = process.env.NODE_ENV === 'development' 
+      // Create URLs for callbacks - force production URLs for production merchant ID
+      const baseUrl = (process.env.NODE_ENV === 'development' && process.env.GPAY_MERCHANT_ID !== '1100002537') 
         ? 'http://localhost:5000' 
         : 'https://evisatr.xyz';
       
       const paymentRequest = {
         orderRef: finalOrderRef,
-        amount: "2000.00", // Test amount as requested
+        amount: amount.toString(), // Use real amount from request
         currency: "USD", // Fixed currency
         orderDescription: finalDescription || `E-Visa Application - ${finalOrderRef}`,
         cancelUrl: `${baseUrl}/payment/cancel`,

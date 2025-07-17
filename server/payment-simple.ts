@@ -237,7 +237,9 @@ export class GPayService {
 
 // Environment-based configuration
 function getGPayConfig(): GPayConfig {
-  const isProduction = process.env.NODE_ENV === 'production';
+  // Force production credentials based on .env file
+  const isProduction = process.env.NODE_ENV === 'production' || 
+                      process.env.GPAY_MERCHANT_ID === '1100002537';
   
   return {
     baseUrl: isProduction 
