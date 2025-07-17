@@ -91,65 +91,69 @@ export function CountrySelector({
                   <SelectItem key={country.code} value={country.code}>
                     <div className="flex items-center space-x-2">
                       <span className="text-lg">
-                        {country.code === 'USA' ? '🇺🇸' : 
-                         country.code === 'GBR' ? '🇬🇧' : 
-                         country.code === 'DEU' ? '🇩🇪' : 
-                         country.code === 'FRA' ? '🇫🇷' : 
-                         country.code === 'JPN' ? '🇯🇵' : 
-                         country.code === 'AUS' ? '🇦🇺' : 
-                         country.code === 'CAN' ? '🇨🇦' : 
-                         country.code === 'RUS' ? '🇷🇺' : 
-                         country.code === 'CHN' ? '🇨🇳' : 
-                         country.code === 'IND' ? '🇮🇳' : 
-                         country.code === 'NGA' ? '🇳🇬' : 
-                         country.code === 'PAK' ? '🇵🇰' : 
-                         country.code === 'BGD' ? '🇧🇩' : 
-                         country.code === 'AFG' ? '🇦🇫' : 
-                         country.code === 'IRQ' ? '🇮🇶' : 
-                         country.code === 'SYR' ? '🇸🇾' : 
-                         country.code === 'DZA' ? '🇩🇿' : 
-                         country.code === 'ATG' ? '🇦🇬' : 
+                        {country.code === 'AFG' ? '🇦🇫' : 
                          country.code === 'ARM' ? '🇦🇲' : 
+                         country.code === 'ATG' ? '🇦🇬' : 
+                         country.code === 'AUS' ? '🇦🇺' : 
+                         country.code === 'BGD' ? '🇧🇩' : 
                          country.code === 'BHS' ? '🇧🇸' : 
-                         country.code === 'BRB' ? '🇧🇧' : 
                          country.code === 'BMU' ? '🇧🇲' : 
+                         country.code === 'BRA' ? '🇧🇷' : 
+                         country.code === 'BRB' ? '🇧🇧' : 
                          country.code === 'BTN' ? '🇧🇹' : 
-                         country.code === 'KHM' ? '🇰🇭' : 
+                         country.code === 'CAN' ? '🇨🇦' : 
+                         country.code === 'CHN' ? '🇨🇳' : 
                          country.code === 'CPV' ? '🇨🇻' : 
-                         country.code === 'HRV' ? '🇭🇷' : 
+                         country.code === 'DEU' ? '🇩🇪' : 
                          country.code === 'DMA' ? '🇩🇲' : 
                          country.code === 'DOM' ? '🇩🇴' : 
-                         country.code === 'TLS' ? '🇹🇱' : 
+                         country.code === 'DZA' ? '🇩🇿' : 
                          country.code === 'EGY' ? '🇪🇬' : 
-                         country.code === 'GNQ' ? '🇬🇶' : 
+                         country.code === 'ESP' ? '🇪🇸' : 
                          country.code === 'EST' ? '🇪🇪' : 
                          country.code === 'FJI' ? '🇫🇯' : 
-                         country.code === 'CYP' ? '🇨🇾' : 
+                         country.code === 'FRA' ? '🇫🇷' : 
+                         country.code === 'GBR' ? '🇬🇧' : 
+                         country.code === 'GNQ' ? '🇬🇶' : 
                          country.code === 'GRD' ? '🇬🇩' : 
-                         country.code === 'HTI' ? '🇭🇹' : 
                          country.code === 'HKG' ? '🇭🇰' : 
+                         country.code === 'HRV' ? '🇭🇷' : 
+                         country.code === 'HTI' ? '🇭🇹' : 
+                         country.code === 'IND' ? '🇮🇳' : 
+                         country.code === 'IRN' ? '🇮🇷' : 
+                         country.code === 'IRQ' ? '🇮🇶' : 
+                         country.code === 'ITA' ? '🇮🇹' : 
                          country.code === 'JAM' ? '🇯🇲' : 
-                         country.code === 'LVA' ? '🇱🇻' : 
+                         country.code === 'JPN' ? '🇯🇵' : 
+                         country.code === 'KHM' ? '🇰🇭' : 
                          country.code === 'LBY' ? '🇱🇾' : 
-                         country.code === 'LTU' ? '🇱🇹' : 
-                         country.code === 'MDV' ? '🇲🇻' : 
-                         country.code === 'MUS' ? '🇲🇺' : 
-                         country.code === 'MEX' ? '🇲🇽' : 
-                         country.code === 'NAM' ? '🇳🇦' : 
-                         country.code === 'NPL' ? '🇳🇵' : 
-                         country.code === 'PSE' ? '🇵🇸' : 
-                         country.code === 'PHL' ? '🇵🇭' : 
                          country.code === 'LCA' ? '🇱🇨' : 
-                         country.code === 'VCT' ? '🇻🇨' : 
+                         country.code === 'LKA' ? '🇱🇰' : 
+                         country.code === 'LTU' ? '🇱🇹' : 
+                         country.code === 'LVA' ? '🇱🇻' : 
+                         country.code === 'MDV' ? '🇲🇻' : 
+                         country.code === 'MEX' ? '🇲🇽' : 
+                         country.code === 'MUS' ? '🇲🇺' : 
+                         country.code === 'NAM' ? '🇳🇦' : 
+                         country.code === 'NGA' ? '🇳🇬' : 
+                         country.code === 'NLD' ? '🇳🇱' : 
+                         country.code === 'NPL' ? '🇳🇵' : 
+                         country.code === 'PAK' ? '🇵🇰' : 
+                         country.code === 'PHL' ? '🇵🇭' : 
+                         country.code === 'PSE' ? '🇵🇸' : 
+                         country.code === 'RUS' ? '🇷🇺' : 
                          country.code === 'SEN' ? '🇸🇳' : 
                          country.code === 'SLB' ? '🇸🇧' : 
-                         country.code === 'ZAF' ? '🇿🇦' : 
-                         country.code === 'LKA' ? '🇱🇰' : 
                          country.code === 'SUR' ? '🇸🇷' : 
+                         country.code === 'SYR' ? '🇸🇾' : 
+                         country.code === 'TLS' ? '🇹🇱' : 
                          country.code === 'TWN' ? '🇹🇼' : 
-                         country.code === 'VUT' ? '🇻🇺' : 
+                         country.code === 'USA' ? '🇺🇸' : 
+                         country.code === 'VCT' ? '🇻🇨' : 
                          country.code === 'VNM' ? '🇻🇳' : 
-                         country.code === 'YEM' ? '🇾🇪' : '🌍'}
+                         country.code === 'VUT' ? '🇻🇺' : 
+                         country.code === 'YEM' ? '🇾🇪' : 
+                         country.code === 'ZAF' ? '🇿🇦' : '🌍'}
                       </span>
                       <span>{country.name}</span>
                     </div>
