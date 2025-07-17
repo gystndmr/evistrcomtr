@@ -587,21 +587,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Test signature generation
+  // Test signature generation with detailed JSON logging
   app.post("/api/payment/test-signature", async (req, res) => {
     try {
       const testData = {
         orderRef: "TEST_ORDER_001",
-        amount: 100,
+        amount: "2000.00",
         currency: "USD",
         orderDescription: "Test payment",
+        cancelUrl: "http://localhost:5000/payment/cancel",
+        callbackUrl: "http://localhost:5000/api/payment/callback",
+        notificationUrl: "http://localhost:5000/api/payment/callback",
+        errorUrl: "http://localhost:5000/payment/cancel",
+        paymentMethod: "ALL",
+        feeBySeller: 50,
+        billingFirstName: "Test",
+        billingLastName: "User",
+        billingStreet1: "123 Main Street",
+        billingStreet2: "",
+        billingCity: "Test City",
+        billingCountry: "US",
+        billingEmail: "test@example.com",
+        brandName: "",
+        colorMode: "default-mode",
+        connectionMode: "API",
         merchantId: process.env.GPAY_MERCHANT_ID
       };
 
+      console.log('=== TEST SIGNATURE ENDPOINT ===');
+      console.log('Test data before signature:', JSON.stringify(testData, null, 2));
+
       // Generate signature using our implementation
-      const signature = gPayService.generateSignature ? 
-        gPayService.generateSignature(testData) : 
-        "Method not accessible";
+      const signature = gPayService.generateSignature(testData);
+
+      console.log('Generated signature:', signature);
+      console.log('=== END TEST SIGNATURE ===');
 
       res.json({
         data: testData,
@@ -610,6 +630,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         sortedKeys: Object.keys(testData).sort()
       });
     } catch (error) {
+      console.error('Test signature error:', error);
       res.status(500).json({ error: "Signature test failed: " + error.message });
     }
   });

@@ -65,6 +65,14 @@ export class GPayService {
     // Create JSON string with escaped characters (like Baris example)
     const jsonString = JSON.stringify(sortedData);
     
+    console.log('=== Inside generateSignature ===');
+    console.log('Original data:', JSON.stringify(data, null, 2));
+    console.log('Clean data (no signature):', JSON.stringify(cleanData, null, 2));
+    console.log('Sorted keys:', sortedKeys);
+    console.log('Sorted data:', JSON.stringify(sortedData, null, 2));
+    console.log('JSON string for signing:', jsonString);
+    console.log('=== End generateSignature ===');
+    
     // Sign with private key using md5WithRSAEncryption
     const sign = crypto.createSign('md5WithRSAEncryption');
     sign.update(jsonString);
@@ -117,6 +125,12 @@ export class GPayService {
       };
 
       // Generate signature
+      console.log('=== JSON Before Signature Generation ===');
+      console.log('Payment Data Object:', JSON.stringify(paymentData, null, 2));
+      console.log('Sorted Keys:', Object.keys(paymentData).sort());
+      console.log('JSON String for Signature:', JSON.stringify(paymentData));
+      console.log('=== End JSON Before Signature ===');
+      
       const signature = this.generateSignature(paymentData);
       
       // Create form data for POST request
