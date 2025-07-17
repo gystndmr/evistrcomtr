@@ -10,11 +10,13 @@ import { CheckCircle, AlertTriangle } from "lucide-react";
 interface SupportingDocumentCheckProps {
   onHasSupportingDocument: (hasDocument: boolean) => void;
   onDocumentDetailsChange: (details: any) => void;
+  onValidationChange: (isValid: boolean) => void;
 }
 
 export function SupportingDocumentCheck({ 
   onHasSupportingDocument, 
-  onDocumentDetailsChange
+  onDocumentDetailsChange,
+  onValidationChange
 }: SupportingDocumentCheckProps) {
   const [hasDocument, setHasDocument] = useState<boolean | null>(null);
   const [documentType, setDocumentType] = useState("");
@@ -32,6 +34,10 @@ export function SupportingDocumentCheck({
     if (!value) {
       setProcessingType("");
     }
+    // Trigger validation immediately
+    setTimeout(() => {
+      handleDetailsChange();
+    }, 0);
   };
 
   const handleDocumentTypeChange = (type: string) => {
@@ -43,6 +49,36 @@ export function SupportingDocumentCheck({
     setStartDate("");
     setEndDate("");
     setIsUnlimited(false);
+    // Trigger validation after reset
+    setTimeout(() => {
+      handleDetailsChange();
+    }, 0);
+  };
+
+  const validateFields = () => {
+    if (hasDocument === null) return false;
+    if (hasDocument === false) return true; // No document is valid
+    
+    // If has document, check required fields
+    if (!documentType) return false;
+    if (!documentNumber) return false;
+    
+    if (documentType === "visa") {
+      if (!visaCountry) return false;
+      
+      // For Schengen visa, start date is required
+      if (visaCountry === "SCHENGEN" && !startDate) return false;
+      
+      // For all visa types, end date is required unless unlimited
+      if (!isUnlimited && !endDate) return false;
+    }
+    
+    if (documentType === "residence") {
+      if (!residenceCountry) return false;
+      if (!isUnlimited && !endDate) return false;
+    }
+    
+    return true;
   };
 
   const handleDetailsChange = () => {
@@ -55,6 +91,7 @@ export function SupportingDocumentCheck({
       endDate: isUnlimited ? "unlimited" : endDate,
     };
     onDocumentDetailsChange(details);
+    onValidationChange(validateFields());
   };
 
   // Auto-update details when any field changes

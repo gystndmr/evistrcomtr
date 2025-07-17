@@ -52,6 +52,7 @@ export function VisaForm() {
   const [hasSupportingDocument, setHasSupportingDocument] = useState<boolean | null>(null);
   const [supportingDocumentDetails, setSupportingDocumentDetails] = useState<any>(null);
   const [documentProcessingType, setDocumentProcessingType] = useState("");
+  const [isSupportingDocumentValid, setIsSupportingDocumentValid] = useState(false);
   // Removed paymentData state - now using direct redirects
   const [showRetry, setShowRetry] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
@@ -166,6 +167,7 @@ export function VisaForm() {
     setHasSupportingDocument(null);
     setSupportingDocumentDetails(null);
     setDocumentProcessingType("");
+    setIsSupportingDocumentValid(false);
   };
 
   const handleNextStep = () => {
@@ -202,12 +204,11 @@ export function VisaForm() {
         return;
       }
       if (hasSupportingDocument === true) {
-        // Check if supporting document details are filled
-        if (!supportingDocumentDetails || 
-            !supportingDocumentDetails.documentType) {
+        // Check if supporting document details are valid
+        if (!isSupportingDocumentValid) {
           toast({
             title: "Missing Information",
-            description: "Please complete all supporting document fields including document type",
+            description: "Please complete all required supporting document fields",
             variant: "destructive",
           });
           return;
@@ -466,6 +467,7 @@ export function VisaForm() {
                   <SupportingDocumentCheck
                     onHasSupportingDocument={setHasSupportingDocument}
                     onDocumentDetailsChange={setSupportingDocumentDetails}
+                    onValidationChange={setIsSupportingDocumentValid}
                   />
                 </div>
               )}
