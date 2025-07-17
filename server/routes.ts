@@ -5,6 +5,7 @@ import { insertApplicationSchema, insertInsuranceApplicationSchema } from "@shar
 import { z } from "zod";
 import { sendEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail, generateVisaApprovalEmail } from "./email";
 import { gloDiPayService } from "./payment-new";
+import { testGPayCheckoutBehavior, analyzeGPay405Error } from "./gpay-debug";
 
 function generateApplicationNumber(): string {
   const timestamp = Date.now().toString(36);
@@ -562,6 +563,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating insurance application status:", error);
       res.status(500).json({ message: "Failed to update insurance application status" });
+    }
+  });
+
+  // Debug GPay 405 errors
+  app.get("/api/debug/gpay-405", async (req, res) => {
+    try {
+      await testGPayCheckoutBehavior();
+      res.json({ message: "GPay 405 analysis completed - check server logs" });
+    } catch (error) {
+      console.error("GPay debug error:", error);
+      res.status(500).json({ error: "Debug test failed" });
     }
   });
 
