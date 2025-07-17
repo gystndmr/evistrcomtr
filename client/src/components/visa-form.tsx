@@ -847,14 +847,24 @@ export function VisaForm() {
                   </Button>
                 ) : (
                   <Button 
-                    type="submit" 
+                    type="button"
                     className="order-1 sm:order-2 sm:ml-auto bg-secondary hover:bg-secondary/90 text-sm sm:text-base px-4 py-2 text-white"
                     disabled={createApplicationMutation.isPending}
                     onClick={(e) => {
-                      console.log("Payment button clicked");
-                      console.log("Form state:", form.formState);
-                      console.log("Form errors:", form.formState.errors);
-                      console.log("Current step:", currentStep, "Total steps:", totalSteps);
+                      e.preventDefault();
+                      alert("Buton çalışıyor! GPay'e yönlendiriliyor...");
+                      
+                      // Form validation kontrolü
+                      const formData = form.getValues();
+                      const errors = form.formState.errors;
+                      
+                      if (Object.keys(errors).length > 0) {
+                        alert("Form hatası var: " + JSON.stringify(errors));
+                        return;
+                      }
+                      
+                      // Direct payment mutation call
+                      createApplicationMutation.mutate(formData);
                     }}
                   >
                     <CreditCard className="w-4 h-4 mr-2" />
