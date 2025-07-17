@@ -5,6 +5,7 @@ import { LanguageSwitcher } from "./language-switcher";
 import { Star, Menu, X } from "lucide-react";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
 import turkeyLogo from "@/assets/turkey-logo.png";
+import turkeyFlagCircle from "@/assets/turkey-flag-circle.png";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Header() {
@@ -25,8 +26,8 @@ export function Header() {
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 shadow-sm">
-                <img src={turkeyLogo} alt="Turkey Coat of Arms" className="w-full h-full object-contain" />
+              <div className="w-12 h-12 shadow-sm">
+                <img src={turkeyFlagCircle} alt="Turkey Flag" className="w-full h-full object-contain" />
               </div>
               <div className="flex flex-col">
                 <div className="text-xl font-bold text-neutral-800">Turkey E-Visa</div>
