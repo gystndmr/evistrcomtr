@@ -11,6 +11,7 @@ import { Shield, CheckCircle, Calendar, MapPin, Star, Crown } from "lucide-react
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { PaymentForm } from "@/components/payment-form";
+import { PaymentRetry } from "@/components/payment-retry";
 import type { InsuranceProduct } from "@shared/schema";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
 
@@ -26,6 +27,8 @@ export default function Insurance() {
     destination: "Turkey",
   });
   const [paymentData, setPaymentData] = useState<{paymentUrl: string; formData: any} | null>(null);
+  const [showRetry, setShowRetry] = useState(false);
+  const [currentOrderId, setCurrentOrderId] = useState<string>("");
   const { toast } = useToast();
 
   const { data: products = [] } = useQuery({
@@ -81,7 +84,15 @@ export default function Insurance() {
           });
         } else {
           // Direct URL redirect (JSON response with paymentLink)
-          window.location.href = paymentData.paymentUrl;
+          setCurrentOrderId(applicationData2.applicationNumber);
+          
+          // Try direct redirect first
+          try {
+            window.location.href = paymentData.paymentUrl;
+          } catch (error) {
+            // If direct redirect fails, show retry component
+            setShowRetry(true);
+          }
         }
       } else {
         throw new Error(paymentData.error || "Payment initialization failed");
@@ -333,6 +344,19 @@ export default function Insurance() {
               title: "Redirecting to Payment",
               description: "Please complete your payment on the secure payment page.",
             });
+          }}
+        />
+      )}
+      
+      {/* Payment Retry Component */}
+      {showRetry && paymentData && (
+        <PaymentRetry
+          paymentUrl={paymentData.paymentUrl}
+          orderId={currentOrderId}
+          onRetry={() => {
+            setShowRetry(false);
+            // Retry the payment creation
+            createApplicationMutation.mutate();
           }}
         />
       )}

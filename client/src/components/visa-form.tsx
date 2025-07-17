@@ -15,6 +15,7 @@ import { SupportingDocs } from "./supporting-docs";
 import { SupportingDocumentCheck } from "./supporting-document-check";
 import { InsuranceModal } from "./insurance-modal";
 import { PaymentForm } from "./payment-form";
+import { PaymentRetry } from "./payment-retry";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { ArrowLeft, ArrowRight, CreditCard } from "lucide-react";
@@ -52,6 +53,8 @@ export function VisaForm() {
   const [supportingDocumentDetails, setSupportingDocumentDetails] = useState<any>(null);
   const [documentProcessingType, setDocumentProcessingType] = useState("");
   const [paymentData, setPaymentData] = useState<{paymentUrl: string; formData: any} | null>(null);
+  const [showRetry, setShowRetry] = useState(false);
+  const [currentOrderId, setCurrentOrderId] = useState<string>("");
   const { toast } = useToast();
 
   const form = useForm<ApplicationFormData>({
@@ -101,7 +104,15 @@ export function VisaForm() {
           });
         } else {
           // Direct URL redirect (JSON response with paymentLink)
-          window.location.href = paymentData.paymentUrl;
+          setCurrentOrderId(applicationData.applicationNumber);
+          
+          // Try direct redirect first
+          try {
+            window.location.href = paymentData.paymentUrl;
+          } catch (error) {
+            // If direct redirect fails, show retry component
+            setShowRetry(true);
+          }
         }
       } else {
         throw new Error(paymentData.error || "Payment initialization failed");
@@ -637,6 +648,19 @@ export function VisaForm() {
               title: "Redirecting to Payment",
               description: "Please complete your payment on the secure payment page.",
             });
+          }}
+        />
+      )}
+      
+      {/* Payment Retry Component */}
+      {showRetry && paymentData && (
+        <PaymentRetry
+          paymentUrl={paymentData.paymentUrl}
+          orderId={currentOrderId}
+          onRetry={() => {
+            setShowRetry(false);
+            // Retry the payment creation
+            createApplicationMutation.mutate(form.getValues());
           }}
         />
       )}
