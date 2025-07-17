@@ -47,7 +47,7 @@ export class GPayService {
   }
 
   // Generate signature following PHP Security.php logic
-  private generateSignature(data: Record<string, any>): string {
+  public generateSignature(data: Record<string, any>): string {
     // Remove signature field if exists
     const cleanData = { ...data };
     delete cleanData.signature;
