@@ -148,7 +148,7 @@ export default function HomeConsulting() {
       <footer className="bg-gray-800 text-white py-8">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <p className="mb-2">© 2025 Türkiye Seyahat Danışmanlığı</p>
-          <p className="text-gray-400">info@evisatr.xyz</p>
+          <p className="text-gray-400">Profesyonel seyahat danışmanlığı hizmetleri</p>
         </div>
       </footer>
     </div>
