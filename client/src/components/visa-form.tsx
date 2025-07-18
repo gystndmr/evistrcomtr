@@ -27,6 +27,8 @@ const applicationSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z.string().min(1, "Phone number is required"),
   passportNumber: z.string().min(1, "Passport number is required"),
+  passportIssueDate: z.string().min(1, "Passport issue date is required"),
+  passportExpiryDate: z.string().min(1, "Passport expiry date is required"),
   dateOfBirth: z.string().min(1, "Date of birth is required"),
   placeOfBirth: z.string().min(1, "Place of birth is required"),
   motherName: z.string().min(1, "Mother's name is required"),
@@ -79,6 +81,8 @@ export function VisaForm() {
       email: "",
       phone: "",
       passportNumber: "",
+      passportIssueDate: "",
+      passportExpiryDate: "",
       dateOfBirth: "",
       placeOfBirth: "",
       motherName: "",
@@ -705,6 +709,34 @@ export function VisaForm() {
                           <FormLabel>Passport Number *</FormLabel>
                           <FormControl>
                             <Input placeholder="A1234567" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="passportIssueDate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Passport Issue Date *</FormLabel>
+                          <FormControl>
+                            <Input type="date" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="passportExpiryDate"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Passport Expiry Date *</FormLabel>
+                          <FormControl>
+                            <Input type="date" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

@@ -28,6 +28,8 @@ export const applications = pgTable("applications", {
   email: text("email").notNull(),
   phone: text("phone").notNull(),
   passportNumber: text("passport_number").notNull(),
+  passportIssueDate: timestamp("passport_issue_date"), // Pasaport veriliş tarihi
+  passportExpiryDate: timestamp("passport_expiry_date"), // Pasaport geçerlilik tarihi
   dateOfBirth: timestamp("date_of_birth").notNull(),
   placeOfBirth: text("place_of_birth"), // Doğum yeri
   motherName: text("mother_name"), // Anne adı

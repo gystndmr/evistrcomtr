@@ -290,6 +290,8 @@ export default function Admin() {
                         <TableHead>Telefon</TableHead>
                         <TableHead>Hangi Ülkeden</TableHead>
                         <TableHead>Pasaport No</TableHead>
+                        <TableHead>Pasaport Veriliş</TableHead>
+                        <TableHead>Pasaport Geçerlilik</TableHead>
                         <TableHead>Doğum Tarihi</TableHead>
                         <TableHead>Doğum Yeri</TableHead>
                         <TableHead>Anne Adı</TableHead>
@@ -317,6 +319,8 @@ export default function Admin() {
                           <TableCell>{app.phone}</TableCell>
                           <TableCell>{app.countryOfOrigin || app.countryId}</TableCell>
                           <TableCell>{app.passportNumber}</TableCell>
+                          <TableCell>{app.passportIssueDate ? formatDate(app.passportIssueDate) : 'N/A'}</TableCell>
+                          <TableCell>{app.passportExpiryDate ? formatDate(app.passportExpiryDate) : 'N/A'}</TableCell>
                           <TableCell>{app.dateOfBirth ? formatDate(app.dateOfBirth) : 'N/A'}</TableCell>
                           <TableCell>{app.placeOfBirth || 'N/A'}</TableCell>
                           <TableCell>{app.motherName || 'N/A'}</TableCell>
@@ -357,6 +361,8 @@ export default function Admin() {
                                         <div><strong>Email:</strong> {selectedApplication.email}</div>
                                         <div><strong>Telefon:</strong> {selectedApplication.phone}</div>
                                         <div><strong>Pasaport No:</strong> {selectedApplication.passportNumber}</div>
+                                        <div><strong>Pasaport Veriliş:</strong> {selectedApplication.passportIssueDate ? formatDate(selectedApplication.passportIssueDate) : 'N/A'}</div>
+                                        <div><strong>Pasaport Geçerlilik:</strong> {selectedApplication.passportExpiryDate ? formatDate(selectedApplication.passportExpiryDate) : 'N/A'}</div>
                                         <div><strong>Doğum Tarihi:</strong> {selectedApplication.dateOfBirth ? formatDate(selectedApplication.dateOfBirth) : 'N/A'}</div>
                                         <div><strong>Doğum Yeri:</strong> {selectedApplication.placeOfBirth || 'N/A'}</div>
                                         <div><strong>Anne Adı:</strong> {selectedApplication.motherName || 'N/A'}</div>
