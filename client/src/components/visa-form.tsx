@@ -28,9 +28,16 @@ const applicationSchema = z.object({
   phone: z.string().min(1, "Phone number is required"),
   passportNumber: z.string().min(1, "Passport number is required"),
   dateOfBirth: z.string().min(1, "Date of birth is required"),
+  placeOfBirth: z.string().min(1, "Place of birth is required"),
+  motherName: z.string().min(1, "Mother's name is required"),
+  fatherName: z.string().min(1, "Father's name is required"),
+  address: z.string().min(1, "Address is required"),
   arrivalDate: z.string().min(1, "Arrival date is required"),
   processingType: z.string().min(1, "Processing type is required"),
   documentType: z.string().min(1, "Document type is required"),
+  supportingDocumentNumber: z.string().optional(),
+  supportingDocumentStartDate: z.string().optional(),
+  supportingDocumentEndDate: z.string().optional(),
 });
 
 type ApplicationFormData = z.infer<typeof applicationSchema>;
@@ -73,9 +80,16 @@ export function VisaForm() {
       phone: "",
       passportNumber: "",
       dateOfBirth: "",
+      placeOfBirth: "",
+      motherName: "",
+      fatherName: "",
+      address: "",
       arrivalDate: "",
       processingType: "standard",
       documentType: "",
+      supportingDocumentNumber: "",
+      supportingDocumentStartDate: "",
+      supportingDocumentEndDate: "",
     },
   });
 
@@ -85,7 +99,11 @@ export function VisaForm() {
       const applicationResponse = await apiRequest("POST", "/api/applications", {
         ...data,
         countryId: selectedCountry?.id,
+        countryOfOrigin: selectedCountry?.name,
         totalAmount: calculateTotal().toString(),
+        supportingDocumentNumber: data.supportingDocumentNumber || null,
+        supportingDocumentStartDate: data.supportingDocumentStartDate || null,
+        supportingDocumentEndDate: data.supportingDocumentEndDate || null,
       });
       const applicationData = await applicationResponse.json();
       
@@ -720,6 +738,112 @@ export function VisaForm() {
                         </FormItem>
                       )}
                     />
+                    
+                    <FormField
+                      control={form.control}
+                      name="placeOfBirth"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Place of Birth *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g., New York, USA" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="motherName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Mother's Name *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Mother's full name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="fatherName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Father's Name *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Father's full name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <div className="md:col-span-2">
+                      <FormField
+                        control={form.control}
+                        name="address"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Full Address *</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Complete address with street, city, country" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    {/* Supporting Document Details */}
+                    {hasSupportingDocument === true && (
+                      <>
+                        <div className="md:col-span-2">
+                          <h4 className="text-md font-semibold mb-3 text-blue-900">Supporting Document Details</h4>
+                        </div>
+                        <FormField
+                          control={form.control}
+                          name="supportingDocumentNumber"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Supporting Document Number</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Document number" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="supportingDocumentStartDate"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Document Start Date</FormLabel>
+                              <FormControl>
+                                <Input type="date" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="supportingDocumentEndDate"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Document End Date</FormLabel>
+                              <FormControl>
+                                <Input type="date" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </>
+                    )}
                   </div>
                 </div>
               )}

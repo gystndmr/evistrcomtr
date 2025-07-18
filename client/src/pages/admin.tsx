@@ -10,7 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Shield, Users, CreditCard, FileText, Eye, Search, Download, CheckCircle, XCircle } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Shield, Users, CreditCard, FileText, Eye, Search, Download, CheckCircle, XCircle, Info } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -27,6 +28,8 @@ export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
+  const [selectedInsuranceApp, setSelectedInsuranceApp] = useState<InsuranceApplication | null>(null);
   const { t } = useLanguage();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -285,12 +288,19 @@ export default function Admin() {
                         <TableHead>Ad Soyad</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Telefon</TableHead>
-                        <TableHead>Ülke</TableHead>
+                        <TableHead>Hangi Ülkeden</TableHead>
                         <TableHead>Pasaport No</TableHead>
                         <TableHead>Doğum Tarihi</TableHead>
+                        <TableHead>Doğum Yeri</TableHead>
+                        <TableHead>Anne Adı</TableHead>
+                        <TableHead>Baba Adı</TableHead>
+                        <TableHead>Adres</TableHead>
                         <TableHead>Varış Tarihi</TableHead>
                         <TableHead>İşlem Türü</TableHead>
                         <TableHead>Belge Türü</TableHead>
+                        <TableHead>Belge No</TableHead>
+                        <TableHead>Belge Başlangıç</TableHead>
+                        <TableHead>Belge Bitiş</TableHead>
                         <TableHead>Tutar</TableHead>
                         <TableHead>Ödeme Durumu</TableHead>
                         <TableHead>Durum</TableHead>
@@ -305,50 +315,107 @@ export default function Admin() {
                           <TableCell>{app.firstName} {app.lastName}</TableCell>
                           <TableCell>{app.email}</TableCell>
                           <TableCell>{app.phone}</TableCell>
-                          <TableCell>{app.countryId}</TableCell>
+                          <TableCell>{app.countryOfOrigin || app.countryId}</TableCell>
                           <TableCell>{app.passportNumber}</TableCell>
                           <TableCell>{app.dateOfBirth ? formatDate(app.dateOfBirth) : 'N/A'}</TableCell>
+                          <TableCell>{app.placeOfBirth || 'N/A'}</TableCell>
+                          <TableCell>{app.motherName || 'N/A'}</TableCell>
+                          <TableCell>{app.fatherName || 'N/A'}</TableCell>
+                          <TableCell className="max-w-xs truncate">{app.address || 'N/A'}</TableCell>
                           <TableCell>{app.arrivalDate ? formatDate(app.arrivalDate) : 'N/A'}</TableCell>
                           <TableCell>{app.processingType}</TableCell>
                           <TableCell>{app.documentType}</TableCell>
+                          <TableCell>{app.supportingDocumentNumber || 'N/A'}</TableCell>
+                          <TableCell>{app.supportingDocumentStartDate ? formatDate(app.supportingDocumentStartDate) : 'N/A'}</TableCell>
+                          <TableCell>{app.supportingDocumentEndDate ? formatDate(app.supportingDocumentEndDate) : 'N/A'}</TableCell>
                           <TableCell>${app.totalAmount}</TableCell>
                           <TableCell>{getPaymentStatusBadge(app.paymentStatus)}</TableCell>
                           <TableCell>{getStatusBadge(app.status)}</TableCell>
                           <TableCell>{formatDate(app.createdAt!)}</TableCell>
                           <TableCell>
-                            {app.status === "pending" && (
-                              <div className="flex gap-2">
-                                <Button
-                                  size="sm"
-                                  variant="default"
-                                  onClick={() => updateApplicationStatusMutation.mutate({ id: app.id, status: "approved" })}
-                                  disabled={updateApplicationStatusMutation.isPending}
-                                  className="bg-green-500 hover:bg-green-600 text-white"
-                                >
-                                  <CheckCircle className="w-4 h-4 mr-1" />
-                                  Onayla
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="destructive"
-                                  onClick={() => updateApplicationStatusMutation.mutate({ id: app.id, status: "rejected" })}
-                                  disabled={updateApplicationStatusMutation.isPending}
-                                >
-                                  <XCircle className="w-4 h-4 mr-1" />
-                                  Reddet
-                                </Button>
-                              </div>
-                            )}
-                            {app.status === "approved" && (
-                              <div className="text-green-600 font-medium">
-                                ✓ Onaylandı & E-posta Gönderildi
-                              </div>
-                            )}
-                            {app.status === "rejected" && (
-                              <div className="text-red-600 font-medium">
-                                ✗ Reddedildi & E-posta Gönderildi
-                              </div>
-                            )}
+                            <div className="flex gap-2">
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => setSelectedApplication(app)}
+                                  >
+                                    <Info className="w-4 h-4 mr-1" />
+                                    İncele
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                                  <DialogHeader>
+                                    <DialogTitle>Başvuru Detayları - {app.applicationNumber}</DialogTitle>
+                                  </DialogHeader>
+                                  {selectedApplication && (
+                                    <div className="grid md:grid-cols-2 gap-4 py-4">
+                                      <div className="space-y-3">
+                                        <h4 className="font-semibold text-blue-900">Kişisel Bilgiler</h4>
+                                        <div><strong>Ad Soyad:</strong> {selectedApplication.firstName} {selectedApplication.lastName}</div>
+                                        <div><strong>Email:</strong> {selectedApplication.email}</div>
+                                        <div><strong>Telefon:</strong> {selectedApplication.phone}</div>
+                                        <div><strong>Pasaport No:</strong> {selectedApplication.passportNumber}</div>
+                                        <div><strong>Doğum Tarihi:</strong> {selectedApplication.dateOfBirth ? formatDate(selectedApplication.dateOfBirth) : 'N/A'}</div>
+                                        <div><strong>Doğum Yeri:</strong> {selectedApplication.placeOfBirth || 'N/A'}</div>
+                                        <div><strong>Anne Adı:</strong> {selectedApplication.motherName || 'N/A'}</div>
+                                        <div><strong>Baba Adı:</strong> {selectedApplication.fatherName || 'N/A'}</div>
+                                        <div><strong>Adres:</strong> {selectedApplication.address || 'N/A'}</div>
+                                      </div>
+                                      <div className="space-y-3">
+                                        <h4 className="font-semibold text-blue-900">Başvuru Bilgileri</h4>
+                                        <div><strong>Hangi Ülkeden:</strong> {selectedApplication.countryOfOrigin || selectedApplication.countryId}</div>
+                                        <div><strong>Varış Tarihi:</strong> {selectedApplication.arrivalDate ? formatDate(selectedApplication.arrivalDate) : 'N/A'}</div>
+                                        <div><strong>İşlem Türü:</strong> {selectedApplication.processingType}</div>
+                                        <div><strong>Belge Türü:</strong> {selectedApplication.documentType}</div>
+                                        <div><strong>Belge No:</strong> {selectedApplication.supportingDocumentNumber || 'N/A'}</div>
+                                        <div><strong>Belge Başlangıç:</strong> {selectedApplication.supportingDocumentStartDate ? formatDate(selectedApplication.supportingDocumentStartDate) : 'N/A'}</div>
+                                        <div><strong>Belge Bitiş:</strong> {selectedApplication.supportingDocumentEndDate ? formatDate(selectedApplication.supportingDocumentEndDate) : 'N/A'}</div>
+                                        <div><strong>Toplam Tutar:</strong> ${selectedApplication.totalAmount}</div>
+                                        <div><strong>Ödeme Durumu:</strong> {selectedApplication.paymentStatus}</div>
+                                        <div><strong>Başvuru Durumu:</strong> {selectedApplication.status}</div>
+                                        <div><strong>Başvuru Tarihi:</strong> {formatDate(selectedApplication.createdAt!)}</div>
+                                      </div>
+                                    </div>
+                                  )}
+                                </DialogContent>
+                              </Dialog>
+                              
+                              {app.status === "pending" && (
+                                <>
+                                  <Button
+                                    size="sm"
+                                    variant="default"
+                                    onClick={() => updateApplicationStatusMutation.mutate({ id: app.id, status: "approved" })}
+                                    disabled={updateApplicationStatusMutation.isPending}
+                                    className="bg-green-500 hover:bg-green-600 text-white"
+                                  >
+                                    <CheckCircle className="w-4 h-4 mr-1" />
+                                    Onayla
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="destructive"
+                                    onClick={() => updateApplicationStatusMutation.mutate({ id: app.id, status: "rejected" })}
+                                    disabled={updateApplicationStatusMutation.isPending}
+                                  >
+                                    <XCircle className="w-4 h-4 mr-1" />
+                                    Reddet
+                                  </Button>
+                                </>
+                              )}
+                              {app.status === "approved" && (
+                                <div className="text-green-600 font-medium">
+                                  ✓ Onaylandı & E-posta Gönderildi
+                                </div>
+                              )}
+                              {app.status === "rejected" && (
+                                <div className="text-red-600 font-medium">
+                                  ✗ Reddedildi & E-posta Gönderildi
+                                </div>
+                              )}
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}
@@ -376,6 +443,7 @@ export default function Admin() {
                         <TableHead>Seyahat Tarihi</TableHead>
                         <TableHead>Dönüş Tarihi</TableHead>
                         <TableHead>Hedef</TableHead>
+                        <TableHead>Kaç Gün</TableHead>
                         <TableHead>Ürün ID</TableHead>
                         <TableHead>Tutar</TableHead>
                         <TableHead>Ödeme Durumu</TableHead>
@@ -394,45 +462,88 @@ export default function Admin() {
                           <TableCell>{formatDate(app.travelDate)}</TableCell>
                           <TableCell>{formatDate(app.returnDate)}</TableCell>
                           <TableCell>{app.destination}</TableCell>
+                          <TableCell>{app.tripDurationDays || 'N/A'} gün</TableCell>
                           <TableCell>{app.productId}</TableCell>
                           <TableCell>${app.totalAmount}</TableCell>
                           <TableCell>{getPaymentStatusBadge(app.paymentStatus)}</TableCell>
                           <TableCell>{getStatusBadge(app.status)}</TableCell>
                           <TableCell>{formatDate(app.createdAt!)}</TableCell>
                           <TableCell>
-                            {app.status === "pending" && (
-                              <div className="flex gap-2">
-                                <Button
-                                  size="sm"
-                                  variant="default"
-                                  onClick={() => updateInsuranceStatusMutation.mutate({ id: app.id, status: "approved" })}
-                                  disabled={updateInsuranceStatusMutation.isPending}
-                                  className="bg-green-500 hover:bg-green-600 text-white"
-                                >
-                                  <CheckCircle className="w-4 h-4 mr-1" />
-                                  Onayla
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="destructive"
-                                  onClick={() => updateInsuranceStatusMutation.mutate({ id: app.id, status: "rejected" })}
-                                  disabled={updateInsuranceStatusMutation.isPending}
-                                >
-                                  <XCircle className="w-4 h-4 mr-1" />
-                                  Reddet
-                                </Button>
-                              </div>
-                            )}
-                            {app.status === "approved" && (
-                              <div className="text-green-600 font-medium">
-                                ✓ Onaylandı & E-posta Gönderildi
-                              </div>
-                            )}
-                            {app.status === "rejected" && (
-                              <div className="text-red-600 font-medium">
-                                ✗ Reddedildi & E-posta Gönderildi
-                              </div>
-                            )}
+                            <div className="flex gap-2">
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => setSelectedInsuranceApp(app)}
+                                  >
+                                    <Info className="w-4 h-4 mr-1" />
+                                    İncele
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                                  <DialogHeader>
+                                    <DialogTitle>Sigorta Başvuru Detayları - {app.applicationNumber}</DialogTitle>
+                                  </DialogHeader>
+                                  {selectedInsuranceApp && (
+                                    <div className="grid md:grid-cols-2 gap-4 py-4">
+                                      <div className="space-y-3">
+                                        <h4 className="font-semibold text-blue-900">Kişisel Bilgiler</h4>
+                                        <div><strong>Ad Soyad:</strong> {selectedInsuranceApp.firstName} {selectedInsuranceApp.lastName}</div>
+                                        <div><strong>Email:</strong> {selectedInsuranceApp.email}</div>
+                                        <div><strong>Telefon:</strong> {selectedInsuranceApp.phone}</div>
+                                        <div><strong>Hedef:</strong> {selectedInsuranceApp.destination}</div>
+                                      </div>
+                                      <div className="space-y-3">
+                                        <h4 className="font-semibold text-blue-900">Seyahat Bilgileri</h4>
+                                        <div><strong>Seyahat Tarihi:</strong> {formatDate(selectedInsuranceApp.travelDate)}</div>
+                                        <div><strong>Dönüş Tarihi:</strong> {formatDate(selectedInsuranceApp.returnDate)}</div>
+                                        <div><strong>Kaç Gün:</strong> {selectedInsuranceApp.tripDurationDays || 'N/A'} gün</div>
+                                        <div><strong>Ürün ID:</strong> {selectedInsuranceApp.productId}</div>
+                                        <div><strong>Toplam Tutar:</strong> ${selectedInsuranceApp.totalAmount}</div>
+                                        <div><strong>Ödeme Durumu:</strong> {selectedInsuranceApp.paymentStatus}</div>
+                                        <div><strong>Başvuru Durumu:</strong> {selectedInsuranceApp.status}</div>
+                                        <div><strong>Başvuru Tarihi:</strong> {formatDate(selectedInsuranceApp.createdAt!)}</div>
+                                      </div>
+                                    </div>
+                                  )}
+                                </DialogContent>
+                              </Dialog>
+                              
+                              {app.status === "pending" && (
+                                <>
+                                  <Button
+                                    size="sm"
+                                    variant="default"
+                                    onClick={() => updateInsuranceStatusMutation.mutate({ id: app.id, status: "approved" })}
+                                    disabled={updateInsuranceStatusMutation.isPending}
+                                    className="bg-green-500 hover:bg-green-600 text-white"
+                                  >
+                                    <CheckCircle className="w-4 h-4 mr-1" />
+                                    Onayla
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="destructive"
+                                    onClick={() => updateInsuranceStatusMutation.mutate({ id: app.id, status: "rejected" })}
+                                    disabled={updateInsuranceStatusMutation.isPending}
+                                  >
+                                    <XCircle className="w-4 h-4 mr-1" />
+                                    Reddet
+                                  </Button>
+                                </>
+                              )}
+                              {app.status === "approved" && (
+                                <div className="text-green-600 font-medium">
+                                  ✓ Onaylandı & E-posta Gönderildi
+                                </div>
+                              )}
+                              {app.status === "rejected" && (
+                                <div className="text-red-600 font-medium">
+                                  ✗ Reddedildi & E-posta Gönderildi
+                                </div>
+                              )}
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}

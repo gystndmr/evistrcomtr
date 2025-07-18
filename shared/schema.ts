@@ -22,16 +22,24 @@ export const applications = pgTable("applications", {
   id: serial("id").primaryKey(),
   applicationNumber: text("application_number").notNull().unique(),
   countryId: integer("country_id").references(() => countries.id),
+  countryOfOrigin: text("country_of_origin"), // Hangi ülkeden başvurdu
   firstName: text("first_name").notNull(),
   lastName: text("last_name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
   passportNumber: text("passport_number").notNull(),
   dateOfBirth: timestamp("date_of_birth").notNull(),
+  placeOfBirth: text("place_of_birth"), // Doğum yeri
+  motherName: text("mother_name"), // Anne adı
+  fatherName: text("father_name"), // Baba adı
+  address: text("address"), // Adres bilgisi
   arrivalDate: timestamp("arrival_date").notNull(),
   documentType: text("document_type").notNull(),
   processingType: text("processing_type").notNull().default("standard"),
   supportingDocuments: jsonb("supporting_documents"),
+  supportingDocumentNumber: text("supporting_document_number"), // Destekleyici belge numarası
+  supportingDocumentStartDate: timestamp("supporting_document_start_date"), // Destekleyici belge başlangıç tarihi
+  supportingDocumentEndDate: timestamp("supporting_document_end_date"), // Destekleyici belge bitiş tarihi
   status: text("status").notNull().default("pending"),
   totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull(),
   paymentStatus: text("payment_status").notNull().default("pending"),
@@ -62,6 +70,7 @@ export const insuranceApplications = pgTable("insurance_applications", {
   travelDate: timestamp("travel_date").notNull(),
   returnDate: timestamp("return_date").notNull(),
   destination: text("destination").notNull(),
+  tripDurationDays: integer("trip_duration_days"), // Kaç günlük seçti
   totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull(),
   paymentStatus: text("payment_status").notNull().default("pending"),
   status: text("status").notNull().default("pending"),

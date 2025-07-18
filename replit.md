@@ -288,3 +288,19 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - **Non-Supporting Document Logic**: Separate processing fee based on Step 3 selection
   - **Payment Display**: Processing fees now correctly reflect user's Step 3 processing type choice
   - **calculateTotal Function**: Properly differentiates between supporting document and regular processing fees
+✅ **Complete Customer Data Collection & Admin Panel Enhancement** (July 18, 2025):
+  - **Database Schema Extended**: Added comprehensive customer data fields to both visa and insurance applications
+    - Visa applications: countryOfOrigin, placeOfBirth, motherName, fatherName, address, supportingDocumentNumber, supportingDocumentStartDate, supportingDocumentEndDate
+    - Insurance applications: tripDurationDays (automatically calculated from travel dates)
+  - **Form Enhancement**: Extended visa application form with all required personal information fields
+    - Place of birth, mother's name, father's name, complete address
+    - Supporting document details (number, start date, end date) for applicable applications
+    - Automatic trip duration calculation for insurance applications
+  - **Admin Panel Complete Overhaul**: Comprehensive customer data display with detailed inspection capabilities
+    - All form fields now visible in admin tables
+    - "Başvuru İncele" (Application Review) modal for detailed customer information view
+    - Organized display: Personal Information, Application Details, Supporting Documents
+    - Both visa and insurance applications include full customer data inspection
+    - Professional modal interface for complete application review
+  - **Data Integrity**: All customer-submitted form data now properly stored and accessible in admin panel
+  - **Business Intelligence**: Complete customer information available for business analysis and customer service

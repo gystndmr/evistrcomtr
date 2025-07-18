@@ -56,11 +56,18 @@ export default function Insurance() {
     mutationFn: async () => {
       if (!selectedProduct) throw new Error("No product selected");
       
+      // Calculate trip duration in days
+      const travelDate = new Date(applicationData.travelDate);
+      const returnDate = new Date(applicationData.returnDate);
+      const diffTime = Math.abs(returnDate.getTime() - travelDate.getTime());
+      const tripDurationDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
       // First create the insurance application
       const applicationResponse = await apiRequest("POST", "/api/insurance/applications", {
         ...applicationData,
         productId: selectedProduct.id,
         totalAmount: selectedProduct.price,
+        tripDurationDays: tripDurationDays,
       });
       const applicationData2 = await applicationResponse.json();
       
