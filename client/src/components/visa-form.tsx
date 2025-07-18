@@ -30,10 +30,10 @@ const applicationSchema = z.object({
   passportIssueDate: z.string().min(1, "Passport issue date is required"),
   passportExpiryDate: z.string().min(1, "Passport expiry date is required"),
   dateOfBirth: z.string().min(1, "Date of birth is required"),
-  placeOfBirth: z.string().min(1, "Place of birth is required"),
-  motherName: z.string().min(1, "Mother's name is required"),
-  fatherName: z.string().min(1, "Father's name is required"),
-  address: z.string().min(1, "Address is required"),
+  placeOfBirth: z.string().min(2, "Place of birth is required (minimum 2 characters)"),
+  motherName: z.string().min(2, "Mother's name is required (minimum 2 characters)"),
+  fatherName: z.string().min(2, "Father's name is required (minimum 2 characters)"),
+  address: z.string().min(10, "Complete address is required (minimum 10 characters)"),
   arrivalDate: z.string().min(1, "Arrival date is required"),
   processingType: z.string().min(1, "Processing type is required"),
   documentType: z.string().min(1, "Document type is required"),
@@ -360,6 +360,126 @@ export function VisaForm() {
           variant: "destructive",
         });
         return;
+      }
+      
+      if (!formData.passportIssueDate) {
+        toast({
+          title: "Passport Issue Date Required",
+          description: "Please enter your passport issue date",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!formData.passportExpiryDate) {
+        toast({
+          title: "Passport Expiry Date Required",
+          description: "Please enter your passport expiry date",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!formData.placeOfBirth?.trim() || formData.placeOfBirth.length < 2) {
+        toast({
+          title: "Place of Birth Required",
+          description: "Please enter your place of birth (minimum 2 characters)",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!formData.motherName?.trim() || formData.motherName.length < 2) {
+        toast({
+          title: "Mother's Name Required", 
+          description: "Please enter your mother's full name (minimum 2 characters)",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!formData.fatherName?.trim() || formData.fatherName.length < 2) {
+        toast({
+          title: "Father's Name Required",
+          description: "Please enter your father's full name (minimum 2 characters)",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (!formData.address?.trim() || formData.address.length < 10) {
+        toast({
+          title: "Address Required",
+          description: "Please enter your complete address (minimum 10 characters)",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Date validations
+      const passportIssueDate = new Date(formData.passportIssueDate);
+      const passportExpiryDate = new Date(formData.passportExpiryDate);
+      const today = new Date();
+      
+      if (passportExpiryDate <= today) {
+        toast({
+          title: "Passport Expired",
+          description: "Your passport expiry date must be in the future",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      if (passportIssueDate >= passportExpiryDate) {
+        toast({
+          title: "Invalid Passport Dates",
+          description: "Passport issue date must be before expiry date",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Supporting document validation (only for users with supporting documents)
+      if (hasSupportingDocument === true) {
+        if (!formData.supportingDocumentNumber?.trim()) {
+          toast({
+            title: "Supporting Document Number Required",
+            description: "Please enter your supporting document number",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        if (!formData.supportingDocumentStartDate) {
+          toast({
+            title: "Supporting Document Start Date Required",
+            description: "Please enter your supporting document start date",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        if (!formData.supportingDocumentEndDate) {
+          toast({
+            title: "Supporting Document End Date Required",
+            description: "Please enter your supporting document end date",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        // Validate supporting document date logic
+        const supportingStartDate = new Date(formData.supportingDocumentStartDate);
+        const supportingEndDate = new Date(formData.supportingDocumentEndDate);
+        
+        if (supportingStartDate >= supportingEndDate) {
+          toast({
+            title: "Invalid Supporting Document Dates",
+            description: "Supporting document start date must be before end date",
+            variant: "destructive",
+          });
+          return;
+        }
       }
     }
     
