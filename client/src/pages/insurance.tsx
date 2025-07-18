@@ -15,6 +15,7 @@ import { PaymentRetry } from "@/components/payment-retry";
 import type { InsuranceProduct } from "@shared/schema";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
 import turkeyLogo from "@/assets/turkey-logo.png";
+import newTurkeyLogo from "@assets/ChatGPT Image 18 Tem 2025 01_37_34_1752880645933.png";
 
 export default function Insurance() {
   const [selectedProduct, setSelectedProduct] = useState<InsuranceProduct | null>(null);
@@ -225,8 +226,8 @@ export default function Insurance() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-20 h-20 mb-6">
-              <div className="w-20 h-20 shadow-lg">
-                <img src={turkeyLogo} alt="Turkey Coat of Arms" className="w-full h-full object-contain" />
+              <div className="w-20 h-20 shadow-lg rounded-full overflow-hidden">
+                <img src={newTurkeyLogo} alt="Turkey Flag" className="w-full h-full object-cover" />
               </div>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Republic of Turkey</h1>
