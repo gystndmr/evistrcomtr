@@ -345,7 +345,7 @@ export default function Admin() {
                                     İncele
                                   </Button>
                                 </DialogTrigger>
-                                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" aria-describedby="visa-application-details">
                                   <DialogHeader>
                                     <DialogTitle>Başvuru Detayları - {app.applicationNumber}</DialogTitle>
                                   </DialogHeader>
@@ -481,7 +481,7 @@ export default function Admin() {
                                     İncele
                                   </Button>
                                 </DialogTrigger>
-                                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                                <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" aria-describedby="insurance-application-details">
                                   <DialogHeader>
                                     <DialogTitle>Sigorta Başvuru Detayları - {app.applicationNumber}</DialogTitle>
                                   </DialogHeader>
