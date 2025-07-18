@@ -286,6 +286,11 @@ export default function Admin() {
                         <TableHead>Email</TableHead>
                         <TableHead>Telefon</TableHead>
                         <TableHead>Ülke</TableHead>
+                        <TableHead>Pasaport No</TableHead>
+                        <TableHead>Doğum Tarihi</TableHead>
+                        <TableHead>Varış Tarihi</TableHead>
+                        <TableHead>İşlem Türü</TableHead>
+                        <TableHead>Belge Türü</TableHead>
                         <TableHead>Tutar</TableHead>
                         <TableHead>Ödeme Durumu</TableHead>
                         <TableHead>Durum</TableHead>
@@ -301,6 +306,11 @@ export default function Admin() {
                           <TableCell>{app.email}</TableCell>
                           <TableCell>{app.phone}</TableCell>
                           <TableCell>{app.countryId}</TableCell>
+                          <TableCell>{app.passportNumber}</TableCell>
+                          <TableCell>{app.dateOfBirth ? formatDate(app.dateOfBirth) : 'N/A'}</TableCell>
+                          <TableCell>{app.arrivalDate ? formatDate(app.arrivalDate) : 'N/A'}</TableCell>
+                          <TableCell>{app.processingType}</TableCell>
+                          <TableCell>{app.documentType}</TableCell>
                           <TableCell>${app.totalAmount}</TableCell>
                           <TableCell>{getPaymentStatusBadge(app.paymentStatus)}</TableCell>
                           <TableCell>{getStatusBadge(app.status)}</TableCell>
@@ -365,6 +375,8 @@ export default function Admin() {
                         <TableHead>Telefon</TableHead>
                         <TableHead>Seyahat Tarihi</TableHead>
                         <TableHead>Dönüş Tarihi</TableHead>
+                        <TableHead>Hedef</TableHead>
+                        <TableHead>Ürün ID</TableHead>
                         <TableHead>Tutar</TableHead>
                         <TableHead>Ödeme Durumu</TableHead>
                         <TableHead>Durum</TableHead>
@@ -381,6 +393,8 @@ export default function Admin() {
                           <TableCell>{app.phone}</TableCell>
                           <TableCell>{formatDate(app.travelDate)}</TableCell>
                           <TableCell>{formatDate(app.returnDate)}</TableCell>
+                          <TableCell>{app.destination}</TableCell>
+                          <TableCell>{app.productId}</TableCell>
                           <TableCell>${app.totalAmount}</TableCell>
                           <TableCell>{getPaymentStatusBadge(app.paymentStatus)}</TableCell>
                           <TableCell>{getStatusBadge(app.status)}</TableCell>
