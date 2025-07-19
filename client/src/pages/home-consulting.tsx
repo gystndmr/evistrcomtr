@@ -16,10 +16,10 @@ export default function HomeConsulting() {
         <div className="relative z-10 flex items-center justify-center h-full">
           <div className="text-center text-white px-4 max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 drop-shadow-lg">
-              Türkiye Seyahat Danışmanlığı
+              Seyyar Lokmacı Hasan Usta
             </h1>
             <p className="text-xl md:text-2xl mb-8 opacity-90 drop-shadow-md">
-              Türkiye'deki unutulmaz seyahatinizi planlayın
+              30 yıllık deneyimle en lezzetli lokmaları kapınıza getiriyoruz
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-6 text-lg font-semibold">
