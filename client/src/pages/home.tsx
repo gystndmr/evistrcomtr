@@ -7,10 +7,10 @@ export default function HomeConsulting() {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-yellow-50 to-red-50">
       
       {/* Hero Section */}
-      <section className="relative h-[80vh] bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 overflow-hidden">
+      <section className="relative h-[80vh] bg-gradient-to-br from-orange-600 via-red-600 to-yellow-600 overflow-hidden">
         <div className="absolute inset-0 bg-black/30"></div>
         
         <div className="relative z-10 flex items-center justify-center h-full">
@@ -22,11 +22,11 @@ export default function HomeConsulting() {
               30 yıllık deneyimle en lezzetli lokmaları kapınıza getiriyoruz
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-6 text-lg font-semibold">
+              <Button size="lg" className="bg-white text-orange-600 hover:bg-orange-50 px-8 py-6 text-lg font-semibold">
                 <Calendar className="w-5 h-5 mr-2" />
                 Sipariş Ver
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-6 text-lg font-semibold">
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-orange-600 px-8 py-6 text-lg font-semibold">
                 <Phone className="w-5 h-5 mr-2" />
                 Hemen Ara
               </Button>
@@ -36,45 +36,52 @@ export default function HomeConsulting() {
       </section>
 
       {/* Services Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-orange-50">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Lokma Çeşitlerimiz
-            </h2>
+            <div className="flex items-center justify-center mb-6">
+              <span className="text-4xl mr-3">🍯</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-orange-800 mb-4">
+                Lokma Çeşitlerimiz
+              </h2>
+              <span className="text-4xl ml-3">🍯</span>
+            </div>
             <p className="text-lg text-gray-600">
               Geleneksel tariflerle hazırlanan nefis lokma çeşitlerimiz
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-              <div className="w-16 h-16 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Star className="w-8 h-8 text-white" />
+            <div className="text-center p-8 rounded-xl bg-white hover:bg-orange-50 transition-all shadow-lg hover:shadow-xl border-2 border-orange-100">
+              <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-yellow-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <span className="text-3xl">🍯</span>
               </div>
-              <h3 className="text-xl font-semibold mb-3">Klasik Lokma</h3>
-              <p className="text-gray-600">
-                Geleneksel tarifle hazırlanan, şerbetli ve yumuşacık klasik lokma
+              <h3 className="text-xl font-bold mb-3 text-orange-800">Klasik Lokma</h3>
+              <p className="text-gray-700 text-sm leading-relaxed">
+                Geleneksel tarifle hazırlanan, şerbetli ve yumuşacık klasik lokma. 
+                Osmanlı saray mutfağından günümüze gelen lezzet.
               </p>
             </div>
             
-            <div className="text-center p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-              <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Users className="w-8 h-8 text-white" />
+            <div className="text-center p-8 rounded-xl bg-white hover:bg-orange-50 transition-all shadow-lg hover:shadow-xl border-2 border-orange-100">
+              <div className="w-20 h-20 bg-gradient-to-br from-amber-600 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <span className="text-3xl">🍫</span>
               </div>
-              <h3 className="text-xl font-semibold mb-3">Çikolatalı Lokma</h3>
-              <p className="text-gray-600">
-                Çikolata soslu özel lokma çeşidimiz, çocukların ve gençlerin favorisi
+              <h3 className="text-xl font-bold mb-3 text-orange-800">Çikolatalı Lokma</h3>
+              <p className="text-gray-700 text-sm leading-relaxed">
+                Çikolata soslu özel lokma çeşidimiz. Çocukların ve gençlerin favorisi,
+                modern lezzet ile geleneksel tatların buluşması.
               </p>
             </div>
             
-            <div className="text-center p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
-              <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MapPin className="w-8 h-8 text-white" />
+            <div className="text-center p-8 rounded-xl bg-white hover:bg-orange-50 transition-all shadow-lg hover:shadow-xl border-2 border-orange-100">
+              <div className="w-20 h-20 bg-gradient-to-br from-red-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <span className="text-3xl">🎉</span>
               </div>
-              <h3 className="text-xl font-semibold mb-3">Lokma Dağıtımı</h3>
-              <p className="text-gray-600">
-                Düğün, mevlid, açılış ve özel günleriniz için toplu lokma dağıtımı
+              <h3 className="text-xl font-bold mb-3 text-orange-800">Özel Günler</h3>
+              <p className="text-gray-700 text-sm leading-relaxed">
+                Düğün, mevlid, açılış ve özel günleriniz için toplu lokma dağıtımı.
+                Sevincin paylaşılması için geleneksel hizmet.
               </p>
             </div>
           </div>
@@ -82,12 +89,16 @@ export default function HomeConsulting() {
       </section>
 
       {/* Destinations Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Hizmet Bölgelerimiz
-            </h2>
+            <div className="flex items-center justify-center mb-6">
+              <span className="text-4xl mr-3">🚚</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-orange-800 mb-4">
+                Hizmet Bölgelerimiz
+              </h2>
+              <span className="text-4xl ml-3">🚚</span>
+            </div>
             <p className="text-lg text-gray-600">
               İstanbul'un her yerine sıcak lokma servisimiz
             </p>
@@ -102,10 +113,13 @@ export default function HomeConsulting() {
               { name: "Üsküdar", description: "Anadolu yakası sahil - 30 dk teslimat" },
               { name: "Bakırköy", description: "Avrupa yakası sahil - 40 dk teslimat" }
             ].map((dest, index) => (
-              <div key={index} className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
-                <h3 className="text-xl font-semibold mb-2">{dest.name}</h3>
-                <p className="text-gray-600 mb-4">{dest.description}</p>
-                <Button variant="outline" size="sm">
+              <div key={index} className="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-xl p-6 shadow-md hover:shadow-lg transition-all border border-orange-200">
+                <div className="flex items-center mb-3">
+                  <span className="text-2xl mr-3">🚚</span>
+                  <h3 className="text-xl font-bold text-orange-800">{dest.name}</h3>
+                </div>
+                <p className="text-gray-700 mb-4 text-sm">{dest.description}</p>
+                <Button className="bg-orange-500 hover:bg-orange-600 text-white" size="sm">
                   Sipariş Ver
                 </Button>
               </div>
@@ -115,7 +129,7 @@ export default function HomeConsulting() {
       </section>
 
       {/* Contact Section */}
-      <section className="py-16 bg-blue-600 text-white">
+      <section className="py-16 bg-gradient-to-r from-orange-600 to-red-600 text-white">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Hasan Usta ile İletişime Geçin
@@ -136,8 +150,8 @@ export default function HomeConsulting() {
           </div>
           
           <div className="mt-8">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-6 text-lg font-semibold">
-              <Mail className="w-5 h-5 mr-2" />
+            <Button size="lg" className="bg-white text-orange-600 hover:bg-orange-50 px-8 py-6 text-lg font-semibold shadow-lg">
+              <span className="text-2xl mr-2">📞</span>
               Hemen Sipariş Ver
             </Button>
           </div>
@@ -145,7 +159,7 @@ export default function HomeConsulting() {
       </section>
 
       {/* Simple Footer */}
-      <footer className="bg-gray-800 text-white py-8">
+      <footer className="bg-gradient-to-r from-amber-800 to-orange-900 text-white py-8">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <p className="mb-2">© 2025 Seyyar Lokmacı Hasan Usta</p>
           <p className="text-gray-400">30 yıllık deneyimle geleneksel lokma üretimi</p>
