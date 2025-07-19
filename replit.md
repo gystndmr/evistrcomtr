@@ -269,7 +269,7 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - Original e-visa application site backed up in `.backup-home-original.tsx`
   - Consulting/advertising site available in `client/src/pages/home-consulting.tsx`
   - Quick restore scripts: `restore-original.sh` and `restore-consulting.sh`
-  - Currently displaying: Seyyar Lokmacı Hasan Usta site (lokma delivery business)
+  - Currently displaying: Turkey E-Visa Application System (original project)
   - Easy toggle between e-visa application site and consulting marketing site
   - Both sites maintain professional appearance with proper Turkish branding
 ✅ **Comprehensive Form Validation System** (July 17, 2025):
