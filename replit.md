@@ -264,6 +264,14 @@ The application is designed for easy deployment on platforms like Replit, Vercel
        - Payment URL generation now working successfully
        - Transaction IDs created: 01k0cnza3xhmnja0rdzsr8kxnj (example)
        - System fully operational for both visa and insurance payments
+✅ **Site Mode Switching System** (July 18, 2025):
+  - Created flexible site switching mechanism for different business modes
+  - Original e-visa application site backed up in `.backup-home-original.tsx`
+  - Consulting/advertising site available in `client/src/pages/home-consulting.tsx`
+  - Quick restore scripts: `restore-original.sh` and `restore-consulting.sh`
+  - Currently displaying: Turkish Travel Consulting site for marketing purposes
+  - Easy toggle between e-visa application site and consulting marketing site
+  - Both sites maintain professional appearance with proper Turkish branding
 ✅ **Comprehensive Form Validation System** (July 17, 2025):
   - Implemented mandatory field validation across all form steps
   - **Visa Application Form**: Step-by-step validation preventing progression without required data
