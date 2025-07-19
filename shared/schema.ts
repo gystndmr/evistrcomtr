@@ -110,7 +110,12 @@ export const insuranceApplicationsRelations = relations(insuranceApplications, (
 export const insertCountrySchema = createInsertSchema(countries);
 export const insertApplicationSchema = createInsertSchema(applications);
 export const insertInsuranceProductSchema = createInsertSchema(insuranceProducts);
-export const insertInsuranceApplicationSchema = createInsertSchema(insuranceApplications);
+export const insertInsuranceApplicationSchema = createInsertSchema(insuranceApplications).omit({ 
+  id: true, 
+  createdAt: true, 
+  updatedAt: true,
+  pdfAttachment: true
+});
 
 // Types
 export type Country = typeof countries.$inferSelect;

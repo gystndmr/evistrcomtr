@@ -312,3 +312,11 @@ The application is designed for easy deployment on platforms like Replit, Vercel
     - Professional modal interface for complete application review
   - **Data Integrity**: All customer-submitted form data now properly stored and accessible in admin panel
   - **Business Intelligence**: Complete customer information available for business analysis and customer service
+✅ **Age Verification System for Insurance** (July 19, 2025):
+  - Added mandatory date of birth field to insurance application form
+  - Automatic age calculation to determine if applicant is under 18
+  - Dynamic parent ID photo upload requirement for minors (anne ve baba kimlik fotoğrafları)
+  - Enhanced validation system preventing submission without required documents
+  - Real-time UI updates showing parent ID upload section for under-18 applicants
+  - Database schema updated with dateOfBirth and parentIdPhotos fields for insurance applications
+  - Parent ID photos stored as base64 JSON data in database for admin review

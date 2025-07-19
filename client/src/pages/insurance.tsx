@@ -27,7 +27,9 @@ export default function Insurance() {
     travelDate: "",
     returnDate: "",
     destination: "Turkey",
+    dateOfBirth: "",
   });
+  const [parentIdPhotos, setParentIdPhotos] = useState<File[]>([]);
   // Removed paymentData state - now using direct redirects
   const [showRetry, setShowRetry] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
@@ -62,12 +64,25 @@ export default function Insurance() {
       const diffTime = Math.abs(returnDate.getTime() - travelDate.getTime());
       const tripDurationDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       
+      // Prepare parent ID photos data for under 18
+      const parentIdPhotosData = parentIdPhotos.length > 0 ? 
+        await Promise.all(parentIdPhotos.map(async (file) => {
+          const base64 = await new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.readAsDataURL(file);
+          });
+          return { name: file.name, data: base64 };
+        })) : null;
+
       // First create the insurance application
       const applicationResponse = await apiRequest("POST", "/api/insurance/applications", {
         ...applicationData,
         productId: selectedProduct.id,
         totalAmount: selectedProduct.price,
         tripDurationDays: tripDurationDays,
+        dateOfBirth: applicationData.dateOfBirth ? new Date(applicationData.dateOfBirth) : null,
+        parentIdPhotos: parentIdPhotosData,
       });
       const applicationData2 = await applicationResponse.json();
       
@@ -209,6 +224,32 @@ export default function Insurance() {
       toast({
         title: "Invalid Date Range",
         description: "Return date must be after travel date",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!applicationData.dateOfBirth.trim()) {
+      toast({
+        title: "Date of Birth Required",
+        description: "Please enter your date of birth",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if under 18 and require parent ID photos
+    const birthDate = new Date(applicationData.dateOfBirth);
+    const today = new Date();
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    const actualAge = age - (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate()) ? 1 : 0);
+
+    if (actualAge < 18 && parentIdPhotos.length === 0) {
+      toast({
+        title: "Parent ID Photos Required",
+        description: "18 yaş altı başvurular için anne ve baba kimlik fotoğrafları gereklidir",
         variant: "destructive",
       });
       return;
@@ -379,7 +420,61 @@ export default function Insurance() {
                         required
                       />
                     </div>
+
+                    <div>
+                      <Label htmlFor="dateOfBirth">Date of Birth *</Label>
+                      <Input
+                        id="dateOfBirth"
+                        type="date"
+                        value={applicationData.dateOfBirth}
+                        onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
+                        required
+                      />
+                    </div>
                   </div>
+
+                  {/* Parent ID Photos for Under 18 */}
+                  {(() => {
+                    if (!applicationData.dateOfBirth) return null;
+                    
+                    const birthDate = new Date(applicationData.dateOfBirth);
+                    const today = new Date();
+                    const age = today.getFullYear() - birthDate.getFullYear();
+                    const monthDiff = today.getMonth() - birthDate.getMonth();
+                    const actualAge = age - (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate()) ? 1 : 0);
+                    
+                    if (actualAge >= 18) return null;
+                    
+                    return (
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                        <h4 className="font-semibold mb-4 text-orange-800 flex items-center space-x-2">
+                          <span>🔒</span>
+                          <span>18 Yaş Altı - Ebeveyn Kimlik Fotoğrafları Gerekli</span>
+                        </h4>
+                        <p className="text-sm text-gray-700 mb-4">
+                          18 yaş altı başvurular için anne ve babanın kimlik kartı fotoğraflarını yükleyiniz.
+                        </p>
+                        <div>
+                          <Label htmlFor="parentIds">Anne ve Baba Kimlik Fotoğrafları *</Label>
+                          <Input
+                            id="parentIds"
+                            type="file"
+                            multiple
+                            accept="image/*"
+                            onChange={(e) => {
+                              const files = Array.from(e.target.files || []);
+                              setParentIdPhotos(files);
+                            }}
+                            className="mt-2"
+                            required
+                          />
+                          <p className="text-xs text-gray-500 mt-2">
+                            Anne ve babanın kimlik kartlarının ön yüzlerini yükleyiniz (JPG, PNG formatında)
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })()}
                   
                   <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                     <h4 className="font-semibold mb-4 text-gray-900 flex items-center space-x-2">
