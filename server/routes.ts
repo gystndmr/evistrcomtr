@@ -12,6 +12,13 @@ function generateApplicationNumber(): string {
   return `TR${timestamp}${random}`.toUpperCase();
 }
 
+// Generate unique order reference for GPay (includes timestamp)
+function generateOrderReference(): string {
+  const timestamp = Date.now().toString();
+  const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+  return `TR${timestamp}${random}`;
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get all countries
   app.get("/api/countries", async (req, res) => {
@@ -732,7 +739,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const baseUrl = 'https://getvisa.tr';
       
       const paymentRequest = {
-        orderRef: finalOrderRef,
+        orderRef: generateOrderReference(), // Generate unique order reference instead of using application number
         amount: amount.toString(), // Use real amount from request
         currency: "USD", // Fixed currency
         orderDescription: finalDescription || `E-Visa Application - ${finalOrderRef}`,
