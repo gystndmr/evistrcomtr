@@ -120,14 +120,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create insurance application
   app.post("/api/insurance/applications", async (req, res) => {
     try {
-      // Convert string dates to Date objects before validation
+      console.log("=== INSURANCE APPLICATION DEBUG ===");
+      console.log("Raw dateOfBirth:", req.body.dateOfBirth, typeof req.body.dateOfBirth);
+      console.log("Raw totalAmount:", req.body.totalAmount, typeof req.body.totalAmount);
+      
+      // Convert dates and amounts to proper format for schema validation
       const bodyWithDates = {
         ...req.body,
         applicationNumber: generateApplicationNumber(),
+        destination: req.body.destination || "Turkey", // Default destination
         travelDate: req.body.travelDate ? new Date(req.body.travelDate) : undefined,
         returnDate: req.body.returnDate ? new Date(req.body.returnDate) : undefined,
-        dateOfBirth: req.body.dateOfBirth ? new Date(req.body.dateOfBirth) : undefined,
+        dateOfBirth: req.body.dateOfBirth, // Keep as string
+        totalAmount: req.body.totalAmount, // Keep original value first
       };
+      
+      console.log("After processing - dateOfBirth:", bodyWithDates.dateOfBirth, typeof bodyWithDates.dateOfBirth);
+      console.log("After processing - totalAmount:", bodyWithDates.totalAmount, typeof bodyWithDates.totalAmount);
 
       const validatedData = insertInsuranceApplicationSchema.parse(bodyWithDates);
 

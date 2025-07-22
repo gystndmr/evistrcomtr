@@ -86,7 +86,7 @@ export default function Insurance() {
         productId: selectedProduct.id,
         totalAmount: selectedProduct.price,
         tripDurationDays: tripDurationDays,
-        dateOfBirth: applicationData.dateOfBirth ? new Date(applicationData.dateOfBirth) : null,
+        dateOfBirth: applicationData.dateOfBirth,
         parentIdPhotos: parentIdPhotosData,
       });
       const applicationData2 = await applicationResponse.json();
