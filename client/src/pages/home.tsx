@@ -151,7 +151,7 @@ export default function Home() {
             <Link href="/insurance">
               <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-4">
                 <Shield className="w-5 h-5 mr-2" />
-                Get Travel Insurance for Turkey
+                {t('home.insurance.button')}
               </Button>
             </Link>
           </div>

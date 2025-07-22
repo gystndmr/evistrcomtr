@@ -119,6 +119,9 @@ const translations: Record<string, Record<string, string>> = {
     'home.heritage.hagia': 'Iconic Byzantine masterpiece in Istanbul',
     'home.heritage.cappadocia': 'Extraordinary rock formations and hot air balloons',
     'home.heritage.pamukkale': 'Natural thermal pools and ancient ruins',
+    'home.insurance.title': 'Get Travel Insurance for Turkey',
+    'home.insurance.subtitle': 'Secure your journey with officially approved insurance plans',
+    'home.insurance.button': 'Get Travel Insurance for Turkey',
     
     // Application Form
     'app.title': 'E-Visa Application',
@@ -194,6 +197,9 @@ const translations: Record<string, Record<string, string>> = {
     'home.heritage.hagia': 'İstanbul\'daki ikonik Bizans şaheseri',
     'home.heritage.cappadocia': 'Olağanüstü kaya oluşumları ve sıcak hava balonları',
     'home.heritage.pamukkale': 'Doğal termal havuzlar ve antik kalıntılar',
+    'home.insurance.title': 'Türkiye için Seyahat Sigortası Alın',
+    'home.insurance.subtitle': 'Seyahatinizi resmi onaylı sigorta planları ile güvence altına alın',
+    'home.insurance.button': 'Türkiye Seyahat Sigortası Alın',
     
     // Application Form
     'app.title': 'E-Vize Başvurusu',
@@ -261,6 +267,17 @@ const translations: Record<string, Record<string, string>> = {
     'home.heritage.hagia': 'Chef-d\'œuvre byzantin emblématique d\'Istanbul',
     'home.heritage.cappadocia': 'Formations rocheuses extraordinaires et montgolfières',
     'home.heritage.pamukkale': 'Piscines thermales naturelles et ruines antiques',
+    'home.buttons.apply': 'Demander un e-Visa',
+    'home.buttons.check': 'Vérifier le Statut de la Demande',
+    'home.steps.complete': 'Compléter la Demande',
+    'home.steps.complete.desc': 'Remplissez le formulaire de demande de visa avec vos informations correctes',
+    'home.steps.payment': 'Effectuer le Paiement',
+    'home.steps.payment.desc': 'Payez en toute sécurité avec votre carte de crédit ou carte de débit',
+    'home.steps.download': 'Télécharger E-Visa',
+    'home.steps.download.desc': 'Téléchargez votre e-visa lorsque la demande est terminée avec succès',
+    'home.insurance.title': 'Obtenir une Assurance Voyage pour la Turquie',
+    'home.insurance.subtitle': 'Sécurisez votre voyage avec des plans d\'assurance officiellement approuvés',
+    'home.insurance.button': 'Obtenir une Assurance Voyage pour la Turquie',
     
     // Application Form
     'app.title': 'Demande de E-Visa',
@@ -328,6 +345,17 @@ const translations: Record<string, Record<string, string>> = {
     'home.heritage.hagia': 'Ikonisches byzantinisches Meisterwerk in Istanbul',
     'home.heritage.cappadocia': 'Außergewöhnliche Felsformationen und Heißluftballons',
     'home.heritage.pamukkale': 'Natürliche Thermalbäder und antike Ruinen',
+    'home.buttons.apply': 'E-Visa Beantragen',
+    'home.buttons.check': 'Antrag Status Prüfen',
+    'home.steps.complete': 'Antrag Vervollständigen',
+    'home.steps.complete.desc': 'Füllen Sie das Visa-Antragsformular mit Ihren korrekten Informationen aus',
+    'home.steps.payment': 'Zahlung Durchführen',
+    'home.steps.payment.desc': 'Bezahlen Sie sicher mit Ihrer Kredit- oder Debitkarte',
+    'home.steps.download': 'E-Visa Herunterladen',
+    'home.steps.download.desc': 'Laden Sie Ihr e-Visa herunter, wenn der Antrag erfolgreich abgeschlossen ist',
+    'home.insurance.title': 'Reiseversicherung für die Türkei Erhalten',
+    'home.insurance.subtitle': 'Sichern Sie Ihre Reise mit offiziell genehmigten Versicherungsplänen',
+    'home.insurance.button': 'Reiseversicherung für die Türkei Erhalten',
     
     // Application Form
     'app.title': 'E-Visa Antrag',
@@ -395,6 +423,17 @@ const translations: Record<string, Record<string, string>> = {
     'home.heritage.hagia': 'Obra maestra bizantina icónica en Estambul',
     'home.heritage.cappadocia': 'Formaciones rocosas extraordinarias y globos aerostáticos',
     'home.heritage.pamukkale': 'Piscinas termales naturales y ruinas antiguas',
+    'home.buttons.apply': 'Solicitar e-Visa',
+    'home.buttons.check': 'Verificar Estado de Solicitud',
+    'home.steps.complete': 'Completar Solicitud',
+    'home.steps.complete.desc': 'Complete el formulario de solicitud de visa con su información correcta',
+    'home.steps.payment': 'Realizar Pago',
+    'home.steps.payment.desc': 'Pague de forma segura con su tarjeta de crédito o débito',
+    'home.steps.download': 'Descargar E-Visa',
+    'home.steps.download.desc': 'Descargue su e-visa cuando la solicitud se complete exitosamente',
+    'home.insurance.title': 'Obtener Seguro de Viaje para Turquía',
+    'home.insurance.subtitle': 'Asegure su viaje con planes de seguro oficialmente aprobados',
+    'home.insurance.button': 'Obtener Seguro de Viaje para Turquía',
     
     // Application Form
     'app.title': 'Solicitud de E-Visa',
@@ -462,6 +501,17 @@ const translations: Record<string, Record<string, string>> = {
     'home.heritage.hagia': 'تحفة بيزنطية مميزة في إسطنبول',
     'home.heritage.cappadocia': 'تشكيلات صخرية استثنائية ومناطيد الهواء الساخن',
     'home.heritage.pamukkale': 'برك حرارية طبيعية وآثار قديمة',
+    'home.buttons.apply': 'تقديم طلب للحصول على التأشيرة الإلكترونية',
+    'home.buttons.check': 'التحقق من حالة الطلب',
+    'home.steps.complete': 'إكمال الطلب',
+    'home.steps.complete.desc': 'املأ نموذج طلب التأشيرة بمعلوماتك الصحيحة',
+    'home.steps.payment': 'إجراء الدفع',
+    'home.steps.payment.desc': 'ادفع بأمان باستخدام بطاقة الائتمان أو بطاقة الخصم',
+    'home.steps.download': 'تحميل التأشيرة الإلكترونية',
+    'home.steps.download.desc': 'قم بتنزيل التأشيرة الإلكترونية عند إكمال الطلب بنجاح',
+    'home.insurance.title': 'الحصول على تأمين السفر لتركيا',
+    'home.insurance.subtitle': 'أمن رحلتك مع خطط التأمين المعتمدة رسمياً',
+    'home.insurance.button': 'الحصول على تأمين السفر لتركيا',
     
     // Application Form
     'app.title': 'طلب التأشيرة الإلكترونية',
