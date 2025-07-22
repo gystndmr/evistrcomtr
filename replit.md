@@ -259,8 +259,10 @@ The application is designed for easy deployment on platforms like Replit, Vercel
      - **System Status**: Restored working configuration (July 22, 2025)
      - **Restoration**: Reverted to GET method redirect approach documented as working in line 240
      - **Working Method**: Direct window.location.href redirect to GPay checkout URLs
-     - **Domain Used**: evisatr.com.tr for callbacks as was working previously  
+     - **Domain Used**: evisatr.com.tr for callbacks (always, even in development)
      - **Issue Fixed**: Removed POST form submission that was causing complications
+     - **Development Issue**: 500 errors in localhost because GPay requires registered domains
+     - **Production Status**: Should work correctly with evisatr.com.tr domain registration
 ✅ **GPay POST Method Implementation & 500 Error Handling** (July 22, 2025):
    - ✅ **HTTP Method Fix**: Corrected payment form submissions to use POST method instead of GET redirects
    - ✅ **PaymentResponse Interface**: Added formData field to support POST form submissions  

@@ -709,10 +709,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Use production domain as it was working before
-      const baseUrl = process.env.NODE_ENV === 'production' 
-        ? 'https://evisatr.com.tr' 
-        : 'http://localhost:5000';
+      // Always use production domain for GPay callbacks - required for GPay registration
+      const baseUrl = 'https://evisatr.com.tr';
       
       const paymentRequest = {
         orderRef: finalOrderRef,
