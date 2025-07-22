@@ -102,43 +102,12 @@ export default function Insurance() {
       const paymentData = await paymentResponse.json();
       
       if (paymentData.success && paymentData.paymentUrl) {
-        // Use POST form submission with form data
         setCurrentOrderId(applicationData2.applicationNumber);
         
-        // Create enhanced payment form with retry mechanism and fallback
-        try {
-          // Try direct form submission first
-          const paymentFormContainer = document.createElement('div');
-          paymentFormContainer.innerHTML = `
-            <form method="POST" action="${paymentData.paymentUrl}" id="gpayInsuranceForm" target="_blank">
-              ${paymentData.formData ? Object.entries(paymentData.formData).map(([key, value]) => 
-                `<input type="hidden" name="${key}" value="${value}" />`
-              ).join('') : ''}
-            </form>
-          `;
-          document.body.appendChild(paymentFormContainer);
-          
-          // Auto-submit form after 2 seconds with error handling
-          setTimeout(() => {
-            const form = document.getElementById('gpayInsuranceForm') as HTMLFormElement;
-            if (form) {
-              try {
-                form.submit();
-                // Clean up form after submission
-                setTimeout(() => {
-                  document.body.removeChild(paymentFormContainer);
-                }, 5000);
-              } catch (formError) {
-                console.error('Form submission error:', formError);
-                setShowRetry(true);
-                document.body.removeChild(paymentFormContainer);
-              }
-            }
-          }, 2000);
-        } catch (error) {
-          console.error('Payment form creation error:', error);
-          setShowRetry(true);
-        }
+        // Simple direct redirect approach (as documented working in line 240 of replit.md)
+        setTimeout(() => {
+          window.location.href = paymentData.paymentUrl;
+        }, 1500);
       } else {
         throw new Error(paymentData.error || "Payment initialization failed");
       }
