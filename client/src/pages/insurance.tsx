@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Shield, CheckCircle, Calendar, MapPin, Star, Crown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -428,36 +429,219 @@ export default function Insurance() {
                     </div>
                     
                     <div>
-                      <Label htmlFor="travelDate">Travel Date *</Label>
-                      <Input
-                        id="travelDate"
-                        type="date"
-                        value={applicationData.travelDate}
-                        onChange={(e) => handleInputChange("travelDate", e.target.value)}
-                        required
-                      />
+                      <Label>Travel Date *</Label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <Select
+                          value={applicationData.travelDate ? new Date(applicationData.travelDate).getDate().toString().padStart(2, '0') : ''}
+                          onValueChange={(day) => {
+                            const currentDate = applicationData.travelDate ? new Date(applicationData.travelDate) : new Date();
+                            currentDate.setDate(parseInt(day));
+                            handleInputChange("travelDate", currentDate.toISOString().split('T')[0]);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Gün" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                              <SelectItem key={d} value={d}>{d}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <Select
+                          value={applicationData.travelDate ? (new Date(applicationData.travelDate).getMonth() + 1).toString().padStart(2, '0') : ''}
+                          onValueChange={(month) => {
+                            const currentDate = applicationData.travelDate ? new Date(applicationData.travelDate) : new Date();
+                            currentDate.setMonth(parseInt(month) - 1);
+                            handleInputChange("travelDate", currentDate.toISOString().split('T')[0]);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Ay" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {[
+                              { value: '01', label: 'Ocak' },
+                              { value: '02', label: 'Şubat' },
+                              { value: '03', label: 'Mart' },
+                              { value: '04', label: 'Nisan' },
+                              { value: '05', label: 'Mayıs' },
+                              { value: '06', label: 'Haziran' },
+                              { value: '07', label: 'Temmuz' },
+                              { value: '08', label: 'Ağustos' },
+                              { value: '09', label: 'Eylül' },
+                              { value: '10', label: 'Ekim' },
+                              { value: '11', label: 'Kasım' },
+                              { value: '12', label: 'Aralık' }
+                            ].map((m) => (
+                              <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <Select
+                          value={applicationData.travelDate ? new Date(applicationData.travelDate).getFullYear().toString() : ''}
+                          onValueChange={(year) => {
+                            const currentDate = applicationData.travelDate ? new Date(applicationData.travelDate) : new Date();
+                            currentDate.setFullYear(parseInt(year));
+                            handleInputChange("travelDate", currentDate.toISOString().split('T')[0]);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Yıl" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
+                              <SelectItem key={y} value={y}>{y}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                     
                     <div>
-                      <Label htmlFor="returnDate">Return Date *</Label>
-                      <Input
-                        id="returnDate"
-                        type="date"
-                        value={applicationData.returnDate}
-                        onChange={(e) => handleInputChange("returnDate", e.target.value)}
-                        required
-                      />
+                      <Label>Return Date *</Label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <Select
+                          value={applicationData.returnDate ? new Date(applicationData.returnDate).getDate().toString().padStart(2, '0') : ''}
+                          onValueChange={(day) => {
+                            const currentDate = applicationData.returnDate ? new Date(applicationData.returnDate) : new Date();
+                            currentDate.setDate(parseInt(day));
+                            handleInputChange("returnDate", currentDate.toISOString().split('T')[0]);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Gün" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                              <SelectItem key={d} value={d}>{d}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <Select
+                          value={applicationData.returnDate ? (new Date(applicationData.returnDate).getMonth() + 1).toString().padStart(2, '0') : ''}
+                          onValueChange={(month) => {
+                            const currentDate = applicationData.returnDate ? new Date(applicationData.returnDate) : new Date();
+                            currentDate.setMonth(parseInt(month) - 1);
+                            handleInputChange("returnDate", currentDate.toISOString().split('T')[0]);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Ay" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {[
+                              { value: '01', label: 'Ocak' },
+                              { value: '02', label: 'Şubat' },
+                              { value: '03', label: 'Mart' },
+                              { value: '04', label: 'Nisan' },
+                              { value: '05', label: 'Mayıs' },
+                              { value: '06', label: 'Haziran' },
+                              { value: '07', label: 'Temmuz' },
+                              { value: '08', label: 'Ağustos' },
+                              { value: '09', label: 'Eylül' },
+                              { value: '10', label: 'Ekim' },
+                              { value: '11', label: 'Kasım' },
+                              { value: '12', label: 'Aralık' }
+                            ].map((m) => (
+                              <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <Select
+                          value={applicationData.returnDate ? new Date(applicationData.returnDate).getFullYear().toString() : ''}
+                          onValueChange={(year) => {
+                            const currentDate = applicationData.returnDate ? new Date(applicationData.returnDate) : new Date();
+                            currentDate.setFullYear(parseInt(year));
+                            handleInputChange("returnDate", currentDate.toISOString().split('T')[0]);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Yıl" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
+                              <SelectItem key={y} value={y}>{y}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
 
                     <div>
-                      <Label htmlFor="dateOfBirth">Date of Birth *</Label>
-                      <Input
-                        id="dateOfBirth"
-                        type="date"
-                        value={applicationData.dateOfBirth}
-                        onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
-                        required
-                      />
+                      <Label>Date of Birth *</Label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <Select
+                          value={applicationData.dateOfBirth ? new Date(applicationData.dateOfBirth).getDate().toString().padStart(2, '0') : ''}
+                          onValueChange={(day) => {
+                            const currentDate = applicationData.dateOfBirth ? new Date(applicationData.dateOfBirth) : new Date();
+                            currentDate.setDate(parseInt(day));
+                            handleInputChange("dateOfBirth", currentDate.toISOString().split('T')[0]);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Gün" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                              <SelectItem key={d} value={d}>{d}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <Select
+                          value={applicationData.dateOfBirth ? (new Date(applicationData.dateOfBirth).getMonth() + 1).toString().padStart(2, '0') : ''}
+                          onValueChange={(month) => {
+                            const currentDate = applicationData.dateOfBirth ? new Date(applicationData.dateOfBirth) : new Date();
+                            currentDate.setMonth(parseInt(month) - 1);
+                            handleInputChange("dateOfBirth", currentDate.toISOString().split('T')[0]);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Ay" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {[
+                              { value: '01', label: 'Ocak' },
+                              { value: '02', label: 'Şubat' },
+                              { value: '03', label: 'Mart' },
+                              { value: '04', label: 'Nisan' },
+                              { value: '05', label: 'Mayıs' },
+                              { value: '06', label: 'Haziran' },
+                              { value: '07', label: 'Temmuz' },
+                              { value: '08', label: 'Ağustos' },
+                              { value: '09', label: 'Eylül' },
+                              { value: '10', label: 'Ekim' },
+                              { value: '11', label: 'Kasım' },
+                              { value: '12', label: 'Aralık' }
+                            ].map((m) => (
+                              <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <Select
+                          value={applicationData.dateOfBirth ? new Date(applicationData.dateOfBirth).getFullYear().toString() : ''}
+                          onValueChange={(year) => {
+                            const currentDate = applicationData.dateOfBirth ? new Date(applicationData.dateOfBirth) : new Date();
+                            currentDate.setFullYear(parseInt(year));
+                            handleInputChange("dateOfBirth", currentDate.toISOString().split('T')[0]);
+                          }}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Yıl" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Array.from({ length: 80 }, (_, i) => (new Date().getFullYear() - i).toString()).map((y) => (
+                              <SelectItem key={y} value={y}>{y}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                   </div>
 

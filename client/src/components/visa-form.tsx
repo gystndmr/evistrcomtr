@@ -656,7 +656,76 @@ export function VisaForm() {
                         <FormItem>
                           <FormLabel>Arrival Date in Turkey *</FormLabel>
                           <FormControl>
-                            <Input type="date" {...field} />
+                            <div className="space-y-2">
+                              <div className="grid grid-cols-3 gap-2">
+                                <Select
+                                  value={field.value ? new Date(field.value).getDate().toString().padStart(2, '0') : ''}
+                                  onValueChange={(day) => {
+                                    const currentDate = field.value ? new Date(field.value) : new Date();
+                                    currentDate.setDate(parseInt(day));
+                                    field.onChange(currentDate.toISOString().split('T')[0]);
+                                  }}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Gün" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                                      <SelectItem key={d} value={d}>{d}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+
+                                <Select
+                                  value={field.value ? (new Date(field.value).getMonth() + 1).toString().padStart(2, '0') : ''}
+                                  onValueChange={(month) => {
+                                    const currentDate = field.value ? new Date(field.value) : new Date();
+                                    currentDate.setMonth(parseInt(month) - 1);
+                                    field.onChange(currentDate.toISOString().split('T')[0]);
+                                  }}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Ay" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {[
+                                      { value: '01', label: 'Ocak' },
+                                      { value: '02', label: 'Şubat' },
+                                      { value: '03', label: 'Mart' },
+                                      { value: '04', label: 'Nisan' },
+                                      { value: '05', label: 'Mayıs' },
+                                      { value: '06', label: 'Haziran' },
+                                      { value: '07', label: 'Temmuz' },
+                                      { value: '08', label: 'Ağustos' },
+                                      { value: '09', label: 'Eylül' },
+                                      { value: '10', label: 'Ekim' },
+                                      { value: '11', label: 'Kasım' },
+                                      { value: '12', label: 'Aralık' }
+                                    ].map((m) => (
+                                      <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+
+                                <Select
+                                  value={field.value ? new Date(field.value).getFullYear().toString() : ''}
+                                  onValueChange={(year) => {
+                                    const currentDate = field.value ? new Date(field.value) : new Date();
+                                    currentDate.setFullYear(parseInt(year));
+                                    field.onChange(currentDate.toISOString().split('T')[0]);
+                                  }}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Yıl" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
+                                      <SelectItem key={y} value={y}>{y}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -843,7 +912,74 @@ export function VisaForm() {
                         <FormItem>
                           <FormLabel>Date of Birth *</FormLabel>
                           <FormControl>
-                            <Input type="date" {...field} />
+                            <div className="grid grid-cols-3 gap-2">
+                              <Select
+                                value={field.value ? new Date(field.value).getDate().toString().padStart(2, '0') : ''}
+                                onValueChange={(day) => {
+                                  const currentDate = field.value ? new Date(field.value) : new Date();
+                                  currentDate.setDate(parseInt(day));
+                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                }}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Gün" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                                    <SelectItem key={d} value={d}>{d}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+
+                              <Select
+                                value={field.value ? (new Date(field.value).getMonth() + 1).toString().padStart(2, '0') : ''}
+                                onValueChange={(month) => {
+                                  const currentDate = field.value ? new Date(field.value) : new Date();
+                                  currentDate.setMonth(parseInt(month) - 1);
+                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                }}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Ay" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {[
+                                    { value: '01', label: 'Ocak' },
+                                    { value: '02', label: 'Şubat' },
+                                    { value: '03', label: 'Mart' },
+                                    { value: '04', label: 'Nisan' },
+                                    { value: '05', label: 'Mayıs' },
+                                    { value: '06', label: 'Haziran' },
+                                    { value: '07', label: 'Temmuz' },
+                                    { value: '08', label: 'Ağustos' },
+                                    { value: '09', label: 'Eylül' },
+                                    { value: '10', label: 'Ekim' },
+                                    { value: '11', label: 'Kasım' },
+                                    { value: '12', label: 'Aralık' }
+                                  ].map((m) => (
+                                    <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+
+                              <Select
+                                value={field.value ? new Date(field.value).getFullYear().toString() : ''}
+                                onValueChange={(year) => {
+                                  const currentDate = field.value ? new Date(field.value) : new Date();
+                                  currentDate.setFullYear(parseInt(year));
+                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                }}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Yıl" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {Array.from({ length: 80 }, (_, i) => (new Date().getFullYear() - i).toString()).map((y) => (
+                                    <SelectItem key={y} value={y}>{y}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -871,7 +1007,74 @@ export function VisaForm() {
                         <FormItem>
                           <FormLabel>Passport Issue Date *</FormLabel>
                           <FormControl>
-                            <Input type="date" {...field} />
+                            <div className="grid grid-cols-3 gap-2">
+                              <Select
+                                value={field.value ? new Date(field.value).getDate().toString().padStart(2, '0') : ''}
+                                onValueChange={(day) => {
+                                  const currentDate = field.value ? new Date(field.value) : new Date();
+                                  currentDate.setDate(parseInt(day));
+                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                }}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Gün" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                                    <SelectItem key={d} value={d}>{d}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+
+                              <Select
+                                value={field.value ? (new Date(field.value).getMonth() + 1).toString().padStart(2, '0') : ''}
+                                onValueChange={(month) => {
+                                  const currentDate = field.value ? new Date(field.value) : new Date();
+                                  currentDate.setMonth(parseInt(month) - 1);
+                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                }}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Ay" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {[
+                                    { value: '01', label: 'Ocak' },
+                                    { value: '02', label: 'Şubat' },
+                                    { value: '03', label: 'Mart' },
+                                    { value: '04', label: 'Nisan' },
+                                    { value: '05', label: 'Mayıs' },
+                                    { value: '06', label: 'Haziran' },
+                                    { value: '07', label: 'Temmuz' },
+                                    { value: '08', label: 'Ağustos' },
+                                    { value: '09', label: 'Eylül' },
+                                    { value: '10', label: 'Ekim' },
+                                    { value: '11', label: 'Kasım' },
+                                    { value: '12', label: 'Aralık' }
+                                  ].map((m) => (
+                                    <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+
+                              <Select
+                                value={field.value ? new Date(field.value).getFullYear().toString() : ''}
+                                onValueChange={(year) => {
+                                  const currentDate = field.value ? new Date(field.value) : new Date();
+                                  currentDate.setFullYear(parseInt(year));
+                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                }}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Yıl" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {Array.from({ length: 30 }, (_, i) => (new Date().getFullYear() - i).toString()).map((y) => (
+                                    <SelectItem key={y} value={y}>{y}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -885,7 +1088,74 @@ export function VisaForm() {
                         <FormItem>
                           <FormLabel>Passport Expiry Date *</FormLabel>
                           <FormControl>
-                            <Input type="date" {...field} />
+                            <div className="grid grid-cols-3 gap-2">
+                              <Select
+                                value={field.value ? new Date(field.value).getDate().toString().padStart(2, '0') : ''}
+                                onValueChange={(day) => {
+                                  const currentDate = field.value ? new Date(field.value) : new Date();
+                                  currentDate.setDate(parseInt(day));
+                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                }}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Gün" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                                    <SelectItem key={d} value={d}>{d}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+
+                              <Select
+                                value={field.value ? (new Date(field.value).getMonth() + 1).toString().padStart(2, '0') : ''}
+                                onValueChange={(month) => {
+                                  const currentDate = field.value ? new Date(field.value) : new Date();
+                                  currentDate.setMonth(parseInt(month) - 1);
+                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                }}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Ay" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {[
+                                    { value: '01', label: 'Ocak' },
+                                    { value: '02', label: 'Şubat' },
+                                    { value: '03', label: 'Mart' },
+                                    { value: '04', label: 'Nisan' },
+                                    { value: '05', label: 'Mayıs' },
+                                    { value: '06', label: 'Haziran' },
+                                    { value: '07', label: 'Temmuz' },
+                                    { value: '08', label: 'Ağustos' },
+                                    { value: '09', label: 'Eylül' },
+                                    { value: '10', label: 'Ekim' },
+                                    { value: '11', label: 'Kasım' },
+                                    { value: '12', label: 'Aralık' }
+                                  ].map((m) => (
+                                    <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+
+                              <Select
+                                value={field.value ? new Date(field.value).getFullYear().toString() : ''}
+                                onValueChange={(year) => {
+                                  const currentDate = field.value ? new Date(field.value) : new Date();
+                                  currentDate.setFullYear(parseInt(year));
+                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                }}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Yıl" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {Array.from({ length: 20 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
+                                    <SelectItem key={y} value={y}>{y}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1004,7 +1274,74 @@ export function VisaForm() {
                             <FormItem>
                               <FormLabel>Document Start Date</FormLabel>
                               <FormControl>
-                                <Input type="date" {...field} />
+                                <div className="grid grid-cols-3 gap-2">
+                                  <Select
+                                    value={field.value ? new Date(field.value).getDate().toString().padStart(2, '0') : ''}
+                                    onValueChange={(day) => {
+                                      const currentDate = field.value ? new Date(field.value) : new Date();
+                                      currentDate.setDate(parseInt(day));
+                                      field.onChange(currentDate.toISOString().split('T')[0]);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Gün" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                                        <SelectItem key={d} value={d}>{d}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+
+                                  <Select
+                                    value={field.value ? (new Date(field.value).getMonth() + 1).toString().padStart(2, '0') : ''}
+                                    onValueChange={(month) => {
+                                      const currentDate = field.value ? new Date(field.value) : new Date();
+                                      currentDate.setMonth(parseInt(month) - 1);
+                                      field.onChange(currentDate.toISOString().split('T')[0]);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Ay" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {[
+                                        { value: '01', label: 'Ocak' },
+                                        { value: '02', label: 'Şubat' },
+                                        { value: '03', label: 'Mart' },
+                                        { value: '04', label: 'Nisan' },
+                                        { value: '05', label: 'Mayıs' },
+                                        { value: '06', label: 'Haziran' },
+                                        { value: '07', label: 'Temmuz' },
+                                        { value: '08', label: 'Ağustos' },
+                                        { value: '09', label: 'Eylül' },
+                                        { value: '10', label: 'Ekim' },
+                                        { value: '11', label: 'Kasım' },
+                                        { value: '12', label: 'Aralık' }
+                                      ].map((m) => (
+                                        <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+
+                                  <Select
+                                    value={field.value ? new Date(field.value).getFullYear().toString() : ''}
+                                    onValueChange={(year) => {
+                                      const currentDate = field.value ? new Date(field.value) : new Date();
+                                      currentDate.setFullYear(parseInt(year));
+                                      field.onChange(currentDate.toISOString().split('T')[0]);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Yıl" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {Array.from({ length: 30 }, (_, i) => (new Date().getFullYear() - i + 10).toString()).map((y) => (
+                                        <SelectItem key={y} value={y}>{y}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -1017,7 +1354,74 @@ export function VisaForm() {
                             <FormItem>
                               <FormLabel>Document End Date</FormLabel>
                               <FormControl>
-                                <Input type="date" {...field} />
+                                <div className="grid grid-cols-3 gap-2">
+                                  <Select
+                                    value={field.value ? new Date(field.value).getDate().toString().padStart(2, '0') : ''}
+                                    onValueChange={(day) => {
+                                      const currentDate = field.value ? new Date(field.value) : new Date();
+                                      currentDate.setDate(parseInt(day));
+                                      field.onChange(currentDate.toISOString().split('T')[0]);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Gün" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                                        <SelectItem key={d} value={d}>{d}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+
+                                  <Select
+                                    value={field.value ? (new Date(field.value).getMonth() + 1).toString().padStart(2, '0') : ''}
+                                    onValueChange={(month) => {
+                                      const currentDate = field.value ? new Date(field.value) : new Date();
+                                      currentDate.setMonth(parseInt(month) - 1);
+                                      field.onChange(currentDate.toISOString().split('T')[0]);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Ay" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {[
+                                        { value: '01', label: 'Ocak' },
+                                        { value: '02', label: 'Şubat' },
+                                        { value: '03', label: 'Mart' },
+                                        { value: '04', label: 'Nisan' },
+                                        { value: '05', label: 'Mayıs' },
+                                        { value: '06', label: 'Haziran' },
+                                        { value: '07', label: 'Temmuz' },
+                                        { value: '08', label: 'Ağustos' },
+                                        { value: '09', label: 'Eylül' },
+                                        { value: '10', label: 'Ekim' },
+                                        { value: '11', label: 'Kasım' },
+                                        { value: '12', label: 'Aralık' }
+                                      ].map((m) => (
+                                        <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+
+                                  <Select
+                                    value={field.value ? new Date(field.value).getFullYear().toString() : ''}
+                                    onValueChange={(year) => {
+                                      const currentDate = field.value ? new Date(field.value) : new Date();
+                                      currentDate.setFullYear(parseInt(year));
+                                      field.onChange(currentDate.toISOString().split('T')[0]);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Yıl" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {Array.from({ length: 30 }, (_, i) => (new Date().getFullYear() - i + 20).toString()).map((y) => (
+                                        <SelectItem key={y} value={y}>{y}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
                               </FormControl>
                               <FormMessage />
                             </FormItem>
