@@ -23,31 +23,35 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// Auto-detect browser language with English as primary fallback
+// Auto-detect browser language with Turkish as primary, English as fallback
 const detectBrowserLanguage = (): Language => {
   try {
-    // Default to English first
-    const englishLang = languages.find(lang => lang.code === 'en')!;
-    
     // Get browser language from navigator
     const browserLang = navigator.language.toLowerCase();
     const languageCode = browserLang.split('-')[0]; // Get primary language code
     
     console.log('Browser language detected:', browserLang, 'Code:', languageCode);
     
-    // Check if we support this language (other than English)
+    // Check if we support this language
     const supportedLanguage = languages.find(lang => lang.code === languageCode);
-    if (supportedLanguage && languageCode !== 'en') {
+    if (supportedLanguage) {
       console.log('Using supported language:', supportedLanguage.name);
       return supportedLanguage;
     }
     
-    // Always fallback to English as primary language
-    console.log('Using English as primary language');
-    return englishLang;
-  } catch (error) {
-    console.warn('Error detecting browser language, using English:', error);
+    // If Turkish browser but no specific match, use Turkish
+    if (browserLang.includes('tr')) {
+      const turkishLang = languages.find(lang => lang.code === 'tr')!;
+      console.log('Using Turkish for Turkish browser');
+      return turkishLang;
+    }
+    
+    // Default fallback to English
+    console.log('Using English as fallback language');
     return languages.find(lang => lang.code === 'en')!;
+  } catch (error) {
+    console.warn('Error detecting browser language, using Turkish:', error);
+    return languages.find(lang => lang.code === 'tr')!;
   }
 };
 
@@ -57,7 +61,7 @@ interface LanguageProviderProps {
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
   const [currentLanguage, setCurrentLanguage] = useState<Language>(() => {
-    // Try to get from localStorage first, then auto-detect, finally fallback to English
+    // Try to get from localStorage first, then auto-detect, finally fallback to Turkish
     const savedLanguage = localStorage.getItem('preferred-language');
     if (savedLanguage) {
       const saved = languages.find(lang => lang.code === savedLanguage);
@@ -66,9 +70,14 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     
     // Auto-detect browser language if no saved preference
     const detected = detectBrowserLanguage();
-    // If detection fails or returns unsupported language, fallback to English
-    return detected || languages.find(lang => lang.code === 'en')!;
+    // If detection fails, fallback to Turkish as primary language
+    return detected || languages.find(lang => lang.code === 'tr')!;
   });
+
+  // Update document language attribute when language changes
+  useEffect(() => {
+    document.documentElement.lang = currentLanguage.code;
+  }, [currentLanguage]);
 
   const setLanguage = (language: Language) => {
     setCurrentLanguage(language);
