@@ -668,7 +668,7 @@ export function VisaForm() {
                                   }}
                                 >
                                   <SelectTrigger>
-                                    <SelectValue placeholder="Gün" />
+                                    <SelectValue placeholder="Day" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
@@ -687,22 +687,22 @@ export function VisaForm() {
                                   }}
                                 >
                                   <SelectTrigger>
-                                    <SelectValue placeholder="Ay" />
+                                    <SelectValue placeholder="Month" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {[
-                                      { value: '01', label: 'Ocak' },
-                                      { value: '02', label: 'Şubat' },
-                                      { value: '03', label: 'Mart' },
-                                      { value: '04', label: 'Nisan' },
-                                      { value: '05', label: 'Mayıs' },
-                                      { value: '06', label: 'Haziran' },
-                                      { value: '07', label: 'Temmuz' },
-                                      { value: '08', label: 'Ağustos' },
-                                      { value: '09', label: 'Eylül' },
-                                      { value: '10', label: 'Ekim' },
-                                      { value: '11', label: 'Kasım' },
-                                      { value: '12', label: 'Aralık' }
+                                      { value: '01', label: 'January' },
+                                      { value: '02', label: 'February' },
+                                      { value: '03', label: 'March' },
+                                      { value: '04', label: 'April' },
+                                      { value: '05', label: 'May' },
+                                      { value: '06', label: 'June' },
+                                      { value: '07', label: 'July' },
+                                      { value: '08', label: 'August' },
+                                      { value: '09', label: 'September' },
+                                      { value: '10', label: 'October' },
+                                      { value: '11', label: 'November' },
+                                      { value: '12', label: 'December' }
                                     ].map((m) => (
                                       <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
                                     ))}
@@ -719,7 +719,7 @@ export function VisaForm() {
                                   }}
                                 >
                                   <SelectTrigger>
-                                    <SelectValue placeholder="Yıl" />
+                                    <SelectValue placeholder="Year" />
                                   </SelectTrigger>
                                   <SelectContent>
                                     {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
@@ -926,7 +926,7 @@ export function VisaForm() {
                                 }}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Gün" />
+                                  <SelectValue placeholder="Day" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
@@ -945,22 +945,22 @@ export function VisaForm() {
                                 }}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Ay" />
+                                  <SelectValue placeholder="Month" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {[
-                                    { value: '01', label: 'Ocak' },
-                                    { value: '02', label: 'Şubat' },
-                                    { value: '03', label: 'Mart' },
-                                    { value: '04', label: 'Nisan' },
-                                    { value: '05', label: 'Mayıs' },
-                                    { value: '06', label: 'Haziran' },
-                                    { value: '07', label: 'Temmuz' },
-                                    { value: '08', label: 'Ağustos' },
-                                    { value: '09', label: 'Eylül' },
-                                    { value: '10', label: 'Ekim' },
-                                    { value: '11', label: 'Kasım' },
-                                    { value: '12', label: 'Aralık' }
+                                    { value: '01', label: 'January' },
+                                    { value: '02', label: 'February' },
+                                    { value: '03', label: 'March' },
+                                    { value: '04', label: 'April' },
+                                    { value: '05', label: 'May' },
+                                    { value: '06', label: 'June' },
+                                    { value: '07', label: 'July' },
+                                    { value: '08', label: 'August' },
+                                    { value: '09', label: 'September' },
+                                    { value: '10', label: 'October' },
+                                    { value: '11', label: 'November' },
+                                    { value: '12', label: 'December' }
                                   ].map((m) => (
                                     <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
                                   ))}
@@ -977,7 +977,7 @@ export function VisaForm() {
                                 }}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Yıl" />
+                                  <SelectValue placeholder="Year" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {Array.from({ length: 80 }, (_, i) => (new Date().getFullYear() - i).toString()).map((y) => (
@@ -1023,7 +1023,7 @@ export function VisaForm() {
                                 }}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Gün" />
+                                  <SelectValue placeholder="Day" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
@@ -1041,22 +1041,22 @@ export function VisaForm() {
                                 }}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Ay" />
+                                  <SelectValue placeholder="Month" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {[
-                                    { value: '01', label: 'Ocak' },
-                                    { value: '02', label: 'Şubat' },
-                                    { value: '03', label: 'Mart' },
-                                    { value: '04', label: 'Nisan' },
-                                    { value: '05', label: 'Mayıs' },
-                                    { value: '06', label: 'Haziran' },
-                                    { value: '07', label: 'Temmuz' },
-                                    { value: '08', label: 'Ağustos' },
-                                    { value: '09', label: 'Eylül' },
-                                    { value: '10', label: 'Ekim' },
-                                    { value: '11', label: 'Kasım' },
-                                    { value: '12', label: 'Aralık' }
+                                    { value: '01', label: 'January' },
+                                    { value: '02', label: 'February' },
+                                    { value: '03', label: 'March' },
+                                    { value: '04', label: 'April' },
+                                    { value: '05', label: 'May' },
+                                    { value: '06', label: 'June' },
+                                    { value: '07', label: 'July' },
+                                    { value: '08', label: 'August' },
+                                    { value: '09', label: 'September' },
+                                    { value: '10', label: 'October' },
+                                    { value: '11', label: 'November' },
+                                    { value: '12', label: 'December' }
                                   ].map((m) => (
                                     <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
                                   ))}
@@ -1072,7 +1072,7 @@ export function VisaForm() {
                                 }}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Yıl" />
+                                  <SelectValue placeholder="Year" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {Array.from({ length: 30 }, (_, i) => (new Date().getFullYear() - i).toString()).map((y) => (
@@ -1104,7 +1104,7 @@ export function VisaForm() {
                                 }}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Gün" />
+                                  <SelectValue placeholder="Day" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
@@ -1122,22 +1122,22 @@ export function VisaForm() {
                                 }}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Ay" />
+                                  <SelectValue placeholder="Month" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {[
-                                    { value: '01', label: 'Ocak' },
-                                    { value: '02', label: 'Şubat' },
-                                    { value: '03', label: 'Mart' },
-                                    { value: '04', label: 'Nisan' },
-                                    { value: '05', label: 'Mayıs' },
-                                    { value: '06', label: 'Haziran' },
-                                    { value: '07', label: 'Temmuz' },
-                                    { value: '08', label: 'Ağustos' },
-                                    { value: '09', label: 'Eylül' },
-                                    { value: '10', label: 'Ekim' },
-                                    { value: '11', label: 'Kasım' },
-                                    { value: '12', label: 'Aralık' }
+                                    { value: '01', label: 'January' },
+                                    { value: '02', label: 'February' },
+                                    { value: '03', label: 'March' },
+                                    { value: '04', label: 'April' },
+                                    { value: '05', label: 'May' },
+                                    { value: '06', label: 'June' },
+                                    { value: '07', label: 'July' },
+                                    { value: '08', label: 'August' },
+                                    { value: '09', label: 'September' },
+                                    { value: '10', label: 'October' },
+                                    { value: '11', label: 'November' },
+                                    { value: '12', label: 'December' }
                                   ].map((m) => (
                                     <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
                                   ))}
@@ -1153,7 +1153,7 @@ export function VisaForm() {
                                 }}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Yıl" />
+                                  <SelectValue placeholder="Year" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {Array.from({ length: 20 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
@@ -1290,7 +1290,7 @@ export function VisaForm() {
                                     }}
                                   >
                                     <SelectTrigger>
-                                      <SelectValue placeholder="Gün" />
+                                      <SelectValue placeholder="Day" />
                                     </SelectTrigger>
                                     <SelectContent>
                                       {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
@@ -1308,22 +1308,22 @@ export function VisaForm() {
                                     }}
                                   >
                                     <SelectTrigger>
-                                      <SelectValue placeholder="Ay" />
+                                      <SelectValue placeholder="Month" />
                                     </SelectTrigger>
                                     <SelectContent>
                                       {[
-                                        { value: '01', label: 'Ocak' },
-                                        { value: '02', label: 'Şubat' },
-                                        { value: '03', label: 'Mart' },
-                                        { value: '04', label: 'Nisan' },
-                                        { value: '05', label: 'Mayıs' },
-                                        { value: '06', label: 'Haziran' },
-                                        { value: '07', label: 'Temmuz' },
-                                        { value: '08', label: 'Ağustos' },
-                                        { value: '09', label: 'Eylül' },
-                                        { value: '10', label: 'Ekim' },
-                                        { value: '11', label: 'Kasım' },
-                                        { value: '12', label: 'Aralık' }
+                                        { value: '01', label: 'January' },
+                                        { value: '02', label: 'February' },
+                                        { value: '03', label: 'March' },
+                                        { value: '04', label: 'April' },
+                                        { value: '05', label: 'May' },
+                                        { value: '06', label: 'June' },
+                                        { value: '07', label: 'July' },
+                                        { value: '08', label: 'August' },
+                                        { value: '09', label: 'September' },
+                                        { value: '10', label: 'October' },
+                                        { value: '11', label: 'November' },
+                                        { value: '12', label: 'December' }
                                       ].map((m) => (
                                         <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
                                       ))}
@@ -1339,7 +1339,7 @@ export function VisaForm() {
                                     }}
                                   >
                                     <SelectTrigger>
-                                      <SelectValue placeholder="Yıl" />
+                                      <SelectValue placeholder="Year" />
                                     </SelectTrigger>
                                     <SelectContent>
                                       {Array.from({ length: 30 }, (_, i) => (new Date().getFullYear() - i + 10).toString()).map((y) => (
@@ -1370,7 +1370,7 @@ export function VisaForm() {
                                     }}
                                   >
                                     <SelectTrigger>
-                                      <SelectValue placeholder="Gün" />
+                                      <SelectValue placeholder="Day" />
                                     </SelectTrigger>
                                     <SelectContent>
                                       {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
@@ -1388,22 +1388,22 @@ export function VisaForm() {
                                     }}
                                   >
                                     <SelectTrigger>
-                                      <SelectValue placeholder="Ay" />
+                                      <SelectValue placeholder="Month" />
                                     </SelectTrigger>
                                     <SelectContent>
                                       {[
-                                        { value: '01', label: 'Ocak' },
-                                        { value: '02', label: 'Şubat' },
-                                        { value: '03', label: 'Mart' },
-                                        { value: '04', label: 'Nisan' },
-                                        { value: '05', label: 'Mayıs' },
-                                        { value: '06', label: 'Haziran' },
-                                        { value: '07', label: 'Temmuz' },
-                                        { value: '08', label: 'Ağustos' },
-                                        { value: '09', label: 'Eylül' },
-                                        { value: '10', label: 'Ekim' },
-                                        { value: '11', label: 'Kasım' },
-                                        { value: '12', label: 'Aralık' }
+                                        { value: '01', label: 'January' },
+                                        { value: '02', label: 'February' },
+                                        { value: '03', label: 'March' },
+                                        { value: '04', label: 'April' },
+                                        { value: '05', label: 'May' },
+                                        { value: '06', label: 'June' },
+                                        { value: '07', label: 'July' },
+                                        { value: '08', label: 'August' },
+                                        { value: '09', label: 'September' },
+                                        { value: '10', label: 'October' },
+                                        { value: '11', label: 'November' },
+                                        { value: '12', label: 'December' }
                                       ].map((m) => (
                                         <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
                                       ))}
@@ -1419,7 +1419,7 @@ export function VisaForm() {
                                     }}
                                   >
                                     <SelectTrigger>
-                                      <SelectValue placeholder="Yıl" />
+                                      <SelectValue placeholder="Year" />
                                     </SelectTrigger>
                                     <SelectContent>
                                       {Array.from({ length: 30 }, (_, i) => (new Date().getFullYear() - i + 20).toString()).map((y) => (

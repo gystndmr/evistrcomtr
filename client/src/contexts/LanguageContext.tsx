@@ -23,13 +23,10 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// Auto-detect browser language
+// Auto-detect browser language - but default to English
 const detectBrowserLanguage = (): Language => {
-  const browserLang = navigator.language.split('-')[0]; // Get only language code (e.g., 'en' from 'en-US')
-  
-  // Find matching language or default to English
-  const detectedLanguage = languages.find(lang => lang.code === browserLang);
-  return detectedLanguage || languages[0]; // Default to English if not found
+  // Always default to English as primary language
+  return languages.find(lang => lang.code === 'en') || languages[0];
 };
 
 interface LanguageProviderProps {
