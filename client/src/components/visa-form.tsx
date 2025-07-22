@@ -1531,35 +1531,33 @@ export function VisaForm() {
                       <span>E-Visa Application Fee:</span>
                       <span>$69.00</span>
                     </div>
-                    {hasSupportingDocument === true && supportingDocumentDetails?.processingType && (
+                    {hasSupportingDocument === true && documentProcessingType && (
                       <div className="flex justify-between">
-                        <span>PDF Document Fee:</span>
+                        <span>Processing & Document Fee:</span>
                         <span>${(() => {
                           const documentProcessingTypes = [
-                            { value: "slow", price: 50 },
-                            { value: "standard", price: 115 },
-                            { value: "fast", price: 165 },
-                            { value: "urgent_24", price: 280 },
-                            { value: "urgent_12", price: 330 },
-                            { value: "urgent_4", price: 410 },
-                            { value: "urgent_1", price: 645 }
+                            { value: "slow", price: 119 },
+                            { value: "standard", price: 184 },
+                            { value: "fast", price: 234 },
+                            { value: "urgent_24", price: 349 },
+                            { value: "urgent_12", price: 399 },
+                            { value: "urgent_4", price: 479 },
+                            { value: "urgent_1", price: 714 }
                           ];
-                          return documentProcessingTypes.find(p => p.value === supportingDocumentDetails.processingType)?.price || 0;
+                          return documentProcessingTypes.find(p => p.value === documentProcessingType)?.price || 119;
                         })()}</span>
                       </div>
                     )}
-                    <div className="flex justify-between">
-                      <span>Processing Fee:</span>
-                      <span>${(() => {
-                        if (hasSupportingDocument === true) {
-                          return 0; // No separate processing fee for supporting documents
-                        } else {
+                    {hasSupportingDocument === false && (
+                      <div className="flex justify-between">
+                        <span>Processing Fee:</span>
+                        <span>${(() => {
                           const processingType = form.watch("processingType") || "standard";
                           const selectedProcessing = processingTypes.find(p => p.value === processingType);
                           return selectedProcessing?.price || 25;
-                        }
-                      })()}</span>
-                    </div>
+                        })()}</span>
+                      </div>
+                    )}
                     <div className="border-t pt-2 flex justify-between font-bold">
                       <span>Total:</span>
                       <span>${calculateTotal().toFixed(2)}</span>
