@@ -47,15 +47,15 @@ export default function Requirements() {
       
       <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-sm p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">E-Visa Requirements</h1>
-          <p className="text-gray-600 mb-8">Complete guide to Turkey e-visa application requirements</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('requirements.title')}</h1>
+          <p className="text-gray-600 mb-8">{t('requirements.subtitle')}</p>
           
           <div className="grid md:grid-cols-2 gap-8">
             {/* General Requirements */}
             <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
                 <Check className="w-5 h-5 text-green-600 mr-2" />
-                General Requirements
+                {t('requirements.general')}
               </h2>
               <ul className="space-y-3">
                 {generalRequirements.map((req, index) => (
@@ -71,7 +71,7 @@ export default function Requirements() {
             <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
                 <FileText className="w-5 h-5 text-blue-600 mr-2" />
-                Supporting Documents
+                {t('requirements.supporting.docs')}
               </h2>
               <p className="text-sm text-gray-600 mb-4">
                 Required for certain nationalities (will be indicated during application)

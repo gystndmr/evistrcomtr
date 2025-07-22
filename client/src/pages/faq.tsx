@@ -57,8 +57,8 @@ export default function FAQ() {
       
       <main className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-sm p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Frequently Asked Questions</h1>
-          <p className="text-gray-600 mb-8">Find answers to common questions about Turkey e-visa applications</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('faq.title')}</h1>
+          <p className="text-gray-600 mb-8">{t('faq.subtitle')}</p>
           
           <div className="space-y-4">
             {faqs.map((faq, index) => (

@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Download, ExternalLink } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function PaymentSuccess() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [urlParams, setUrlParams] = useState<URLSearchParams | null>(null);
 
   useEffect(() => {
@@ -22,13 +24,13 @@ export default function PaymentSuccess() {
     
     if (paymentStatus === 'success' && transactionId && orderId) {
       toast({
-        title: isTest ? "Test Payment Successful" : "Payment Successful",
-        description: `Your payment has been processed successfully. Transaction ID: ${transactionId}`,
+        title: isTest ? t('payment.success.test.title') : t('payment.success.title'),
+        description: `${t('payment.success.message')} ${t('payment.success.transaction.id')}: ${transactionId}`,
       });
     } else if (paymentStatus === 'cancelled') {
       toast({
-        title: "Payment Cancelled",
-        description: "Your payment was cancelled. You can try again.",
+        title: t('payment.cancel.title'),
+        description: t('payment.cancel.message'),
         variant: "destructive",
       });
     }
@@ -49,18 +51,18 @@ export default function PaymentSuccess() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
-            <CardTitle className="text-red-600">Payment Cancelled</CardTitle>
+            <CardTitle className="text-red-600">{t('payment.cancel.title')}</CardTitle>
           </CardHeader>
           <CardContent className="text-center space-y-4">
             <p className="text-gray-600">
-              Your payment was cancelled. You can return to the application form to try again.
+              {t('payment.cancel.message')}
             </p>
             <div className="space-y-2">
               <Button onClick={() => navigate("/application")} className="w-full">
-                Return to Application
+                {t('payment.return.application')}
               </Button>
               <Button variant="outline" onClick={() => navigate("/")} className="w-full">
-                Go to Home
+                {t('payment.go.home')}
               </Button>
             </div>
           </CardContent>
@@ -77,7 +79,7 @@ export default function PaymentSuccess() {
             <CheckCircle className="w-6 h-6 text-green-600" />
           </div>
           <CardTitle className="text-green-600">
-            {isTest ? "Test Payment Successful!" : "Payment Successful!"}
+            {isTest ? t('payment.success.test.title') : t('payment.success.title')}
           </CardTitle>
         </CardHeader>
         <CardContent className="text-center space-y-4">

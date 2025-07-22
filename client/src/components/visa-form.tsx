@@ -383,8 +383,8 @@ export function VisaForm() {
                                   
       if (!allPrerequisitesMet) {
         toast({
-          title: "Prerequisites Required",
-          description: "Please confirm all prerequisites before proceeding",
+          title: t('form.error.prerequisites'),
+          description: t('form.error.prerequisites.desc'),
           variant: "destructive",
         });
         return;
@@ -398,8 +398,8 @@ export function VisaForm() {
       
       if (!formData.firstName.trim()) {
         toast({
-          title: "First Name Required",
-          description: "Please enter your first name",
+          title: t('form.error.first.name'),
+          description: t('form.error.first.name.desc'),
           variant: "destructive",
         });
         return;
@@ -407,8 +407,8 @@ export function VisaForm() {
       
       if (!formData.lastName.trim()) {
         toast({
-          title: "Last Name Required", 
-          description: "Please enter your last name",
+          title: t('form.error.last.name'), 
+          description: t('form.error.last.name.desc'),
           variant: "destructive",
         });
         return;
@@ -416,8 +416,8 @@ export function VisaForm() {
       
       if (!formData.email.trim()) {
         toast({
-          title: "Email Required",
-          description: "Please enter your email address",
+          title: t('form.error.email'),
+          description: t('form.error.email.desc'),
           variant: "destructive",
         });
         return;
@@ -427,8 +427,8 @@ export function VisaForm() {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(formData.email)) {
         toast({
-          title: "Invalid Email Format",
-          description: "Please enter a valid email address",
+          title: t('form.error.email.invalid'),
+          description: t('form.error.email.invalid.desc'),
           variant: "destructive",
         });
         return;
@@ -436,8 +436,8 @@ export function VisaForm() {
       
       if (!formData.phone.trim()) {
         toast({
-          title: "Phone Number Required",
-          description: "Please enter your phone number",
+          title: t('form.error.phone'),
+          description: t('form.error.phone.desc'),
           variant: "destructive",
         });
         return;
@@ -445,8 +445,8 @@ export function VisaForm() {
       
       if (!formData.passportNumber.trim()) {
         toast({
-          title: "Passport Number Required",
-          description: "Please enter your passport number",
+          title: t('form.error.passport'),
+          description: t('form.error.passport.desc'),
           variant: "destructive",
         });
         return;
@@ -454,8 +454,8 @@ export function VisaForm() {
       
       if (!formData.dateOfBirth) {
         toast({
-          title: "Date of Birth Required",
-          description: "Please enter your date of birth",
+          title: t('form.error.birth.date'),
+          description: t('form.error.birth.date.desc'),
           variant: "destructive",
         });
         return;
@@ -481,8 +481,8 @@ export function VisaForm() {
       
       if (!formData.placeOfBirth?.trim() || formData.placeOfBirth.length < 2) {
         toast({
-          title: "Place of Birth Required",
-          description: "Please enter your place of birth (minimum 2 characters)",
+          title: t('form.error.place.birth'),
+          description: t('form.error.place.birth.desc'),
           variant: "destructive",
         });
         return;
@@ -490,8 +490,8 @@ export function VisaForm() {
       
       if (!formData.motherName?.trim() || formData.motherName.length < 2) {
         toast({
-          title: "Mother's Name Required", 
-          description: "Please enter your mother's full name (minimum 2 characters)",
+          title: t('form.error.mother.name'), 
+          description: t('form.error.mother.name.desc'),
           variant: "destructive",
         });
         return;
@@ -499,8 +499,8 @@ export function VisaForm() {
       
       if (!formData.fatherName?.trim() || formData.fatherName.length < 2) {
         toast({
-          title: "Father's Name Required",
-          description: "Please enter your father's full name (minimum 2 characters)",
+          title: t('form.error.father.name'),
+          description: t('form.error.father.name.desc'),
           variant: "destructive",
         });
         return;
@@ -508,8 +508,8 @@ export function VisaForm() {
       
       if (!formData.address?.trim() || formData.address.length < 10) {
         toast({
-          title: "Address Required",
-          description: "Please enter your complete address (minimum 10 characters)",
+          title: t('form.error.address'),
+          description: t('form.error.address.desc'),
           variant: "destructive",
         });
         return;

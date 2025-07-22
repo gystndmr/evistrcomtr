@@ -23,28 +23,31 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// Auto-detect browser language with proper fallback
+// Auto-detect browser language with English as primary fallback
 const detectBrowserLanguage = (): Language => {
   try {
+    // Default to English first
+    const englishLang = languages.find(lang => lang.code === 'en')!;
+    
     // Get browser language from navigator
     const browserLang = navigator.language.toLowerCase();
     const languageCode = browserLang.split('-')[0]; // Get primary language code
     
     console.log('Browser language detected:', browserLang, 'Code:', languageCode);
     
-    // Check if we support this language
+    // Check if we support this language (other than English)
     const supportedLanguage = languages.find(lang => lang.code === languageCode);
-    if (supportedLanguage) {
+    if (supportedLanguage && languageCode !== 'en') {
       console.log('Using supported language:', supportedLanguage.name);
       return supportedLanguage;
     }
     
-    // Fallback to English if not supported
-    console.log('Language not supported, falling back to English');
-    return languages.find(lang => lang.code === 'en') || languages[0];
+    // Always fallback to English as primary language
+    console.log('Using English as primary language');
+    return englishLang;
   } catch (error) {
-    console.warn('Error detecting browser language:', error);
-    return languages.find(lang => lang.code === 'en') || languages[0];
+    console.warn('Error detecting browser language, using English:', error);
+    return languages.find(lang => lang.code === 'en')!;
   }
 };
 
@@ -54,13 +57,17 @@ interface LanguageProviderProps {
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
   const [currentLanguage, setCurrentLanguage] = useState<Language>(() => {
-    // Try to get from localStorage first, then auto-detect
+    // Try to get from localStorage first, then auto-detect, finally fallback to English
     const savedLanguage = localStorage.getItem('preferred-language');
     if (savedLanguage) {
       const saved = languages.find(lang => lang.code === savedLanguage);
       if (saved) return saved;
     }
-    return detectBrowserLanguage();
+    
+    // Auto-detect browser language if no saved preference
+    const detected = detectBrowserLanguage();
+    // If detection fails or returns unsupported language, fallback to English
+    return detected || languages.find(lang => lang.code === 'en')!;
   });
 
   const setLanguage = (language: Language) => {
@@ -150,6 +157,84 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.available.plans': 'Available Insurance Plans',
     'insurance.total.premium': 'Total Premium',
     
+    // Status Page
+    'status.title': 'Check Application Status',
+    'status.subtitle': 'Enter your application number to check your visa or insurance application status',
+    'status.search.title': 'Search Application',
+    'status.visa.application': 'Visa Application',
+    'status.insurance.application': 'Insurance Application',
+    'status.application.number': 'Application Number',
+    'status.application.number.placeholder': 'Enter your application number (e.g., TRMD57H74SN6WWYA)',
+    'status.searching': 'Searching...',
+    'status.search.button': 'Search Application',
+    'status.error.enter.number': 'Please enter your application number',
+    'status.error.number.length': 'Application number must be at least 6 characters long',
+    'status.error.not.found': 'Application not found. Please check your application number and try again.',
+    'status.details': 'Application Details',
+    'status.message.approved': 'Your application has been approved! You can download your e-visa.',
+    'status.message.pending': 'Your application is being reviewed. Please wait for further updates.',
+    'status.message.rejected': 'Your application has been rejected. Please contact support for more information.',
+    'status.message.processing': 'Your application is currently being processed.',
+    'status.message.default': 'Application status is being updated.',
+    'status.download.evisa': 'Download E-Visa',
+
+    // Payment Pages
+    'payment.success.title': 'Payment Successful!',
+    'payment.success.test.title': 'Test Payment Successful!',
+    'payment.success.message': 'Your payment has been processed successfully.',
+    'payment.success.transaction.id': 'Transaction ID',
+    'payment.cancel.title': 'Payment Cancelled',
+    'payment.cancel.message': 'Your payment was cancelled. You can return to the application form to try again.',
+    'payment.return.application': 'Return to Application',
+    'payment.go.home': 'Go to Home',
+    'payment.error.title': 'Payment Error',
+    'payment.error.message': 'An error occurred during payment processing.',
+    'payment.system.status': 'System Status',
+    'payment.gateway': 'Payment Gateway',
+    'payment.merchant.id': 'Merchant ID',
+    'payment.environment': 'Environment',
+
+    // FAQ Page
+    'faq.title': 'Frequently Asked Questions',
+    'faq.subtitle': 'Find answers to common questions about Turkey e-visa applications',
+
+    // Requirements Page
+    'requirements.title': 'E-Visa Requirements',
+    'requirements.subtitle': 'Complete guide to Turkey e-visa application requirements',
+    'requirements.general': 'General Requirements',
+    'requirements.supporting.docs': 'Supporting Documents',
+
+    // Form Validation
+    'form.error.first.name': 'First Name Required',
+    'form.error.first.name.desc': 'Please enter your first name',
+    'form.error.last.name': 'Last Name Required',
+    'form.error.last.name.desc': 'Please enter your last name',
+    'form.error.email': 'Email Required',
+    'form.error.email.desc': 'Please enter your email address',
+    'form.error.email.invalid': 'Invalid Email Format',
+    'form.error.email.invalid.desc': 'Please enter a valid email address',
+    'form.error.phone': 'Phone Number Required',
+    'form.error.phone.desc': 'Please enter your phone number',
+    'form.error.passport': 'Passport Number Required',
+    'form.error.passport.desc': 'Please enter your passport number',
+    'form.error.birth.date': 'Date of Birth Required',
+    'form.error.birth.date.desc': 'Please enter your date of birth',
+    'form.error.passport.issue': 'Passport Issue Date Required',
+    'form.error.passport.issue.desc': 'Please enter your passport issue date',
+    'form.error.passport.expiry': 'Passport Expiry Date Required',
+    'form.error.passport.expiry.desc': 'Please enter your passport expiry date',
+    'form.error.place.birth': 'Place of Birth Required',
+    'form.error.place.birth.desc': 'Please enter your place of birth (minimum 2 characters)',
+    'form.error.mother.name': 'Mother\'s Name Required',
+    'form.error.mother.name.desc': 'Please enter your mother\'s full name (minimum 2 characters)',
+    'form.error.father.name': 'Father\'s Name Required',
+    'form.error.father.name.desc': 'Please enter your father\'s full name (minimum 2 characters)',
+    'form.error.address': 'Address Required',
+    'form.error.address.desc': 'Please enter your complete address (minimum 10 characters)',
+    'form.error.passport.expired': 'Passport Expired',
+    'form.error.prerequisites': 'Prerequisites Required',
+    'form.error.prerequisites.desc': 'Please confirm all prerequisites before proceeding',
+
     // Footer
     'footer.application': 'Application',
     'footer.new.application': 'New Application',
@@ -236,6 +321,84 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.available.plans': 'Mevcut Sigorta Planları',
     'insurance.total.premium': 'Toplam Prim',
     
+    // Status Page
+    'status.title': 'Başvuru Durumu Sorgula',
+    'status.subtitle': 'Vize veya sigorta başvuru durumunuzu kontrol etmek için başvuru numaranızı girin',
+    'status.search.title': 'Başvuru Ara',
+    'status.visa.application': 'Vize Başvurusu',
+    'status.insurance.application': 'Sigorta Başvurusu',
+    'status.application.number': 'Başvuru Numarası',
+    'status.application.number.placeholder': 'Başvuru numaranızı girin (örn: TRMD57H74SN6WWYA)',
+    'status.searching': 'Aranıyor...',
+    'status.search.button': 'Başvuru Ara',
+    'status.error.enter.number': 'Lütfen başvuru numaranızı girin',
+    'status.error.number.length': 'Başvuru numarası en az 6 karakter olmalıdır',
+    'status.error.not.found': 'Başvuru bulunamadı. Başvuru numaranızı kontrol edip tekrar deneyin.',
+    'status.details': 'Başvuru Detayları',
+    'status.message.approved': 'Başvurunuz onaylandı! E-vizenizi indirebilirsiniz.',
+    'status.message.pending': 'Başvurunuz inceleniyor. Lütfen güncelleme için bekleyin.',
+    'status.message.rejected': 'Başvurunuz reddedildi. Daha fazla bilgi için destek ile iletişime geçin.',
+    'status.message.processing': 'Başvurunuz şu anda işleniyor.',
+    'status.message.default': 'Başvuru durumu güncelleniyor.',
+    'status.download.evisa': 'E-Vize İndir',
+
+    // Payment Pages
+    'payment.success.title': 'Ödeme Başarılı!',
+    'payment.success.test.title': 'Test Ödemesi Başarılı!',
+    'payment.success.message': 'Ödemeniz başarıyla işlendi.',
+    'payment.success.transaction.id': 'İşlem Numarası',
+    'payment.cancel.title': 'Ödeme İptal Edildi',
+    'payment.cancel.message': 'Ödemeniz iptal edildi. Başvuru formuna dönerek tekrar deneyebilirsiniz.',
+    'payment.return.application': 'Başvuruya Dön',
+    'payment.go.home': 'Ana Sayfaya Git',
+    'payment.error.title': 'Ödeme Hatası',
+    'payment.error.message': 'Ödeme işlemi sırasında bir hata oluştu.',
+    'payment.system.status': 'Sistem Durumu',
+    'payment.gateway': 'Ödeme Geçidi',
+    'payment.merchant.id': 'Satıcı Kimliği',
+    'payment.environment': 'Ortam',
+
+    // FAQ Page
+    'faq.title': 'Sık Sorulan Sorular',
+    'faq.subtitle': 'Türkiye e-vize başvuruları hakkında yaygın soruların cevaplarını bulun',
+
+    // Requirements Page
+    'requirements.title': 'E-Vize Gereksinimleri',
+    'requirements.subtitle': 'Türkiye e-vize başvuru gereksinimlerine tam rehber',
+    'requirements.general': 'Genel Gereksinimler',
+    'requirements.supporting.docs': 'Destekleyici Belgeler',
+
+    // Form Validation
+    'form.error.first.name': 'Ad Gerekli',
+    'form.error.first.name.desc': 'Lütfen adınızı girin',
+    'form.error.last.name': 'Soyad Gerekli',
+    'form.error.last.name.desc': 'Lütfen soyadınızı girin',
+    'form.error.email': 'E-posta Gerekli',
+    'form.error.email.desc': 'Lütfen e-posta adresinizi girin',
+    'form.error.email.invalid': 'Geçersiz E-posta Formatı',
+    'form.error.email.invalid.desc': 'Lütfen geçerli bir e-posta adresi girin',
+    'form.error.phone': 'Telefon Numarası Gerekli',
+    'form.error.phone.desc': 'Lütfen telefon numaranızı girin',
+    'form.error.passport': 'Pasaport Numarası Gerekli',
+    'form.error.passport.desc': 'Lütfen pasaport numaranızı girin',
+    'form.error.birth.date': 'Doğum Tarihi Gerekli',
+    'form.error.birth.date.desc': 'Lütfen doğum tarihinizi girin',
+    'form.error.passport.issue': 'Pasaport Düzenleme Tarihi Gerekli',
+    'form.error.passport.issue.desc': 'Lütfen pasaport düzenleme tarihinizi girin',
+    'form.error.passport.expiry': 'Pasaport Son Kullanma Tarihi Gerekli',
+    'form.error.passport.expiry.desc': 'Lütfen pasaport son kullanma tarihinizi girin',
+    'form.error.place.birth': 'Doğum Yeri Gerekli',
+    'form.error.place.birth.desc': 'Lütfen doğum yerinizi girin (minimum 2 karakter)',
+    'form.error.mother.name': 'Anne Adı Gerekli',
+    'form.error.mother.name.desc': 'Lütfen annenizin tam adını girin (minimum 2 karakter)',
+    'form.error.father.name': 'Baba Adı Gerekli',
+    'form.error.father.name.desc': 'Lütfen babanızın tam adını girin (minimum 2 karakter)',
+    'form.error.address': 'Adres Gerekli',
+    'form.error.address.desc': 'Lütfen tam adresinizi girin (minimum 10 karakter)',
+    'form.error.passport.expired': 'Pasaport Süresi Dolmuş',
+    'form.error.prerequisites': 'Önkoşullar Gerekli',
+    'form.error.prerequisites.desc': 'Devam etmeden önce lütfen tüm önkoşulları onaylayın',
+
     // Footer
     'footer.application': 'Başvuru',
     'footer.new.application': 'Yeni Başvuru',

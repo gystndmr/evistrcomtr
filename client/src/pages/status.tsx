@@ -9,11 +9,13 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Search, Download, Calendar, CreditCard, User, MapPin, CheckCircle, Clock, XCircle } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Status() {
   const [applicationNumber, setApplicationNumber] = useState("");
   const [searchType, setSearchType] = useState<"visa" | "insurance">("visa");
   const [shouldFetch, setShouldFetch] = useState(false);
+  const { t } = useLanguage();
 
   // URL parametresi ile otomatik doldurma
   useEffect(() => {
@@ -35,13 +37,13 @@ export default function Status() {
     
     // Validate application number
     if (!applicationNumber.trim()) {
-      alert("Please enter your application number");
+      alert(t('status.error.enter.number'));
       return;
     }
     
     // Basic format validation (should be at least 6 characters)
     if (applicationNumber.trim().length < 6) {
-      alert("Application number must be at least 6 characters long");
+      alert(t('status.error.number.length'));
       return;
     }
     
@@ -81,15 +83,15 @@ export default function Status() {
   const getStatusMessage = (status: string) => {
     switch (status.toLowerCase()) {
       case "approved":
-        return "Your application has been approved! You can download your e-visa.";
+        return t('status.message.approved');
       case "pending":
-        return "Your application is being reviewed. Please wait for further updates.";
+        return t('status.message.pending');
       case "rejected":
-        return "Your application has been rejected. Please contact support for more information.";
+        return t('status.message.rejected');
       case "processing":
-        return "Your application is currently being processed.";
+        return t('status.message.processing');
       default:
-        return "Application status is being updated.";
+        return t('status.message.default');
     }
   };
 
@@ -104,15 +106,15 @@ export default function Status() {
       <section className="py-8 sm:py-16 bg-neutral-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Check Application Status</h1>
-            <p className="text-base sm:text-lg text-neutral-600 px-4">Enter your application number to check your visa or insurance application status</p>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-800 mb-4">{t('status.title')}</h1>
+            <p className="text-base sm:text-lg text-neutral-600 px-4">{t('status.subtitle')}</p>
           </div>
           
           <Card className="mb-8">
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Search className="w-5 h-5 mr-2" />
-                Search Application
+                {t('status.search.title')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -123,30 +125,30 @@ export default function Status() {
                     variant={searchType === "visa" ? "default" : "outline"}
                     onClick={() => setSearchType("visa")}
                   >
-                    Visa Application
+                    {t('status.visa.application')}
                   </Button>
                   <Button
                     type="button"
                     variant={searchType === "insurance" ? "default" : "outline"}
                     onClick={() => setSearchType("insurance")}
                   >
-                    Insurance Application
+                    {t('status.insurance.application')}
                   </Button>
                 </div>
                 
                 <div>
-                  <Label htmlFor="applicationNumber">Application Number</Label>
+                  <Label htmlFor="applicationNumber">{t('status.application.number')}</Label>
                   <Input
                     id="applicationNumber"
                     value={applicationNumber}
                     onChange={(e) => setApplicationNumber(e.target.value)}
-                    placeholder="Enter your application number (e.g., TRMD57H74SN6WWYA)"
+                    placeholder={t('status.application.number.placeholder')}
                     required
                   />
                 </div>
                 
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Searching..." : "Search Application"}
+                  {isLoading ? t('status.searching') : t('status.search.button')}
                 </Button>
               </form>
             </CardContent>
@@ -155,7 +157,7 @@ export default function Status() {
           {error && (
             <Alert className="mb-8 border-red-200 bg-red-50">
               <AlertDescription className="text-red-800">
-                Application not found. Please check your application number and try again.
+                {t('status.error.not.found')}
               </AlertDescription>
             </Alert>
           )}
@@ -164,7 +166,7 @@ export default function Status() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
-                  <span>Application Details</span>
+                  <span>{t('status.details')}</span>
                   <div className="flex items-center gap-2">
                     {getStatusIcon(application.status)}
                     <Badge className={getStatusColor(application.status)}>

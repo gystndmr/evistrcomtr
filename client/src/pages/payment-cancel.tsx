@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { AlertTriangle, Home, RefreshCw } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function PaymentCancel() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
