@@ -238,32 +238,26 @@ The application is designed for easy deployment on platforms like Replit, Vercel
     - ✅ **Error Handling**: Professional error messages and direct payment link access
     - ✅ **evisatr.xyz Integration**: All callback URLs confirmed using production domain
     - 📋 System fully operational with correct HTTP method implementation resolving 405 errors
-✅ **GPay Payment System Rebuild Complete** (July 17, 2025):
+✅ **GPay Payment System Complete - Domain Corrected** (July 22, 2025):
    - ✅ **Complete System Rebuild**: Removed all old GPay code and built new system from scratch
    - ✅ **PHP Merchant Example Integration**: Implemented exact Node.js equivalent of PHP merchant example
    - ✅ **Signature Generation**: RSA md5WithRSAEncryption signature generation following PHP Security.php
    - ✅ **Environment Configuration**: Added .env file support with dotenv package
-   - ✅ **Sandbox Credentials**: Successfully integrated sandbox credentials (Merchant ID: 1100000026)
+   - ✅ **Production Credentials**: Using production Merchant ID: 1100002537
    - ✅ **API Connection**: Verified GPay API connection with successful 200 responses
    - ✅ **Payment Endpoints**: Created /api/payment/create, /api/payment/callback, /payment/success, /payment/cancel
    - ✅ **Configuration Testing**: Added /api/payment/test-config endpoint for environment verification
-   - ✅ **Signature Challenge Resolved**: Fixed signature validation by removing unnecessary fields
-   - ✅ **Final Implementation**: Node.js signature algorithm working perfectly with minimal required fields
+   - ✅ **Signature Challenge Resolved**: Fixed signature validation with proper field matching
+   - ✅ **Final Implementation**: Node.js signature algorithm working perfectly
    - ✅ **Live System**: Both visa and insurance applications successfully creating GPay payment URLs
-   - ✅ **Production Ready**: System fully operational with real transaction IDs and payment processing
-   - ✅ **Production Deployment Complete** (July 17, 2025): Successfully transitioned to production credentials
-     - Production Merchant ID: 1100002537
-     - Production API endpoint: https://getvisa.gpayprocessing.com (DNS fixed)
-     - Production domain callbacks: https://evisatr.xyz
-     - Real amount processing (no longer hardcoded to 2000)
-     - Signature generation working with production private key
-     - System ready for live deployment on evisatr.xyz
-     - ✅ **DNS Issue Resolution** (July 17, 2025): Fixed payment.gpayprocessing.com DNS problem
-       - Switched to working endpoint: getvisa.gpayprocessing.com
-       - Same SSL certificate, same API functionality
-       - Payment URL generation now working successfully
-       - Transaction IDs created: 01k0cnza3xhmnja0rdzsr8kxnj (example)
-       - System fully operational for both visa and insurance payments
+   - ✅ **Domain Correction** (July 22, 2025): Fixed callback URLs to use correct domain
+     - **Corrected Domain**: evisatr.com.tr (was incorrectly using evisatr.xyz)
+     - **Production API**: https://getvisa.gpayprocessing.com working correctly
+     - **Development URLs**: localhost:5000 for local testing
+     - **Production URLs**: https://evisatr.com.tr for live deployment
+     - **Payment Flow**: Successfully generating transaction IDs (e.g., VISA-175317876032600)
+     - **Payment URLs**: Working checkout URLs like https://getvisa.gpayprocessing.com/checkout/01k0rsht32j9yncyavhv8j909q
+     - **Ready for Production**: System fully operational with correct domain configuration
 ✅ **Site Mode Switching System** (July 18, 2025):
   - Created flexible site switching mechanism for different business modes
   - Original e-visa application site backed up in `.backup-home-original.tsx`

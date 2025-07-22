@@ -656,11 +656,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log('API Response:', JSON.stringify(apiResponse, null, 2));
         console.log('=== End GPay API Response ===');
         
-      } catch (apiError) {
+      } catch (apiError: any) {
         console.error('=== GPay API Error ===');
         console.error('Error details:', apiError);
-        console.error('Error message:', apiError.message);
-        console.error('Error stack:', apiError.stack);
+        console.error('Error message:', apiError?.message);
+        console.error('Error stack:', apiError?.stack);
         console.error('=== End GPay API Error ===');
       }
       
@@ -678,9 +678,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         merchantId: "1100000026",
         signatureAlgorithm: "md5WithRSAEncryption"
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Test signature error:', error);
-      res.status(500).json({ error: "Signature test failed: " + error.message });
+      res.status(500).json({ error: "Signature test failed: " + error?.message });
     }
   });
   
@@ -709,10 +709,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Create URLs for callbacks - force production URLs for production merchant ID
-      const baseUrl = (process.env.NODE_ENV === 'development' && process.env.GPAY_MERCHANT_ID !== '1100002537') 
+      // Create URLs for callbacks - use correct domain evisatr.com.tr
+      const baseUrl = process.env.NODE_ENV === 'development' 
         ? 'http://localhost:5000' 
-        : 'https://evisatr.xyz';
+        : 'https://evisatr.com.tr';
       
       const paymentRequest = {
         orderRef: finalOrderRef,
@@ -732,7 +732,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         billingCity: "Test City",
         billingCountry: "US", // US for USD currency
         billingEmail: customerEmail,
-        customerIp: req.ip || req.connection?.remoteAddress || "127.0.0.1", // Mandatory field
+        customerIp: (req.ip || req.connection?.remoteAddress || "127.0.0.1"), // Mandatory field
         merchantId: "" // Will be set from environment
       };
 
