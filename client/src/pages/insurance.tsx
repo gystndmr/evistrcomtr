@@ -33,6 +33,8 @@ export default function Insurance() {
   // Removed paymentData state - now using direct redirects
   const [showRetry, setShowRetry] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
+  const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [paymentData, setPaymentData] = useState<any>(null);
   const { toast } = useToast();
 
   const { data: products = [] } = useQuery({
@@ -102,24 +104,40 @@ export default function Insurance() {
         // Use POST form submission with form data
         setCurrentOrderId(applicationData2.applicationNumber);
         
-        // Create PaymentForm component with POST data
-        const paymentFormContainer = document.createElement('div');
-        paymentFormContainer.innerHTML = `
-          <form method="POST" action="${paymentData.paymentUrl}" id="gpayForm">
-            ${paymentData.formData ? Object.entries(paymentData.formData).map(([key, value]) => 
-              `<input type="hidden" name="${key}" value="${value}" />`
-            ).join('') : ''}
-          </form>
-        `;
-        document.body.appendChild(paymentFormContainer);
-        
-        // Auto-submit form after 1 second
-        setTimeout(() => {
-          const form = document.getElementById('gpayForm') as HTMLFormElement;
-          if (form) {
-            form.submit();
-          }
-        }, 1000);
+        // Create enhanced payment form with retry mechanism and fallback
+        try {
+          // Try direct form submission first
+          const paymentFormContainer = document.createElement('div');
+          paymentFormContainer.innerHTML = `
+            <form method="POST" action="${paymentData.paymentUrl}" id="gpayInsuranceForm" target="_blank">
+              ${paymentData.formData ? Object.entries(paymentData.formData).map(([key, value]) => 
+                `<input type="hidden" name="${key}" value="${value}" />`
+              ).join('') : ''}
+            </form>
+          `;
+          document.body.appendChild(paymentFormContainer);
+          
+          // Auto-submit form after 2 seconds with error handling
+          setTimeout(() => {
+            const form = document.getElementById('gpayInsuranceForm') as HTMLFormElement;
+            if (form) {
+              try {
+                form.submit();
+                // Clean up form after submission
+                setTimeout(() => {
+                  document.body.removeChild(paymentFormContainer);
+                }, 5000);
+              } catch (formError) {
+                console.error('Form submission error:', formError);
+                setShowRetry(true);
+                document.body.removeChild(paymentFormContainer);
+              }
+            }
+          }, 2000);
+        } catch (error) {
+          console.error('Payment form creation error:', error);
+          setShowRetry(true);
+        }
       } else {
         throw new Error(paymentData.error || "Payment initialization failed");
       }

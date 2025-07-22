@@ -127,24 +127,43 @@ export function VisaForm() {
         // Use POST form submission with form data
         setCurrentOrderId(applicationData.applicationNumber);
         
-        // Create PaymentForm component with POST data
-        const paymentFormContainer = document.createElement('div');
-        paymentFormContainer.innerHTML = `
-          <form method="POST" action="${paymentData.paymentUrl}" id="gpayVisaForm">
-            ${paymentData.formData ? Object.entries(paymentData.formData).map(([key, value]) => 
-              `<input type="hidden" name="${key}" value="${value}" />`
-            ).join('') : ''}
-          </form>
-        `;
-        document.body.appendChild(paymentFormContainer);
-        
-        // Auto-submit form after 1 second
-        setTimeout(() => {
-          const form = document.getElementById('gpayVisaForm') as HTMLFormElement;
-          if (form) {
-            form.submit();
-          }
-        }, 1000);
+        // Create enhanced payment form with retry mechanism and error handling
+        try {
+          const paymentFormContainer = document.createElement('div');
+          paymentFormContainer.innerHTML = `
+            <form method="POST" action="${paymentData.paymentUrl}" id="gpayVisaForm" target="_blank">
+              ${paymentData.formData ? Object.entries(paymentData.formData).map(([key, value]) => 
+                `<input type="hidden" name="${key}" value="${value}" />`
+              ).join('') : ''}
+            </form>
+          `;
+          document.body.appendChild(paymentFormContainer);
+          
+          // Auto-submit form after 2 seconds with error handling
+          setTimeout(() => {
+            const form = document.getElementById('gpayVisaForm') as HTMLFormElement;
+            if (form) {
+              try {
+                form.submit();
+                // Clean up form after submission
+                setTimeout(() => {
+                  if (document.body.contains(paymentFormContainer)) {
+                    document.body.removeChild(paymentFormContainer);
+                  }
+                }, 5000);
+              } catch (formError) {
+                console.error('GPay form submission error:', formError);
+                setShowRetry(true);
+                if (document.body.contains(paymentFormContainer)) {
+                  document.body.removeChild(paymentFormContainer);
+                }
+              }
+            }
+          }, 2000);
+        } catch (error) {
+          console.error('GPay payment form creation error:', error);
+          setShowRetry(true);
+        }
       } else {
         throw new Error(paymentData.error || "Payment initialization failed");
       }

@@ -12,6 +12,7 @@ import Status from "@/pages/status";
 import Admin from "@/pages/admin";
 import PaymentSuccess from "@/pages/payment-success";
 import PaymentCancel from "@/pages/payment-cancel";
+import PaymentTroubleshoot from "@/pages/payment-troubleshoot";
 import MockGPayPayment from "@/pages/mock-gpay-payment";
 import DebugPayment from "@/pages/debug-payment";
 import FAQ from "@/pages/faq";
@@ -35,6 +36,7 @@ function Router() {
       <Route path="/admin" component={Admin} />
       <Route path="/payment-success" component={PaymentSuccess} />
       <Route path="/payment-cancel" component={PaymentCancel} />
+      <Route path="/payment-troubleshoot" component={PaymentTroubleshoot} />
       <Route path="/mock-gpay-payment" component={MockGPayPayment} />
       <Route path="/debug-payment" component={DebugPayment} />
       <Route path="/faq" component={FAQ} />

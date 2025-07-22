@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GPay Checkout Debug</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <h1>GPay Checkout Test</h1>
+    <p>Testing direct GPay checkout page access...</p>
+    
+    <h2>Test Form Submission</h2>
+    <form method="POST" action="https://getvisa.gpayprocessing.com/checkout/01k0rtpxjw6gz0zk1j6mczmagd" target="_blank">
+        <input type="hidden" name="orderRef" value="TEST-DEBUG-001">
+        <input type="hidden" name="amount" value="114">
+        <input type="hidden" name="currency" value="USD">
+        <input type="hidden" name="merchantId" value="1100002537">
+        <input type="hidden" name="signature" value="test-signature">
+        <button type="submit">Test GPay Checkout</button>
+    </form>
+    
+    <h2>Direct URL Test</h2>
+    <a href="https://getvisa.gpayprocessing.com/checkout/01k0rtpxjw6gz0zk1j6mczmagd" target="_blank">
+        Direct Checkout URL Test
+    </a>
+    
+    <h2>API Status Check</h2>
+    <button onclick="checkApiStatus()">Check GPay API Status</button>
+    <div id="status-result"></div>
+    
+    <script>
+        async function checkApiStatus() {
+            try {
+                const response = await fetch('https://getvisa.gpayprocessing.com/v1/checkout', {
+                    method: 'OPTIONS',
+                    mode: 'cors'
+                });
+                document.getElementById('status-result').innerHTML = 
+                    `<p>Status: ${response.status}</p><p>GPay API is responding</p>`;
+            } catch (error) {
+                document.getElementById('status-result').innerHTML = 
+                    `<p>Error: ${error.message}</p><p>GPay API connection issue</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
