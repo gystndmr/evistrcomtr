@@ -354,3 +354,13 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - Language detection includes console logging for troubleshooting
   - Supporting document validation flow enhanced with proper delays (1-2 seconds) to prevent instant redirects
   - All form data from both visa and insurance applications now properly displays in admin panel
+✅ **Mobile Payment Redirect Enhancement** (July 22, 2025):
+  - Enhanced payment redirection system for mobile device compatibility
+  - Added mobile device detection using user agent strings
+  - Mobile-specific redirect strategy: window.open first, then location.href fallback
+  - Desktop strategy: standard location.href method
+  - Reduced redirect timeout to 300ms for better mobile responsiveness
+  - Added manual "Continue" button in toast notifications for mobile users
+  - Implemented multiple fallback methods: location.replace as ultimate backup
+  - Applied to both visa and insurance application payment flows
+  - Toast duration extended to 5-10 seconds with actionable continue buttons

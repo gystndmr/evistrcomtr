@@ -65,6 +65,7 @@ export function VisaForm() {
   // Removed paymentData state - now using direct redirects
   const [showRetry, setShowRetry] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
+  const [paymentRedirectUrl, setPaymentRedirectUrl] = useState<string>("");
   const [prerequisites, setPrerequisites] = useState({
     ordinaryPassport: false,
     validPassport: false,
@@ -125,11 +126,37 @@ export function VisaForm() {
       
       if (paymentData.success && paymentData.paymentUrl) {
         setCurrentOrderId(applicationData.applicationNumber);
+        setPaymentRedirectUrl(paymentData.paymentUrl);
         
-        // Simple direct redirect approach (as documented working in line 240 of replit.md)
-        setTimeout(() => {
-          window.location.href = paymentData.paymentUrl;
-        }, 1500);
+        // Enhanced redirect approach for mobile compatibility
+        const redirectToPayment = () => {
+          try {
+            // For mobile devices, try multiple approaches
+            const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+              // Mobile: Try window.open first, then location.href
+              const newWindow = window.open(paymentData.paymentUrl, '_blank');
+              if (!newWindow) {
+                // If popup is blocked, use location.href
+                window.location.href = paymentData.paymentUrl;
+              }
+            } else {
+              // Desktop: Use standard location.href
+              window.location.href = paymentData.paymentUrl;
+            }
+          } catch (error) {
+            // Ultimate fallback: location.replace
+            try {
+              window.location.replace(paymentData.paymentUrl);
+            } catch (error2) {
+              console.error('All redirect methods failed:', error2);
+            }
+          }
+        };
+        
+        // Quick redirect for better mobile compatibility
+        setTimeout(redirectToPayment, 300);
       } else {
         throw new Error(paymentData.error || "Payment initialization failed");
       }
@@ -139,8 +166,28 @@ export function VisaForm() {
     onSuccess: (data) => {
       toast({
         title: "Application Submitted",
-        description: `Your application number is ${data.applicationNumber}. Redirecting to payment...`,
+        description: `Your application number is ${data.applicationNumber}. Redirecting to payment page...`,
+        duration: 5000,
       });
+      
+      // Show manual continue option after a short delay for mobile users
+      setTimeout(() => {
+        if (paymentRedirectUrl) {
+          toast({
+            title: "Continue to Payment",
+            description: "If the page doesn't redirect automatically, click here to continue.",
+            action: (
+              <Button 
+                onClick={() => window.open(paymentRedirectUrl, '_blank')}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2"
+              >
+                Continue
+              </Button>
+            ),
+            duration: 10000,
+          });
+        }
+      }, 2500);
     },
     onError: (error) => {
       toast({
