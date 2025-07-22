@@ -34,10 +34,11 @@ export function SupportingDocumentCheck({
     if (!value) {
       setProcessingType("");
     }
-    // Trigger validation immediately
+    // Add slight delay for better UX when no document is selected
+    const delay = value === false ? 1000 : 0; // 1 second delay for "No" selection
     setTimeout(() => {
       handleDetailsChange();
-    }, 0);
+    }, delay);
   };
 
   const handleDocumentTypeChange = (type: string) => {
@@ -177,7 +178,10 @@ export function SupportingDocumentCheck({
             <Alert className="border-blue-200 bg-blue-50">
               <AlertTriangle className="h-4 w-4 text-blue-500" />
               <AlertDescription className="text-blue-800">
-                Redirecting to insurance services...
+                <strong>No Supporting Documents:</strong> Please wait while we process your selection.
+                <div className="mt-2 text-sm text-blue-600">
+                  You will be redirected to travel insurance options shortly...
+                </div>
               </AlertDescription>
             </Alert>
           )}

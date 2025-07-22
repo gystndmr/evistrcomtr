@@ -251,8 +251,14 @@ export function VisaForm() {
         return;
       }
       if (hasSupportingDocument === false) {
-        // Redirect to insurance for users without supporting documents
-        window.location.href = "/insurance";
+        // Add delay and confirmation before redirecting to insurance
+        toast({
+          title: "No Supporting Documents Required",
+          description: "Redirecting to travel insurance options...",
+        });
+        setTimeout(() => {
+          window.location.href = "/insurance";
+        }, 2000); // 2 second delay
         return;
       }
       if (hasSupportingDocument === true) {
