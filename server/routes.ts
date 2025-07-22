@@ -739,7 +739,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const baseUrl = 'https://getvisa.tr';
       
       const paymentRequest = {
-        orderRef: generateOrderReference(), // Generate unique order reference instead of using application number
+        orderRef: `VIS-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`, // Unique order reference with timestamp
         amount: amount.toString(), // Use real amount from request
         currency: "USD", // Fixed currency
         orderDescription: finalDescription || `E-Visa Application - ${finalOrderRef}`,
