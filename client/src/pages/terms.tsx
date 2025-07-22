@@ -9,7 +9,7 @@ export default function Terms() {
       <main className="max-w-4xl mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-sm p-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-6">Terms & Conditions</h1>
-          <p className="text-gray-600 mb-8">Last updated: January 2024</p>
+          <p className="text-gray-600 mb-8">Son güncelleme: Temmuz 2025</p>
           
           <div className="space-y-8">
             <section>

@@ -30,19 +30,19 @@ export default function Application() {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <section className="relative py-16 bg-gradient-to-br from-blue-50 to-red-50 min-h-screen">
+      <section className="relative py-8 sm:py-16 bg-gradient-to-br from-blue-50 to-red-50 min-h-screen">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=2071&auto=format&fit=crop')] bg-cover bg-center opacity-5"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-white rounded-full mb-4 shadow-lg p-2">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full mb-4 shadow-lg p-2">
               <img 
                 src={turkeyFlag} 
                 alt="Turkey Flag" 
                 className="w-full h-full object-cover rounded-full"
               />
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4">E-Visa Application</h1>
-            <p className="text-lg text-neutral-600">Complete your Turkey e-visa application in simple steps</p>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-800 mb-4">E-Visa Application</h1>
+            <p className="text-base sm:text-lg text-neutral-600 px-4">Complete your Turkey e-visa application in simple steps</p>
           </div>
           
           <VisaForm />

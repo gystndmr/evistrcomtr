@@ -88,6 +88,21 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/kvkk" className="hover:text-primary transition-colors">
+                  KVKK Aydınlatma Metni
+                </Link>
+              </li>
+              <li>
+                <Link href="/cancellation-policy" className="hover:text-primary transition-colors">
+                  İptal ve İade Politikası
+                </Link>
+              </li>
+              <li>
+                <Link href="/security" className="hover:text-primary transition-colors">
+                  Güvenlik Bilgileri
+                </Link>
+              </li>
+              <li>
                 <Link href="/refund" className="hover:text-primary transition-colors">
                   Refund Policy
                 </Link>

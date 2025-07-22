@@ -101,11 +101,11 @@ export default function Status() {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <section className="py-16 bg-neutral-50">
+      <section className="py-8 sm:py-16 bg-neutral-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Check Application Status</h1>
-            <p className="text-lg text-neutral-600">Enter your application number to check your visa or insurance application status</p>
+          <div className="text-center mb-6 sm:mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Check Application Status</h1>
+            <p className="text-base sm:text-lg text-neutral-600 px-4">Enter your application number to check your visa or insurance application status</p>
           </div>
           
           <Card className="mb-8">

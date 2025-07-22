@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { CookieConsent } from "@/components/cookie-consent";
 import Home from "@/pages/home";
 import Application from "@/pages/application";
 import Insurance from "@/pages/insurance";
@@ -18,6 +19,9 @@ import Requirements from "@/pages/requirements";
 import ProcessingTimes from "@/pages/processing-times";
 import Terms from "@/pages/terms";
 import Privacy from "@/pages/privacy";
+import KVKK from "@/pages/kvkk";
+import CancellationPolicy from "@/pages/cancellation-policy";
+import Security from "@/pages/security";
 import Refund from "@/pages/refund";
 import NotFound from "@/pages/not-found";
 
@@ -38,6 +42,9 @@ function Router() {
       <Route path="/processing-times" component={ProcessingTimes} />
       <Route path="/terms" component={Terms} />
       <Route path="/privacy" component={Privacy} />
+      <Route path="/kvkk" component={KVKK} />
+      <Route path="/cancellation-policy" component={CancellationPolicy} />
+      <Route path="/security" component={Security} />
       <Route path="/refund" component={Refund} />
       <Route component={NotFound} />
     </Switch>
@@ -51,6 +58,7 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Router />
+          <CookieConsent />
         </TooltipProvider>
       </LanguageProvider>
     </QueryClientProvider>
