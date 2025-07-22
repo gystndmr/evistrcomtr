@@ -20,6 +20,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { ArrowLeft, ArrowRight, CreditCard } from "lucide-react";
 import type { Country } from "@shared/schema";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const applicationSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -52,6 +53,7 @@ const processingTypes = [
 ];
 
 export function VisaForm() {
+  const { t } = useLanguage();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
   const [selectedDocumentType, setSelectedDocumentType] = useState("");
@@ -200,30 +202,29 @@ export function VisaForm() {
 
   const calculateTotal = () => {
     const baseFee = 69; // E-Visa Application Fee is always $69
-    let processingFee = 0;
-    let documentFee = 0;
+    let additionalFee = 0;
     
     if (hasSupportingDocument === true && documentProcessingType) {
-      // Document PDF fees (supporting document processing)
+      // Document processing fees (includes processing + document fee)
       const documentProcessingTypes = [
-        { value: "slow", price: 50 },
-        { value: "standard", price: 115 },
-        { value: "fast", price: 165 },
-        { value: "urgent_24", price: 280 },
-        { value: "urgent_12", price: 330 },
-        { value: "urgent_4", price: 410 },
-        { value: "urgent_1", price: 645 }
+        { value: "slow", price: 119 },
+        { value: "standard", price: 184 },
+        { value: "fast", price: 234 },
+        { value: "urgent_24", price: 349 },
+        { value: "urgent_12", price: 399 },
+        { value: "urgent_4", price: 479 },
+        { value: "urgent_1", price: 714 }
       ];
       
       const selectedProcessing = documentProcessingTypes.find(p => p.value === documentProcessingType);
-      documentFee = selectedProcessing?.price || 0;
-    } else {
+      additionalFee = selectedProcessing?.price || 119;
+    } else if (hasSupportingDocument === false) {
       // Standard e-visa processing fees (when no supporting document)
       const selectedProcessingType = form.watch("processingType") || "standard";
-      processingFee = processingTypes.find(p => p.value === selectedProcessingType)?.price || 25;
+      additionalFee = processingTypes.find(p => p.value === selectedProcessingType)?.price || 25;
     }
     
-    return baseFee + documentFee + processingFee;
+    return baseFee + additionalFee;
   };
 
   const handleCountrySelect = (country: Country | null) => {
@@ -554,23 +555,23 @@ export function VisaForm() {
 
   const getDynamicSteps = () => {
     const baseSteps = [
-      { number: 1, title: "Choice of Nationality" },
-      { number: 2, title: "Supporting Document Check" },
-      { number: 3, title: "Arrival Information" },
+      { number: 1, title: t("app.step1") },
+      { number: 2, title: t("app.step2") },
+      { number: 3, title: t("app.step3") },
     ];
     
     if (selectedCountry?.isEligible && hasSupportingDocument === true) {
       return [
         ...baseSteps,
-        { number: 4, title: "Prerequisites" },
-        { number: 5, title: "Personal Information" },
-        { number: 6, title: "Payment" },
+        { number: 4, title: t("app.step4.prerequisites") },
+        { number: 5, title: t("app.step4") },
+        { number: 6, title: t("app.step5") },
       ];
     } else {
       return [
         ...baseSteps,
-        { number: 4, title: "Personal Information" },
-        { number: 5, title: "Payment" },
+        { number: 4, title: t("app.step4") },
+        { number: 5, title: t("app.step5") },
       ];
     }
   };
@@ -582,7 +583,7 @@ export function VisaForm() {
     <div className="max-w-4xl mx-auto">
       <Card>
         <CardHeader>
-          <CardTitle>New E-Visa Application</CardTitle>
+          <CardTitle>{t("app.form.title")}</CardTitle>
           
           {/* Progress Steps */}
           <div className="mt-6">
@@ -641,7 +642,7 @@ export function VisaForm() {
               {/* Step 1: Country Selection */}
               {currentStep === 1 && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Step 1: Country/Region Selection</h3>
+                  <h3 className="text-lg font-semibold mb-4">{t("app.step1.title")}</h3>
                   <CountrySelector
                     onCountrySelect={handleCountrySelect}
                     onDocumentTypeSelect={setSelectedDocumentType}
@@ -654,7 +655,7 @@ export function VisaForm() {
               {/* Step 2: Supporting Document Check */}
               {currentStep === 2 && selectedCountry?.isEligible && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Step 2: Supporting Document Check</h3>
+                  <h3 className="text-lg font-semibold mb-4">{t("app.step2.title")}</h3>
                   <SupportingDocumentCheck
                     onHasSupportingDocument={setHasSupportingDocument}
                     onDocumentDetailsChange={setSupportingDocumentDetails}
@@ -666,7 +667,7 @@ export function VisaForm() {
               {/* Step 3: Travel Information */}
               {currentStep === 3 && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Step 3: Travel Information</h3>
+                  <h3 className="text-lg font-semibold mb-4">{t("app.step3.title")}</h3>
                   <div className="grid md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
@@ -837,7 +838,7 @@ export function VisaForm() {
               {/* Step 4: Prerequisites (for eligible countries with supporting docs) */}
               {currentStep === 4 && selectedCountry?.isEligible && hasSupportingDocument === true && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Step 4: Prerequisites</h3>
+                  <h3 className="text-lg font-semibold mb-4">{t("app.step4.prerequisites.title")}</h3>
                   <div className="space-y-4">
                     <div className="bg-blue-50 p-4 rounded-lg">
                       <h4 className="font-medium text-blue-900 mb-2">Please confirm you meet the following criteria:</h4>
@@ -897,7 +898,7 @@ export function VisaForm() {
               {/* Step 5: Personal Details (for eligible countries with supporting docs) or Step 4 (for others) */}
               {(currentStep === 5 || (currentStep === 4 && (!selectedCountry?.isEligible || hasSupportingDocument === false))) && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
+                  <h3 className="text-lg font-semibold mb-4">{hasSupportingDocument === true ? t("app.step5.title") : t("app.step4.title")}</h3>
                   <div className="grid md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
@@ -1461,7 +1462,7 @@ export function VisaForm() {
               {/* Step 6: Payment (for eligible countries with supporting docs) or Step 5 (for others) */}
               {(currentStep === 6 || (currentStep === 5 && (!selectedCountry?.isEligible || hasSupportingDocument === false))) && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">Payment</h3>
+                  <h3 className="text-lg font-semibold mb-4">{hasSupportingDocument === true ? t("app.step6.title") : t("app.step5.title")}</h3>
                   
                   <div className="bg-neutral-50 rounded-lg p-6 mb-6">
                     <h4 className="font-semibold mb-4">Order Summary</h4>
@@ -1470,35 +1471,33 @@ export function VisaForm() {
                         <span>E-Visa Application Fee</span>
                         <span>$69.00</span>
                       </div>
-                      {hasSupportingDocument === true && supportingDocumentDetails?.processingType && (
+                      {hasSupportingDocument === true && documentProcessingType && (
                         <div className="flex justify-between">
-                          <span>PDF Document Fee</span>
+                          <span>Processing & Document Fee</span>
                           <span>${(() => {
                             const documentProcessingTypes = [
-                              { value: "slow", price: 50 },
-                              { value: "standard", price: 115 },
-                              { value: "fast", price: 165 },
-                              { value: "urgent_24", price: 280 },
-                              { value: "urgent_12", price: 330 },
-                              { value: "urgent_4", price: 410 },
-                              { value: "urgent_1", price: 645 }
+                              { value: "slow", price: 119 },
+                              { value: "standard", price: 184 },
+                              { value: "fast", price: 234 },
+                              { value: "urgent_24", price: 349 },
+                              { value: "urgent_12", price: 399 },
+                              { value: "urgent_4", price: 479 },
+                              { value: "urgent_1", price: 714 }
                             ];
-                            return documentProcessingTypes.find(p => p.value === supportingDocumentDetails.processingType)?.price || 0;
+                            return documentProcessingTypes.find(p => p.value === documentProcessingType)?.price || 119;
                           })()}</span>
                         </div>
                       )}
-                      <div className="flex justify-between">
-                        <span>Processing Fee</span>
-                        <span>${(() => {
-                          if (hasSupportingDocument === true) {
-                            return 0; // No separate processing fee for supporting documents
-                          } else {
+                      {hasSupportingDocument === false && (
+                        <div className="flex justify-between">
+                          <span>Processing Fee</span>
+                          <span>${(() => {
                             const processingType = form.watch("processingType") || "standard";
                             const selectedProcessing = processingTypes.find(p => p.value === processingType);
                             return selectedProcessing?.price || 25;
-                          }
-                        })()}</span>
-                      </div>
+                          })()}</span>
+                        </div>
+                      )}
                       <div className="border-t pt-2 mt-2">
                         <div className="flex justify-between font-semibold">
                           <span>Total Amount</span>

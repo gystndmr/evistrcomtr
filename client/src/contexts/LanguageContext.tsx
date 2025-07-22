@@ -131,7 +131,15 @@ const translations: Record<string, Record<string, string>> = {
     'app.step2': 'Supporting Document Check',
     'app.step3': 'Arrival Information',
     'app.step4': 'Personal Information',
+    'app.step4.prerequisites': 'Prerequisites',
     'app.step5': 'Payment',
+    'app.step1.title': 'Step 1: Country/Region Selection',
+    'app.step2.title': 'Step 2: Supporting Document Check',
+    'app.step3.title': 'Step 3: Travel Information',
+    'app.step4.title': 'Step 4: Personal Information',
+    'app.step4.prerequisites.title': 'Step 4: Prerequisites',
+    'app.step5.title': 'Step 5: Payment',
+    'app.step6.title': 'Step 6: Payment',
     
     // Insurance
     'insurance.title': 'Travel Insurance Services',
@@ -209,7 +217,15 @@ const translations: Record<string, Record<string, string>> = {
     'app.step2': 'Destekleyici Belge Kontrolü',
     'app.step3': 'Varış Bilgileri',
     'app.step4': 'Kişisel Bilgiler',
+    'app.step4.prerequisites': 'Önkoşullar',
     'app.step5': 'Ödeme',
+    'app.step1.title': 'Adım 1: Ülke/Bölge Seçimi',
+    'app.step2.title': 'Adım 2: Destekleyici Belge Kontrolü',
+    'app.step3.title': 'Adım 3: Seyahat Bilgileri',
+    'app.step4.title': 'Adım 4: Kişisel Bilgiler',
+    'app.step4.prerequisites.title': 'Adım 4: Önkoşullar',
+    'app.step5.title': 'Adım 5: Ödeme',
+    'app.step6.title': 'Adım 6: Ödeme',
     
     // Insurance
     'insurance.title': 'Seyahat Sigortası Hizmetleri',
