@@ -27,19 +27,19 @@ const applicationSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z.string().min(1, "Phone number is required"),
   passportNumber: z.string().min(1, "Passport number is required"),
-  passportIssueDate: z.string().min(1, "Passport issue date is required"),
-  passportExpiryDate: z.string().min(1, "Passport expiry date is required"),
-  dateOfBirth: z.string().min(1, "Date of birth is required"),
+  passportIssueDate: z.string().min(1, "Passport issue date is required").regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
+  passportExpiryDate: z.string().min(1, "Passport expiry date is required").regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
+  dateOfBirth: z.string().min(1, "Date of birth is required").regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
   placeOfBirth: z.string().min(2, "Place of birth is required (minimum 2 characters)"),
   motherName: z.string().min(2, "Mother's name is required (minimum 2 characters)"),
   fatherName: z.string().min(2, "Father's name is required (minimum 2 characters)"),
   address: z.string().min(10, "Complete address is required (minimum 10 characters)"),
-  arrivalDate: z.string().min(1, "Arrival date is required"),
+  arrivalDate: z.string().min(1, "Arrival date is required").regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
   processingType: z.string().min(1, "Processing type is required"),
   documentType: z.string().min(1, "Document type is required"),
   supportingDocumentNumber: z.string().optional(),
-  supportingDocumentStartDate: z.string().optional(),
-  supportingDocumentEndDate: z.string().optional(),
+  supportingDocumentStartDate: z.string().optional().refine((val) => !val || /^\d{4}-\d{2}-\d{2}$/.test(val), "Invalid date format"),
+  supportingDocumentEndDate: z.string().optional().refine((val) => !val || /^\d{4}-\d{2}-\d{2}$/.test(val), "Invalid date format"),
 });
 
 type ApplicationFormData = z.infer<typeof applicationSchema>;
@@ -659,11 +659,12 @@ export function VisaForm() {
                             <div className="space-y-2">
                               <div className="grid grid-cols-3 gap-2">
                                 <Select
-                                  value={field.value ? new Date(field.value).getDate().toString().padStart(2, '0') : ''}
+                                  value={field.value ? field.value.split('-')[2] : ''}
                                   onValueChange={(day) => {
-                                    const currentDate = field.value ? new Date(field.value) : new Date();
-                                    currentDate.setDate(parseInt(day));
-                                    field.onChange(currentDate.toISOString().split('T')[0]);
+                                    const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                    const year = parts[0];
+                                    const month = parts[1];
+                                    field.onChange(`${year}-${month}-${day.padStart(2, '0')}`);
                                   }}
                                 >
                                   <SelectTrigger>
@@ -677,11 +678,12 @@ export function VisaForm() {
                                 </Select>
 
                                 <Select
-                                  value={field.value ? (new Date(field.value).getMonth() + 1).toString().padStart(2, '0') : ''}
+                                  value={field.value ? field.value.split('-')[1] : ''}
                                   onValueChange={(month) => {
-                                    const currentDate = field.value ? new Date(field.value) : new Date();
-                                    currentDate.setMonth(parseInt(month) - 1);
-                                    field.onChange(currentDate.toISOString().split('T')[0]);
+                                    const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                    const year = parts[0];
+                                    const day = parts[2];
+                                    field.onChange(`${year}-${month.padStart(2, '0')}-${day}`);
                                   }}
                                 >
                                   <SelectTrigger>
@@ -708,11 +710,12 @@ export function VisaForm() {
                                 </Select>
 
                                 <Select
-                                  value={field.value ? new Date(field.value).getFullYear().toString() : ''}
+                                  value={field.value ? field.value.split('-')[0] : ''}
                                   onValueChange={(year) => {
-                                    const currentDate = field.value ? new Date(field.value) : new Date();
-                                    currentDate.setFullYear(parseInt(year));
-                                    field.onChange(currentDate.toISOString().split('T')[0]);
+                                    const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                    const month = parts[1];
+                                    const day = parts[2];
+                                    field.onChange(`${year}-${month}-${day}`);
                                   }}
                                 >
                                   <SelectTrigger>
@@ -914,11 +917,12 @@ export function VisaForm() {
                           <FormControl>
                             <div className="grid grid-cols-3 gap-2">
                               <Select
-                                value={field.value ? new Date(field.value).getDate().toString().padStart(2, '0') : ''}
+                                value={field.value ? field.value.split('-')[2] : ''}
                                 onValueChange={(day) => {
-                                  const currentDate = field.value ? new Date(field.value) : new Date();
-                                  currentDate.setDate(parseInt(day));
-                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                  const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                  const year = parts[0];
+                                  const month = parts[1];
+                                  field.onChange(`${year}-${month}-${day.padStart(2, '0')}`);
                                 }}
                               >
                                 <SelectTrigger>
@@ -932,11 +936,12 @@ export function VisaForm() {
                               </Select>
 
                               <Select
-                                value={field.value ? (new Date(field.value).getMonth() + 1).toString().padStart(2, '0') : ''}
+                                value={field.value ? field.value.split('-')[1] : ''}
                                 onValueChange={(month) => {
-                                  const currentDate = field.value ? new Date(field.value) : new Date();
-                                  currentDate.setMonth(parseInt(month) - 1);
-                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                  const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                  const year = parts[0];
+                                  const day = parts[2];
+                                  field.onChange(`${year}-${month.padStart(2, '0')}-${day}`);
                                 }}
                               >
                                 <SelectTrigger>
@@ -963,11 +968,12 @@ export function VisaForm() {
                               </Select>
 
                               <Select
-                                value={field.value ? new Date(field.value).getFullYear().toString() : ''}
+                                value={field.value ? field.value.split('-')[0] : ''}
                                 onValueChange={(year) => {
-                                  const currentDate = field.value ? new Date(field.value) : new Date();
-                                  currentDate.setFullYear(parseInt(year));
-                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                  const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                  const month = parts[1];
+                                  const day = parts[2];
+                                  field.onChange(`${year}-${month}-${day}`);
                                 }}
                               >
                                 <SelectTrigger>
@@ -1009,11 +1015,11 @@ export function VisaForm() {
                           <FormControl>
                             <div className="grid grid-cols-3 gap-2">
                               <Select
-                                value={field.value ? new Date(field.value).getDate().toString().padStart(2, '0') : ''}
+                                value={field.value ? field.value.split('-')[2] : ''}
                                 onValueChange={(day) => {
-                                  const currentDate = field.value ? new Date(field.value) : new Date();
-                                  currentDate.setDate(parseInt(day));
-                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                  const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                  const year = parts[0]; const month = parts[1];
+                                  field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                                 }}
                               >
                                 <SelectTrigger>
@@ -1027,11 +1033,11 @@ export function VisaForm() {
                               </Select>
 
                               <Select
-                                value={field.value ? (new Date(field.value).getMonth() + 1).toString().padStart(2, '0') : ''}
+                                value={field.value ? field.value.split('-')[1] : ''}
                                 onValueChange={(month) => {
-                                  const currentDate = field.value ? new Date(field.value) : new Date();
-                                  currentDate.setMonth(parseInt(month) - 1);
-                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                  const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                  const year = parts[0]; const day = parts[2];
+                                  field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                                 }}
                               >
                                 <SelectTrigger>
@@ -1058,11 +1064,11 @@ export function VisaForm() {
                               </Select>
 
                               <Select
-                                value={field.value ? new Date(field.value).getFullYear().toString() : ''}
+                                value={field.value ? field.value.split('-')[0] : ''}
                                 onValueChange={(year) => {
-                                  const currentDate = field.value ? new Date(field.value) : new Date();
-                                  currentDate.setFullYear(parseInt(year));
-                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                  const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                  const month = parts[1]; const day = parts[2];
+                                  field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                                 }}
                               >
                                 <SelectTrigger>
@@ -1090,11 +1096,11 @@ export function VisaForm() {
                           <FormControl>
                             <div className="grid grid-cols-3 gap-2">
                               <Select
-                                value={field.value ? new Date(field.value).getDate().toString().padStart(2, '0') : ''}
+                                value={field.value ? field.value.split('-')[2] : ''}
                                 onValueChange={(day) => {
-                                  const currentDate = field.value ? new Date(field.value) : new Date();
-                                  currentDate.setDate(parseInt(day));
-                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                  const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                  const year = parts[0]; const month = parts[1];
+                                  field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                                 }}
                               >
                                 <SelectTrigger>
@@ -1108,11 +1114,11 @@ export function VisaForm() {
                               </Select>
 
                               <Select
-                                value={field.value ? (new Date(field.value).getMonth() + 1).toString().padStart(2, '0') : ''}
+                                value={field.value ? field.value.split('-')[1] : ''}
                                 onValueChange={(month) => {
-                                  const currentDate = field.value ? new Date(field.value) : new Date();
-                                  currentDate.setMonth(parseInt(month) - 1);
-                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                  const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                  const year = parts[0]; const day = parts[2];
+                                  field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                                 }}
                               >
                                 <SelectTrigger>
@@ -1139,11 +1145,11 @@ export function VisaForm() {
                               </Select>
 
                               <Select
-                                value={field.value ? new Date(field.value).getFullYear().toString() : ''}
+                                value={field.value ? field.value.split('-')[0] : ''}
                                 onValueChange={(year) => {
-                                  const currentDate = field.value ? new Date(field.value) : new Date();
-                                  currentDate.setFullYear(parseInt(year));
-                                  field.onChange(currentDate.toISOString().split('T')[0]);
+                                  const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                  const month = parts[1]; const day = parts[2];
+                                  field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                                 }}
                               >
                                 <SelectTrigger>
@@ -1276,11 +1282,11 @@ export function VisaForm() {
                               <FormControl>
                                 <div className="grid grid-cols-3 gap-2">
                                   <Select
-                                    value={field.value ? new Date(field.value).getDate().toString().padStart(2, '0') : ''}
+                                    value={field.value ? field.value.split('-')[2] : ''}
                                     onValueChange={(day) => {
-                                      const currentDate = field.value ? new Date(field.value) : new Date();
-                                      currentDate.setDate(parseInt(day));
-                                      field.onChange(currentDate.toISOString().split('T')[0]);
+                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                      const year = parts[0]; const month = parts[1];
+                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                                     }}
                                   >
                                     <SelectTrigger>
@@ -1294,11 +1300,11 @@ export function VisaForm() {
                                   </Select>
 
                                   <Select
-                                    value={field.value ? (new Date(field.value).getMonth() + 1).toString().padStart(2, '0') : ''}
+                                    value={field.value ? field.value.split('-')[1] : ''}
                                     onValueChange={(month) => {
-                                      const currentDate = field.value ? new Date(field.value) : new Date();
-                                      currentDate.setMonth(parseInt(month) - 1);
-                                      field.onChange(currentDate.toISOString().split('T')[0]);
+                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                      const year = parts[0]; const day = parts[2];
+                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                                     }}
                                   >
                                     <SelectTrigger>
@@ -1325,11 +1331,11 @@ export function VisaForm() {
                                   </Select>
 
                                   <Select
-                                    value={field.value ? new Date(field.value).getFullYear().toString() : ''}
+                                    value={field.value ? field.value.split('-')[0] : ''}
                                     onValueChange={(year) => {
-                                      const currentDate = field.value ? new Date(field.value) : new Date();
-                                      currentDate.setFullYear(parseInt(year));
-                                      field.onChange(currentDate.toISOString().split('T')[0]);
+                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                      const month = parts[1]; const day = parts[2];
+                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                                     }}
                                   >
                                     <SelectTrigger>
@@ -1356,11 +1362,11 @@ export function VisaForm() {
                               <FormControl>
                                 <div className="grid grid-cols-3 gap-2">
                                   <Select
-                                    value={field.value ? new Date(field.value).getDate().toString().padStart(2, '0') : ''}
+                                    value={field.value ? field.value.split('-')[2] : ''}
                                     onValueChange={(day) => {
-                                      const currentDate = field.value ? new Date(field.value) : new Date();
-                                      currentDate.setDate(parseInt(day));
-                                      field.onChange(currentDate.toISOString().split('T')[0]);
+                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                      const year = parts[0]; const month = parts[1];
+                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                                     }}
                                   >
                                     <SelectTrigger>
@@ -1374,11 +1380,11 @@ export function VisaForm() {
                                   </Select>
 
                                   <Select
-                                    value={field.value ? (new Date(field.value).getMonth() + 1).toString().padStart(2, '0') : ''}
+                                    value={field.value ? field.value.split('-')[1] : ''}
                                     onValueChange={(month) => {
-                                      const currentDate = field.value ? new Date(field.value) : new Date();
-                                      currentDate.setMonth(parseInt(month) - 1);
-                                      field.onChange(currentDate.toISOString().split('T')[0]);
+                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                      const year = parts[0]; const day = parts[2];
+                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                                     }}
                                   >
                                     <SelectTrigger>
@@ -1405,11 +1411,11 @@ export function VisaForm() {
                                   </Select>
 
                                   <Select
-                                    value={field.value ? new Date(field.value).getFullYear().toString() : ''}
+                                    value={field.value ? field.value.split('-')[0] : ''}
                                     onValueChange={(year) => {
-                                      const currentDate = field.value ? new Date(field.value) : new Date();
-                                      currentDate.setFullYear(parseInt(year));
-                                      field.onChange(currentDate.toISOString().split('T')[0]);
+                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                      const month = parts[1]; const day = parts[2];
+                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                                     }}
                                   >
                                     <SelectTrigger>
