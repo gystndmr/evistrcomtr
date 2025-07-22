@@ -126,8 +126,8 @@ export default function Privacy() {
                 If you have questions about this privacy policy or how we handle your data, please contact us:
               </p>
               <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-gray-700"><strong>Email:</strong> info@evisatr.xyz</p>
-                <p className="text-gray-700"><strong>Website:</strong> evisatr.xyz</p>
+                <p className="text-gray-700"><strong>Email:</strong> info@getvisa.tr</p>
+                <p className="text-gray-700"><strong>Website:</strong> getvisa.tr</p>
                 <p className="text-gray-700"><strong>Subject:</strong> Privacy Policy Inquiry</p>
               </div>
             </section>

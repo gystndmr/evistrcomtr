@@ -60,17 +60,17 @@ export function Footer() {
             <h3 className="text-lg font-semibold mb-4">{t('footer.support')}</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="mailto:info@evisatr.xyz" className="hover:text-primary transition-colors">
+                <a href="mailto:info@getvisa.tr" className="hover:text-primary transition-colors">
                   {t('footer.contact.us')}
                 </a>
               </li>
               <li>
-                <a href="mailto:info@evisatr.xyz" className="hover:text-primary transition-colors">
+                <a href="mailto:info@getvisa.tr" className="hover:text-primary transition-colors">
                   {t('footer.live.chat')}
                 </a>
               </li>
               <li>
-                <a href="mailto:info@evisatr.xyz" className="hover:text-primary transition-colors">
+                <a href="mailto:info@getvisa.tr" className="hover:text-primary transition-colors">
                   {t('footer.help.center')}
                 </a>
               </li>
@@ -218,12 +218,12 @@ export function Footer() {
                 />
               </a>
             </div>
-            <p>&copy; 2025 evisatr.xyz. All rights reserved. Not affiliated with the Turkish Government.</p>
+            <p>&copy; 2025 getvisa.tr. All rights reserved. Not affiliated with the Turkish Government.</p>
             <p className="mt-2 text-xs">This is a private visa application service. Official government applications can be made directly through Turkish government websites.</p>
             <div className="mt-4 text-xs space-y-1">
-              <p><strong>Business Information:</strong> eVisaTR - Turkey E-Visa Services</p>
-              <p><strong>Contact:</strong> info@evisatr.xyz | Support: 24/7 Available</p>
-              <p><strong>Technical Support:</strong> security@evisatr.xyz</p>
+              <p><strong>Business Information:</strong> GetVisa - Turkey E-Visa Services</p>
+              <p><strong>Contact:</strong> info@getvisa.tr | Support: 24/7 Available</p>
+              <p><strong>Technical Support:</strong> security@getvisa.tr</p>
               <p><strong>Compliance:</strong> PCI DSS Level 1 | KVKK Compliant | SSL Secured</p>
             </div>
             <p className="mt-1 text-xs">Fast, reliable and secure visa processing</p>

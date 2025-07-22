@@ -70,7 +70,7 @@ export default function Refund() {
               <h2 className="text-xl font-semibold text-gray-900 mb-4">5. Refund Process</h2>
               <p className="text-gray-700 mb-4">To request a refund:</p>
               <ol className="list-decimal pl-6 text-gray-700 space-y-2">
-                <li>Email us at <strong>info@evisatr.xyz</strong> with "Refund Request" in the subject line</li>
+                <li>Email us at <strong>info@getvisa.tr</strong> with "Refund Request" in the subject line</li>
                 <li>Include your application reference number and payment details</li>
                 <li>Provide a detailed explanation of why you believe a refund is warranted</li>
                 <li>Our team will review your request within 2-3 business days</li>
@@ -118,9 +118,9 @@ export default function Refund() {
               <h2 className="text-xl font-semibold text-gray-900 mb-4">9. Contact Information</h2>
               <p className="text-gray-700 mb-4">For refund requests or questions about this policy:</p>
               <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-gray-700"><strong>Email:</strong> info@evisatr.xyz</p>
+                <p className="text-gray-700"><strong>Email:</strong> info@getvisa.tr</p>
                 <p className="text-gray-700"><strong>Subject:</strong> Refund Request - [Your Application Number]</p>
-                <p className="text-gray-700"><strong>Website:</strong> evisatr.xyz</p>
+                <p className="text-gray-700"><strong>Website:</strong> getvisa.tr</p>
                 <p className="text-gray-700"><strong>Response Time:</strong> 2-3 business days</p>
               </div>
             </section>

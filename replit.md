@@ -373,3 +373,10 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - All form components, validation messages, and UI elements now properly translated
   - Complete multilingual support across entire application - no hardcoded text remains
   - Mobile users now see correctly translated interface in their preferred language
+✅ **Domain and Email Updates** (July 22, 2025):
+  - Updated all email addresses from info@evisatr.xyz to info@getvisa.tr
+  - Changed business name from eVisaTR to GetVisa
+  - Updated all policy pages and contact information to use getvisa.tr domain
+  - Modified payment callbacks and API endpoints to use getvisa.tr domain
+  - Updated footer and all customer-facing communications with new brand identity
+  - Consistent branding across all application pages and email templates

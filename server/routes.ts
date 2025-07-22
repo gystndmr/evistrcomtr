@@ -710,7 +710,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Always use production domain for GPay callbacks - required for GPay registration
-      const baseUrl = 'https://evisatr.com.tr';
+      const baseUrl = 'https://getvisa.tr';
       
       const paymentRequest = {
         orderRef: finalOrderRef,

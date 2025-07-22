@@ -272,11 +272,11 @@ export default function Security() {
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p><strong>E-posta:</strong> security@evisatr.xyz</p>
+                  <p><strong>E-posta:</strong> security@getvisa.tr</p>
                   <p><strong>Acil Durum:</strong> 24 saat yanıt süresi</p>
                 </div>
                 <div>
-                  <p><strong>KVKK Başvuru:</strong> privacy@evisatr.xyz</p>
+                  <p><strong>KVKK Başvuru:</strong> privacy@getvisa.tr</p>
                   <p><strong>Normal Talepler:</strong> 72 saat yanıt süresi</p>
                 </div>
               </div>
