@@ -144,53 +144,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Turkey Historical Sites */}
+      {/* Travel Insurance Section */}
       <section className="py-12 sm:py-16 bg-gradient-to-br from-blue-50 to-red-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Discover Turkey's Heritage</h2>
-            <p className="text-base sm:text-lg text-neutral-600">Explore magnificent historical sites and cultural treasures</p>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
-            <div className="relative rounded-lg overflow-hidden shadow-lg h-48 sm:h-56 md:h-64 group">
-              <div 
-                className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url(${hagiaSophiaImg})` }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
-                <h3 className="text-lg sm:text-xl font-bold mb-1 sm:mb-2">Hagia Sophia</h3>
-                <p className="text-xs sm:text-sm opacity-90">Iconic Byzantine masterpiece in Istanbul</p>
-              </div>
-            </div>
-            
-            <div className="relative rounded-lg overflow-hidden shadow-lg h-48 sm:h-56 md:h-64 group">
-              <div 
-                className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url(${cappadociaImg})` }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
-                <h3 className="text-lg sm:text-xl font-bold mb-1 sm:mb-2">Cappadocia</h3>
-                <p className="text-xs sm:text-sm opacity-90">Extraordinary rock formations and hot air balloons</p>
-              </div>
-            </div>
-            
-            <div className="relative rounded-lg overflow-hidden shadow-lg h-48 sm:h-56 md:h-64 group sm:col-span-2 md:col-span-1">
-              <div 
-                className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url(${pamukkaleImg})` }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
-                <h3 className="text-lg sm:text-xl font-bold mb-1 sm:mb-2">Pamukkale</h3>
-                <p className="text-xs sm:text-sm opacity-90">Natural thermal pools and ancient ruins</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="text-center mt-12">
+          <div className="text-center">
             <Link href="/insurance">
               <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-4">
                 <Shield className="w-5 h-5 mr-2" />
