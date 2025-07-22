@@ -38,9 +38,10 @@ export default function Insurance() {
   const [paymentData, setPaymentData] = useState<any>(null);
   const { toast } = useToast();
 
-  const { data: products = [] } = useQuery({
+  const { data: products = [], isLoading } = useQuery({
     queryKey: ["/api/insurance/products"],
-  }) as { data: InsuranceProduct[] };
+    staleTime: 5 * 60 * 1000, // 5 minutes cache
+  }) as { data: InsuranceProduct[], isLoading: boolean };
 
   // Sort products in the order: 7, 14, 30, 60, 90, 180, 1 year
   const sortedProducts = [...products].sort((a, b) => {
@@ -263,6 +264,22 @@ export default function Insurance() {
     return Shield;
   };
 
+  // Show loading state for insurance products
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading insurance options...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -274,6 +291,30 @@ export default function Insurance() {
             <div className="inline-flex items-center justify-center w-20 h-20 mb-6">
               <div className="w-20 h-20 shadow-lg rounded-full overflow-hidden">
                 <img src={newTurkeyLogo} alt="Turkey Flag" className="w-full h-full object-cover" />
+              </div>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">Turkey Travel Insurance</h1>
+            <p className="text-xl text-red-100 max-w-2xl mx-auto">
+              Secure your travel with comprehensive insurance coverage for your Turkey visit
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-8">
+          <div className="flex justify-center items-center space-x-8 mb-6">
+            <div className="flex items-center space-x-2">
+              <CheckCircle className="w-5 h-5 text-green-600" />
+              <span className="text-sm font-medium text-gray-700">24/7 Emergency Support</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Shield className="w-5 h-5 text-green-600" />
+              <span className="text-sm font-medium text-gray-700">Government Approved Insurance</span>
+            </div>
+          </div>
+        </div>
               </div>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">Republic of Turkey</h1>
