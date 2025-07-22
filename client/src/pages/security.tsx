@@ -9,9 +9,9 @@ export default function Security() {
       <main className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
         <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
-            Güvenlik ve Uyumluluk Bilgileri
+            Security and Compliance Information
           </h1>
-          <p className="text-gray-600 mb-8">Son güncelleme: Temmuz 2025</p>
+          <p className="text-gray-600 mb-8">Last updated: July 2025</p>
           
           <div className="space-y-6 sm:space-y-8">
             <section className="bg-green-50 border border-green-200 p-4 sm:p-6 rounded-lg">

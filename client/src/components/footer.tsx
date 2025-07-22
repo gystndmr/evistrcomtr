@@ -89,17 +89,17 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/kvkk" className="hover:text-primary transition-colors">
-                  KVKK Aydınlatma Metni
+                  Data Protection Policy
                 </Link>
               </li>
               <li>
                 <Link href="/cancellation-policy" className="hover:text-primary transition-colors">
-                  İptal ve İade Politikası
+                  Cancellation & Refund Policy
                 </Link>
               </li>
               <li>
                 <Link href="/security" className="hover:text-primary transition-colors">
-                  Güvenlik Bilgileri
+                  Security Information
                 </Link>
               </li>
               <li>
@@ -181,8 +181,14 @@ export function Footer() {
                 />
               </a>
             </div>
-            <p>&copy; 2024 Turkey E-Visa Application Service. All rights reserved.</p>
-            <p className="mt-2">Professional Visa Application Service</p>
+            <p>&copy; 2025 evisatr.xyz. All rights reserved. Not affiliated with the Turkish Government.</p>
+            <p className="mt-2 text-xs">This is a private visa application service. Official government applications can be made directly through Turkish government websites.</p>
+            <div className="mt-4 text-xs space-y-1">
+              <p><strong>Business Information:</strong> eVisaTR - Turkey E-Visa Services</p>
+              <p><strong>Contact:</strong> info@evisatr.xyz | Support: 24/7 Available</p>
+              <p><strong>Technical Support:</strong> security@evisatr.xyz</p>
+              <p><strong>Compliance:</strong> PCI DSS Level 1 | KVKK Compliant | SSL Secured</p>
+            </div>
             <p className="mt-1 text-xs">Fast, reliable and secure visa processing</p>
           </div>
         </div>
