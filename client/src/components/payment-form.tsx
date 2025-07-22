@@ -10,13 +10,23 @@ export function PaymentForm({ paymentUrl, formData, onSubmit }: PaymentFormProps
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    // Use GET redirect instead of POST form submission
     onSubmit?.();
     
-    // GPay checkout page only accepts GET method
-    // Using POST causes 500 server error
-    window.location.href = paymentUrl;
-  }, [paymentUrl, onSubmit]);
+    // Auto-submit the form after 2 seconds
+    const timer = setTimeout(() => {
+      if (formRef.current) {
+        formRef.current.submit();
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [onSubmit]);
+
+  const handleManualSubmit = () => {
+    if (formRef.current) {
+      formRef.current.submit();
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
@@ -25,16 +35,33 @@ export function PaymentForm({ paymentUrl, formData, onSubmit }: PaymentFormProps
         <h2 className="text-xl font-semibold mb-2">Redirecting to Payment</h2>
         <p className="text-gray-600 mb-4">Please wait while we redirect you to the secure payment page...</p>
         <p className="text-sm text-gray-500">If you are not redirected automatically, click the button below.</p>
+        
+        <div className="mt-4">
+          <button 
+            onClick={handleManualSubmit}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Continue to Payment
+          </button>
+        </div>
       </div>
       
-      <div className="mt-4">
-        <button 
-          onClick={() => window.location.href = paymentUrl}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Continue to Payment
-        </button>
-      </div>
+      {/* Hidden form for POST submission to GPay */}
+      <form 
+        ref={formRef} 
+        method="POST" 
+        action={paymentUrl}
+        style={{ display: 'none' }}
+      >
+        {formData && Object.entries(formData).map(([key, value]) => (
+          <input 
+            key={key} 
+            type="hidden" 
+            name={key} 
+            value={value} 
+          />
+        ))}
+      </form>
     </div>
   );
 }

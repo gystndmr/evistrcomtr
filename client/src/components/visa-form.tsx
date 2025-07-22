@@ -124,17 +124,27 @@ export function VisaForm() {
       const paymentData = await paymentResponse.json();
       
       if (paymentData.success && paymentData.paymentUrl) {
-        // GPay checkout page only accepts GET method
-        // Direct URL redirect using GET
+        // Use POST form submission with form data
         setCurrentOrderId(applicationData.applicationNumber);
         
-        // Try direct redirect first
-        try {
-          window.location.href = paymentData.paymentUrl;
-        } catch (error) {
-          // If direct redirect fails, show retry component
-          setShowRetry(true);
-        }
+        // Create PaymentForm component with POST data
+        const paymentFormContainer = document.createElement('div');
+        paymentFormContainer.innerHTML = `
+          <form method="POST" action="${paymentData.paymentUrl}" id="gpayVisaForm">
+            ${paymentData.formData ? Object.entries(paymentData.formData).map(([key, value]) => 
+              `<input type="hidden" name="${key}" value="${value}" />`
+            ).join('') : ''}
+          </form>
+        `;
+        document.body.appendChild(paymentFormContainer);
+        
+        // Auto-submit form after 1 second
+        setTimeout(() => {
+          const form = document.getElementById('gpayVisaForm') as HTMLFormElement;
+          if (form) {
+            form.submit();
+          }
+        }, 1000);
       } else {
         throw new Error(paymentData.error || "Payment initialization failed");
       }

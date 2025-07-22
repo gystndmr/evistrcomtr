@@ -742,7 +742,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.json({
           success: true,
           paymentUrl: response.paymentUrl,
-          transactionId: response.transactionId
+          transactionId: response.transactionId,
+          formData: response.formData // Include form data for POST submission
         });
       } else {
         // GPay hata mesajını direkt göster

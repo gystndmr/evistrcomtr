@@ -38,6 +38,7 @@ export interface PaymentResponse {
   paymentUrl?: string;
   transactionId?: string;
   error?: string;
+  formData?: Record<string, string>;
 }
 
 export class GPayService {
@@ -141,13 +142,18 @@ export class GPayService {
       
       // Create form data for POST request
       const formData = new URLSearchParams();
+      const formDataObj: Record<string, string> = {};
+      
       Object.keys(paymentData).forEach(key => {
         const value = paymentData[key as keyof typeof paymentData];
         if (value !== undefined && value !== null) {
-          formData.append(key, value.toString());
+          const stringValue = value.toString();
+          formData.append(key, stringValue);
+          formDataObj[key] = stringValue;
         }
       });
       formData.append('signature', signature);
+      formDataObj['signature'] = signature;
       
       // Debug: Log the form data being sent
       console.log('=== Sending to GPay ===');
@@ -172,7 +178,8 @@ export class GPayService {
           return {
             success: true,
             paymentUrl: location,
-            transactionId: request.orderRef
+            transactionId: request.orderRef,
+            formData: formDataObj // Include form data for POST submission
           };
         }
       }
@@ -194,7 +201,8 @@ export class GPayService {
           return {
             success: true,
             paymentUrl: jsonResponse.paymentUrl || jsonResponse.redirect_url,
-            transactionId: request.orderRef
+            transactionId: request.orderRef,
+            formData: formDataObj // Include form data for POST submission
           };
         } else {
           return {
