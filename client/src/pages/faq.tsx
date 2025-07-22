@@ -43,7 +43,7 @@ export default function FAQ() {
     },
     {
       question: "What should I do if my e-visa application is rejected?",
-      answer: "If your application is rejected, you will receive a detailed explanation. You may reapply with corrected information or contact our support team at info@evisatr.xyz for assistance."
+      answer: "If your application is rejected, you will receive a detailed explanation. You may reapply with corrected information or contact our support team at info@getvisa.tr for assistance."
     },
     {
       question: "Can I use my e-visa for multiple entries to Turkey?",

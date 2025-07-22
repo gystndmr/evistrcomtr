@@ -15,7 +15,7 @@ export default function Refund() {
             <section>
               <h2 className="text-xl font-semibold text-gray-900 mb-4">1. Refund Overview</h2>
               <p className="text-gray-700 mb-4">
-                evisatr.xyz is committed to providing transparent refund policies. This policy outlines the circumstances 
+                getvisa.tr is committed to providing transparent refund policies. This policy outlines the circumstances 
                 under which refunds may be issued and the process for requesting refunds.
               </p>
             </section>

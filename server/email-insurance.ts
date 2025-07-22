@@ -107,7 +107,7 @@ export function generateInsuranceReceivedEmail(
             </div>
             
             <div style="text-align: center; margin: 30px 0;">
-              <a href="https://evisatr.xyz/status?ref=${applicationNumber}" style="background-color: #0284c7; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
+              <a href="https://getvisa.tr/status?ref=${applicationNumber}" style="background-color: #0284c7; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
                 🔍 Check Application Status
               </a>
             </div>
@@ -115,7 +115,7 @@ export function generateInsuranceReceivedEmail(
             <div style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #cbd5e1;">
               <h4 style="margin: 0 0 10px 0; color: #475569; font-size: 16px;">📱 Quick Status Check:</h4>
               <p style="margin: 0; color: #64748b; font-size: 14px; line-height: 1.6;">
-                Visit <strong>https://evisatr.xyz/status</strong> and enter your application number:<br>
+                Visit <strong>https://getvisa.tr/status</strong> and enter your application number:<br>
                 <span style="background-color: #e2e8f0; padding: 4px 8px; border-radius: 4px; font-family: monospace; font-weight: bold; color: #1e293b;">${applicationNumber}</span>
               </p>
             </div>
@@ -124,8 +124,8 @@ export function generateInsuranceReceivedEmail(
               <h4 style="margin: 0 0 10px 0; color: #1e40af; font-size: 16px;">💬 Customer Service:</h4>
               <p style="margin: 0; color: #1e40af; font-size: 14px; line-height: 1.6;">
                 If you have any questions, please contact our <strong>24/7 customer service</strong>:<br>
-                📧 Email: info@evisatr.xyz<br>
-                🌐 Website: https://evisatr.xyz
+                📧 Email: info@getvisa.tr<br>
+                🌐 Website: https://getvisa.tr
               </p>
             </div>
           </div>
@@ -144,11 +144,11 @@ export function generateInsuranceReceivedEmail(
               <div style="display: flex; justify-content: center; gap: 40px; margin-bottom: 20px; flex-wrap: wrap;">
                 <div style="text-align: center; min-width: 200px;">
                   <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold; color: #0284c7;">Official Website</p>
-                  <p style="margin: 0; font-size: 13px; opacity: 0.8;">https://evisatr.xyz</p>
+                  <p style="margin: 0; font-size: 13px; opacity: 0.8;">https://getvisa.tr</p>
                 </div>
                 <div style="text-align: center; min-width: 200px;">
                   <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold; color: #0284c7;">Customer Support</p>
-                  <p style="margin: 0; font-size: 13px; opacity: 0.8;">info@evisatr.xyz</p>
+                  <p style="margin: 0; font-size: 13px; opacity: 0.8;">info@getvisa.tr</p>
                 </div>
               </div>
               
@@ -191,11 +191,11 @@ IMPORTANT INFORMATION:
 • When your insurance is approved, you will receive your policy documents via email
 
 APPLICATION STATUS CHECK:
-https://evisatr.xyz/status
+https://getvisa.tr/status
 
 CUSTOMER SERVICE (24/7):
-Email: info@evisatr.xyz
-Website: https://evisatr.xyz
+Email: info@getvisa.tr
+Website: https://getvisa.tr
 
 This email was sent automatically. Please do not reply to this email.
 © 2025 Turkey Travel Insurance System. All rights reserved.

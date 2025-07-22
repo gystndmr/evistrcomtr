@@ -23,7 +23,7 @@ export async function sendEmail(params: EmailParams): Promise<boolean> {
       to: params.to,
       from: {
         email: fromEmail,
-        name: 'Turkey E-Visa System (evisatr.xyz)'
+        name: 'Turkey E-Visa System (getvisa.tr)'
       },
       subject: params.subject,
       text: params.text,
@@ -85,7 +85,7 @@ export function generateVisaReceivedEmail(
               ${turkeyFlagSvg}
               <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY E-VISA</h1>
               <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
-              <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">evisatr.xyz</p>
+              <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">getvisa.tr</p>
             </div>
             
             <!-- Content -->
@@ -255,7 +255,7 @@ export function generateVisaReceivedEmail(
               </div>
               
               <div style="text-align: center; margin: 30px 0;">
-                <a href="https://evisatr.xyz/status?ref=${applicationNumber}" style="background-color: #DC2626; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
+                <a href="https://getvisa.tr/status?ref=${applicationNumber}" style="background-color: #DC2626; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
                   🔍 Check Application Status
                 </a>
               </div>
@@ -263,7 +263,7 @@ export function generateVisaReceivedEmail(
               <div style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #cbd5e1;">
                 <h4 style="margin: 0 0 10px 0; color: #475569; font-size: 16px;">📱 Quick Status Check:</h4>
                 <p style="margin: 0; color: #64748b; font-size: 14px; line-height: 1.6;">
-                  Visit <strong>https://evisatr.xyz/status</strong> and enter your application number:<br>
+                  Visit <strong>https://getvisa.tr/status</strong> and enter your application number:<br>
                   <span style="background-color: #e2e8f0; padding: 4px 8px; border-radius: 4px; font-family: monospace; font-weight: bold; color: #1e293b;">${applicationNumber}</span>
                 </p>
               </div>
@@ -272,8 +272,8 @@ export function generateVisaReceivedEmail(
                 <h4 style="margin: 0 0 10px 0; color: #1e40af; font-size: 16px;">💬 Customer Service:</h4>
                 <p style="margin: 0; color: #1e40af; font-size: 14px; line-height: 1.6;">
                   If you have any questions, please contact our <strong>24/7 customer service</strong>:<br>
-                  📧 Email: info@evisatr.xyz<br>
-                  🌐 Website: https://evisatr.xyz
+                  📧 Email: info@getvisa.tr<br>
+                  🌐 Website: https://getvisa.tr
                 </p>
               </div>
             </div>
@@ -292,11 +292,11 @@ export function generateVisaReceivedEmail(
                 <div style="display: flex; justify-content: center; gap: 40px; margin-bottom: 20px; flex-wrap: wrap;">
                   <div style="text-align: center; min-width: 200px;">
                     <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold; color: #DC2626;">Official Website</p>
-                    <p style="margin: 0; font-size: 13px; opacity: 0.8;">https://evisatr.xyz</p>
+                    <p style="margin: 0; font-size: 13px; opacity: 0.8;">https://getvisa.tr</p>
                   </div>
                   <div style="text-align: center; min-width: 200px;">
                     <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold; color: #DC2626;">Customer Support</p>
-                    <p style="margin: 0; font-size: 13px; opacity: 0.8;">info@evisatr.xyz</p>
+                    <p style="margin: 0; font-size: 13px; opacity: 0.8;">info@getvisa.tr</p>
                   </div>
                 </div>
                 
@@ -347,14 +347,14 @@ GEREKLI BELGELER VE KURALLAR:
 • Seyahat tarihlerinizde değişiklik olması halinde yeni başvuru yapmanız gerekebilir
 
 BAŞVURU DURUMU SORGULAMA:
-https://evisatr.xyz/status
+https://getvisa.tr/status
 
 MÜŞTERİ HİZMETLERİ (7/24):
-E-posta: info@evisatr.xyz
-Web: https://evisatr.xyz
+E-posta: info@getvisa.tr
+Web: https://getvisa.tr
 
 Bu e-posta otomatik olarak gönderilmiştir. Lütfen yanıtlamayınız.
-© 2025 evisatr.xyz - Türkiye Cumhuriyeti E-Vize Sistemi
+© 2025 getvisa.tr - Türkiye Cumhuriyeti E-Vize Sistemi
       `
     };
   } else {
@@ -722,7 +722,7 @@ export function generateVisaApprovalEmail(
             </div>
             
             <div style="text-align: center; margin: 30px 0;">
-              <a href="https://evisatr.xyz/status?ref=${applicationNumber}" style="background-color: #10B981; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
+              <a href="https://getvisa.tr/status?ref=${applicationNumber}" style="background-color: #10B981; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
                 📄 Download Your E-Visa
               </a>
             </div>
@@ -731,7 +731,7 @@ export function generateVisaApprovalEmail(
           <!-- Footer -->
           <div style="background: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0;">
             <p style="margin: 0; color: #64748b; font-size: 12px;">
-              This email was sent automatically. For questions, contact us at info@evisatr.xyz
+              This email was sent automatically. For questions, contact us at info@getvisa.tr
             </p>
           </div>
         </div>
@@ -752,9 +752,9 @@ Visa Details:
 
 Important: Please print your e-visa and carry it with you when traveling to Turkey. You must present it along with your passport at the border.
 
-Download your e-visa at: https://evisatr.xyz/status?ref=${applicationNumber}
+Download your e-visa at: https://getvisa.tr/status?ref=${applicationNumber}
 
-This email was sent automatically. For questions, contact us at info@evisatr.xyz
+This email was sent automatically. For questions, contact us at info@getvisa.tr
     `
   };
 }

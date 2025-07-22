@@ -121,7 +121,7 @@ export default function CancellationPolicy() {
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-3">İade Başvuru Adımları</h4>
                   <ol className="list-decimal list-inside text-gray-700 text-sm space-y-2">
-                    <li>info@evisatr.xyz adresine e-posta gönderiniz</li>
+                    <li>info@getvisa.tr adresine e-posta gönderiniz</li>
                     <li>Başvuru numaranızı ve iptal nedeninizi belirtiniz</li>
                     <li>Gerekli belgeleri ekleyiniz</li>
                     <li>48 saat içinde geri dönüş alacaksınız</li>
@@ -175,7 +175,7 @@ export default function CancellationPolicy() {
                 <div className="border border-blue-200 bg-blue-50 p-4 rounded-lg">
                   <h4 className="font-semibold text-blue-900 mb-2">1. Seviye - Müşteri Hizmetleri</h4>
                   <p className="text-blue-800 text-sm">
-                    İlk olarak info@evisatr.xyz adresine itirazınızı iletin. 
+                    İlk olarak info@getvisa.tr adresine itirazınızı iletin. 
                     48 saat içinde detaylı inceleme yapılır.
                   </p>
                 </div>
@@ -204,7 +204,7 @@ export default function CancellationPolicy() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <p className="text-blue-800 text-sm mb-2">
-                    <strong>E-posta:</strong> info@evisatr.xyz
+                    <strong>E-posta:</strong> info@getvisa.tr
                   </p>
                   <p className="text-blue-800 text-sm mb-2">
                     <strong>Konu:</strong> "İade Talebi - [Başvuru Numaranız]"
