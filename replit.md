@@ -238,7 +238,7 @@ The application is designed for easy deployment on platforms like Replit, Vercel
     - ✅ **Error Handling**: Professional error messages and direct payment link access
     - ✅ **evisatr.xyz Integration**: All callback URLs confirmed using production domain
     - 📋 System fully operational with correct HTTP method implementation resolving 405 errors
-✅ **GPay Payment System Complete - Domain Corrected** (July 22, 2025):
+✅ **GPay Payment System Complete - Domain Issue Resolved** (July 22, 2025):
    - ✅ **Complete System Rebuild**: Removed all old GPay code and built new system from scratch
    - ✅ **PHP Merchant Example Integration**: Implemented exact Node.js equivalent of PHP merchant example
    - ✅ **Signature Generation**: RSA md5WithRSAEncryption signature generation following PHP Security.php
@@ -250,14 +250,13 @@ The application is designed for easy deployment on platforms like Replit, Vercel
    - ✅ **Signature Challenge Resolved**: Fixed signature validation with proper field matching
    - ✅ **Final Implementation**: Node.js signature algorithm working perfectly
    - ✅ **Live System**: Both visa and insurance applications successfully creating GPay payment URLs
-   - ✅ **Domain Correction** (July 22, 2025): Fixed callback URLs to use correct domain
-     - **Corrected Domain**: evisatr.com.tr (was incorrectly using evisatr.xyz)
+   - ✅ **Domain Issue Resolution** (July 22, 2025): Fixed 500 server errors by using correct registered domain
+     - **Root Cause**: GPay 500 errors caused by unregistered domain callbacks (localhost, evisatr.com.tr)
+     - **Solution**: Updated to use getvisa.tr - the domain registered with GPay system
      - **Production API**: https://getvisa.gpayprocessing.com working correctly
-     - **Development URLs**: localhost:5000 for local testing
-     - **Production URLs**: https://evisatr.com.tr for live deployment
-     - **Payment Flow**: Successfully generating transaction IDs (e.g., VISA-175317876032600)
-     - **Payment URLs**: Working checkout URLs like https://getvisa.gpayprocessing.com/checkout/01k0rsht32j9yncyavhv8j909q
-     - **Ready for Production**: System fully operational with correct domain configuration
+     - **Callback URLs**: All callbacks now use https://getvisa.tr for GPay registration compliance
+     - **Payment Flow**: Successfully generating transaction IDs and payment URLs
+     - **System Status**: Ready for production with correct domain configuration
 ✅ **GPay POST Method Implementation & 500 Error Handling** (July 22, 2025):
    - ✅ **HTTP Method Fix**: Corrected payment form submissions to use POST method instead of GET redirects
    - ✅ **PaymentResponse Interface**: Added formData field to support POST form submissions  
