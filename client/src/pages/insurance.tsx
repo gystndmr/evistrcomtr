@@ -37,7 +37,7 @@ export default function Insurance() {
 
   const { data: products = [] } = useQuery({
     queryKey: ["/api/insurance/products"],
-  });
+  }) as { data: InsuranceProduct[] };
 
   // Sort products in the order: 7, 14, 30, 60, 90, 180, 1 year
   const sortedProducts = [...products].sort((a, b) => {
