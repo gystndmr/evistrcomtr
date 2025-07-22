@@ -709,10 +709,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Create URLs for callbacks - use correct domain evisatr.com.tr
-      const baseUrl = process.env.NODE_ENV === 'development' 
-        ? 'http://localhost:5000' 
-        : 'https://evisatr.com.tr';
+      // Always use production domain for GPay callbacks - GPay requires registered domains
+      const baseUrl = process.env.DOMAIN_URL || 'https://evisatr.com.tr';
       
       const paymentRequest = {
         orderRef: finalOrderRef,
