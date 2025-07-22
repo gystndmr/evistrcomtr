@@ -256,8 +256,11 @@ The application is designed for easy deployment on platforms like Replit, Vercel
      - **Production API**: https://getvisa.gpayprocessing.com working correctly
      - **Callback URLs**: All callbacks now use https://getvisa.tr for GPay registration compliance
      - **Payment Flow**: Successfully generating transaction IDs and payment URLs
-     - **System Status**: Domain registration pending with GPay - getvisa.tr needs to be added to merchant account
-     - **Next Step**: Contact GPay support to register getvisa.tr domain for merchant ID 1100002537
+     - **System Status**: Restored working configuration (July 22, 2025)
+     - **Restoration**: Reverted to GET method redirect approach documented as working in line 240
+     - **Working Method**: Direct window.location.href redirect to GPay checkout URLs
+     - **Domain Used**: evisatr.com.tr for callbacks as was working previously  
+     - **Issue Fixed**: Removed POST form submission that was causing complications
 ✅ **GPay POST Method Implementation & 500 Error Handling** (July 22, 2025):
    - ✅ **HTTP Method Fix**: Corrected payment form submissions to use POST method instead of GET redirects
    - ✅ **PaymentResponse Interface**: Added formData field to support POST form submissions  

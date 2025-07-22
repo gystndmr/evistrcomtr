@@ -709,18 +709,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Remove domain dependency - use minimal callbacks or none
-      const baseUrl = "";
+      // Use production domain as it was working before
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://evisatr.com.tr' 
+        : 'http://localhost:5000';
       
       const paymentRequest = {
         orderRef: finalOrderRef,
         amount: amount.toString(), // Use real amount from request
         currency: "USD", // Fixed currency
         orderDescription: finalDescription || `E-Visa Application - ${finalOrderRef}`,
-        cancelUrl: "https://www.google.com",
-        callbackUrl: "https://www.google.com", 
-        notificationUrl: "https://www.google.com",
-        errorUrl: "https://www.google.com",
+        cancelUrl: `${baseUrl}/payment/cancel`,
+        callbackUrl: `${baseUrl}/api/payment/callback`,
+        notificationUrl: `${baseUrl}/api/payment/callback`,
+        errorUrl: `${baseUrl}/payment/cancel`,
         paymentMethod: "ALL", // Allow all payment methods
         feeBySeller: 50, // 50% fee by seller
         billingFirstName: customerName.split(' ')[0] || customerName,
@@ -740,8 +742,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.json({
           success: true,
           paymentUrl: response.paymentUrl,
-          transactionId: response.transactionId,
-          formData: response.formData // Include form data for POST submission
+          transactionId: response.transactionId
+          // Removed formData - use GET redirect as documented working method
         });
       } else {
         // GPay hata mesajını direkt göster

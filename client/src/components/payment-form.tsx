@@ -12,20 +12,16 @@ export function PaymentForm({ paymentUrl, formData, onSubmit }: PaymentFormProps
   useEffect(() => {
     onSubmit?.();
     
-    // Auto-submit the form after 2 seconds
+    // Use GET method redirect instead of POST form submission (as documented working)
     const timer = setTimeout(() => {
-      if (formRef.current) {
-        formRef.current.submit();
-      }
+      window.location.href = paymentUrl;
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [onSubmit]);
+  }, [onSubmit, paymentUrl]);
 
   const handleManualSubmit = () => {
-    if (formRef.current) {
-      formRef.current.submit();
-    }
+    window.location.href = paymentUrl;
   };
 
   return (
