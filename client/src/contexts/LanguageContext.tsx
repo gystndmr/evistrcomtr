@@ -23,35 +23,31 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// Auto-detect browser language with Turkish as primary, English as fallback
+// Auto-detect browser language with English as primary/fallback
 const detectBrowserLanguage = (): Language => {
   try {
+    // Default to English as primary language
+    const englishLang = languages.find(lang => lang.code === 'en')!;
+    
     // Get browser language from navigator
     const browserLang = navigator.language.toLowerCase();
     const languageCode = browserLang.split('-')[0]; // Get primary language code
     
     console.log('Browser language detected:', browserLang, 'Code:', languageCode);
     
-    // Check if we support this language
+    // Check if we support this language (and it's not English - English is default)
     const supportedLanguage = languages.find(lang => lang.code === languageCode);
-    if (supportedLanguage) {
-      console.log('Using supported language:', supportedLanguage.name);
+    if (supportedLanguage && languageCode !== 'en') {
+      console.log('Using browser language:', supportedLanguage.name);
       return supportedLanguage;
     }
     
-    // If Turkish browser but no specific match, use Turkish
-    if (browserLang.includes('tr')) {
-      const turkishLang = languages.find(lang => lang.code === 'tr')!;
-      console.log('Using Turkish for Turkish browser');
-      return turkishLang;
-    }
-    
-    // Default fallback to English
-    console.log('Using English as fallback language');
-    return languages.find(lang => lang.code === 'en')!;
+    // Always fallback to English as primary language
+    console.log('Using English as primary language');
+    return englishLang;
   } catch (error) {
-    console.warn('Error detecting browser language, using Turkish:', error);
-    return languages.find(lang => lang.code === 'tr')!;
+    console.warn('Error detecting browser language, using English:', error);
+    return languages.find(lang => lang.code === 'en')!;
   }
 };
 
@@ -61,7 +57,7 @@ interface LanguageProviderProps {
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
   const [currentLanguage, setCurrentLanguage] = useState<Language>(() => {
-    // Try to get from localStorage first, then auto-detect, finally fallback to Turkish
+    // Try to get from localStorage first, then auto-detect, finally fallback to English
     const savedLanguage = localStorage.getItem('preferred-language');
     if (savedLanguage) {
       const saved = languages.find(lang => lang.code === savedLanguage);
@@ -70,13 +66,18 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     
     // Auto-detect browser language if no saved preference
     const detected = detectBrowserLanguage();
-    // If detection fails, fallback to Turkish as primary language
-    return detected || languages.find(lang => lang.code === 'tr')!;
+    // If detection fails, fallback to English as primary language
+    return detected || languages.find(lang => lang.code === 'en')!;
   });
 
   // Update document language attribute when language changes
   useEffect(() => {
     document.documentElement.lang = currentLanguage.code;
+    // Also update Content-Language meta tag
+    const contentLangMeta = document.querySelector('meta[http-equiv="Content-Language"]');
+    if (contentLangMeta) {
+      contentLangMeta.setAttribute('content', currentLanguage.code);
+    }
   }, [currentLanguage]);
 
   const setLanguage = (language: Language) => {
@@ -486,6 +487,84 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.available.plans': 'Plans d\'Assurance Disponibles',
     'insurance.total.premium': 'Prime Totale',
     
+    // Status Page
+    'status.title': 'Vérifier le Statut de la Demande',
+    'status.subtitle': 'Entrez votre numéro de demande pour vérifier votre demande de visa ou d\'assurance',
+    'status.search.title': 'Rechercher Demande',
+    'status.visa.application': 'Demande de Visa',
+    'status.insurance.application': 'Demande d\'Assurance',
+    'status.application.number': 'Numéro de Demande',
+    'status.application.number.placeholder': 'Entrez votre numéro de demande (ex. TRMD57H74SN6WWYA)',
+    'status.searching': 'Recherche...',
+    'status.search.button': 'Rechercher Demande',
+    'status.error.enter.number': 'Veuillez entrer votre numéro de demande',
+    'status.error.number.length': 'Le numéro de demande doit contenir au moins 6 caractères',
+    'status.error.not.found': 'Demande non trouvée. Veuillez vérifier votre numéro de demande et réessayer.',
+    'status.details': 'Détails de la Demande',
+    'status.message.approved': 'Votre demande a été approuvée! Vous pouvez télécharger votre e-visa.',
+    'status.message.pending': 'Votre demande est en cours d\'examen. Veuillez attendre de nouvelles mises à jour.',
+    'status.message.rejected': 'Votre demande a été rejetée. Veuillez contacter le support pour plus d\'informations.',
+    'status.message.processing': 'Votre demande est actuellement en cours de traitement.',
+    'status.message.default': 'Le statut de la demande est en cours de mise à jour.',
+    'status.download.evisa': 'Télécharger E-Visa',
+
+    // Payment Pages
+    'payment.success.title': 'Paiement Réussi!',
+    'payment.success.test.title': 'Test de Paiement Réussi!',
+    'payment.success.message': 'Votre paiement a été traité avec succès.',
+    'payment.success.transaction.id': 'ID de Transaction',
+    'payment.cancel.title': 'Paiement Annulé',
+    'payment.cancel.message': 'Votre paiement a été annulé. Vous pouvez retourner au formulaire de demande pour réessayer.',
+    'payment.return.application': 'Retour à la Demande',
+    'payment.go.home': 'Aller à l\'Accueil',
+    'payment.error.title': 'Erreur de Paiement',
+    'payment.error.message': 'Une erreur s\'est produite lors du traitement du paiement.',
+    'payment.system.status': 'Statut du Système',
+    'payment.gateway': 'Passerelle de Paiement',
+    'payment.merchant.id': 'ID Commerçant',
+    'payment.environment': 'Environnement',
+
+    // FAQ Page
+    'faq.title': 'Questions Fréquemment Posées',
+    'faq.subtitle': 'Trouvez des réponses aux questions courantes sur les demandes d\'e-visa de Turquie',
+
+    // Requirements Page
+    'requirements.title': 'Exigences E-Visa',
+    'requirements.subtitle': 'Guide complet des exigences pour les demandes d\'e-visa de Turquie',
+    'requirements.general': 'Exigences Générales',
+    'requirements.supporting.docs': 'Documents Justificatifs',
+
+    // Form Validation
+    'form.error.first.name': 'Prénom Requis',
+    'form.error.first.name.desc': 'Veuillez entrer votre prénom',
+    'form.error.last.name': 'Nom de Famille Requis',
+    'form.error.last.name.desc': 'Veuillez entrer votre nom de famille',
+    'form.error.email': 'Email Requis',
+    'form.error.email.desc': 'Veuillez entrer votre adresse email',
+    'form.error.email.invalid': 'Format Email Invalide',
+    'form.error.email.invalid.desc': 'Veuillez entrer une adresse email valide',
+    'form.error.phone': 'Numéro de Téléphone Requis',
+    'form.error.phone.desc': 'Veuillez entrer votre numéro de téléphone',
+    'form.error.passport': 'Numéro de Passeport Requis',
+    'form.error.passport.desc': 'Veuillez entrer votre numéro de passeport',
+    'form.error.birth.date': 'Date de Naissance Requise',
+    'form.error.birth.date.desc': 'Veuillez entrer votre date de naissance',
+    'form.error.passport.issue': 'Date d\'Émission de Passeport Requise',
+    'form.error.passport.issue.desc': 'Veuillez entrer la date d\'émission de votre passeport',
+    'form.error.passport.expiry': 'Date d\'Expiration de Passeport Requise',
+    'form.error.passport.expiry.desc': 'Veuillez entrer la date d\'expiration de votre passeport',
+    'form.error.place.birth': 'Lieu de Naissance Requis',
+    'form.error.place.birth.desc': 'Veuillez entrer votre lieu de naissance (minimum 2 caractères)',
+    'form.error.mother.name': 'Nom de la Mère Requis',
+    'form.error.mother.name.desc': 'Veuillez entrer le nom complet de votre mère (minimum 2 caractères)',
+    'form.error.father.name': 'Nom du Père Requis',
+    'form.error.father.name.desc': 'Veuillez entrer le nom complet de votre père (minimum 2 caractères)',
+    'form.error.address': 'Adresse Requise',
+    'form.error.address.desc': 'Veuillez entrer votre adresse complète (minimum 10 caractères)',
+    'form.error.passport.expired': 'Passeport Expiré',
+    'form.error.prerequisites': 'Prérequis Requis',
+    'form.error.prerequisites.desc': 'Veuillez confirmer tous les prérequis avant de continuer',
+    
     // Footer
     'footer.application': 'Demande',
     'footer.new.application': 'Nouvelle Demande',
@@ -563,6 +642,84 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.government.approved': 'Regierung Genehmigte Versicherung',
     'insurance.available.plans': 'Verfügbare Versicherung Pläne',
     'insurance.total.premium': 'Gesamtprämie',
+    
+    // Status Page
+    'status.title': 'Antragsstatus Prüfen',
+    'status.subtitle': 'Geben Sie Ihre Antragsnummer ein, um Ihren Visa- oder Versicherungsantrag zu überprüfen',
+    'status.search.title': 'Antrag Suchen',
+    'status.visa.application': 'Visa Antrag',
+    'status.insurance.application': 'Versicherungsantrag',
+    'status.application.number': 'Antragsnummer',
+    'status.application.number.placeholder': 'Geben Sie Ihre Antragsnummer ein (z.B. TRMD57H74SN6WWYA)',
+    'status.searching': 'Suchen...',
+    'status.search.button': 'Antrag Suchen',
+    'status.error.enter.number': 'Bitte geben Sie Ihre Antragsnummer ein',
+    'status.error.number.length': 'Antragsnummer muss mindestens 6 Zeichen lang sein',
+    'status.error.not.found': 'Antrag nicht gefunden. Bitte überprüfen Sie Ihre Antragsnummer und versuchen Sie es erneut.',
+    'status.details': 'Antragsdetails',
+    'status.message.approved': 'Ihr Antrag wurde genehmigt! Sie können Ihr e-Visa herunterladen.',
+    'status.message.pending': 'Ihr Antrag wird geprüft. Bitte warten Sie auf weitere Updates.',
+    'status.message.rejected': 'Ihr Antrag wurde abgelehnt. Bitte kontaktieren Sie den Support für weitere Informationen.',
+    'status.message.processing': 'Ihr Antrag wird derzeit bearbeitet.',
+    'status.message.default': 'Antragsstatus wird aktualisiert.',
+    'status.download.evisa': 'E-Visa Herunterladen',
+
+    // Payment Pages
+    'payment.success.title': 'Zahlung Erfolgreich!',
+    'payment.success.test.title': 'Test Zahlung Erfolgreich!',
+    'payment.success.message': 'Ihre Zahlung wurde erfolgreich verarbeitet.',
+    'payment.success.transaction.id': 'Transaktions ID',
+    'payment.cancel.title': 'Zahlung Storniert',
+    'payment.cancel.message': 'Ihre Zahlung wurde storniert. Sie können zum Antragsformular zurückkehren und es erneut versuchen.',
+    'payment.return.application': 'Zurück zum Antrag',
+    'payment.go.home': 'Zur Startseite',
+    'payment.error.title': 'Zahlungsfehler',
+    'payment.error.message': 'Ein Fehler ist bei der Zahlungsabwicklung aufgetreten.',
+    'payment.system.status': 'Systemstatus',
+    'payment.gateway': 'Zahlungsgateway',
+    'payment.merchant.id': 'Händler ID',
+    'payment.environment': 'Umgebung',
+
+    // FAQ Page
+    'faq.title': 'Häufig Gestellte Fragen',
+    'faq.subtitle': 'Finden Sie Antworten auf häufige Fragen zu Türkei e-Visa Anträgen',
+
+    // Requirements Page
+    'requirements.title': 'E-Visa Anforderungen',
+    'requirements.subtitle': 'Vollständiger Leitfaden zu Türkei e-Visa Antragsanforderungen',
+    'requirements.general': 'Allgemeine Anforderungen',
+    'requirements.supporting.docs': 'Unterstützende Dokumente',
+
+    // Form Validation
+    'form.error.first.name': 'Vorname Erforderlich',
+    'form.error.first.name.desc': 'Bitte geben Sie Ihren Vornamen ein',
+    'form.error.last.name': 'Nachname Erforderlich',
+    'form.error.last.name.desc': 'Bitte geben Sie Ihren Nachnamen ein',
+    'form.error.email': 'E-Mail Erforderlich',
+    'form.error.email.desc': 'Bitte geben Sie Ihre E-Mail-Adresse ein',
+    'form.error.email.invalid': 'Ungültiges E-Mail-Format',
+    'form.error.email.invalid.desc': 'Bitte geben Sie eine gültige E-Mail-Adresse ein',
+    'form.error.phone': 'Telefonnummer Erforderlich',
+    'form.error.phone.desc': 'Bitte geben Sie Ihre Telefonnummer ein',
+    'form.error.passport': 'Passnummer Erforderlich',
+    'form.error.passport.desc': 'Bitte geben Sie Ihre Passnummer ein',
+    'form.error.birth.date': 'Geburtsdatum Erforderlich',
+    'form.error.birth.date.desc': 'Bitte geben Sie Ihr Geburtsdatum ein',
+    'form.error.passport.issue': 'Pass Ausstellungsdatum Erforderlich',
+    'form.error.passport.issue.desc': 'Bitte geben Sie Ihr Pass Ausstellungsdatum ein',
+    'form.error.passport.expiry': 'Pass Ablaufdatum Erforderlich',
+    'form.error.passport.expiry.desc': 'Bitte geben Sie Ihr Pass Ablaufdatum ein',
+    'form.error.place.birth': 'Geburtsort Erforderlich',
+    'form.error.place.birth.desc': 'Bitte geben Sie Ihren Geburtsort ein (mindestens 2 Zeichen)',
+    'form.error.mother.name': 'Name der Mutter Erforderlich',
+    'form.error.mother.name.desc': 'Bitte geben Sie den vollständigen Namen Ihrer Mutter ein (mindestens 2 Zeichen)',
+    'form.error.father.name': 'Name des Vaters Erforderlich',
+    'form.error.father.name.desc': 'Bitte geben Sie den vollständigen Namen Ihres Vaters ein (mindestens 2 Zeichen)',
+    'form.error.address': 'Adresse Erforderlich',
+    'form.error.address.desc': 'Bitte geben Sie Ihre vollständige Adresse ein (mindestens 10 Zeichen)',
+    'form.error.passport.expired': 'Pass Abgelaufen',
+    'form.error.prerequisites': 'Voraussetzungen Erforderlich',
+    'form.error.prerequisites.desc': 'Bitte bestätigen Sie alle Voraussetzungen, bevor Sie fortfahren',
     
     // Footer
     'footer.application': 'Antrag',
@@ -642,6 +799,84 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.available.plans': 'Planes de Seguro Disponibles',
     'insurance.total.premium': 'Prima Total',
     
+    // Status Page
+    'status.title': 'Verificar Estado de Solicitud',
+    'status.subtitle': 'Ingrese su número de solicitud para verificar su solicitud de visa o seguro',
+    'status.search.title': 'Buscar Solicitud',
+    'status.visa.application': 'Solicitud de Visa',
+    'status.insurance.application': 'Solicitud de Seguro',
+    'status.application.number': 'Número de Solicitud',
+    'status.application.number.placeholder': 'Ingrese su número de solicitud (ej. TRMD57H74SN6WWYA)',
+    'status.searching': 'Buscando...',
+    'status.search.button': 'Buscar Solicitud',
+    'status.error.enter.number': 'Por favor ingrese su número de solicitud',
+    'status.error.number.length': 'El número de solicitud debe tener al menos 6 caracteres',
+    'status.error.not.found': 'Solicitud no encontrada. Por favor verifique su número de solicitud e intente nuevamente.',
+    'status.details': 'Detalles de Solicitud',
+    'status.message.approved': 'Su solicitud ha sido aprobada! Puede descargar su e-visa.',
+    'status.message.pending': 'Su solicitud está siendo revisada. Por favor espere actualizaciones.',
+    'status.message.rejected': 'Su solicitud ha sido rechazada. Por favor contacte soporte para más información.',
+    'status.message.processing': 'Su solicitud está siendo procesada actualmente.',
+    'status.message.default': 'El estado de solicitud está siendo actualizado.',
+    'status.download.evisa': 'Descargar E-Visa',
+
+    // Payment Pages
+    'payment.success.title': 'Pago Exitoso!',
+    'payment.success.test.title': 'Pago de Prueba Exitoso!',
+    'payment.success.message': 'Su pago ha sido procesado exitosamente.',
+    'payment.success.transaction.id': 'ID de Transacción',
+    'payment.cancel.title': 'Pago Cancelado',
+    'payment.cancel.message': 'Su pago fue cancelado. Puede volver al formulario de solicitud para intentar nuevamente.',
+    'payment.return.application': 'Volver a Solicitud',
+    'payment.go.home': 'Ir al Inicio',
+    'payment.error.title': 'Error de Pago',
+    'payment.error.message': 'Ocurrió un error durante el procesamiento del pago.',
+    'payment.system.status': 'Estado del Sistema',
+    'payment.gateway': 'Pasarela de Pago',
+    'payment.merchant.id': 'ID del Comerciante',
+    'payment.environment': 'Entorno',
+
+    // FAQ Page
+    'faq.title': 'Preguntas Frecuentes',
+    'faq.subtitle': 'Encuentre respuestas a preguntas comunes sobre solicitudes de e-visa de Turquía',
+
+    // Requirements Page
+    'requirements.title': 'Requisitos de E-Visa',
+    'requirements.subtitle': 'Guía completa de requisitos para solicitudes de e-visa de Turquía',
+    'requirements.general': 'Requisitos Generales',
+    'requirements.supporting.docs': 'Documentos de Apoyo',
+
+    // Form Validation
+    'form.error.first.name': 'Nombre Requerido',
+    'form.error.first.name.desc': 'Por favor ingrese su nombre',
+    'form.error.last.name': 'Apellido Requerido',
+    'form.error.last.name.desc': 'Por favor ingrese su apellido',
+    'form.error.email': 'Email Requerido',
+    'form.error.email.desc': 'Por favor ingrese su dirección de email',
+    'form.error.email.invalid': 'Formato de Email Inválido',
+    'form.error.email.invalid.desc': 'Por favor ingrese una dirección de email válida',
+    'form.error.phone': 'Número de Teléfono Requerido',
+    'form.error.phone.desc': 'Por favor ingrese su número de teléfono',
+    'form.error.passport': 'Número de Pasaporte Requerido',
+    'form.error.passport.desc': 'Por favor ingrese su número de pasaporte',
+    'form.error.birth.date': 'Fecha de Nacimiento Requerida',
+    'form.error.birth.date.desc': 'Por favor ingrese su fecha de nacimiento',
+    'form.error.passport.issue': 'Fecha de Emisión de Pasaporte Requerida',
+    'form.error.passport.issue.desc': 'Por favor ingrese la fecha de emisión de su pasaporte',
+    'form.error.passport.expiry': 'Fecha de Vencimiento de Pasaporte Requerida',
+    'form.error.passport.expiry.desc': 'Por favor ingrese la fecha de vencimiento de su pasaporte',
+    'form.error.place.birth': 'Lugar de Nacimiento Requerido',
+    'form.error.place.birth.desc': 'Por favor ingrese su lugar de nacimiento (mínimo 2 caracteres)',
+    'form.error.mother.name': 'Nombre de la Madre Requerido',
+    'form.error.mother.name.desc': 'Por favor ingrese el nombre completo de su madre (mínimo 2 caracteres)',
+    'form.error.father.name': 'Nombre del Padre Requerido',
+    'form.error.father.name.desc': 'Por favor ingrese el nombre completo de su padre (mínimo 2 caracteres)',
+    'form.error.address': 'Dirección Requerida',
+    'form.error.address.desc': 'Por favor ingrese su dirección completa (mínimo 10 caracteres)',
+    'form.error.passport.expired': 'Pasaporte Vencido',
+    'form.error.prerequisites': 'Prerequisitos Requeridos',
+    'form.error.prerequisites.desc': 'Por favor confirme todos los prerequisitos antes de proceder',
+    
     // Footer
     'footer.application': 'Solicitud',
     'footer.new.application': 'Nueva Solicitud',
@@ -719,6 +954,84 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.government.approved': 'تأمين معتمد من الحكومة',
     'insurance.available.plans': 'خطط التأمين المتاحة',
     'insurance.total.premium': 'إجمالي القسط',
+    
+    // Status Page
+    'status.title': 'التحقق من حالة الطلب',
+    'status.subtitle': 'أدخل رقم طلبك للتحقق من حالة طلب التأشيرة أو التأمين',
+    'status.search.title': 'البحث عن الطلب',
+    'status.visa.application': 'طلب التأشيرة',
+    'status.insurance.application': 'طلب التأمين',
+    'status.application.number': 'رقم الطلب',
+    'status.application.number.placeholder': 'أدخل رقم طلبك (مثال: TRMD57H74SN6WWYA)',
+    'status.searching': 'جاري البحث...',
+    'status.search.button': 'البحث عن الطلب',
+    'status.error.enter.number': 'يرجى إدخال رقم طلبك',
+    'status.error.number.length': 'يجب أن يكون رقم الطلب مكون من 6 أحرف على الأقل',
+    'status.error.not.found': 'لم يتم العثور على الطلب. يرجى التحقق من رقم طلبك والمحاولة مرة أخرى.',
+    'status.details': 'تفاصيل الطلب',
+    'status.message.approved': 'تم الموافقة على طلبك! يمكنك تحميل التأشيرة الإلكترونية.',
+    'status.message.pending': 'طلبك قيد المراجعة. يرجى انتظار التحديثات.',
+    'status.message.rejected': 'تم رفض طلبك. يرجى الاتصال بالدعم للحصول على مزيد من المعلومات.',
+    'status.message.processing': 'طلبك قيد المعالجة حالياً.',
+    'status.message.default': 'حالة الطلب قيد التحديث.',
+    'status.download.evisa': 'تحميل التأشيرة الإلكترونية',
+
+    // Payment Pages
+    'payment.success.title': 'تم الدفع بنجاح!',
+    'payment.success.test.title': 'تم اختبار الدفع بنجاح!',
+    'payment.success.message': 'تم معالجة دفعتك بنجاح.',
+    'payment.success.transaction.id': 'معرف المعاملة',
+    'payment.cancel.title': 'تم إلغاء الدفع',
+    'payment.cancel.message': 'تم إلغاء دفعتك. يمكنك العودة إلى نموذج الطلب للمحاولة مرة أخرى.',
+    'payment.return.application': 'العودة إلى الطلب',
+    'payment.go.home': 'الذهاب إلى الرئيسية',
+    'payment.error.title': 'خطأ في الدفع',
+    'payment.error.message': 'حدث خطأ أثناء معالجة الدفع.',
+    'payment.system.status': 'حالة النظام',
+    'payment.gateway': 'بوابة الدفع',
+    'payment.merchant.id': 'معرف التاجر',
+    'payment.environment': 'البيئة',
+
+    // FAQ Page
+    'faq.title': 'الأسئلة الشائعة',
+    'faq.subtitle': 'ابحث عن إجابات للأسئلة الشائعة حول طلبات التأشيرة الإلكترونية التركية',
+
+    // Requirements Page
+    'requirements.title': 'متطلبات التأشيرة الإلكترونية',
+    'requirements.subtitle': 'دليل شامل لمتطلبات طلب التأشيرة الإلكترونية التركية',
+    'requirements.general': 'المتطلبات العامة',
+    'requirements.supporting.docs': 'الوثائق المساعدة',
+
+    // Form Validation
+    'form.error.first.name': 'الاسم الأول مطلوب',
+    'form.error.first.name.desc': 'يرجى إدخال اسمك الأول',
+    'form.error.last.name': 'اسم العائلة مطلوب',
+    'form.error.last.name.desc': 'يرجى إدخال اسم عائلتك',
+    'form.error.email': 'البريد الإلكتروني مطلوب',
+    'form.error.email.desc': 'يرجى إدخال عنوان بريدك الإلكتروني',
+    'form.error.email.invalid': 'تنسيق البريد الإلكتروني غير صحيح',
+    'form.error.email.invalid.desc': 'يرجى إدخال عنوان بريد إلكتروني صحيح',
+    'form.error.phone': 'رقم الهاتف مطلوب',
+    'form.error.phone.desc': 'يرجى إدخال رقم هاتفك',
+    'form.error.passport': 'رقم جواز السفر مطلوب',
+    'form.error.passport.desc': 'يرجى إدخال رقم جواز سفرك',
+    'form.error.birth.date': 'تاريخ الميلاد مطلوب',
+    'form.error.birth.date.desc': 'يرجى إدخال تاريخ ميلادك',
+    'form.error.passport.issue': 'تاريخ إصدار جواز السفر مطلوب',
+    'form.error.passport.issue.desc': 'يرجى إدخال تاريخ إصدار جواز سفرك',
+    'form.error.passport.expiry': 'تاريخ انتهاء جواز السفر مطلوب',
+    'form.error.passport.expiry.desc': 'يرجى إدخال تاريخ انتهاء جواز سفرك',
+    'form.error.place.birth': 'مكان الميلاد مطلوب',
+    'form.error.place.birth.desc': 'يرجى إدخال مكان ميلادك (حد أدنى حرفين)',
+    'form.error.mother.name': 'اسم الأم مطلوب',
+    'form.error.mother.name.desc': 'يرجى إدخال الاسم الكامل لأمك (حد أدنى حرفين)',
+    'form.error.father.name': 'اسم الأب مطلوب',
+    'form.error.father.name.desc': 'يرجى إدخال الاسم الكامل لأبيك (حد أدنى حرفين)',
+    'form.error.address': 'العنوان مطلوب',
+    'form.error.address.desc': 'يرجى إدخال عنوانك الكامل (حد أدنى 10 أحرف)',
+    'form.error.passport.expired': 'جواز السفر منتهي الصلاحية',
+    'form.error.prerequisites': 'المتطلبات الأساسية مطلوبة',
+    'form.error.prerequisites.desc': 'يرجى تأكيد جميع المتطلبات الأساسية قبل المتابعة',
     
     // Footer
     'footer.application': 'طلب',
