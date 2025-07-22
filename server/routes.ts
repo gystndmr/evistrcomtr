@@ -42,12 +42,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create visa application
   app.post("/api/applications", async (req, res) => {
     try {
-      const validatedData = insertApplicationSchema.parse({
+      // Convert string dates to Date objects before validation
+      const bodyWithDates = {
         ...req.body,
         applicationNumber: generateApplicationNumber(),
-        dateOfBirth: new Date(req.body.dateOfBirth),
-        arrivalDate: new Date(req.body.arrivalDate),
-      });
+        dateOfBirth: req.body.dateOfBirth ? new Date(req.body.dateOfBirth) : undefined,
+        arrivalDate: req.body.arrivalDate ? new Date(req.body.arrivalDate) : undefined,
+        passportIssueDate: req.body.passportIssueDate ? new Date(req.body.passportIssueDate) : undefined,
+        passportExpiryDate: req.body.passportExpiryDate ? new Date(req.body.passportExpiryDate) : undefined,
+        supportingDocumentStartDate: req.body.supportingDocumentStartDate ? new Date(req.body.supportingDocumentStartDate) : undefined,
+        supportingDocumentEndDate: req.body.supportingDocumentEndDate ? new Date(req.body.supportingDocumentEndDate) : undefined,
+      };
+
+      const validatedData = insertApplicationSchema.parse(bodyWithDates);
 
       const application = await storage.createApplication(validatedData);
       
@@ -113,13 +120,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create insurance application
   app.post("/api/insurance/applications", async (req, res) => {
     try {
-      const validatedData = insertInsuranceApplicationSchema.parse({
+      // Convert string dates to Date objects before validation
+      const bodyWithDates = {
         ...req.body,
         applicationNumber: generateApplicationNumber(),
-        travelDate: new Date(req.body.travelDate),
-        returnDate: new Date(req.body.returnDate),
-        dateOfBirth: req.body.dateOfBirth || null,
-      });
+        travelDate: req.body.travelDate ? new Date(req.body.travelDate) : undefined,
+        returnDate: req.body.returnDate ? new Date(req.body.returnDate) : undefined,
+        dateOfBirth: req.body.dateOfBirth ? new Date(req.body.dateOfBirth) : undefined,
+      };
+
+      const validatedData = insertInsuranceApplicationSchema.parse(bodyWithDates);
 
       const application = await storage.createInsuranceApplication(validatedData);
       
