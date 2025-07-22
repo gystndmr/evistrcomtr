@@ -709,18 +709,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Always use production domain for GPay callbacks - GPay requires registered domains
-      const baseUrl = process.env.DOMAIN_URL || 'https://getvisa.tr';
+      // Remove domain dependency - use minimal callbacks or none
+      const baseUrl = "";
       
       const paymentRequest = {
         orderRef: finalOrderRef,
         amount: amount.toString(), // Use real amount from request
         currency: "USD", // Fixed currency
         orderDescription: finalDescription || `E-Visa Application - ${finalOrderRef}`,
-        cancelUrl: `${baseUrl}/payment/cancel`,
-        callbackUrl: `${baseUrl}/api/payment/callback`,
-        notificationUrl: `${baseUrl}/api/payment/callback`,
-        errorUrl: `${baseUrl}/payment/cancel`,
+        cancelUrl: "https://www.google.com",
+        callbackUrl: "https://www.google.com", 
+        notificationUrl: "https://www.google.com",
+        errorUrl: "https://www.google.com",
         paymentMethod: "ALL", // Allow all payment methods
         feeBySeller: 50, // 50% fee by seller
         billingFirstName: customerName.split(' ')[0] || customerName,
