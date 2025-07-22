@@ -143,20 +143,7 @@ export function Footer() {
             </div>
           </div>
           
-          {/* Credit Card Icons */}
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="text-xs text-neutral-400 mr-2">We Accept:</div>
-            <div className="flex items-center space-x-2 flex-wrap justify-center">
-              <div className="w-12 h-7 bg-blue-600 rounded text-white text-xs flex items-center justify-center font-bold">VISA</div>
-              <div className="w-12 h-7 bg-red-600 rounded text-white text-xs flex items-center justify-center font-bold">MC</div>
-              <div className="w-12 h-7 bg-blue-500 rounded text-white text-xs flex items-center justify-center font-bold">AMEX</div>
-              <div className="w-12 h-7 bg-orange-500 rounded text-white text-xs flex items-center justify-center font-bold">DISC</div>
-              <div className="w-12 h-7 bg-purple-600 rounded text-white text-xs flex items-center justify-center font-bold">TROY</div>
-              <div className="w-12 h-7 bg-yellow-600 rounded text-white text-xs flex items-center justify-center font-bold">UNION</div>
-              <div className="w-12 h-7 bg-green-600 rounded text-white text-xs flex items-center justify-center font-bold">JCB</div>
-              <div className="w-12 h-7 bg-indigo-600 rounded text-white text-xs flex items-center justify-center font-bold">DINER</div>
-            </div>
-          </div>
+
           
           <div className="text-center text-sm text-neutral-400">
             {/* Official Turkish Government E-Visa Logo and TURSAB */}
