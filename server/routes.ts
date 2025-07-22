@@ -748,7 +748,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.json({
           success: false,
           error: response.error,
-          paymentUrl: response.paymentUrl || `${baseUrl}/payment-cancel?error=${encodeURIComponent(response.error)}`
+          paymentUrl: response.paymentUrl || `${baseUrl}/payment-cancel?error=${encodeURIComponent(response.error || 'Unknown payment error')}`
         });
       }
       
