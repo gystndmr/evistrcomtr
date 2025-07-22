@@ -50,11 +50,19 @@
 </head>
 <body>
     <h1>Mobile Payment Test</h1>
+    <p><strong>Insurance Payment System Test</strong></p>
+    <p>Testing full insurance application + payment flow</p>
     
     <form id="paymentForm">
         <div class="form-group">
-            <label for="amount">Amount (USD)</label>
-            <input type="number" id="amount" value="100" required>
+            <label for="amount">Insurance Plan</label>
+            <select id="amount" required>
+                <option value="114">7 Days - $114</option>
+                <option value="131">14 Days - $131</option>
+                <option value="154" selected>30 Days - $154</option>
+                <option value="191">60 Days - $191</option>
+                <option value="214">90 Days - $214</option>
+            </select>
         </div>
         
         <div class="form-group">
@@ -82,9 +90,36 @@
             
             const resultDiv = document.getElementById('result');
             resultDiv.style.display = 'block';
-            resultDiv.innerHTML = 'Creating payment...';
+            resultDiv.innerHTML = 'Creating insurance application and payment...';
             
             try {
+                // First create insurance application
+                const appResponse = await fetch('/api/insurance/applications', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        firstName: customerName.split(' ')[0],
+                        lastName: customerName.split(' ')[1] || 'Test',
+                        email: customerEmail,
+                        phone: '+90555123456',
+                        travelDate: '2025-08-01',
+                        returnDate: '2025-08-31',
+                        destination: 'Turkey',
+                        productId: amount == '154' ? 176 : 174, // 30 days or 7 days
+                        totalAmount: amount,
+                        tripDurationDays: 30,
+                        dateOfBirth: '1990-05-15',
+                        parentIdPhotos: null,
+                        applicationNumber: 'TEST-' + Date.now()
+                    })
+                });
+                
+                const appData = await appResponse.json();
+                console.log('Insurance app created:', appData);
+                
+                // Then create payment
                 const response = await fetch('/api/payment/create', {
                     method: 'POST',
                     headers: {
@@ -93,7 +128,7 @@
                     body: JSON.stringify({
                         amount: parseFloat(amount),
                         currency: 'USD',
-                        description: 'Mobile Test Payment',
+                        description: 'Turkey Travel Insurance - Mobile Test',
                         customerEmail: customerEmail,
                         customerName: customerName
                     })
