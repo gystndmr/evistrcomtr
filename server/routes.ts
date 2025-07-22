@@ -724,14 +724,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         customerName 
       } = req.body;
       
-      // Use orderRef or orderId (support both)
-      const finalOrderRef = orderRef || orderId;
+      // Use orderRef or orderId (support both) - if none provided, generate one
+      const finalOrderRef = orderRef || orderId || generateOrderReference();
       const finalDescription = orderDescription || description;
       
-      if (!finalOrderRef || !customerEmail || !customerName) {
+      if (!customerEmail || !customerName) {
         return res.status(400).json({ 
           success: false, 
-          error: "Missing required fields: orderRef/orderId, customerEmail, customerName" 
+          error: "Missing required fields: customerEmail, customerName" 
         });
       }
 

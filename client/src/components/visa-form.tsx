@@ -114,14 +114,14 @@ export function VisaForm() {
       });
       const applicationData = await applicationResponse.json();
       
-      // Then create payment
+      // Then create payment - let server generate unique orderRef
       const paymentResponse = await apiRequest("POST", "/api/payment/create", {
         amount: calculateTotal(),
         currency: "USD",
-        orderId: applicationData.applicationNumber,
         description: `Turkey E-Visa Application - ${applicationData.applicationNumber}`,
         customerEmail: data.email,
         customerName: `${data.firstName} ${data.lastName}`
+        // Removed orderId - server will generate unique orderRef automatically
       });
       
       const paymentData = await paymentResponse.json();
