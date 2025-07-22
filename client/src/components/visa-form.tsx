@@ -133,32 +133,48 @@ export function VisaForm() {
         // Enhanced redirect approach for mobile compatibility
         const redirectToPayment = () => {
           try {
+            console.log('[Mobile Payment] Starting redirect to:', paymentData.paymentUrl);
+            
             // For mobile devices, try multiple approaches
             const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
             if (isMobile) {
-              // Mobile: Try window.open first, then location.href
-              const newWindow = window.open(paymentData.paymentUrl, '_blank');
-              if (!newWindow) {
-                // If popup is blocked, use location.href
-                window.location.href = paymentData.paymentUrl;
-              }
+              console.log('[Mobile Payment] Mobile device detected, using optimized redirect');
+              // Mobile: Direct location.href for best compatibility
+              window.location.href = paymentData.paymentUrl;
             } else {
+              console.log('[Mobile Payment] Desktop device, using standard redirect');
               // Desktop: Use standard location.href
               window.location.href = paymentData.paymentUrl;
             }
           } catch (error) {
+            console.error('[Mobile Payment] Redirect error:', error);
             // Ultimate fallback: location.replace
             try {
+              console.log('[Mobile Payment] Using fallback redirect method');
               window.location.replace(paymentData.paymentUrl);
             } catch (error2) {
-              console.error('All redirect methods failed:', error2);
+              console.error('[Mobile Payment] All redirect methods failed:', error2);
+              // Show manual button if all else fails
+              toast({
+                title: "Payment Redirect",
+                description: "Please click the payment link manually",
+                action: (
+                  <button 
+                    onClick={() => window.open(paymentData.paymentUrl, '_blank')}
+                    className="bg-blue-600 text-white px-3 py-1 rounded text-sm"
+                  >
+                    Continue
+                  </button>
+                ),
+                duration: 10000,
+              });
             }
           }
         };
         
         // Quick redirect for better mobile compatibility
-        setTimeout(redirectToPayment, 300);
+        setTimeout(redirectToPayment, 500);
       } else {
         throw new Error(paymentData.error || "Payment initialization failed");
       }
@@ -173,6 +189,21 @@ export function VisaForm() {
       });
       
       // Show manual continue option after a short delay for mobile users
+      setTimeout(() => {
+        toast({
+          title: "Payment Ready",
+          description: "If payment page didn't open automatically, click Continue below",
+          action: paymentRedirectUrl ? (
+            <button 
+              onClick={() => window.open(paymentRedirectUrl, '_blank')}
+              className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+            >
+              Continue
+            </button>
+          ) : undefined,
+          duration: 8000,
+        });
+      }, 2000);
       setTimeout(() => {
         if (paymentRedirectUrl) {
           toast({
@@ -192,10 +223,29 @@ export function VisaForm() {
       }, 2500);
     },
     onError: (error) => {
+      console.error('[Mobile Payment] Application/Payment error:', error);
+      
+      // Check if it's a payment-specific error
+      const isPaymentError = error.message?.includes('payment') || error.message?.includes('GPay');
+      
       toast({
-        title: "Error",
-        description: error.message,
+        title: isPaymentError ? "Payment Error" : "Application Error",
+        description: isPaymentError ? 
+          "There was an issue initializing payment. Please try again or contact support." :
+          error.message,
         variant: "destructive",
+        action: isPaymentError ? (
+          <button 
+            onClick={() => {
+              console.log('[Mobile Payment] Retrying application...');
+              createApplicationMutation.mutate(form.getValues());
+            }}
+            className="bg-white text-red-600 px-3 py-1 rounded text-sm hover:bg-gray-100"
+          >
+            Retry
+          </button>
+        ) : undefined,
+        duration: 8000,
       });
     },
   });
