@@ -346,18 +346,18 @@ export default function Insurance() {
           {/* Professional Application Form */}
           {selectedProduct && (
             <div className="bg-white rounded-lg shadow-lg border border-gray-200 mt-8">
-              <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+              <div className="bg-gray-50 px-4 sm:px-6 py-4 border-b border-gray-200">
                 <div className="flex items-center space-x-3">
-                  <Shield className="w-6 h-6 text-red-600" />
+                  <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">Insurance Application Form</h3>
-                    <p className="text-sm text-gray-600">Selected Plan: {selectedProduct.name}</p>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900">Insurance Application Form</h3>
+                    <p className="text-xs sm:text-sm text-gray-600">Selected Plan: {selectedProduct.name}</p>
                   </div>
                 </div>
               </div>
-              <div className="p-6">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
+              <div className="p-4 sm:p-6">
+                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div>
                       <Label htmlFor="firstName">First Name *</Label>
                       <Input
@@ -446,16 +446,16 @@ export default function Insurance() {
                     if (actualAge >= 18) return null;
                     
                     return (
-                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-                        <h4 className="font-semibold mb-4 text-orange-800 flex items-center space-x-2">
-                          <span>🔒</span>
-                          <span>18 Yaş Altı - Ebeveyn Kimlik Fotoğrafları Gerekli</span>
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 sm:p-6 col-span-1 sm:col-span-2">
+                        <h4 className="font-semibold mb-3 sm:mb-4 text-orange-800 flex items-start space-x-2">
+                          <span className="text-lg">🔒</span>
+                          <span className="text-sm sm:text-base">18 Yaş Altı - Ebeveyn Kimlik Fotoğrafları Gerekli</span>
                         </h4>
-                        <p className="text-sm text-gray-700 mb-4">
+                        <p className="text-xs sm:text-sm text-gray-700 mb-3 sm:mb-4">
                           18 yaş altı başvurular için anne ve babanın kimlik kartı fotoğraflarını yükleyiniz.
                         </p>
                         <div>
-                          <Label htmlFor="parentIds">Anne ve Baba Kimlik Fotoğrafları *</Label>
+                          <Label htmlFor="parentIds" className="text-sm sm:text-base">Anne ve Baba Kimlik Fotoğrafları *</Label>
                           <Input
                             id="parentIds"
                             type="file"
@@ -465,7 +465,7 @@ export default function Insurance() {
                               const files = Array.from(e.target.files || []);
                               setParentIdPhotos(files);
                             }}
-                            className="mt-2"
+                            className="mt-2 text-sm"
                             required
                           />
                           <p className="text-xs text-gray-500 mt-2">
@@ -476,23 +476,23 @@ export default function Insurance() {
                     );
                   })()}
                   
-                  <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                    <h4 className="font-semibold mb-4 text-gray-900 flex items-center space-x-2">
-                      <Shield className="w-5 h-5 text-red-600" />
-                      <span>Insurance Summary</span>
+                  <div className="bg-gray-50 rounded-lg p-4 sm:p-6 border border-gray-200 col-span-1 sm:col-span-2">
+                    <h4 className="font-semibold mb-3 sm:mb-4 text-gray-900 flex items-center space-x-2">
+                      <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-red-600" />
+                      <span className="text-sm sm:text-base">Insurance Summary</span>
                     </h4>
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                       <div className="flex justify-between py-2">
-                        <span className="text-gray-700 font-medium">{selectedProduct.name}</span>
-                        <span className="font-semibold text-red-600">${selectedProduct.price}</span>
+                        <span className="text-gray-700 font-medium text-sm sm:text-base">{selectedProduct.name}</span>
+                        <span className="font-semibold text-red-600 text-sm sm:text-base">${selectedProduct.price}</span>
                       </div>
-                      <div className="border-t pt-3 mt-3 border-gray-300">
+                      <div className="border-t pt-2 sm:pt-3 mt-2 sm:mt-3 border-gray-300">
                         <div className="flex justify-between font-bold">
-                          <span className="text-gray-900">Total Premium</span>
-                          <span className="text-red-600 text-xl">${selectedProduct.price}</span>
+                          <span className="text-gray-900 text-sm sm:text-base">Total Premium</span>
+                          <span className="text-red-600 text-lg sm:text-xl">${selectedProduct.price}</span>
                         </div>
                       </div>
-                      <div className="mt-3 text-xs text-gray-500">
+                      <div className="mt-2 sm:mt-3 text-xs text-gray-500 space-y-1">
                         <p>• Medical coverage up to $100,000</p>
                         <p>• 24/7 emergency assistance</p>
                         <p>• Trip cancellation protection</p>
@@ -503,10 +503,17 @@ export default function Insurance() {
                   
                   <Button 
                     type="submit" 
-                    className="w-full bg-red-600 hover:bg-red-700 text-white py-4 text-lg font-semibold"
+                    className="w-full bg-red-600 hover:bg-red-700 text-white py-4 text-base md:text-lg font-semibold transition-all duration-200 hover:shadow-lg disabled:opacity-50"
                     disabled={createApplicationMutation.isPending}
                   >
-                    {createApplicationMutation.isPending ? "Processing Application..." : "Submit Insurance Application"}
+                    {createApplicationMutation.isPending ? (
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
+                        <span>Processing...</span>
+                      </div>
+                    ) : (
+                      "Submit Insurance Application"
+                    )}
                   </Button>
                 </form>
               </div>

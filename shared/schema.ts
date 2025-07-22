@@ -73,7 +73,7 @@ export const insuranceApplications = pgTable("insurance_applications", {
   returnDate: timestamp("return_date").notNull(),
   destination: text("destination").notNull(),
   tripDurationDays: integer("trip_duration_days"), // Kaç günlük seçti
-  dateOfBirth: timestamp("date_of_birth"), // Doğum tarihi (yaş hesabı için)
+  dateOfBirth: text("date_of_birth"), // Doğum tarihi (yaş hesabı için)
   parentIdPhotos: jsonb("parent_id_photos"), // 18 yaş altı için ebeveyn kimlik fotoğrafları
   totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull(),
   paymentStatus: text("payment_status").notNull().default("pending"),

@@ -118,6 +118,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         applicationNumber: generateApplicationNumber(),
         travelDate: new Date(req.body.travelDate),
         returnDate: new Date(req.body.returnDate),
+        dateOfBirth: req.body.dateOfBirth || null,
       });
 
       const application = await storage.createInsuranceApplication(validatedData);
