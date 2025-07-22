@@ -315,17 +315,9 @@ export default function Insurance() {
             </div>
           </div>
         </div>
-              </div>
-            </div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">Republic of Turkey</h1>
-            <h2 className="text-xl md:text-2xl mb-2 opacity-90">Travel Insurance Services</h2>
-            <p className="text-lg opacity-80">Official Travel Insurance for Turkish Visit</p>
-          </div>
-        </div>
-      </section>
 
-      {/* Insurance Products List - Professional Design */}
-      <section className="py-16 bg-gray-50">
+        {/* Insurance Products List - Professional Design */}
+        <section className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">Official Travel Insurance Plans</h2>
@@ -743,6 +735,7 @@ export default function Insurance() {
           )}
         </div>
       </section>
+      </main>
 
       <Footer />
       
