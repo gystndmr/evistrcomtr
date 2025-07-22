@@ -35,15 +35,33 @@ const detectBrowserLanguage = (): Language => {
     
     console.log('Browser language detected:', browserLang, 'Code:', languageCode);
     
-    // Check if we support this language (and it's not English - English is default)
-    const supportedLanguage = languages.find(lang => lang.code === languageCode);
-    if (supportedLanguage && languageCode !== 'en') {
-      console.log('Using browser language:', supportedLanguage.name);
-      return supportedLanguage;
+    // Support all languages with automatic detection:
+    // Turkish (tr): Turkish browsers → Turkish
+    // German (de): German browsers → German  
+    // French (fr): French browsers → French
+    // Spanish (es): Spanish browsers → Spanish
+    // Arabic (ar): Arabic browsers → Arabic
+    // English (en): English browsers → English (default, no change needed)
+    
+    const supportedLanguageCodes = ['tr', 'de', 'fr', 'es', 'ar'];
+    
+    // Check if browser language is one of our supported languages
+    if (supportedLanguageCodes.includes(languageCode)) {
+      const supportedLanguage = languages.find(lang => lang.code === languageCode);
+      if (supportedLanguage) {
+        console.log('Auto-switching to browser language:', supportedLanguage.name);
+        return supportedLanguage;
+      }
     }
     
-    // Always fallback to English as primary language
-    console.log('Using English as primary language');
+    // Check for English explicitly (default behavior)
+    if (languageCode === 'en') {
+      console.log('English browser detected - using English (default)');
+      return englishLang;
+    }
+    
+    // Always fallback to English as primary language for unsupported languages
+    console.log('Unsupported browser language, using English as primary language');
     return englishLang;
   } catch (error) {
     console.warn('Error detecting browser language, using English:', error);
