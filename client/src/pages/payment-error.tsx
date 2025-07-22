@@ -54,19 +54,19 @@ export default function PaymentError() {
                 <h3 className="font-semibold mb-2">What happened?</h3>
                 <ul className="text-sm text-gray-600 space-y-1">
                   <li>• GPay's servers returned a 500 Internal Server Error</li>
+                  <li>• Domain registration issue: getvisa.tr may not be registered with GPay</li>
                   <li>• Your payment information was processed correctly on our end</li>
-                  <li>• The error occurs when connecting to GPay's checkout system</li>
-                  <li>• This is a temporary issue that usually resolves within minutes</li>
+                  <li>• This requires GPay merchant account configuration update</li>
                 </ul>
               </div>
               
               <div className="bg-blue-50 p-4 rounded-lg text-left">
                 <h3 className="font-semibold mb-2">What can you do?</h3>
                 <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• Wait 5-10 minutes and try the payment again</li>
-                  <li>• Clear your browser cache and cookies</li>
-                  <li>• Try using a different browser or device</li>
-                  <li>• Contact our support team if the issue persists</li>
+                  <li>• Contact our support team - this is a known domain issue</li>
+                  <li>• Alternative payment methods may be available</li>
+                  <li>• Try again in a few hours after domain registration is resolved</li>
+                  <li>• Check our status page for updates on the payment system</li>
                 </ul>
               </div>
 
@@ -98,8 +98,8 @@ export default function PaymentError() {
               
               <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p className="text-sm text-yellow-800">
-                  <strong>Note:</strong> No charges have been made to your payment method. 
-                  You can safely retry the payment once GPay's servers are responding normally.
+                  <strong>Domain Registration Issue:</strong> The domain getvisa.tr needs to be registered with GPay merchant account (ID: 1100002537). 
+                  No charges have been made to your payment method.
                 </p>
               </div>
             </CardContent>
