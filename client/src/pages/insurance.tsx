@@ -91,14 +91,14 @@ export default function Insurance() {
       });
       const applicationData2 = await applicationResponse.json();
       
-      // Then create payment
+      // Then create payment - let server generate unique orderRef
       const paymentResponse = await apiRequest("POST", "/api/payment/create", {
         amount: selectedProduct.price,
         currency: "USD",
-        orderId: applicationData2.applicationNumber,
         description: `Turkey Travel Insurance - ${selectedProduct.name}`,
         customerEmail: applicationData.email,
         customerName: `${applicationData.firstName} ${applicationData.lastName}`
+        // Removed orderId - server will generate unique orderRef automatically
       });
       
       const paymentData = await paymentResponse.json();
