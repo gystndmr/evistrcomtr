@@ -143,65 +143,52 @@ export function Footer() {
             </div>
           </div>
           
-          {/* Payment Method Logos - PNG Format */}
+          {/* Payment Method Logos */}
           <div className="flex items-center justify-center gap-4 mb-6">
             <div className="text-xs text-neutral-400 mr-2">We Accept:</div>
             <div className="flex items-center space-x-3 flex-wrap justify-center">
               {/* Visa */}
-              <img 
-                src="https://www.merchantequip.com/images/logos/visa-60x20.gif" 
-                alt="Visa" 
-                className="h-6"
-              />
+              <div className="h-8 w-12 bg-white rounded border flex items-center justify-center">
+                <div className="text-blue-600 font-bold text-xs">VISA</div>
+              </div>
               
               {/* Mastercard */}
-              <img 
-                src="https://www.merchantequip.com/images/logos/mastercard-60x38.gif" 
-                alt="Mastercard" 
-                className="h-6"
-              />
+              <div className="h-8 w-12 bg-white rounded border flex items-center justify-center">
+                <div className="flex space-x-0.5">
+                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                </div>
+              </div>
               
               {/* American Express */}
-              <img 
-                src="https://www.merchantequip.com/images/logos/amex-76x64.gif" 
-                alt="American Express" 
-                className="h-6"
-              />
+              <div className="h-8 w-12 bg-blue-600 rounded border flex items-center justify-center">
+                <div className="text-white font-bold text-xs">AMEX</div>
+              </div>
               
               {/* Discover */}
-              <img 
-                src="https://www.merchantequip.com/images/logos/discover-91x58.gif" 
-                alt="Discover" 
-                className="h-6"
-              />
+              <div className="h-8 w-12 bg-orange-500 rounded border flex items-center justify-center">
+                <div className="text-white font-bold text-xs">DISC</div>
+              </div>
               
-              {/* TROY - Using base64 PNG */}
-              <img 
-                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAAoCAYAAAA16j4lAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAYjSURBVHic7ZxdbBRVFMd/M9vtdre03bbQFlqgFEutCFgrCCIRFQwJPqiJJvpAYkx88EETjQkmPvigJsYHH0yMiQ8+GI0vJj6Y+KAJJhITjUZFrQiKQKFQoNBSaLfd7nZnd2fueTCzO3dm7szszLbd/yQn7cy5H/eeO/fj3jsDhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhmEYhvmfQyabTBKgdKKJJAFqA3wAgHxRIUYNJeaSlFIWM8lVKUVKKaRSCgBARCBJZHvZJUNKKYggIkqKFJZYSiWSJKlUCZFSVIoAgGC2hVJKKbWfJSK3LKKUUoqKdkSRJJGMZWbFJBEi6j9LbDfWyc6Oy9OTKaVQUkoo6z+l6PhdIgKhNLzZOQBAa2srIyIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIiIqKqwjCMf4c5mzecKEAZAPwAACoAKQWltNJSSgEp4DsAKEaKSClFSgFIKShFlPZ/SikFCYClKKWUUpZdyqhSlK2y7IpKKZJSggBAoLT8yvqRUgpKKVBKQ0rJ/p9SCkopaq9DKQUpJeQvEVFfKKKoqirp" 
-                alt="TROY" 
-                className="h-6"
-              />
+              {/* TROY */}
+              <div className="h-8 w-12 bg-red-600 rounded border flex items-center justify-center">
+                <div className="text-white font-bold text-xs">TROY</div>
+              </div>
               
               {/* JCB */}
-              <img 
-                src="https://www.merchantequip.com/images/logos/jcb-72.gif" 
-                alt="JCB" 
-                className="h-6"
-              />
+              <div className="h-8 w-12 bg-blue-700 rounded border flex items-center justify-center">
+                <div className="text-white font-bold text-xs">JCB</div>
+              </div>
               
               {/* Diners Club */}
-              <img 
-                src="https://www.merchantequip.com/images/logos/diners1-144x126.gif" 
-                alt="Diners Club" 
-                className="h-6"
-              />
+              <div className="h-8 w-12 bg-gray-600 rounded border flex items-center justify-center">
+                <div className="text-white font-bold text-xs">DC</div>
+              </div>
               
-              {/* UnionPay - Using base64 PNG */}
-              <img 
-                src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAeCAYAAADaW7vzAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAOxAAADsQBlSsOGwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAVcSURBVGiB7ZpdbBRVFMd/M9vtbne/2u1uW1paoLRQqiBSFREUFTVq1MTEB/VBjcZEH3zwQWOiD8YHjYk+mBgTfTAxJvpgYkz0wcSY6IOJCRo/QFERFUERakELhbawfXe7s98z9z5M587OzOzMdmfaJvyTm8zMnXPuOefe+zX3zoAxDMMwDMMwDMMwDMMwDMMwDMMwDMMwDMMwDMMwDMMwDMMwDMMwDMMwDMMwDMMwDMMwzP+JqsnaAQDbAFQDeB7ABgAnAXQDuApgAMBtABcBfAXgFwDDAEYBJOWcI4DaAGwF8AKA7QCWATgFoBvANQCDAG4D+BPA1wB+AjAMYBRASs45MkzZrJJzxhEAVgNYB+BlADsANAFYJSV1JJyv7AZwGcB5AB0AugD0ARiBvHMEgLUANgJ4GcDLAJoB1EtJnQjnK7cDuATgAoAOAJ0A+gEMQd45MkzFNLCsZoqUOhLOV3YDOA/gPIAOAJ0A+gEMQd45AsBaABsBvAzgZQDNAOqlpE6E85XdAC4BuACgA0AngH4AQ5B3jv8bDAaDwWAwGAwGg8FgMBgMBoPBYDCYuVGt8rlWALsAHATQIiW1lJTqLGn+v+uQsrVAkYgAWAVgLYAOABsBbAJwGsA1AD0AugBcAnAOwG8ArgG4C2AQgB/AJAATgA3AcgArAGwAsAXADgA7ATQB+AvABQDnAJwE8CuA6wDuABgE4AcwAcAEYAdQB2AFgA0AtgDYAWAngEYAfwC4AuACgNMAfgFwA8AdAIMA/AAmAJgAbABqAawAsAHAFgA7AOwE0AjgDwBXAFwAcBrALwBuALgDYBCAH8AEABOADUAtgBUANgDYAmAHgJ0AGgH8AeAKgAsATgP4BcANAHcADALwA5gAYAKwAagFsALABgBbAOwAsBNAI4A/AFwBcAHAaQC/ALgB4A6AQQB+ABMATACUm7VaAGwFsAfAC9yGWqKqtNK9fWtWa9u7lczWAm1w1eqBd6/Xhp7bSsv5AOoANAJ4E8BeAK8CCMkS5vL/2ARgH4ADAAJyznJZC+AdALsBlBRlHwDwNoCdAGJyzjJZC+AdALsBlBRlHwDwNoCdAGJyzjLJagawC8BeAHsAtACoV0+YCPKFVRIFdx7UwxhKTIQjQwD8AEYBjACYBDANIFi6vQXAawAOAPgQwDBZqAJqq0BQdaFJIo3BXRc9Ow4HEwCGAIwAGAQwDmAKQKBzg0P8gJRqhOorKwJBzoVrEf+dTgCDAIYBjAC4C2AMRV4wFWQz5Gj5mOw/jg8D9QzPRSkBgAvAOvJvK4CdAJoBlLwZl3EZAOwAcAzAi1JSV/IDjh9RGa8C4PlRp/eAf7lNWNQsJXXBGo/qXrBeDcLl+4M/TFb6AJQDdj41dF8rZGU0NzZCnjOUGnGlIlbIJmB9QTJdJWnfgOGS7SylBu2+iMpRa+CUfAa8Rm3SWkuWrKp2pQgP4C8Af5VxjrqEXD9KICSC+APAxRLYEBUAZJ+wSmYjrKGEBTJfylwOqXGLqsEoAo0YAFhf0HxtC7iIvFeBDW5eMJV9jOtLu8+lhiVZAJMFpZJrpSi+FiQNnLNJWj8JAAx+f5CHHt8aAnBLSrq7yI81A1KYnDST9mP2jcY6ltUZJjsFB2SXRxrZBqMInLFaBl1OEHZOBl/tHUOzOULdWUbEElYxL9QdsFrGODMLMN7yPvhGZfL9Vv1bDcALyfNv2L8Zu8u7vJZzjjULVQ4Ea7gG7JR/eS1n6cULhQT8oD+xW9bShVT+5bWc5Rav2oD7kE36l9fyrJdzeJrOF4/7uy4zN3O7ZT/Ky7l6Lnn+9XNKgj6pGMOFGH5A"
-                alt="UnionPay" 
-                className="h-6"
-              />
+              {/* UnionPay */}
+              <div className="h-8 w-12 bg-blue-500 rounded border flex items-center justify-center">
+                <div className="text-white font-bold text-xs">UP</div>
+              </div>
             </div>
           </div>
 
