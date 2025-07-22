@@ -72,8 +72,10 @@ export default function Admin() {
     app.applicationNumber.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('tr-TR', {
+  // Helper function to format dates - handle both Date objects and strings
+  const formatDate = (date: string | Date | null | undefined) => {
+    if (!date) return 'N/A';
+    return new Date(date).toLocaleDateString('tr-TR', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -498,7 +500,11 @@ export default function Admin() {
                                         <div><strong>Ad Soyad:</strong> {selectedInsuranceApp.firstName} {selectedInsuranceApp.lastName}</div>
                                         <div><strong>Email:</strong> {selectedInsuranceApp.email}</div>
                                         <div><strong>Telefon:</strong> {selectedInsuranceApp.phone}</div>
+                                        <div><strong>Doğum Tarihi:</strong> {selectedInsuranceApp.dateOfBirth || 'N/A'}</div>
                                         <div><strong>Hedef:</strong> {selectedInsuranceApp.destination}</div>
+                                        {selectedInsuranceApp.parentIdPhotos && (
+                                          <div><strong>Ebeveyn Kimlik:</strong> 18 yaş altı - kimlik fotoğrafları mevcut</div>
+                                        )}
                                       </div>
                                       <div className="space-y-3">
                                         <h4 className="font-semibold text-blue-900">Seyahat Bilgileri</h4>

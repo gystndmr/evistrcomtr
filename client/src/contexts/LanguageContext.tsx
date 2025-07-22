@@ -23,10 +23,29 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// Auto-detect browser language - but default to English
+// Auto-detect browser language with proper fallback
 const detectBrowserLanguage = (): Language => {
-  // Always default to English as primary language
-  return languages.find(lang => lang.code === 'en') || languages[0];
+  try {
+    // Get browser language from navigator
+    const browserLang = navigator.language.toLowerCase();
+    const languageCode = browserLang.split('-')[0]; // Get primary language code
+    
+    console.log('Browser language detected:', browserLang, 'Code:', languageCode);
+    
+    // Check if we support this language
+    const supportedLanguage = languages.find(lang => lang.code === languageCode);
+    if (supportedLanguage) {
+      console.log('Using supported language:', supportedLanguage.name);
+      return supportedLanguage;
+    }
+    
+    // Fallback to English if not supported
+    console.log('Language not supported, falling back to English');
+    return languages.find(lang => lang.code === 'en') || languages[0];
+  } catch (error) {
+    console.warn('Error detecting browser language:', error);
+    return languages.find(lang => lang.code === 'en') || languages[0];
+  }
 };
 
 interface LanguageProviderProps {
