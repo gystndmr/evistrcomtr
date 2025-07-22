@@ -107,35 +107,56 @@ export default function Insurance() {
         setCurrentOrderId(applicationData2.applicationNumber);
         setPaymentRedirectUrl(paymentData.paymentUrl);
         
-        // Enhanced redirect approach for mobile compatibility
+        // Enhanced redirect approach for mobile compatibility with debugging
         const redirectToPayment = () => {
           try {
-            // For mobile devices, try multiple approaches
-            const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            console.log('[Insurance Payment Debug] Starting redirect process');
+            console.log('[Insurance Payment Debug] Payment URL:', paymentData.paymentUrl);
+            console.log('[Insurance Payment Debug] User Agent:', navigator.userAgent);
             
-            if (isMobile) {
-              // Mobile: Try window.open first, then location.href
-              const newWindow = window.open(paymentData.paymentUrl, '_blank');
-              if (!newWindow) {
-                // If popup is blocked, use location.href
-                window.location.href = paymentData.paymentUrl;
-              }
-            } else {
-              // Desktop: Use standard location.href
+            // Always show success toast first
+            toast({
+              title: "Insurance Payment Created",
+              description: `Redirecting to payment... Order: ${applicationData2.applicationNumber}`,
+              duration: 5000,
+            });
+            
+            // For all devices: Direct location.href redirect
+            console.log('[Insurance Payment Debug] Using location.href redirect');
+            setTimeout(() => {
               window.location.href = paymentData.paymentUrl;
-            }
+            }, 500); // Small delay to show toast
+            
           } catch (error) {
-            // Ultimate fallback: location.replace
-            try {
-              window.location.replace(paymentData.paymentUrl);
-            } catch (error2) {
-              console.error('All redirect methods failed:', error2);
-            }
+            console.error('[Insurance Payment Debug] Redirect error:', error);
+            
+            // Ultimate fallback: show manual link
+            toast({
+              title: "Payment Link Ready",
+              description: "Click the button to continue to insurance payment",
+              action: (
+                <button 
+                  onClick={() => {
+                    try {
+                      window.open(paymentData.paymentUrl, '_blank');
+                    } catch (e) {
+                      console.error('[Insurance Payment Debug] Manual link error:', e);
+                      // Copy to clipboard as last resort
+                      navigator.clipboard?.writeText(paymentData.paymentUrl);
+                    }
+                  }}
+                  className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+                >
+                  Continue to Payment
+                </button>
+              ),
+              duration: 15000,
+            });
           }
         };
         
-        // Quick redirect for better mobile compatibility
-        setTimeout(redirectToPayment, 300);
+        // Start redirect process immediately
+        redirectToPayment();
       } else {
         throw new Error(paymentData.error || "Payment initialization failed");
       }

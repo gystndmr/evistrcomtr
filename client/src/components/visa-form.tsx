@@ -130,51 +130,56 @@ export function VisaForm() {
         setCurrentOrderId(applicationData.applicationNumber);
         setPaymentRedirectUrl(paymentData.paymentUrl);
         
-        // Enhanced redirect approach for mobile compatibility
+        // Enhanced redirect approach for mobile compatibility with debugging
         const redirectToPayment = () => {
           try {
-            console.log('[Mobile Payment] Starting redirect to:', paymentData.paymentUrl);
+            console.log('[Payment Debug] Starting redirect process');
+            console.log('[Payment Debug] Payment URL:', paymentData.paymentUrl);
+            console.log('[Payment Debug] User Agent:', navigator.userAgent);
             
-            // For mobile devices, try multiple approaches
-            const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            // Always show success toast first
+            toast({
+              title: "Payment Created",
+              description: `Redirecting to payment... Order: ${applicationData.applicationNumber}`,
+              duration: 5000,
+            });
             
-            if (isMobile) {
-              console.log('[Mobile Payment] Mobile device detected, using optimized redirect');
-              // Mobile: Direct location.href for best compatibility
+            // For all devices: Direct location.href redirect
+            console.log('[Payment Debug] Using location.href redirect');
+            setTimeout(() => {
               window.location.href = paymentData.paymentUrl;
-            } else {
-              console.log('[Mobile Payment] Desktop device, using standard redirect');
-              // Desktop: Use standard location.href
-              window.location.href = paymentData.paymentUrl;
-            }
+            }, 500); // Small delay to show toast
+            
           } catch (error) {
-            console.error('[Mobile Payment] Redirect error:', error);
-            // Ultimate fallback: location.replace
-            try {
-              console.log('[Mobile Payment] Using fallback redirect method');
-              window.location.replace(paymentData.paymentUrl);
-            } catch (error2) {
-              console.error('[Mobile Payment] All redirect methods failed:', error2);
-              // Show manual button if all else fails
-              toast({
-                title: "Payment Redirect",
-                description: "Please click the payment link manually",
-                action: (
-                  <button 
-                    onClick={() => window.open(paymentData.paymentUrl, '_blank')}
-                    className="bg-blue-600 text-white px-3 py-1 rounded text-sm"
-                  >
-                    Continue
-                  </button>
-                ),
-                duration: 10000,
-              });
-            }
+            console.error('[Payment Debug] Redirect error:', error);
+            
+            // Ultimate fallback: show manual link
+            toast({
+              title: "Payment Link Ready",
+              description: "Click the button to continue to payment",
+              action: (
+                <button 
+                  onClick={() => {
+                    try {
+                      window.open(paymentData.paymentUrl, '_blank');
+                    } catch (e) {
+                      console.error('[Payment Debug] Manual link error:', e);
+                      // Copy to clipboard as last resort
+                      navigator.clipboard?.writeText(paymentData.paymentUrl);
+                    }
+                  }}
+                  className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+                >
+                  Continue to Payment
+                </button>
+              ),
+              duration: 15000,
+            });
           }
         };
         
-        // Quick redirect for better mobile compatibility
-        setTimeout(redirectToPayment, 500);
+        // Start redirect process immediately
+        redirectToPayment();
       } else {
         throw new Error(paymentData.error || "Payment initialization failed");
       }
