@@ -136,122 +136,127 @@ export default function InsuranceSimple() {
           <div className="p-8">
             <form onSubmit={handleSubmit} className="space-y-8">
               
-              {/* Insurance Plan Selection */}
+              {/* Personal Information */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Policy Period</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {sortedProducts.map((product: InsuranceProduct) => (
-                    <div key={product.id} className="relative">
-                      <input
-                        type="radio"
-                        name="insurance-product"
-                        id={`product-${product.id}`}
-                        checked={selectedProduct?.id === product.id}
-                        onChange={() => setSelectedProduct(product)}
-                        className="sr-only"
-                      />
-                      <label
-                        htmlFor={`product-${product.id}`}
-                        className={`block p-4 border rounded-lg cursor-pointer text-center transition-all ${
-                          selectedProduct?.id === product.id
-                            ? "border-blue-600 bg-blue-50"
-                            : "border-gray-300 hover:border-gray-400"
-                        }`}
-                      >
-                        <div className="font-semibold text-gray-900">{product.name.replace(" Coverage", "")}</div>
-                        <div className="text-lg font-bold text-blue-600">${product.price}</div>
-                      </label>
-                    </div>
-                  ))}
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label htmlFor="firstName">Given/First Name(s) *</Label>
+                    <Input
+                      id="firstName"
+                      value={applicationData.firstName}
+                      onChange={(e) => handleInputChange("firstName", e.target.value)}
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="lastName">Surname(s) *</Label>
+                    <Input
+                      id="lastName"
+                      value={applicationData.lastName}
+                      onChange={(e) => handleInputChange("lastName", e.target.value)}
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="email">Email for receive your insurance certificate *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={applicationData.email}
+                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      placeholder="Enter Email"
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="phone">Phone Number *</Label>
+                    <Input
+                      id="phone"
+                      value={applicationData.phone}
+                      onChange={(e) => handleInputChange("phone", e.target.value)}
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="dateOfBirth">Date of Birth *</Label>
+                    <Input
+                      id="dateOfBirth"
+                      type="date"
+                      value={applicationData.dateOfBirth}
+                      onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="passportNumber">Passport Number *</Label>
+                    <Input
+                      id="passportNumber"
+                      value={applicationData.passportNumber}
+                      onChange={(e) => handleInputChange("passportNumber", e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Personal Information */}
+              {/* Insurance Plan Selection */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Policy Period</h3>
+                <div className="max-w-md">
+                  <Label htmlFor="insurancePlan">Select Insurance Plan *</Label>
+                  <Select onValueChange={(value) => {
+                    const product = sortedProducts.find(p => p.id.toString() === value);
+                    setSelectedProduct(product || null);
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choose insurance duration" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sortedProducts.map((product: InsuranceProduct) => (
+                        <SelectItem key={product.id} value={product.id.toString()}>
+                          {product.name.replace(" Coverage", "")} - ${product.price} USD
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Payment Section */}
               {selectedProduct && (
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <Label htmlFor="firstName">Given/First Name(s) *</Label>
-                      <Input
-                        id="firstName"
-                        value={applicationData.firstName}
-                        onChange={(e) => handleInputChange("firstName", e.target.value)}
-                        required
-                      />
+                <div className="border-t pt-8">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Summary</h3>
+                  <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="text-gray-700">Selected Plan:</span>
+                      <span className="font-semibold">{selectedProduct.name}</span>
                     </div>
-                    
-                    <div>
-                      <Label htmlFor="lastName">Surname(s) *</Label>
-                      <Input
-                        id="lastName"
-                        value={applicationData.lastName}
-                        onChange={(e) => handleInputChange("lastName", e.target.value)}
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="email">Email for receive your insurance certificate *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={applicationData.email}
-                        onChange={(e) => handleInputChange("email", e.target.value)}
-                        placeholder="Enter Email"
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="phone">Phone Number *</Label>
-                      <Input
-                        id="phone"
-                        value={applicationData.phone}
-                        onChange={(e) => handleInputChange("phone", e.target.value)}
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="dateOfBirth">Date of Birth *</Label>
-                      <Input
-                        id="dateOfBirth"
-                        type="date"
-                        value={applicationData.dateOfBirth}
-                        onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="passportNumber">Passport Number *</Label>
-                      <Input
-                        id="passportNumber"
-                        value={applicationData.passportNumber}
-                        onChange={(e) => handleInputChange("passportNumber", e.target.value)}
-                        required
-                      />
+                    <div className="flex justify-between items-center text-xl font-bold">
+                      <span>Total Amount:</span>
+                      <span className="text-blue-600">${selectedProduct.price} USD</span>
                     </div>
                   </div>
                   
-                  {/* Submit Button */}
-                  <div className="pt-6">
-                    <Button 
-                      type="submit" 
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold"
-                      disabled={createApplicationMutation.isPending}
-                    >
-                      {createApplicationMutation.isPending ? (
-                        <div className="flex items-center justify-center space-x-2">
-                          <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
-                          <span>Processing...</span>
-                        </div>
-                      ) : (
-                        `Complete Insurance Purchase - $${selectedProduct.price}`
-                      )}
-                    </Button>
-                  </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold"
+                    disabled={createApplicationMutation.isPending}
+                  >
+                    {createApplicationMutation.isPending ? (
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
+                        <span>Processing...</span>
+                      </div>
+                    ) : (
+                      `Pay $${selectedProduct.price} - Complete Purchase`
+                    )}
+                  </Button>
                 </div>
               )}
             </form>
