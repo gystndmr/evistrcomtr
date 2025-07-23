@@ -30,6 +30,7 @@ export default function Insurance() {
     lastName: "",
     email: "",
     phone: "",
+    passportNumber: "",
     travelDate: "",
     returnDate: "",
     destination: "Turkey",
@@ -272,6 +273,15 @@ export default function Insurance() {
       return;
     }
     
+    if (!applicationData.passportNumber.trim()) {
+      toast({
+        title: "Passport Number Required",
+        description: "Please enter your passport number",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     if (!applicationData.travelDate) {
       toast({
         title: "Travel Date Required",
@@ -417,6 +427,17 @@ export default function Insurance() {
                         id="phone"
                         value={applicationData.phone}
                         onChange={(e) => handleInputChange("phone", e.target.value)}
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="passportNumber">Passport Number *</Label>
+                      <Input
+                        id="passportNumber"
+                        value={applicationData.passportNumber || ''}
+                        onChange={(e) => handleInputChange("passportNumber", e.target.value)}
+                        placeholder="A12345678"
                         required
                       />
                     </div>

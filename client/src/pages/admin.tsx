@@ -448,6 +448,7 @@ export default function Admin() {
                         <TableHead>Ad Soyad</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Telefon</TableHead>
+                        <TableHead>Pasaport</TableHead>
                         <TableHead>Ülke</TableHead>
                         <TableHead>Seyahat Tarihi</TableHead>
                         <TableHead>Dönüş Tarihi</TableHead>
@@ -468,6 +469,7 @@ export default function Admin() {
                           <TableCell>{app.firstName} {app.lastName}</TableCell>
                           <TableCell>{app.email}</TableCell>
                           <TableCell>{app.phone}</TableCell>
+                          <TableCell>{(app as any).passportNumber || 'N/A'}</TableCell>
                           <TableCell>{(app as any).countryOfOrigin || 'N/A'}</TableCell>
                           <TableCell>{formatDate(app.travelDate)}</TableCell>
                           <TableCell>{formatDate(app.returnDate)}</TableCell>
@@ -502,6 +504,7 @@ export default function Admin() {
                                         <div><strong>Ad Soyad:</strong> {selectedInsuranceApp.firstName} {selectedInsuranceApp.lastName}</div>
                                         <div><strong>Email:</strong> {selectedInsuranceApp.email}</div>
                                         <div><strong>Telefon:</strong> {selectedInsuranceApp.phone}</div>
+                                        <div><strong>Pasaport No:</strong> {(selectedInsuranceApp as any).passportNumber || 'N/A'}</div>
                                         <div><strong>Ülke:</strong> {(selectedInsuranceApp as any).countryOfOrigin || 'N/A'}</div>
                                         <div><strong>Doğum Tarihi:</strong> {selectedInsuranceApp.dateOfBirth || 'N/A'}</div>
                                         <div><strong>Hedef:</strong> {selectedInsuranceApp.destination}</div>

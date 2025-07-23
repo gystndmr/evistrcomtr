@@ -69,6 +69,7 @@ export const insuranceApplications = pgTable("insurance_applications", {
   lastName: text("last_name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
+  passportNumber: text("passport_number"),
   countryOfOrigin: text("country_of_origin"), // Müşterinin hangi ülkeden başvuru yaptığı
   travelDate: timestamp("travel_date").notNull(),
   returnDate: timestamp("return_date").notNull(),

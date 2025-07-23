@@ -399,3 +399,10 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - **Database Integration**: countryOfOrigin field properly stored in insurance_applications table
   - **Customer Data Completeness**: Both direct insurance applications (no country) and visa redirect applications (with country) handled
   - **Business Intelligence**: Complete customer geographical data available for insurance business analysis
+✅ **Insurance Passport Number Integration** (July 23, 2025):
+  - **Form Enhancement**: Added mandatory passport number field to insurance application form
+  - **Database Schema**: Extended insurance_applications table with passportNumber field (nullable for existing data)
+  - **Admin Panel**: Added passport number column to insurance applications table and detail modal
+  - **Data Validation**: Passport number validation added to form submission process
+  - **Complete Customer Data**: Insurance applications now capture full customer identification information
+  - **Database Migration**: Successfully updated schema without data loss for existing 97 applications
