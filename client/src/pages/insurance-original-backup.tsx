@@ -375,8 +375,39 @@ export default function Insurance() {
           <div className="p-8">
             <form onSubmit={handleSubmit} className="space-y-8">
               
-              {/* Personal Information */}
+              {/* Insurance Plan Selection */}
               <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Policy Period</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {sortedProducts.map((product: InsuranceProduct) => (
+                    <div key={product.id} className="relative">
+                      <input
+                        type="radio"
+                        name="insurance-product"
+                        id={`product-${product.id}`}
+                        checked={selectedProduct?.id === product.id}
+                        onChange={() => setSelectedProduct(product)}
+                        className="sr-only"
+                      />
+                      <label
+                        htmlFor={`product-${product.id}`}
+                        className={`block p-4 border rounded-lg cursor-pointer text-center transition-all ${
+                          selectedProduct?.id === product.id
+                            ? "border-blue-600 bg-blue-50"
+                            : "border-gray-300 hover:border-gray-400"
+                        }`}
+                      >
+                        <div className="font-semibold text-gray-900">{product.name.replace(" Coverage", "")}</div>
+                        <div className="text-lg font-bold text-blue-600">${product.price}</div>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Personal Information */}
+              {selectedProduct && (
+                <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -681,47 +712,32 @@ export default function Insurance() {
                     );
                   })()}
                   
-                </div>
-
-                {/* Insurance Plan Selection */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Policy Period</h3>
-                  <div className="max-w-md">
-                    <Label htmlFor="insurancePlan">Select Insurance Plan *</Label>
-                    <Select onValueChange={(value) => {
-                      const product = sortedProducts.find(p => p.id.toString() === value);
-                      setSelectedProduct(product || null);
-                    }}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Choose insurance duration" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {sortedProducts.map((product: InsuranceProduct) => (
-                          <SelectItem key={product.id} value={product.id.toString()}>
-                            {product.name.replace(" Coverage", "")} - ${product.price} USD
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* Payment Section */}
-                {selectedProduct && (
-                  <div className="border-t pt-8">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Summary</h3>
-                    <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                      <div className="flex justify-between items-center mb-4">
-                        <span className="text-gray-700">Selected Plan:</span>
-                        <span className="font-semibold">{selectedProduct.name}</span>
+                  <div className="bg-gray-50 rounded-lg p-4 sm:p-6 border border-gray-200 col-span-1 sm:col-span-2">
+                    <h4 className="font-semibold mb-3 sm:mb-4 text-gray-900 flex items-center space-x-2">
+                      <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-red-600" />
+                      <span className="text-sm sm:text-base">Insurance Summary</span>
+                    </h4>
+                    <div className="space-y-2 sm:space-y-3">
+                      <div className="flex justify-between py-2">
+                        <span className="text-gray-700 font-medium text-sm sm:text-base">{selectedProduct.name}</span>
+                        <span className="font-semibold text-red-600 text-sm sm:text-base">${selectedProduct.price}</span>
                       </div>
-                      <div className="flex justify-between items-center text-xl font-bold">
-                        <span>Total Amount:</span>
-                        <span className="text-blue-600">${selectedProduct.price} USD</span>
+                      <div className="border-t pt-2 sm:pt-3 mt-2 sm:mt-3 border-gray-300">
+                        <div className="flex justify-between font-bold">
+                          <span className="text-gray-900 text-sm sm:text-base">Total Premium</span>
+                          <span className="text-red-600 text-lg sm:text-xl">${selectedProduct.price}</span>
+                        </div>
+                      </div>
+                      <div className="mt-2 sm:mt-3 text-xs text-gray-500 space-y-1">
+                        <p>• Medical coverage up to $100,000</p>
+                        <p>• 24/7 emergency assistance</p>
+                        <p>• Trip cancellation protection</p>
+                        <p>• Lost baggage coverage</p>
                       </div>
                     </div>
-                    
-                    <Button 
+                  </div>
+                  
+                  <Button 
                     type="submit" 
                     className="w-full bg-red-600 hover:bg-red-700 text-white py-4 text-base md:text-lg font-semibold transition-all duration-200 hover:shadow-lg disabled:opacity-50"
                     disabled={createApplicationMutation.isPending}
@@ -732,14 +748,14 @@ export default function Insurance() {
                         <span>Processing...</span>
                       </div>
                     ) : (
-                      `Pay $${selectedProduct.price} - Complete Purchase`
+                      "Complete Insurance Purchase"
                     )}
                   </Button>
-                  </div>
-                )}
                 </form>
               </div>
             </div>
+          )}
+        </section>
       </main>
 
       <Footer />
