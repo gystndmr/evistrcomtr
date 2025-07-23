@@ -423,13 +423,6 @@ export default function Insurance() {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-red-600/10" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-white/90 rounded-full mb-4 shadow-lg p-2">
-              <img 
-                src={turkeyFlag} 
-                alt="Turkey Flag" 
-                className="w-full h-full object-cover rounded-full"
-              />
-            </div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white drop-shadow-xl mb-3">
               Insurance for E-Visa Turkey
             </h1>
