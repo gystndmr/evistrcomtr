@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 // PaymentForm removed - now using direct redirects
 import { PaymentRetry } from "@/components/payment-retry";
-import type { InsuranceProduct } from "@shared/schema";
+import type { InsuranceProduct, Country } from "@shared/schema";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
 import turkeyLogo from "@/assets/turkey-logo.png";
 import newTurkeyLogo from "@assets/ChatGPT Image 18 Tem 2025 01_37_34_1752880645933.png";
@@ -25,6 +25,7 @@ export default function Insurance() {
     lastName: "",
     email: "",
     phone: "",
+    countryOfOrigin: "",
     travelDate: "",
     returnDate: "",
     destination: "Turkey",
@@ -43,6 +44,12 @@ export default function Insurance() {
     queryKey: ["/api/insurance/products"],
     staleTime: 5 * 60 * 1000, // 5 minutes cache
   }) as { data: InsuranceProduct[], isLoading: boolean };
+
+  // Fetch countries for country selection
+  const { data: countries = [] } = useQuery({
+    queryKey: ["/api/countries"],
+    staleTime: 10 * 60 * 1000, // 10 minutes cache for countries
+  }) as { data: Country[] };
 
   // Sort products in the order: 7, 14, 30, 60, 90, 180, 1 year
   const sortedProducts = [...products].sort((a, b) => {
@@ -88,6 +95,7 @@ export default function Insurance() {
         tripDurationDays: tripDurationDays,
         dateOfBirth: applicationData.dateOfBirth,
         parentIdPhotos: parentIdPhotosData,
+        countryOfOrigin: applicationData.countryOfOrigin,
       });
       const applicationData2 = await applicationResponse.json();
       
@@ -496,6 +504,25 @@ export default function Insurance() {
                         onChange={(e) => handleInputChange("phone", e.target.value)}
                         required
                       />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="countryOfOrigin">Country/Region *</Label>
+                      <Select
+                        value={applicationData.countryOfOrigin}
+                        onValueChange={(value) => handleInputChange("countryOfOrigin", value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select your country" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {countries.map((country) => (
+                            <SelectItem key={country.id} value={country.name}>
+                              🌍 {country.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                     
                     <div>

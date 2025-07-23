@@ -448,6 +448,7 @@ export default function Admin() {
                         <TableHead>Ad Soyad</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Telefon</TableHead>
+                        <TableHead>Ülke</TableHead>
                         <TableHead>Seyahat Tarihi</TableHead>
                         <TableHead>Dönüş Tarihi</TableHead>
                         <TableHead>Hedef</TableHead>
@@ -467,6 +468,7 @@ export default function Admin() {
                           <TableCell>{app.firstName} {app.lastName}</TableCell>
                           <TableCell>{app.email}</TableCell>
                           <TableCell>{app.phone}</TableCell>
+                          <TableCell>{(app as any).countryOfOrigin || 'N/A'}</TableCell>
                           <TableCell>{formatDate(app.travelDate)}</TableCell>
                           <TableCell>{formatDate(app.returnDate)}</TableCell>
                           <TableCell>{app.destination}</TableCell>
@@ -500,6 +502,7 @@ export default function Admin() {
                                         <div><strong>Ad Soyad:</strong> {selectedInsuranceApp.firstName} {selectedInsuranceApp.lastName}</div>
                                         <div><strong>Email:</strong> {selectedInsuranceApp.email}</div>
                                         <div><strong>Telefon:</strong> {selectedInsuranceApp.phone}</div>
+                                        <div><strong>Ülke:</strong> {(selectedInsuranceApp as any).countryOfOrigin || 'N/A'}</div>
                                         <div><strong>Doğum Tarihi:</strong> {selectedInsuranceApp.dateOfBirth || 'N/A'}</div>
                                         <div><strong>Hedef:</strong> {selectedInsuranceApp.destination}</div>
                                         {selectedInsuranceApp.parentIdPhotos && (
