@@ -91,6 +91,16 @@ export default function Admin() {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.type === 'application/pdf') {
+      // Dosya boyutu kontrolü (10MB limit)
+      if (file.size > 10 * 1024 * 1024) {
+        toast({
+          title: "Hata",
+          description: "PDF dosyası çok büyük. Maksimum 10MB olmalı.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
       const reader = new FileReader();
       reader.onload = (e) => {
         const base64 = e.target?.result as string;
@@ -560,7 +570,7 @@ export default function Admin() {
                                         <div><strong>Hedef:</strong> {selectedInsuranceApp.destination}</div>
                                         {selectedInsuranceApp.parentIdPhotos && (
                                           <div><strong>Ebeveyn Kimlik:</strong> 18 yaş altı - kimlik fotoğrafları mevcut</div>
-                                        ) as React.ReactNode}
+                                        )}
                                       </div>
                                       <div className="space-y-3">
                                         <h4 className="font-semibold text-blue-900">Seyahat Bilgileri</h4>
@@ -625,12 +635,15 @@ export default function Admin() {
 
         {/* PDF Upload Dialog */}
         <Dialog open={pdfDialogOpen} onOpenChange={setPdfDialogOpen}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-md" aria-describedby="pdf-upload-description">
             <DialogHeader>
               <DialogTitle>
                 {currentAppType === "visa" ? "E-Visa" : "Sigorta Poliçesi"} PDF Dosyası Ekle
               </DialogTitle>
             </DialogHeader>
+            <div id="pdf-upload-description" className="text-sm text-gray-600 mb-4">
+              {currentAppType === "visa" ? "E-visa" : "Sigorta poliçesi"} PDF dosyasını yükleyerek müşteriye e-posta ile gönderin.
+            </div>
             <div className="space-y-4 py-4">
               <div>
                 <Label htmlFor="pdf-upload">PDF Dosyası Seç (İsteğe bağlı)</Label>
