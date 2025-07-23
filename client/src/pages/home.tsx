@@ -67,13 +67,7 @@ export default function Home() {
         {/* Main Content */}
         <div className="relative z-10 flex items-center justify-center h-full">
           <div className="text-center text-white px-4 max-w-4xl mx-auto">
-            <div className="inline-flex items-center justify-center w-24 h-24 mb-4">
-              <img 
-                src={turkeySymbolRed} 
-                alt="Turkey Symbol" 
-                className="w-full h-full object-contain drop-shadow-2xl"
-              />
-            </div>
+
             
             <h1 className="text-3xl md:text-4xl font-bold mb-4 drop-shadow-lg tracking-wider">
               {t('header.title')}
