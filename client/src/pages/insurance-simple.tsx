@@ -425,15 +425,15 @@ export default function Insurance() {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-red-600/10" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white drop-shadow-xl mb-3">
-              Insurance for E-Visa Turkey
-            </h1>
-            <p className="text-base sm:text-lg lg:text-xl text-white/95 drop-shadow-lg font-medium max-w-2xl mx-auto leading-relaxed">
-              Comprehensive Travel Protection for Your Turkish Adventure
-            </p>
-            <p className="text-sm sm:text-base text-white/90 drop-shadow-md mt-2 max-w-xl mx-auto">
-              Secure, affordable coverage that meets all Turkish visa requirements
-            </p>
+            {/* Transparent styled boxes for header text */}
+            <div className="inline-block mb-4">
+              <div className="bg-black/70 text-white px-8 py-4 text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
+                New Insurance
+              </div>
+              <div className="bg-blue-500/80 text-white px-6 py-3 text-lg sm:text-xl lg:text-2xl font-semibold">
+                Covid-19
+              </div>
+            </div>
           </div>
         </div>
       </section>
