@@ -468,7 +468,12 @@ export default function Insurance() {
                         </SelectTrigger>
                         <SelectContent>
                           {countries.map((country) => (
-                            <SelectItem key={country.id} value={country.name}>{country.name}</SelectItem>
+                            <SelectItem key={country.id} value={country.name}>
+                              <div className="flex items-center gap-2">
+                                <span className="text-lg">{country.flag}</span>
+                                <span>{country.name}</span>
+                              </div>
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
