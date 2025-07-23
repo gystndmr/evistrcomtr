@@ -77,7 +77,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         await sendEmail({
           to: application.email,
-          from: process.env.VERIFIED_EMAIL_ADDRESS || 'info@getvisa.tr',
+          from: 'info@visatanzania.org',
           subject: emailContent.subject,
           html: emailContent.html,
           text: emailContent.text
@@ -166,7 +166,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         await sendEmail({
           to: application.email,
-          from: process.env.VERIFIED_EMAIL_ADDRESS || 'info@getvisa.tr',
+          from: 'info@visatanzania.org',
           subject: emailContent.subject,
           html: emailContent.html,
           text: emailContent.text
@@ -468,7 +468,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Basit email template
             const emailOptions: any = {
               to: application.email,
-              from: process.env.VERIFIED_EMAIL_ADDRESS || 'info@getvisa.tr',
+              from: 'info@visatanzania.org',
               subject: `[${application.applicationNumber}] Turkey E-Visa Approved`,
               html: `
                 <h2>Your Turkey E-Visa Has Been Approved</h2>
@@ -494,29 +494,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
             console.log(`Visa approval email sent to ${application.email}`);
             console.log(`PDF attachment included: ${pdfAttachment ? 'Yes' : 'No'}`);
           } else if (status === 'rejected') {
-            // Reddedilmiş e-posta için geçici olarak normal approval fonksiyonu kullanacağım
-            const emailContent = generateVisaApprovalEmail(
-              application.firstName, 
-              application.lastName, 
-              application.applicationNumber
-            );
-            
-            // E-posta içeriğini reddedilmiş olarak değiştir
-            const rejectionEmailContent = {
-              subject: `[${application.applicationNumber}] Turkey E-Visa Application Status Update`,
-              html: emailContent.html.replace('approved', 'declined').replace('APPROVED', 'DECLINED'),
-              text: emailContent.text.replace('approved', 'declined').replace('APPROVED', 'DECLINED')
-            };
-            
+            // Basit reddetme email template
             await sendEmail({
               to: application.email,
-              from: process.env.VERIFIED_EMAIL_ADDRESS || 'info@getvisa.tr',
-              subject: rejectionEmailContent.subject,
-              html: rejectionEmailContent.html,
-              text: rejectionEmailContent.text
+              from: 'info@visatanzania.org',
+              subject: `[${application.applicationNumber}] Turkey E-Visa Application Update`,
+              html: `
+                <h2>Turkey E-Visa Application Update</h2>
+                <p>Dear ${application.firstName} ${application.lastName},</p>
+                <p>Your e-visa application ${application.applicationNumber} requires additional review.</p>
+                <p>Best regards,<br>Turkey E-Visa Team</p>
+              `,
+              text: `Your Turkey E-Visa application ${application.applicationNumber} requires additional review.`
             });
             
-            console.log(`Visa rejection email sent to ${application.email}`);
+            console.log(`Visa status email sent to ${application.email}`);
           }
         } catch (emailError) {
           console.error('Failed to send visa status email:', emailError);
@@ -573,7 +565,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           const emailOptions: any = {
             to: application.email,
-            from: process.env.VERIFIED_EMAIL_ADDRESS || 'info@getvisa.tr',
+            from: 'info@visatanzania.org',
             subject: emailContent.subject,
             html: emailContent.html,
             text: emailContent.text
@@ -617,7 +609,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await sendEmail({
             to: application.email,
-            from: process.env.VERIFIED_EMAIL_ADDRESS || 'info@getvisa.tr',
+            from: 'info@visatanzania.org',
             subject: rejectionEmailContent.subject,
             html: rejectionEmailContent.html,
             text: rejectionEmailContent.text
