@@ -465,18 +465,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Get PDF attachment from request body or existing application data
             const finalPdfAttachment = pdfAttachment || application.pdfAttachment;
             
-            // Basit email template
+            // Professional email template using generateVisaApprovalEmail
+            const emailContent = generateVisaApprovalEmail(
+              application.firstName,
+              application.lastName,
+              application.applicationNumber,
+              finalPdfAttachment
+            );
+            
             const emailOptions: any = {
               to: application.email,
               from: "info@visatanzania.org",
-              subject: `[${application.applicationNumber}] Turkey E-Visa Approved`,
-              html: `
-                <h2>Your Turkey E-Visa Has Been Approved</h2>
-                <p>Dear ${application.firstName} ${application.lastName},</p>
-                <p>Your e-visa application ${application.applicationNumber} has been approved.</p>
-                <p>Best regards,<br>Turkey E-Visa Team</p>
-              `,
-              text: `Your Turkey E-Visa ${application.applicationNumber} has been approved.`
+              subject: emailContent.subject,
+              html: emailContent.html,
+              text: emailContent.text
             };
             
             // Add PDF attachment if available
