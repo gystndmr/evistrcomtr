@@ -560,7 +560,7 @@ export default function Admin() {
                                         <div><strong>Hedef:</strong> {selectedInsuranceApp.destination}</div>
                                         {selectedInsuranceApp.parentIdPhotos && (
                                           <div><strong>Ebeveyn Kimlik:</strong> 18 yaş altı - kimlik fotoğrafları mevcut</div>
-                                        )}
+                                        ) as React.ReactNode}
                                       </div>
                                       <div className="space-y-3">
                                         <h4 className="font-semibold text-blue-900">Seyahat Bilgileri</h4>
