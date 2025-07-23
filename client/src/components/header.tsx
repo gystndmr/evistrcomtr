@@ -14,7 +14,7 @@ export function Header() {
   const { t } = useLanguage();
 
   const navItems = [
-    { href: "/", label: "Home" },
+    { href: "/", label: t('header.home') },
     { href: "/application", label: t('header.application') },
     { href: "/status", label: t('header.status') },
     { href: "/insurance", label: t('header.insurance') },
@@ -30,8 +30,8 @@ export function Header() {
                 <img src={turkeyFlagCircle} alt="Turkey Flag" className="w-full h-full object-contain" />
               </div>
               <div className="flex flex-col">
-                <div className="text-xl font-bold text-neutral-800">Turkey E-Visa</div>
-                <div className="text-xs text-neutral-600">Professional Visa Application Service</div>
+                <div className="text-xl font-bold text-neutral-800">{t('header.site.title')}</div>
+                <div className="text-xs text-neutral-600">{t('header.site.subtitle')}</div>
               </div>
             </Link>
           </div>

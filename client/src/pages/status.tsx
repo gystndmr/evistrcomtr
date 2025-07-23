@@ -30,7 +30,7 @@ export default function Status() {
   const { data: application, isLoading, error } = useQuery({
     queryKey: [searchType === "visa" ? "/api/applications" : "/api/insurance/applications", applicationNumber],
     enabled: shouldFetch && applicationNumber.length > 0,
-  });
+  }) as { data: any, isLoading: boolean, error: any };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -192,7 +192,7 @@ export default function Status() {
                     <div className="flex items-center space-x-2">
                       <User className="w-4 h-4 text-neutral-500" />
                       <div>
-                        <p className="text-sm font-medium">Applicant Name</p>
+                        <p className="text-sm font-medium">{t('status.applicant.name')}</p>
                         <p className="text-sm text-neutral-600">{application.firstName} {application.lastName}</p>
                       </div>
                     </div>
@@ -200,7 +200,7 @@ export default function Status() {
                     <div className="flex items-center space-x-2">
                       <Calendar className="w-4 h-4 text-neutral-500" />
                       <div>
-                        <p className="text-sm font-medium">Application Date</p>
+                        <p className="text-sm font-medium">{t('status.application.date')}</p>
                         <p className="text-sm text-neutral-600">{formatDate(application.createdAt)}</p>
                       </div>
                     </div>
@@ -209,7 +209,7 @@ export default function Status() {
                       <div className="flex items-center space-x-2">
                         <MapPin className="w-4 h-4 text-neutral-500" />
                         <div>
-                          <p className="text-sm font-medium">Arrival Date</p>
+                          <p className="text-sm font-medium">{t('status.arrival.date')}</p>
                           <p className="text-sm text-neutral-600">{formatDate(application.arrivalDate)}</p>
                         </div>
                       </div>
@@ -219,7 +219,7 @@ export default function Status() {
                       <div className="flex items-center space-x-2">
                         <MapPin className="w-4 h-4 text-neutral-500" />
                         <div>
-                          <p className="text-sm font-medium">Travel Date</p>
+                          <p className="text-sm font-medium">{t('status.travel.date')}</p>
                           <p className="text-sm text-neutral-600">{formatDate(application.travelDate)}</p>
                         </div>
                       </div>
@@ -230,7 +230,7 @@ export default function Status() {
                     <div className="flex items-center space-x-2">
                       <CreditCard className="w-4 h-4 text-neutral-500" />
                       <div>
-                        <p className="text-sm font-medium">Total Amount</p>
+                        <p className="text-sm font-medium">{t('status.total.amount')}</p>
                         <p className="text-sm text-neutral-600">${application.totalAmount}</p>
                       </div>
                     </div>
@@ -238,7 +238,7 @@ export default function Status() {
                     <div className="flex items-center space-x-2">
                       <CreditCard className="w-4 h-4 text-neutral-500" />
                       <div>
-                        <p className="text-sm font-medium">Payment Status</p>
+                        <p className="text-sm font-medium">{t('status.payment.status')}</p>
                         <Badge className={getStatusColor(application.paymentStatus)}>
                           {application.paymentStatus.toUpperCase()}
                         </Badge>
@@ -247,7 +247,7 @@ export default function Status() {
                     
                     {searchType === "visa" && application.processingType && (
                       <div>
-                        <p className="text-sm font-medium">Processing Type</p>
+                        <p className="text-sm font-medium">{t('status.processing.type')}</p>
                         <p className="text-sm text-neutral-600">{application.processingType}</p>
                       </div>
                     )}
@@ -259,15 +259,15 @@ export default function Status() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium text-green-800">
-                          {searchType === "visa" ? "E-Visa" : "Insurance Certificate"} Ready
+                          {searchType === "visa" ? t('status.evisa.ready') : t('status.insurance.ready')}
                         </p>
                         <p className="text-sm text-green-600">
-                          Your {searchType === "visa" ? "e-visa" : "insurance certificate"} is ready for download
+                          {searchType === "visa" ? t('status.evisa.download.ready') : t('status.insurance.download.ready')}
                         </p>
                       </div>
                       <Button className="bg-green-600 hover:bg-green-700">
                         <Download className="w-4 h-4 mr-2" />
-                        Download
+                        {t('status.download')}
                       </Button>
                     </div>
                   </div>
@@ -276,7 +276,7 @@ export default function Status() {
                 {application.status === "pending" && (
                   <Alert className="border-yellow-200 bg-yellow-50">
                     <AlertDescription className="text-yellow-800">
-                      Your application is being processed. You will receive an email notification once it's approved.
+                      {t('status.processing.message')}
                     </AlertDescription>
                   </Alert>
                 )}
