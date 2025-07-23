@@ -19,11 +19,9 @@ import turkeyLogo from "@/assets/turkey-logo.png";
 import newTurkeyLogo from "@assets/ChatGPT Image 18 Tem 2025 01_37_34_1752880645933.png";
 import diverseTravelersBg from "@assets/ChatGPT Image 23 Tem 2025 15_14_53_1753272924608.png";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useLocation } from "wouter";
 
 export default function Insurance() {
   const { t } = useLanguage();
-  const [, setLocation] = useLocation();
   const [selectedProduct, setSelectedProduct] = useState<InsuranceProduct | null>(null);
   
   // Get country from URL parameters
@@ -102,27 +100,97 @@ export default function Insurance() {
           return { name: file.name, data: base64 };
         })) : null;
 
-      // Save data to localStorage and redirect to preview page
-      const insuranceApplicationData = {
+      // First create the insurance application
+      const applicationResponse = await apiRequest("POST", "/api/insurance/applications", {
         ...applicationData,
-        selectedProduct,
-        tripDurationDays,
-        parentIdPhotosData,
+        productId: selectedProduct.id,
+        totalAmount: selectedProduct.price,
+        tripDurationDays: tripDurationDays,
+        dateOfBirth: applicationData.dateOfBirth,
+        parentIdPhotos: parentIdPhotosData,
         countryOfOrigin: applicationData.nationality || countryFromUrl,
-      };
-
-      localStorage.setItem('insuranceApplicationData', JSON.stringify(insuranceApplicationData));
-      setLocation('/insurance-preview');
+      });
+      const applicationData2 = await applicationResponse.json();
       
-      return { success: true };
+      // Then create payment - let server generate unique orderRef
+      const paymentResponse = await apiRequest("POST", "/api/payment/create", {
+        amount: selectedProduct.price,
+        currency: "USD",
+        description: `Turkey Travel Insurance - ${selectedProduct.name}`,
+        customerEmail: applicationData.email,
+        customerName: `${applicationData.firstName} ${applicationData.lastName}`
+      });
+      
+      const paymentData = await paymentResponse.json();
+      
+      if (paymentData.success && paymentData.paymentUrl) {
+        setCurrentOrderId(applicationData2.applicationNumber);
+        setPaymentRedirectUrl(paymentData.paymentUrl);
+        
+        // Enhanced redirect approach for mobile compatibility
+        const redirectToPayment = () => {
+          try {
+            console.log('[Insurance Payment Debug] Starting redirect process');
+            console.log('[Insurance Payment Debug] Payment URL:', paymentData.paymentUrl);
+            
+            // Always show success toast first
+            toast({
+              title: t('insurance.payment.created'),
+              description: `${t('insurance.payment.redirecting')} ${t('order')}: ${applicationData2.applicationNumber}`,
+              duration: 5000,
+            });
+            
+            // Direct location.href redirect
+            setTimeout(() => {
+              window.location.href = paymentData.paymentUrl;
+            }, 500);
+            
+          } catch (error) {
+            console.error('[Insurance Payment Debug] Redirect error:', error);
+            
+            // Ultimate fallback: show manual link
+            toast({
+              title: t('insurance.payment.ready'),
+              description: t('insurance.payment.manual'),
+              action: (
+                <button 
+                  onClick={() => {
+                    try {
+                      window.open(paymentData.paymentUrl, '_blank');
+                    } catch (e) {
+                      console.error('[Insurance Payment Debug] Manual link error:', e);
+                      navigator.clipboard?.writeText(paymentData.paymentUrl);
+                    }
+                  }}
+                  className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+                >
+                  {t('insurance.payment.continue')}
+                </button>
+              ),
+              duration: 15000,
+            });
+          }
+        };
+        
+        // Start redirect process immediately
+        redirectToPayment();
+      } else {
+        throw new Error(paymentData.error || t('insurance.payment.failed'));
+      }
+      
+      return applicationData2;
     },
-    onSuccess: () => {
-      // Successfully saved to localStorage and redirected to preview
+    onSuccess: (data) => {
+      toast({
+        title: "Application Submitted",
+        description: `Application number: ${data.applicationNumber}. Redirecting to payment...`,
+        duration: 5000,
+      });
     },
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.message || "An error occurred while saving your application",
+        description: error.message,
         variant: "destructive",
       });
     },

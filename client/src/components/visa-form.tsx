@@ -21,7 +21,6 @@ import { apiRequest } from "@/lib/queryClient";
 import { ArrowLeft, ArrowRight, CreditCard } from "lucide-react";
 import type { Country } from "@shared/schema";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { useLocation } from "wouter";
 
 const applicationSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -55,7 +54,6 @@ const processingTypes = [
 
 export function VisaForm() {
   const { t } = useLanguage();
-  const [, setLocation] = useLocation();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
   const [selectedDocumentType, setSelectedDocumentType] = useState("");
@@ -104,29 +102,105 @@ export function VisaForm() {
 
   const createApplicationMutation = useMutation({
     mutationFn: async (data: ApplicationFormData) => {
-      // Save data to localStorage and redirect to preview page
-      const applicationData = {
+      // First create the application
+      const applicationResponse = await apiRequest("POST", "/api/applications", {
         ...data,
         countryId: selectedCountry?.id,
-        supportingDocument: hasSupportingDocument === true ? supportingDocumentDetails?.type || 'none' : 'none',
-        supportingDocumentNumber: data.supportingDocumentNumber || '',
-        supportingDocumentStartDate: data.supportingDocumentStartDate || '',
-        supportingDocumentEndDate: data.supportingDocumentEndDate || '',
-      };
-
-      localStorage.setItem('visaApplicationData', JSON.stringify(applicationData));
-      setLocation('/application-preview');
+        countryOfOrigin: selectedCountry?.name,
+        totalAmount: calculateTotal().toString(),
+        supportingDocumentNumber: data.supportingDocumentNumber || null,
+        supportingDocumentStartDate: data.supportingDocumentStartDate || null,
+        supportingDocumentEndDate: data.supportingDocumentEndDate || null,
+      });
+      const applicationData = await applicationResponse.json();
       
-      return { success: true };
+      // Then create payment - let server generate unique orderRef
+      const paymentResponse = await apiRequest("POST", "/api/payment/create", {
+        amount: calculateTotal(),
+        currency: "USD",
+        description: `Turkey E-Visa Application - ${applicationData.applicationNumber}`,
+        customerEmail: data.email,
+        customerName: `${data.firstName} ${data.lastName}`
+      });
+      
+      const paymentData = await paymentResponse.json();
+      
+      if (paymentData.success && paymentData.paymentUrl) {
+        setCurrentOrderId(applicationData.applicationNumber);
+        setPaymentRedirectUrl(paymentData.paymentUrl);
+        
+        // Enhanced redirect approach for mobile compatibility
+        const redirectToPayment = () => {
+          try {
+            console.log('[Payment Debug] Starting redirect process');
+            console.log('[Payment Debug] Payment URL:', paymentData.paymentUrl);
+            
+            // Always show success toast first
+            toast({
+              title: "Payment Created",
+              description: `Redirecting to payment... Order: ${applicationData.applicationNumber}`,
+              duration: 5000,
+            });
+            
+            // Direct location.href redirect
+            setTimeout(() => {
+              window.location.href = paymentData.paymentUrl;
+            }, 500);
+            
+          } catch (error) {
+            console.error('[Payment Debug] Redirect error:', error);
+            
+            // Ultimate fallback: show manual link
+            toast({
+              title: "Payment Link Ready",
+              description: "Click the button to continue to payment",
+              action: (
+                <button 
+                  onClick={() => {
+                    try {
+                      window.open(paymentData.paymentUrl, '_blank');
+                    } catch (e) {
+                      console.error('[Payment Debug] Manual link error:', e);
+                      navigator.clipboard?.writeText(paymentData.paymentUrl);
+                    }
+                  }}
+                  className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+                >
+                  Continue to Payment
+                </button>
+              ),
+              duration: 15000,
+            });
+          }
+        };
+        
+        // Start redirect process immediately
+        redirectToPayment();
+      } else {
+        throw new Error(paymentData.error || "Payment initialization failed");
+      }
+      
+      return applicationData;
     },
-    onSuccess: () => {
-      // Successfully saved to localStorage and redirected to preview
+    onSuccess: (data) => {
+      toast({
+        title: "Application Submitted",
+        description: `Your application number is ${data.applicationNumber}. Redirecting to payment page...`,
+        duration: 5000,
+      });
     },
     onError: (error: any) => {
+      console.error('[Mobile Payment] Application/Payment error:', error);
+      
+      const isPaymentError = error.message?.includes('payment') || error.message?.includes('GPay');
+      
       toast({
-        title: "Error",
-        description: error.message || "An error occurred while saving your application",
+        title: isPaymentError ? "Payment Error" : "Application Error",
+        description: isPaymentError ? 
+          "There was an issue initializing payment. Please try again or contact support." :
+          error.message,
         variant: "destructive",
+        duration: 8000,
       });
     },
   });
