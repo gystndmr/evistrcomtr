@@ -320,14 +320,18 @@ export function VisaForm() {
         return;
       }
       if (hasSupportingDocument === false) {
-        // Add delay and confirmation before redirecting to insurance
+        // Add country parameter if available for insurance tracking
+        const countryParam = selectedCountry ? `?country=${encodeURIComponent(selectedCountry.name)}` : '';
+        
+        // Immediate redirect for better UX
         toast({
           title: "No Supporting Documents Required",
           description: "Redirecting to travel insurance options...",
+          duration: 1000,
         });
         setTimeout(() => {
-          window.location.href = "/insurance";
-        }, 2000); // 2 second delay
+          window.location.href = `/insurance${countryParam}`;
+        }, 500); // Reduced to 0.5 second delay
         return;
       }
       if (hasSupportingDocument === true) {
