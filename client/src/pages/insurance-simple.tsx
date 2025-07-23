@@ -386,7 +386,7 @@ export default function Insurance() {
       <Header />
       
       {/* Simple Header with Background */}
-      <section className="relative py-16 border-b border-gray-200 overflow-hidden">
+      <section className="relative py-8 sm:py-12 lg:py-16 border-b border-gray-200 overflow-hidden">
         <div 
           className="absolute inset-0 bg-no-repeat opacity-70"
           style={{
@@ -398,8 +398,8 @@ export default function Insurance() {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-50/40 to-white/50" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-3">Turkey Travel Insurance</h1>
-            <p className="text-lg text-white drop-shadow-md">Complete your application below</p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white drop-shadow-lg mb-3">Turkey Travel Insurance</h1>
+            <p className="text-base sm:text-lg text-white drop-shadow-md">Complete your application below</p>
           </div>
         </div>
       </section>

@@ -34,11 +34,8 @@ export function SupportingDocumentCheck({
     if (!value) {
       setProcessingType("");
     }
-    // Add slight delay for better UX when no document is selected
-    const delay = value === false ? 1000 : 0; // 1 second delay for "No" selection
-    setTimeout(() => {
-      handleDetailsChange();
-    }, delay);
+    // Immediate call for better UX - no delay needed
+    handleDetailsChange();
   };
 
   const handleDocumentTypeChange = (type: string) => {
