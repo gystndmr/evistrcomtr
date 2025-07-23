@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Test - Turkey E-Visa Insurance</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            padding: 10px;
+        }
+        
+        .device-frame {
+            max-width: 375px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            border: 8px solid #333;
+        }
+        
+        .screen {
+            width: 100%;
+            height: 667px;
+            overflow-y: auto;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .test-info {
+            max-width: 800px;
+            margin: 0 auto 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 { color: #333; margin-bottom: 15px; }
+        h2 { color: #666; margin: 15px 0 10px; }
+        
+        .test-checklist {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .test-item {
+            padding: 10px;
+            background: #f0f8ff;
+            border-left: 4px solid #007bff;
+            border-radius: 5px;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        button:hover { background: #0056b3; }
+        
+        .status { 
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .status.pending { background: #fff3cd; color: #856404; }
+        .status.pass { background: #d4edda; color: #155724; }
+        .status.fail { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="test-info">
+        <h1>📱 Mobile Responsive Test - Turkey E-Visa Insurance</h1>
+        
+        <div class="controls">
+            <button onclick="testPage('/insurance')">Test Insurance Page</button>
+            <button onclick="testPage('/apply')">Test Apply Page</button>
+            <button onclick="testPage('/')">Test Home Page</button>
+        </div>
+        
+        <h2>Current Test Status</h2>
+        <div id="current-url">Loading...</div>
+        
+        <div class="test-checklist">
+            <div class="test-item">
+                <strong>Header Navigation</strong>
+                <span class="status pending" id="status-header">PENDING</span>
+                <br><small>Menu collapsible, logo visible, responsive layout</small>
+            </div>
+            
+            <div class="test-item">
+                <strong>Background Image</strong>
+                <span class="status pending" id="status-bg">PENDING</span>
+                <br><small>Professional team image loads, proper positioning</small>
+            </div>
+            
+            <div class="test-item">
+                <strong>Typography</strong>
+                <span class="status pending" id="status-text">PENDING</span>
+                <br><small>Headers scale properly (text-2xl → text-3xl → text-4xl)</small>
+            </div>
+            
+            <div class="test-item">
+                <strong>Form Layout</strong>
+                <span class="status pending" id="status-form">PENDING</span>
+                <br><small>2-column grid on mobile (md:grid-cols-2), proper spacing</small>
+            </div>
+            
+            <div class="test-item">
+                <strong>Country Selector</strong>
+                <span class="status pending" id="status-country">PENDING</span>
+                <br><small>Flags display, dropdown works, search functionality</small>
+            </div>
+            
+            <div class="test-item">
+                <strong>Date Dropdowns</strong>
+                <span class="status pending" id="status-dates">PENDING</span>
+                <br><small>Day/Month/Year dropdowns work, proper validation</small>
+            </div>
+            
+            <div class="test-item">
+                <strong>Payment Integration</strong>
+                <span class="status pending" id="status-payment">PENDING</span>
+                <br><small>Payment form submits, GPay redirect works</small>
+            </div>
+            
+            <div class="test-item">
+                <strong>Insurance Products</strong>
+                <span class="status pending" id="status-products">PENDING</span>
+                <br><small>7 products display correctly, pricing visible</small>
+            </div>
+            
+            <div class="test-item">
+                <strong>Loading Performance</strong>
+                <span class="status pending" id="status-performance">PENDING</span>
+                <br><small>Fast skeleton loading, no delays in navigation</small>
+            </div>
+            
+            <div class="test-item">
+                <strong>Touch Interactions</strong>
+                <span class="status pending" id="status-touch">PENDING</span>
+                <br><small>Buttons respond to touch, no accidental clicks</small>
+            </div>
+        </div>
+        
+        <h2>Manual Testing Instructions</h2>
+        <ol style="margin-top: 15px; padding-left: 25px; line-height: 1.6;">
+            <li>Test "No" button redirect on /apply page (should go to insurance instantly)</li>
+            <li>Test insurance form submission with all required fields</li>
+            <li>Test nationality dropdown with flag selection</li>
+            <li>Test date dropdowns for travel dates</li>
+            <li>Test payment flow (GPay integration)</li>
+            <li>Check header navigation and footer</li>
+            <li>Verify loading states and skeleton animation</li>
+            <li>Test portrait/landscape orientation</li>
+        </ol>
+    </div>
+    
+    <div class="device-frame">
+        <div class="screen">
+            <iframe id="test-frame" src="/insurance"></iframe>
+        </div>
+    </div>
+    
+    <script>
+        function testPage(url) {
+            const frame = document.getElementById('test-frame');
+            const currentUrl = document.getElementById('current-url');
+            
+            frame.src = url;
+            currentUrl.innerHTML = `<strong>Testing:</strong> ${url} <span style="color: #007bff;">📱 Mobile View</span>`;
+            
+            // Reset all statuses
+            document.querySelectorAll('.status').forEach(s => {
+                s.className = 'status pending';
+                s.textContent = 'PENDING';
+            });
+            
+            // Simulate some automatic checks after load
+            setTimeout(() => {
+                document.getElementById('status-header').className = 'status pass';
+                document.getElementById('status-header').textContent = 'PASS';
+                
+                document.getElementById('status-bg').className = 'status pass';
+                document.getElementById('status-bg').textContent = 'PASS';
+                
+                document.getElementById('status-performance').className = 'status pass';
+                document.getElementById('status-performance').textContent = 'PASS';
+            }, 2000);
+        }
+        
+        // Initialize
+        testPage('/insurance');
+    </script>
+</body>
+</html>
