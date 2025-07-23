@@ -35,12 +35,7 @@ export function SupportingDocumentCheck({
     onHasSupportingDocument(value);
     if (!value) {
       setProcessingType("");
-      // Immediate redirect to insurance for "No" selection
-      toast({
-        title: "No Supporting Documents Required",
-        description: "Redirecting to travel insurance options...",
-        duration: 500,
-      });
+      // Ultra-fast redirect to insurance for "No" selection - no toast delay
       window.location.href = '/insurance';
       return;
     }

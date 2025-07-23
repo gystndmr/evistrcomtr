@@ -48,12 +48,16 @@ export default function Insurance() {
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["/api/insurance/products"],
-    staleTime: 5 * 60 * 1000, // 5 minutes cache
+    staleTime: 10 * 60 * 1000, // 10 minutes cache for faster loading
+    refetchOnWindowFocus: false, // Don't refetch on focus
+    refetchOnMount: false, // Don't refetch if data exists
   }) as { data: InsuranceProduct[], isLoading: boolean };
 
   const { data: countries = [] } = useQuery({
     queryKey: ["/api/countries"],
-    staleTime: 5 * 60 * 1000, // 5 minutes cache
+    staleTime: 10 * 60 * 1000, // 10 minutes cache for faster loading
+    refetchOnWindowFocus: false, // Don't refetch on focus
+    refetchOnMount: false, // Don't refetch if data exists
   }) as { data: any[], isLoading: boolean };
 
 
@@ -365,17 +369,38 @@ export default function Insurance() {
     return Shield;
   };
 
-  // Show loading state for insurance products
+  // Show fast skeleton loading state for insurance products
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gray-50">
         <Header />
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading insurance options...</p>
+        
+        {/* Skeleton Header */}
+        <section className="relative py-8 sm:py-12 lg:py-16 border-b border-gray-200 overflow-hidden">
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gray-200 rounded-full mb-4 animate-pulse"></div>
+            <div className="h-8 bg-gray-200 rounded mx-auto mb-4 animate-pulse max-w-md"></div>
+            <div className="h-4 bg-gray-200 rounded mx-auto animate-pulse max-w-lg"></div>
           </div>
-        </div>
+        </section>
+
+        {/* Skeleton Products */}
+        <section className="py-8 sm:py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1,2,3,4,5,6].map((i) => (
+                <div key={i} className="border rounded-lg p-4 bg-white animate-pulse">
+                  <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-8 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded mb-4"></div>
+                  <div className="h-10 bg-gray-200 rounded"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+        
         <Footer />
       </div>
     );
