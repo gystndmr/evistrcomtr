@@ -4,7 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/contexts/LanguageContext";
-import { CookieConsent } from "@/components/cookie-consent";
+
 import Home from "@/pages/home";
 import Application from "@/pages/application";
 import Insurance from "@/pages/insurance-simple";
@@ -63,7 +63,7 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Router />
-          <CookieConsent />
+
         </TooltipProvider>
       </LanguageProvider>
     </QueryClientProvider>
