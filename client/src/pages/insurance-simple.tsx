@@ -438,7 +438,25 @@ export default function Insurance() {
         </div>
       </section>
 
-
+      {/* Legal Requirement Notice */}
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="bg-gradient-to-r from-red-50 to-orange-50 border-l-4 border-red-500 p-6 rounded-lg shadow-sm">
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <Shield className="h-6 w-6 text-red-600 mt-1" />
+            </div>
+            <div className="ml-3">
+              <h3 className="text-lg font-semibold text-red-800 mb-3">
+                🇹🇷 Legal Requirement
+              </h3>
+              <p className="text-red-700 font-medium leading-relaxed">
+                <strong>According to Law No. 6458 on Foreigners,</strong> you are required to have 
+                valid health insurance for the entire duration of your stay in Turkey.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Main Form */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
