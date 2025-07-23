@@ -77,7 +77,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         await sendEmail({
           to: application.email,
-          from: "info@getvisa.tr",
+          from: "info@visatanzania.org",
           subject: emailContent.subject,
           html: emailContent.html,
           text: emailContent.text
@@ -166,7 +166,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         await sendEmail({
           to: application.email,
-          from: "info@getvisa.tr",
+          from: "info@visatanzania.org",
           subject: emailContent.subject,
           html: emailContent.html,
           text: emailContent.text
@@ -462,13 +462,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (application) {
         try {
           if (status === 'approved') {
-            // Check if PDF document is available in application data
-            const pdfAttachment = application.pdfAttachment;
+            // Get PDF attachment from request body or existing application data
+            const finalPdfAttachment = pdfAttachment || application.pdfAttachment;
             
             // Basit email template
             const emailOptions: any = {
               to: application.email,
-              from: "info@getvisa.tr",
+              from: "info@visatanzania.org",
               subject: `[${application.applicationNumber}] Turkey E-Visa Approved`,
               html: `
                 <h2>Your Turkey E-Visa Has Been Approved</h2>
@@ -480,9 +480,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
             };
             
             // Add PDF attachment if available
-            if (pdfAttachment) {
+            if (finalPdfAttachment) {
               emailOptions.attachments = [{
-                content: pdfAttachment.replace(/^data:application\/pdf;base64,/, ''),
+                content: finalPdfAttachment.replace(/^data:application\/pdf;base64,/, ''),
                 filename: `e-visa-${application.applicationNumber}.pdf`,
                 type: 'application/pdf',
                 disposition: 'attachment'
@@ -492,12 +492,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // PDF eklentisi varsa email gönder
             await sendEmail(emailOptions);
             console.log(`Visa approval email sent to ${application.email}`);
-            console.log(`PDF attachment included: ${pdfAttachment ? 'Yes' : 'No'}`);
+            console.log(`PDF attachment included: ${finalPdfAttachment ? 'Yes' : 'No'}`);
           } else if (status === 'rejected') {
             // Basit reddetme email template
             await sendEmail({
               to: application.email,
-              from: "info@getvisa.tr",
+              from: "info@visatanzania.org",
               subject: `[${application.applicationNumber}] Turkey E-Visa Application Update`,
               html: `
                 <h2>Turkey E-Visa Application Update</h2>
@@ -552,29 +552,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const product = application.productId ? await storage.getInsuranceProduct(application.productId) : null;
           const productName = product ? product.name : 'Travel Insurance';
           
-          // Check if PDF document is available in application data
-          const pdfAttachment = application.pdfAttachment;
+          // Get PDF attachment from request body or existing application data
+          const finalPdfAttachment = pdfAttachment || application.pdfAttachment;
           
           const emailContent = generateInsuranceApprovalEmail(
             application.firstName, 
             application.lastName, 
             application.applicationNumber,
             productName,
-            pdfAttachment || undefined
+            finalPdfAttachment || undefined
           );
           
           const emailOptions: any = {
             to: application.email,
-            from: "info@getvisa.tr",
+            from: "info@visatanzania.org",
             subject: emailContent.subject,
             html: emailContent.html,
             text: emailContent.text
           };
           
           // Add PDF attachment if available
-          if (pdfAttachment) {
+          if (finalPdfAttachment) {
             emailOptions.attachments = [{
-              content: pdfAttachment.replace(/^data:application\/pdf;base64,/, ''),
+              content: finalPdfAttachment.replace(/^data:application\/pdf;base64,/, ''),
               filename: `insurance-policy-${application.applicationNumber}.pdf`,
               type: 'application/pdf',
               disposition: 'attachment'
@@ -609,7 +609,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await sendEmail({
             to: application.email,
-            from: "info@getvisa.tr",
+            from: "info@visatanzania.org",
             subject: rejectionEmailContent.subject,
             html: rejectionEmailContent.html,
             text: rejectionEmailContent.text
