@@ -3,26 +3,26 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(250, 100%, 98%);
-  --foreground: hsl(220, 18%, 20%);
-  --muted: hsl(220, 14%, 96%);
-  --muted-foreground: hsl(220, 8%, 46%);
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(220, 9%, 15%);
+  --muted: hsl(220, 13%, 95%);
+  --muted-foreground: hsl(220, 9%, 46%);
   --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(220, 18%, 20%);
+  --popover-foreground: hsl(220, 9%, 15%);
   --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(220, 18%, 20%);
+  --card-foreground: hsl(220, 9%, 15%);
   --border: hsl(220, 13%, 91%);
   --input: hsl(220, 13%, 91%);
-  --primary: hsl(262, 83%, 58%);
-  --primary-foreground: hsl(250, 100%, 98%);
-  --secondary: hsl(220, 14%, 96%);
-  --secondary-foreground: hsl(220, 18%, 20%);
-  --accent: hsl(262, 100%, 97%);
-  --accent-foreground: hsl(262, 83%, 58%);
+  --primary: hsl(240, 100%, 50%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(220, 13%, 95%);
+  --secondary-foreground: hsl(220, 9%, 15%);
+  --accent: hsl(240, 100%, 96%);
+  --accent-foreground: hsl(240, 100%, 50%);
   --destructive: hsl(0, 84%, 60%);
   --destructive-foreground: hsl(0, 0%, 100%);
-  --ring: hsl(262, 83%, 58%);
-  --radius: 0.75rem;
+  --ring: hsl(240, 100%, 50%);
+  --radius: 0.5rem;
   
   /* Official Turkey Government Colors */
   --turkey-red: hsl(0, 100%, 50%);
@@ -44,58 +44,50 @@
 }
 
 .dark {
-  --background: hsl(220, 18%, 12%);
-  --foreground: hsl(250, 100%, 98%);
-  --muted: hsl(220, 15%, 20%);
-  --muted-foreground: hsl(220, 8%, 65%);
-  --popover: hsl(220, 15%, 16%);
-  --popover-foreground: hsl(250, 100%, 98%);
-  --card: hsl(220, 15%, 16%);
-  --card-foreground: hsl(250, 100%, 98%);
-  --border: hsl(220, 15%, 20%);
-  --input: hsl(220, 15%, 20%);
-  --primary: hsl(262, 83%, 58%);
-  --primary-foreground: hsl(250, 100%, 98%);
-  --secondary: hsl(220, 15%, 20%);
-  --secondary-foreground: hsl(250, 100%, 98%);
-  --accent: hsl(262, 83%, 58%);
-  --accent-foreground: hsl(250, 100%, 98%);
+  --background: hsl(220, 9%, 9%);
+  --foreground: hsl(0, 0%, 95%);
+  --muted: hsl(220, 9%, 15%);
+  --muted-foreground: hsl(220, 9%, 60%);
+  --popover: hsl(220, 9%, 9%);
+  --popover-foreground: hsl(0, 0%, 95%);
+  --card: hsl(220, 9%, 9%);
+  --card-foreground: hsl(0, 0%, 95%);
+  --border: hsl(220, 9%, 15%);
+  --input: hsl(220, 9%, 15%);
+  --primary: hsl(240, 100%, 60%);
+  --primary-foreground: hsl(0, 0%, 9%);
+  --secondary: hsl(220, 9%, 15%);
+  --secondary-foreground: hsl(0, 0%, 95%);
+  --accent: hsl(240, 100%, 60%);
+  --accent-foreground: hsl(0, 0%, 9%);
   --destructive: hsl(0, 84%, 60%);
   --destructive-foreground: hsl(0, 0%, 100%);
-  --ring: hsl(262, 83%, 58%);
+  --ring: hsl(240, 100%, 60%);
   --radius: 0.75rem;
 }
 
-/* Modern Glass Morphism Effect */
-.glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+/* Clean Modern Effects */
+.clean-card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
 }
 
-/* Gradient Text */
-.gradient-text {
-  background: linear-gradient(135deg, hsl(262, 83%, 58%) 0%, hsl(200, 98%, 39%) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.clean-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
-/* Floating Animation */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
+/* Minimal Gradient */
+.blue-gradient {
+  background: linear-gradient(135deg, hsl(240, 100%, 50%) 0%, hsl(220, 100%, 60%) 100%);
 }
 
-.float-animation {
-  animation: float 3s ease-in-out infinite;
-}
-
-/* Slide Up Animation */
-@keyframes slideUp {
+/* Fade In Animation */
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -103,26 +95,39 @@
   }
 }
 
-.slide-up {
-  animation: slideUp 0.6s ease-out;
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
 }
 
-/* Modern Card Hover */
-.modern-card {
-  transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+/* Clean Button Styles */
+.btn-primary {
+  background: hsl(240, 100%, 50%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
 }
 
-.modern-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+.btn-primary:hover {
+  background: hsl(240, 100%, 45%);
+  transform: translateY(-1px);
 }
 
-/* Purple Gradient Background */
-.purple-gradient {
-  background: linear-gradient(135deg, hsl(262, 83%, 58%) 0%, hsl(280, 100%, 70%) 50%, hsl(240, 100%, 85%) 100%);
+.btn-secondary {
+  background: transparent;
+  color: hsl(240, 100%, 50%);
+  border: 2px solid hsl(240, 100%, 50%);
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: hsl(240, 100%, 50%);
+  color: white;
 }
 
 @layer base {

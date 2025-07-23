@@ -2,122 +2,138 @@ import { Link } from "wouter";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Zap, Shield, ArrowRight, Globe } from "lucide-react";
+import { FileText, Shield, Clock, ArrowRight, Check, Globe, Star } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Home() {
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-violet-50">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       
-      {/* Modern Hero Section */}
-      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
-        {/* Animated Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
-          <div className="absolute top-40 right-20 w-72 h-72 bg-violet-300 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-75"></div>
-          <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-150"></div>
-        </div>
-
-        {/* Main Content */}
-        <div className="relative z-10 text-center px-4 max-w-6xl mx-auto">
-          <div className="slide-up">
-            <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
-              <Sparkles className="w-4 h-4" />
-              Modern Digital Service Platform
-            </div>
-            
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 gradient-text leading-tight">
-              Turkey Travel
-              <br />
-              <span className="text-6xl md:text-8xl">Services</span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
-              Fast, secure, and professional e-visa applications and travel insurance services for Turkey
-            </p>
-
-            {/* Modern Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <Link href="/application">
-                <Button size="lg" className="group px-8 py-4 text-lg font-semibold bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300">
-                  Apply for E-Visa
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
+      {/* Clean Hero Section */}
+      <section className="bg-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="fade-in">
+              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+                Turkey E-Visa
+                <span className="block text-blue-600">Application</span>
+              </h1>
+              <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+                Fast, secure, and official e-visa processing for Turkey. Get your visa approved in minutes with our streamlined digital platform.
+              </p>
               
-              <Link href="/status">
-                <Button variant="outline" size="lg" className="px-8 py-4 text-lg font-semibold border-2 hover:bg-primary hover:text-white transition-all duration-300">
-                  Check Application Status
-                </Button>
-              </Link>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <Link href="/application">
+                  <Button className="btn-primary text-lg px-8 py-4">
+                    Apply for E-Visa
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </Link>
+                <Link href="/status">
+                  <Button className="btn-secondary text-lg px-8 py-4">
+                    Check Status
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Modern Features Section */}
-      <section className="py-20 bg-white">
+      {/* Features Grid */}
+      <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Our Platform?</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Experience the future of travel documentation with our cutting-edge digital platform
-            </p>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose Our Platform</h2>
+            <p className="text-lg text-gray-600">Professional e-visa processing with guaranteed results</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <div className="modern-card rounded-2xl p-8 text-center float-animation">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-violet-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Zap className="w-8 h-8 text-white" />
+            <div className="clean-card rounded-lg p-8 text-center">
+              <div className="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Clock className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Lightning Fast</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Get your e-visa approved in minutes with our streamlined digital processing system
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Fast Processing</h3>
+              <p className="text-gray-600">
+                Get your e-visa approved in just 15 minutes with our automated processing system
               </p>
             </div>
 
-            {/* Feature 2 */}
-            <div className="modern-card rounded-2xl p-8 text-center float-animation delay-75">
-              <div className="w-16 h-16 bg-gradient-to-r from-violet-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <div className="clean-card rounded-lg p-8 text-center">
+              <div className="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Shield className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">100% Secure</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Your personal data is protected with enterprise-grade security and encryption
+              <h3 className="text-xl font-bold text-gray-900 mb-3">100% Secure</h3>
+              <p className="text-gray-600">
+                Your personal data is protected with bank-level security and encryption
               </p>
             </div>
 
-            {/* Feature 3 */}
-            <div className="modern-card rounded-2xl p-8 text-center float-animation delay-150">
-              <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <div className="clean-card rounded-lg p-8 text-center">
+              <div className="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Globe className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Global Access</h3>
-              <p className="text-gray-600 leading-relaxed">
-                Apply from anywhere in the world with support for 6 languages and 24/7 service
+              <h3 className="text-xl font-bold text-gray-900 mb-3">24/7 Support</h3>
+              <p className="text-gray-600">
+                Round-the-clock customer support in multiple languages for all your needs
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Travel Insurance CTA */}
-      <section className="py-20 purple-gradient">
+      {/* Process Steps */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Simple Application Process</h2>
+            <p className="text-lg text-gray-600">Get your Turkey e-visa in 3 easy steps</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-lg">
+                1
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Fill Application</h3>
+              <p className="text-gray-600">Complete the online form with your personal and travel information</p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-lg">
+                2
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Make Payment</h3>
+              <p className="text-gray-600">Secure payment processing with multiple payment options available</p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold text-lg">
+                3
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Download E-Visa</h3>
+              <p className="text-gray-600">Receive your approved e-visa via email and download instantly</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Insurance CTA */}
+      <section className="py-16 blue-gradient">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="glass rounded-3xl p-12 max-w-4xl mx-auto">
-            <h2 className="text-4xl font-bold text-white mb-6">
-              Protect Your Journey
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl font-bold text-white mb-4">
+              Need Travel Insurance?
             </h2>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Comprehensive travel insurance coverage for your Turkey adventure. Get instant protection and peace of mind.
+            <p className="text-xl text-white/90 mb-8">
+              Protect your Turkey adventure with comprehensive travel insurance coverage
             </p>
             <Link href="/insurance">
-              <Button size="lg" variant="secondary" className="px-8 py-4 text-lg font-semibold bg-white text-purple-700 hover:bg-gray-50 shadow-lg hover:shadow-xl transition-all duration-300">
-                Get Travel Insurance
+              <Button className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg font-semibold">
+                Get Insurance
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
@@ -125,25 +141,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-gray-50">
+      {/* Stats */}
+      <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div className="slide-up">
-              <div className="text-4xl font-bold text-primary mb-2">50K+</div>
+            <div>
+              <div className="text-3xl font-bold text-blue-600 mb-2">50K+</div>
               <div className="text-gray-600">Applications Processed</div>
             </div>
-            <div className="slide-up">
-              <div className="text-4xl font-bold text-primary mb-2">99.9%</div>
+            <div>
+              <div className="text-3xl font-bold text-blue-600 mb-2">99.9%</div>
               <div className="text-gray-600">Success Rate</div>
             </div>
-            <div className="slide-up">
-              <div className="text-4xl font-bold text-primary mb-2">24/7</div>
-              <div className="text-gray-600">Customer Support</div>
+            <div>
+              <div className="text-3xl font-bold text-blue-600 mb-2">15min</div>
+              <div className="text-gray-600">Average Processing</div>
             </div>
-            <div className="slide-up">
-              <div className="text-4xl font-bold text-primary mb-2">6</div>
-              <div className="text-gray-600">Languages Supported</div>
+            <div>
+              <div className="text-3xl font-bold text-blue-600 mb-2">24/7</div>
+              <div className="text-gray-600">Customer Support</div>
             </div>
           </div>
         </div>
