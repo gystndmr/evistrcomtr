@@ -91,11 +91,11 @@ export default function Admin() {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.type === 'application/pdf') {
-      // Dosya boyutu kontrolü (10MB limit)
-      if (file.size > 10 * 1024 * 1024) {
+      // Dosya boyutu kontrolü (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
         toast({
           title: "Hata",
-          description: "PDF dosyası çok büyük. Maksimum 10MB olmalı.",
+          description: "PDF dosyası çok büyük. Maksimum 5MB olmalı.",
           variant: "destructive",
         });
         return;
@@ -124,6 +124,19 @@ export default function Admin() {
 
   const handlePdfSubmit = () => {
     if (currentAppId && currentAppType) {
+      // PDF dosyası boyut kontrolü tekrar
+      if (pdfFile) {
+        const fileSize = Math.round((pdfFile.length * 3 / 4) / 1024 / 1024 * 100) / 100; // Base64 to MB
+        if (fileSize > 5) {
+          toast({
+            title: "Hata",
+            description: `PDF dosyası çok büyük (${fileSize}MB). Maksimum 5MB olmalı.`,
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+      
       if (currentAppType === "visa") {
         updateApplicationStatusMutation.mutate({ 
           id: currentAppId, 
@@ -646,7 +659,7 @@ export default function Admin() {
             </div>
             <div className="space-y-4 py-4">
               <div>
-                <Label htmlFor="pdf-upload">PDF Dosyası Seç (İsteğe bağlı)</Label>
+                <Label htmlFor="pdf-upload">PDF Dosyası Seç (İsteğe bağlı - Max 5MB)</Label>
                 <Input
                   id="pdf-upload"
                   type="file"
@@ -654,6 +667,9 @@ export default function Admin() {
                   onChange={handleFileUpload}
                   className="mt-2"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  PDF dosyası maksimum 5MB olmalıdır
+                </p>
                 {pdfFile && (
                   <p className="text-sm text-green-600 mt-1">
                     ✓ PDF dosyası seçildi
