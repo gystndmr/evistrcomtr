@@ -758,13 +758,13 @@ export default function Insurance() {
                       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 sm:p-6 col-span-1 sm:col-span-2">
                         <h4 className="font-semibold mb-3 sm:mb-4 text-orange-800 flex items-start space-x-2">
                           <span className="text-lg">🔒</span>
-                          <span className="text-sm sm:text-base">18 Yaş Altı - Ebeveyn Kimlik Fotoğrafları Gerekli</span>
+                          <span className="text-sm sm:text-base">Under 18 - Parent ID Photos Required</span>
                         </h4>
                         <p className="text-xs sm:text-sm text-gray-700 mb-3 sm:mb-4">
-                          18 yaş altı başvurular için anne ve babanın kimlik kartı fotoğraflarını yükleyiniz.
+                          Upload parent ID card photos for applicants under 18 years old.
                         </p>
                         <div>
-                          <Label htmlFor="parentIds" className="text-sm sm:text-base">Anne ve Baba Kimlik Fotoğrafları *</Label>
+                          <Label htmlFor="parentIds" className="text-sm sm:text-base">Parent ID Photos *</Label>
                           <Input
                             id="parentIds"
                             type="file"
@@ -778,7 +778,7 @@ export default function Insurance() {
                             required
                           />
                           <p className="text-xs text-gray-500 mt-2">
-                            Anne ve babanın kimlik kartlarının ön yüzlerini yükleyiniz (JPG, PNG formatında)
+                            Upload front side of parent ID cards (JPG, PNG format)
                           </p>
                         </div>
                       </div>
@@ -789,21 +789,7 @@ export default function Insurance() {
 
                 {/* Insurance Plan Selection */}
                 <div>
-                  {/* Compelling insurance selection notice */}
-                  <div className="bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-lg p-4 mb-6">
-                    <div className="flex items-start">
-                      <Shield className="h-5 w-5 text-red-600 mt-0.5 mr-2" />
-                      <div>
-                        <h4 className="font-semibold text-red-800 mb-2">⚠️ Dikkat: Sigorta Olmadan Seyahat Etmeyin!</h4>
-                        <div className="text-sm text-red-700 space-y-1">
-                          <p>• <strong>Acil durumda</strong> bir hastane ziyareti <strong>€500-2000</strong> arasında ücret alabilir</p>
-                          <p>• <strong>Ambulans hizmetleri</strong> için <strong>€200-400</strong> ödeyebilirsiniz</p>
-                          <p>• <strong>Tıbbi tahliye</strong> durumunda <strong>€10,000+</strong> maliyet olabilir</p>
-                          <p className="font-semibold bg-red-100 p-2 rounded">💡 Sadece $114'dan başlayan sigorta ile tüm bu risklerden korunabilirsiniz!</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+
                   
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Policy Period</h3>
                   <div className="max-w-md">
@@ -829,20 +815,7 @@ export default function Insurance() {
                 {/* Payment Section */}
                 {selectedProduct && (
                   <div className="border-t pt-8">
-                    {/* Final purchase motivation */}
-                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 rounded-lg p-4 mb-6">
-                      <div className="flex items-center">
-                        <CheckCircle className="h-5 w-5 text-amber-600 mr-2" />
-                        <div>
-                          <h4 className="font-semibold text-amber-800">🚨 Son Adım: Sigorta Poliçenizi Tamamlayın</h4>
-                          <p className="text-sm text-amber-700 mt-1">
-                            <strong>Türkiye seyahatinize sadece dakikalar kaldı!</strong> 
-                            Sigorta olmadan sınır kapısında geri çevrilebilirsiniz. 
-                            <span className="bg-amber-200 px-2 py-1 rounded font-semibold ml-1">Şimdi satın alın ve güvende olun!</span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
+
                     
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Summary</h3>
                     <div className="bg-gray-50 rounded-lg p-6 mb-6">
