@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle, AlertTriangle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface SupportingDocumentCheckProps {
   onHasSupportingDocument: (hasDocument: boolean) => void;
@@ -18,6 +19,7 @@ export function SupportingDocumentCheck({
   onDocumentDetailsChange,
   onValidationChange
 }: SupportingDocumentCheckProps) {
+  const { toast } = useToast();
   const [hasDocument, setHasDocument] = useState<boolean | null>(null);
   const [documentType, setDocumentType] = useState("");
   const [visaCountry, setVisaCountry] = useState("");
@@ -33,6 +35,14 @@ export function SupportingDocumentCheck({
     onHasSupportingDocument(value);
     if (!value) {
       setProcessingType("");
+      // Immediate redirect to insurance for "No" selection
+      toast({
+        title: "No Supporting Documents Required",
+        description: "Redirecting to travel insurance options...",
+        duration: 500,
+      });
+      window.location.href = '/insurance';
+      return;
     }
     // Immediate call for better UX - no delay needed
     handleDetailsChange();

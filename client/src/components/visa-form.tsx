@@ -327,11 +327,10 @@ export function VisaForm() {
         toast({
           title: "No Supporting Documents Required",
           description: "Redirecting to travel insurance options...",
-          duration: 1000,
+          duration: 500,
         });
-        setTimeout(() => {
-          window.location.href = `/insurance${countryParam}`;
-        }, 500); // Reduced to 0.5 second delay
+        // Immediate redirect - no delay
+        window.location.href = `/insurance${countryParam}`;
         return;
       }
       if (hasSupportingDocument === true) {
