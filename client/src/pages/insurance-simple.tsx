@@ -436,6 +436,94 @@ export default function Insurance() {
         </div>
       </section>
 
+      {/* Legal Requirement Notice - Yasal Zorunluluk */}
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="bg-gradient-to-r from-red-50 to-orange-50 border-l-4 border-red-500 p-6 rounded-lg shadow-sm">
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <Shield className="h-6 w-6 text-red-600 mt-1" />
+            </div>
+            <div className="ml-3">
+              <h3 className="text-lg font-semibold text-red-800 mb-3">
+                🇹🇷 Yasal Zorunluluk - Legal Requirement
+              </h3>
+              <div className="space-y-3">
+                <p className="text-red-700 font-medium leading-relaxed">
+                  <strong>6458 sayılı Yabancılar Yasası'na göre</strong> Türkiye'de bulunacağınız süre boyunca 
+                  <span className="bg-red-100 px-2 py-1 rounded font-bold text-red-800 mx-1">geçerli sağlık sigortasına sahip olmanız zorunludur.</span>
+                </p>
+                <p className="text-red-700 leading-relaxed">
+                  <strong>According to Law No. 6458 on Foreigners,</strong> you are required to have 
+                  valid health insurance for the entire duration of your stay in Turkey.
+                </p>
+                <div className="bg-red-100 border border-red-200 rounded-lg p-4 mt-4">
+                  <h4 className="font-semibold text-red-800 mb-2">⚠️ Önemli Uyarı - Important Warning:</h4>
+                  <ul className="text-sm text-red-700 space-y-1">
+                    <li>• Sağlık sigortası olmadan Türkiye'ye giriş yapmanız engellenebilir</li>
+                    <li>• Entry to Turkey may be denied without valid health insurance</li>
+                    <li>• Sigorta belgesi pasaport kontrolünde talep edilecektir</li>
+                    <li>• Insurance certificate will be requested during passport control</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Coverage Benefits - Compelling Benefits */}
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="bg-gradient-to-r from-blue-50 to-green-50 border-l-4 border-green-500 p-6 rounded-lg shadow-sm">
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <CheckCircle className="h-6 w-6 text-green-600 mt-1" />
+            </div>
+            <div className="ml-3">
+              <h3 className="text-lg font-semibold text-green-800 mb-3">
+                ✅ Bu Sigorta ile Korunduğunuz Alanlar - Your Coverage Includes
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <p className="text-green-700 font-medium">🏥 Acil Tıbbi Tedavi - Emergency Medical Treatment</p>
+                  <p className="text-green-700 font-medium">🚑 Ambulans Hizmetleri - Ambulance Services</p>
+                  <p className="text-green-700 font-medium">💊 İlaç Masrafları - Medication Costs</p>
+                  <p className="text-green-700 font-medium">🦷 Acil Diş Tedavisi - Emergency Dental Care</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-green-700 font-medium">✈️ Tıbbi Tahliye - Medical Evacuation</p>
+                  <p className="text-green-700 font-medium">⚰️ Cenaze Masrafları - Repatriation of Remains</p>
+                  <p className="text-green-700 font-medium">🎒 Bagaj Kaybı - Baggage Loss</p>
+                  <p className="text-green-700 font-medium">📞 24/7 Destek Hattı - Support Hotline</p>
+                </div>
+              </div>
+              <div className="bg-green-100 border border-green-200 rounded-lg p-4 mt-4">
+                <p className="text-green-800 font-semibold text-center">
+                  💰 Sağlık sigortası olmadan Türkiye'de tedavi maliyetleri çok yüksektir!<br />
+                  <span className="text-sm">Medical treatment costs in Turkey are very high without insurance!</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Urgency Notice */}
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-500 p-4 rounded-lg shadow-sm">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <Calendar className="h-5 w-5 text-amber-600 mr-2" />
+              <p className="text-amber-800 font-semibold">
+                ⏰ Seyahat tarihinden önce sigorta yaptırmanız zorunludur - Insurance must be purchased before travel
+              </p>
+            </div>
+            <Badge variant="destructive" className="bg-red-600 text-white px-3 py-1">
+              ZORUNLU - MANDATORY
+            </Badge>
+          </div>
+        </div>
+      </section>
+
       {/* Main Form */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-xl shadow-lg border border-gray-200">
@@ -785,6 +873,22 @@ export default function Insurance() {
 
                 {/* Insurance Plan Selection */}
                 <div>
+                  {/* Compelling insurance selection notice */}
+                  <div className="bg-gradient-to-r from-red-50 to-red-100 border border-red-200 rounded-lg p-4 mb-6">
+                    <div className="flex items-start">
+                      <Shield className="h-5 w-5 text-red-600 mt-0.5 mr-2" />
+                      <div>
+                        <h4 className="font-semibold text-red-800 mb-2">⚠️ Dikkat: Sigorta Olmadan Seyahat Etmeyin!</h4>
+                        <div className="text-sm text-red-700 space-y-1">
+                          <p>• <strong>Acil durumda</strong> bir hastane ziyareti <strong>€500-2000</strong> arasında ücret alabilir</p>
+                          <p>• <strong>Ambulans hizmetleri</strong> için <strong>€200-400</strong> ödeyebilirsiniz</p>
+                          <p>• <strong>Tıbbi tahliye</strong> durumunda <strong>€10,000+</strong> maliyet olabilir</p>
+                          <p className="font-semibold bg-red-100 p-2 rounded">💡 Sadece $114'dan başlayan sigorta ile tüm bu risklerden korunabilirsiniz!</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Policy Period</h3>
                   <div className="max-w-md">
                     <Label htmlFor="insurancePlan">Select Insurance Plan *</Label>
@@ -809,6 +913,21 @@ export default function Insurance() {
                 {/* Payment Section */}
                 {selectedProduct && (
                   <div className="border-t pt-8">
+                    {/* Final purchase motivation */}
+                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 rounded-lg p-4 mb-6">
+                      <div className="flex items-center">
+                        <CheckCircle className="h-5 w-5 text-amber-600 mr-2" />
+                        <div>
+                          <h4 className="font-semibold text-amber-800">🚨 Son Adım: Sigorta Poliçenizi Tamamlayın</h4>
+                          <p className="text-sm text-amber-700 mt-1">
+                            <strong>Türkiye seyahatinize sadece dakikalar kaldı!</strong> 
+                            Sigorta olmadan sınır kapısında geri çevrilebilirsiniz. 
+                            <span className="bg-amber-200 px-2 py-1 rounded font-semibold ml-1">Şimdi satın alın ve güvende olun!</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Summary</h3>
                     <div className="bg-gray-50 rounded-lg p-6 mb-6">
                       <div className="flex justify-between items-center mb-4">
