@@ -7,6 +7,7 @@ export const countries = pgTable("countries", {
   id: serial("id").primaryKey(),
   code: text("code").notNull().unique(),
   name: text("name").notNull(),
+  flag: text("flag"),
   isEligible: boolean("is_eligible").notNull().default(false),
   requiresSupportingDocs: boolean("requires_supporting_docs").notNull().default(false),
   supportedDocumentTypes: text("supported_document_types").array(),
