@@ -963,7 +963,7 @@ export function VisaForm() {
                       name="firstName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t('form.field.first.name')}</FormLabel>
+                          <FormLabel>First Name</FormLabel>
                           <FormControl>
                             <Input placeholder="Enter your first name" {...field} />
                           </FormControl>
@@ -977,7 +977,7 @@ export function VisaForm() {
                       name="lastName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t('form.field.last.name')}</FormLabel>
+                          <FormLabel>Last Name</FormLabel>
                           <FormControl>
                             <Input placeholder="Enter your last name" {...field} />
                           </FormControl>
@@ -991,7 +991,7 @@ export function VisaForm() {
                       name="dateOfBirth"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t('form.field.date.birth')}</FormLabel>
+                          <FormLabel>Date of Birth</FormLabel>
                           <FormControl>
                             <div className="grid grid-cols-3 gap-2">
                               <Select
@@ -1075,7 +1075,7 @@ export function VisaForm() {
                       name="passportNumber"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t('form.field.passport.number')}</FormLabel>
+                          <FormLabel>Passport Number</FormLabel>
                           <FormControl>
                             <Input placeholder="Enter passport number" {...field} />
                           </FormControl>
@@ -1089,7 +1089,7 @@ export function VisaForm() {
                       name="passportIssueDate"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t('form.field.passport.issue.date')}</FormLabel>
+                          <FormLabel>Passport Issue Date</FormLabel>
                           <FormControl>
                             <div className="grid grid-cols-3 gap-2">
                               <Select
@@ -1170,7 +1170,7 @@ export function VisaForm() {
                       name="passportExpiryDate"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t('form.field.passport.expiry.date')}</FormLabel>
+                          <FormLabel>Passport Expiry Date</FormLabel>
                           <FormControl>
                             <div className="grid grid-cols-3 gap-2">
                               <Select
@@ -1251,7 +1251,7 @@ export function VisaForm() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t('form.field.email')}</FormLabel>
+                          <FormLabel>Email Address</FormLabel>
                           <FormControl>
                             <Input type="email" placeholder="Enter your email address" {...field} />
                           </FormControl>
@@ -1265,7 +1265,7 @@ export function VisaForm() {
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t('form.field.phone')}</FormLabel>
+                          <FormLabel>Phone Number</FormLabel>
                           <FormControl>
                             <Input placeholder="Enter your phone number" {...field} />
                           </FormControl>
@@ -1279,7 +1279,7 @@ export function VisaForm() {
                       name="placeOfBirth"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t('form.field.place.birth')}</FormLabel>
+                          <FormLabel>Place of Birth</FormLabel>
                           <FormControl>
                             <Input placeholder="Enter your place of birth" {...field} />
                           </FormControl>
@@ -1293,7 +1293,7 @@ export function VisaForm() {
                       name="motherName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t('form.field.mother.name')}</FormLabel>
+                          <FormLabel>Mother's Name</FormLabel>
                           <FormControl>
                             <Input placeholder="Enter your mother's name" {...field} />
                           </FormControl>
@@ -1307,7 +1307,7 @@ export function VisaForm() {
                       name="fatherName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t('form.field.father.name')}</FormLabel>
+                          <FormLabel>Father's Name</FormLabel>
                           <FormControl>
                             <Input placeholder="Enter your father's name" {...field} />
                           </FormControl>
@@ -1322,7 +1322,7 @@ export function VisaForm() {
                         name="address"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>{t('form.field.address')}</FormLabel>
+                            <FormLabel>Address</FormLabel>
                             <FormControl>
                               <Input placeholder="Enter your address" {...field} />
                             </FormControl>
@@ -1336,14 +1336,14 @@ export function VisaForm() {
                     {hasSupportingDocument === true && (
                       <>
                         <div className="md:col-span-2">
-                          <h4 className="text-md font-semibold mb-3 text-blue-900">{t('form.section.supporting.document.details')}</h4>
+                          <h4 className="text-md font-semibold mb-3 text-blue-900">Supporting Document Details</h4>
                         </div>
                         <FormField
                           control={form.control}
                           name="supportingDocumentNumber"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>{t('form.field.supporting.document.number')}</FormLabel>
+                              <FormLabel>Document Number</FormLabel>
                               <FormControl>
                                 <Input placeholder="Enter document number" {...field} />
                               </FormControl>
@@ -1356,7 +1356,7 @@ export function VisaForm() {
                           name="supportingDocumentStartDate"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>{t('form.field.supporting.document.start.date')}</FormLabel>
+                              <FormLabel>Document Start Date</FormLabel>
                               <FormControl>
                                 <div className="grid grid-cols-3 gap-2">
                                   <Select
@@ -1436,7 +1436,7 @@ export function VisaForm() {
                           name="supportingDocumentEndDate"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>{t('form.field.supporting.document.end.date')}</FormLabel>
+                              <FormLabel>Document End Date</FormLabel>
                               <FormControl>
                                 <div className="grid grid-cols-3 gap-2">
                                   <Select
