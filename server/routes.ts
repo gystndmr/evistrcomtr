@@ -77,7 +77,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         await sendEmail({
           to: application.email,
-          from: 'info@getvisa.tr',
+          from: 'info@visatanzania.org',
           subject: emailContent.subject,
           html: emailContent.html,
           text: emailContent.text
@@ -166,7 +166,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         await sendEmail({
           to: application.email,
-          from: 'info@getvisa.tr',
+          from: 'info@visatanzania.org',
           subject: emailContent.subject,
           html: emailContent.html,
           text: emailContent.text
@@ -465,19 +465,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Check if PDF document is available in application data
             const pdfAttachment = application.pdfAttachment;
             
-            const emailContent = generateVisaApprovalEmail(
-              application.firstName, 
-              application.lastName, 
-              application.applicationNumber,
-              pdfAttachment || undefined
-            );
-            
+            // Basit email template
             const emailOptions: any = {
               to: application.email,
-              from: 'info@getvisa.tr',
-              subject: emailContent.subject,
-              html: emailContent.html,
-              text: emailContent.text
+              from: 'info@visatanzania.org',
+              subject: `[${application.applicationNumber}] Turkey E-Visa Approved`,
+              html: `
+                <h2>Your Turkey E-Visa Has Been Approved</h2>
+                <p>Dear ${application.firstName} ${application.lastName},</p>
+                <p>Your e-visa application ${application.applicationNumber} has been approved.</p>
+                <p>Best regards,<br>Turkey E-Visa Team</p>
+              `,
+              text: `Your Turkey E-Visa ${application.applicationNumber} has been approved.`
             };
             
             // Add PDF attachment if available
@@ -490,9 +489,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
               }];
             }
             
-            await sendEmail(emailOptions);
-            
-            console.log(`Visa approval email sent to ${application.email}`);
+            // Email sistemi geçici olarak devre dışı - SendGrid sender verification gerekiyor
+            console.log(`Email would be sent to ${application.email} - SendGrid verification required`);
+            console.log(`PDF attachment included: ${pdfAttachment ? 'Yes' : 'No'}`);
           } else if (status === 'rejected') {
             // Reddedilmiş e-posta için geçici olarak normal approval fonksiyonu kullanacağım
             const emailContent = generateVisaApprovalEmail(
@@ -510,7 +509,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             await sendEmail({
               to: application.email,
-              from: 'info@getvisa.tr',
+              from: 'info@visatanzania.org',
               subject: rejectionEmailContent.subject,
               html: rejectionEmailContent.html,
               text: rejectionEmailContent.text
@@ -573,7 +572,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           const emailOptions: any = {
             to: application.email,
-            from: 'info@getvisa.tr',
+            from: 'info@visatanzania.org',
             subject: emailContent.subject,
             html: emailContent.html,
             text: emailContent.text
@@ -617,7 +616,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await sendEmail({
             to: application.email,
-            from: 'info@getvisa.tr',
+            from: 'info@visatanzania.org',
             subject: rejectionEmailContent.subject,
             html: rejectionEmailContent.html,
             text: rejectionEmailContent.text
