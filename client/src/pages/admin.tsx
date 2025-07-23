@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Shield, Users, CreditCard, FileText, Eye, Search, Download, CheckCircle, XCircle, Info } from "lucide-react";
+import { Shield, Users, CreditCard, FileText, Eye, Search, Download, CheckCircle, XCircle, Info, Upload } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -30,6 +30,10 @@ export default function Admin() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const [selectedInsuranceApp, setSelectedInsuranceApp] = useState<InsuranceApplication | null>(null);
+  const [pdfFile, setPdfFile] = useState<string>("");
+  const [pdfDialogOpen, setPdfDialogOpen] = useState(false);
+  const [currentAppId, setCurrentAppId] = useState<number | null>(null);
+  const [currentAppType, setCurrentAppType] = useState<"visa" | "insurance" | null>(null);
   const { t } = useLanguage();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -84,9 +88,55 @@ export default function Admin() {
     });
   };
 
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type === 'application/pdf') {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64 = e.target?.result as string;
+        setPdfFile(base64);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      toast({
+        title: "Hata",
+        description: "Lütfen sadece PDF dosyası seçin.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleApproveWithPdf = (appId: number, appType: "visa" | "insurance") => {
+    setCurrentAppId(appId);
+    setCurrentAppType(appType);
+    setPdfDialogOpen(true);
+  };
+
+  const handlePdfSubmit = () => {
+    if (currentAppId && currentAppType) {
+      if (currentAppType === "visa") {
+        updateApplicationStatusMutation.mutate({ 
+          id: currentAppId, 
+          status: "approved", 
+          pdfAttachment: pdfFile || undefined 
+        });
+      } else {
+        updateInsuranceStatusMutation.mutate({ 
+          id: currentAppId, 
+          status: "approved", 
+          pdfAttachment: pdfFile || undefined 
+        });
+      }
+      setPdfDialogOpen(false);
+      setPdfFile("");
+      setCurrentAppId(null);
+      setCurrentAppType(null);
+    }
+  };
+
   const updateApplicationStatusMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: number; status: string }) => {
-      const response = await apiRequest("PATCH", `/api/admin/applications/${id}/status`, { status });
+    mutationFn: async ({ id, status, pdfAttachment }: { id: number; status: string; pdfAttachment?: string }) => {
+      const response = await apiRequest("PATCH", `/api/admin/applications/${id}/status`, { status, pdfAttachment });
       return response.json();
     },
     onSuccess: () => {
@@ -107,8 +157,8 @@ export default function Admin() {
   });
 
   const updateInsuranceStatusMutation = useMutation({
-    mutationFn: async ({ id, status }: { id: number; status: string }) => {
-      const response = await apiRequest("PATCH", `/api/admin/insurance-applications/${id}/status`, { status });
+    mutationFn: async ({ id, status, pdfAttachment }: { id: number; status: string; pdfAttachment?: string }) => {
+      const response = await apiRequest("PATCH", `/api/admin/insurance-applications/${id}/status`, { status, pdfAttachment });
       return response.json();
     },
     onSuccess: () => {
@@ -395,12 +445,12 @@ export default function Admin() {
                                   <Button
                                     size="sm"
                                     variant="default"
-                                    onClick={() => updateApplicationStatusMutation.mutate({ id: app.id, status: "approved" })}
+                                    onClick={() => handleApproveWithPdf(app.id, "visa")}
                                     disabled={updateApplicationStatusMutation.isPending}
                                     className="bg-green-500 hover:bg-green-600 text-white"
                                   >
                                     <CheckCircle className="w-4 h-4 mr-1" />
-                                    Onayla
+                                    Onayla + Dosya
                                   </Button>
                                   <Button
                                     size="sm"
@@ -533,12 +583,12 @@ export default function Admin() {
                                   <Button
                                     size="sm"
                                     variant="default"
-                                    onClick={() => updateInsuranceStatusMutation.mutate({ id: app.id, status: "approved" })}
+                                    onClick={() => handleApproveWithPdf(app.id, "insurance")}
                                     disabled={updateInsuranceStatusMutation.isPending}
                                     className="bg-green-500 hover:bg-green-600 text-white"
                                   >
                                     <CheckCircle className="w-4 h-4 mr-1" />
-                                    Onayla
+                                    Onayla + Dosya
                                   </Button>
                                   <Button
                                     size="sm"
@@ -572,6 +622,50 @@ export default function Admin() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* PDF Upload Dialog */}
+        <Dialog open={pdfDialogOpen} onOpenChange={setPdfDialogOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>
+                {currentAppType === "visa" ? "E-Visa" : "Sigorta Poliçesi"} PDF Dosyası Ekle
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div>
+                <Label htmlFor="pdf-upload">PDF Dosyası Seç (İsteğe bağlı)</Label>
+                <Input
+                  id="pdf-upload"
+                  type="file"
+                  accept=".pdf"
+                  onChange={handleFileUpload}
+                  className="mt-2"
+                />
+                {pdfFile && (
+                  <p className="text-sm text-green-600 mt-1">
+                    ✓ PDF dosyası seçildi
+                  </p>
+                )}
+              </div>
+              <div className="flex gap-2 pt-4">
+                <Button
+                  onClick={handlePdfSubmit}
+                  className="flex-1 bg-green-500 hover:bg-green-600"
+                >
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Onayla & E-posta Gönder
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setPdfDialogOpen(false)}
+                  className="flex-1"
+                >
+                  İptal
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
       <Footer />
     </div>

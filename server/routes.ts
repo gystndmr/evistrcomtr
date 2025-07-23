@@ -439,17 +439,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update application status (admin)
+  // Update application status with optional PDF attachment (admin)
   app.patch("/api/admin/applications/:id/status", async (req, res) => {
     try {
       const { id } = req.params;
-      const { status } = req.body;
+      const { status, pdfAttachment } = req.body;
       
       if (!status || !['pending', 'approved', 'rejected'].includes(status)) {
         return res.status(400).json({ message: "Invalid status" });
       }
       
+      // Update application status and PDF attachment if provided
       await storage.updateApplicationStatus(parseInt(id), status);
+      
+      if (pdfAttachment) {
+        // Update PDF attachment
+        await storage.updateApplicationPdf(parseInt(id), pdfAttachment);
+      }
       
       // Durum değişikliğine göre e-posta gönder
       const application = await storage.getApplication(parseInt(id));
@@ -463,7 +469,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               application.firstName, 
               application.lastName, 
               application.applicationNumber,
-              pdfAttachment
+              pdfAttachment || undefined
             );
             
             const emailOptions: any = {
@@ -524,11 +530,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Update insurance application status (admin)
+  // Update insurance application status with optional PDF attachment (admin)
   app.patch("/api/admin/insurance-applications/:id/status", async (req, res) => {
     try {
       const { id } = req.params;
-      const { status } = req.body;
+      const { status, pdfAttachment } = req.body;
       
       if (!status || !['pending', 'approved', 'rejected'].includes(status)) {
         return res.status(400).json({ message: "Invalid status" });
@@ -540,7 +546,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Insurance application not found" });
       }
       
+      // Update insurance application status and PDF attachment if provided  
       await storage.updateInsuranceApplicationStatus(parseInt(id), status);
+      
+      if (pdfAttachment) {
+        // Update PDF attachment  
+        await storage.updateInsuranceApplicationPdf(parseInt(id), pdfAttachment);
+      }
       
       // Durum değişikliğine göre e-posta gönder
       if (status === 'approved') {
@@ -556,7 +568,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             application.lastName, 
             application.applicationNumber,
             productName,
-            pdfAttachment
+            pdfAttachment || undefined
           );
           
           const emailOptions: any = {
