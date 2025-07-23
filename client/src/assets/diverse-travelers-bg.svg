@@ -1,0 +1,98 @@
+<svg width="1200" height="300" viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="300" fill="url(#bgGradient)"/>
+  
+  <!-- Person 1 - African Woman with Backpack -->
+  <g transform="translate(100, 80)">
+    <circle cx="0" cy="0" r="35" fill="#8B4513"/>
+    <circle cx="0" cy="-5" r="25" fill="#4A4A4A"/>
+    <rect x="-15" y="25" width="30" height="45" rx="15" fill="#E74C3C"/>
+    <rect x="-20" y="35" width="40" height="25" rx="10" fill="#3498DB"/>
+    <rect x="-25" y="15" width="50" height="15" rx="7" fill="#8B4513"/>
+  </g>
+  
+  <!-- Person 2 - Asian Man with Suitcase -->
+  <g transform="translate(280, 85)">
+    <circle cx="0" cy="0" r="35" fill="#F4C2A1"/>
+    <circle cx="0" cy="-5" r="25" fill="#2C3E50"/>
+    <rect x="-15" y="25" width="30" height="45" rx="15" fill="#27AE60"/>
+    <rect x="-20" y="35" width="40" height="25" rx="10" fill="#34495E"/>
+    <rect x="30" y="40" width="15" height="25" rx="5" fill="#E67E22"/>
+  </g>
+  
+  <!-- Person 3 - Hispanic Woman with Camera -->
+  <g transform="translate(460, 75)">
+    <circle cx="0" cy="0" r="35" fill="#D2B48C"/>
+    <circle cx="0" cy="-5" r="25" fill="#8B4513"/>
+    <rect x="-15" y="25" width="30" height="45" rx="15" fill="#9B59B6"/>
+    <rect x="-20" y="35" width="40" height="25" rx="10" fill="#E74C3C"/>
+    <rect x="-35" y="20" width="15" height="10" rx="3" fill="#2C3E50"/>
+  </g>
+  
+  <!-- Person 4 - Middle Eastern Man -->
+  <g transform="translate(640, 90)">
+    <circle cx="0" cy="0" r="35" fill="#DEB887"/>
+    <circle cx="0" cy="-5" r="25" fill="#654321"/>
+    <rect x="-15" y="25" width="30" height="45" rx="15" fill="#1ABC9C"/>
+    <rect x="-20" y="35" width="40" height="25" rx="10" fill="#2C3E50"/>
+  </g>
+  
+  <!-- Person 5 - Caucasian Woman with Map -->
+  <g transform="translate(820, 80)">
+    <circle cx="0" cy="0" r="35" fill="#FDBCB4"/>
+    <circle cx="0" cy="-5" r="25" fill="#DAA520"/>
+    <rect x="-15" y="25" width="30" height="45" rx="15" fill="#E67E22"/>
+    <rect x="-20" y="35" width="40" height="25" rx="10" fill="#3498DB"/>
+    <rect x="-30" y="10" width="20" height="15" rx="3" fill="#ECF0F1"/>
+  </g>
+  
+  <!-- Person 6 - Mixed Race Man with Passport -->
+  <g transform="translate(1000, 85)">
+    <circle cx="0" cy="0" r="35" fill="#CD853F"/>
+    <circle cx="0" cy="-5" r="25" fill="#2F4F4F"/>
+    <rect x="-15" y="25" width="30" height="45" rx="15" fill="#8E44AD"/>
+    <rect x="-20" y="35" width="40" height="25" rx="10" fill="#16A085"/>
+    <rect x="25" y="15" width="12" height="8" rx="2" fill="#C0392B"/>
+  </g>
+  
+  <!-- Travel Icons -->
+  <!-- Airplane -->
+  <g transform="translate(200, 200)">
+    <path d="M0,0 L30,5 L35,0 L30,-5 Z M15,0 L20,-15 M15,0 L20,15" stroke="#7F8C8D" stroke-width="3" fill="none"/>
+  </g>
+  
+  <!-- Globe -->
+  <g transform="translate(500, 210)">
+    <circle cx="0" cy="0" r="20" stroke="#3498DB" stroke-width="3" fill="none"/>
+    <path d="M-20,0 Q0,-20 20,0 Q0,20 -20,0" stroke="#27AE60" stroke-width="2" fill="none"/>
+    <line x1="-20" y1="0" x2="20" y2="0" stroke="#7F8C8D" stroke-width="1"/>
+  </g>
+  
+  <!-- Luggage -->
+  <g transform="translate(800, 205)">
+    <rect x="-15" y="-10" width="30" height="20" rx="3" stroke="#34495E" stroke-width="2" fill="#E74C3C"/>
+    <rect x="-5" y="-15" width="10" height="5" rx="2" fill="#2C3E50"/>
+  </g>
+  
+  <!-- Decorative Elements -->
+  <circle cx="150" cy="50" r="3" fill="#F39C12" opacity="0.6"/>
+  <circle cx="350" cy="40" r="4" fill="#E74C3C" opacity="0.5"/>
+  <circle cx="550" cy="45" r="3" fill="#9B59B6" opacity="0.6"/>
+  <circle cx="750" cy="35" r="4" fill="#1ABC9C" opacity="0.5"/>
+  <circle cx="950" cy="50" r="3" fill="#3498DB" opacity="0.6"/>
+  
+  <!-- Subtle Pattern -->
+  <g opacity="0.1">
+    <pattern id="dots" patternUnits="userSpaceOnUse" width="50" height="50">
+      <circle cx="25" cy="25" r="2" fill="#2C3E50"/>
+    </pattern>
+    <rect width="1200" height="300" fill="url(#dots)"/>
+  </g>
+</svg>
