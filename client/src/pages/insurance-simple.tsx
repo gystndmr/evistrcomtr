@@ -410,21 +410,35 @@ export default function Insurance() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      {/* Simple Header with Background */}
-      <section className="relative py-8 sm:py-12 lg:py-16 border-b border-gray-200 overflow-hidden">
+      {/* Professional Header with Vibrant Background */}
+      <section className="relative py-12 sm:py-16 lg:py-20 border-b border-gray-200 overflow-hidden">
         <div 
-          className="absolute inset-0 bg-no-repeat opacity-70"
+          className="absolute inset-0 bg-no-repeat opacity-85"
           style={{
             backgroundImage: `url('${diverseTravelersBg}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center 30%'
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/40 to-white/50" />
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/30 to-red-600/20" />
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white drop-shadow-lg mb-3">Turkey Travel Insurance</h1>
-            <p className="text-base sm:text-lg text-white drop-shadow-md">Complete your application below</p>
+            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-white/90 rounded-full mb-6 shadow-lg p-2">
+              <img 
+                src={turkeyFlag} 
+                alt="Turkey Flag" 
+                className="w-full h-full object-cover rounded-full"
+              />
+            </div>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white drop-shadow-xl mb-4">
+              Insurance for E-Visa Turkey
+            </h1>
+            <p className="text-lg sm:text-xl lg:text-2xl text-white/95 drop-shadow-lg font-medium max-w-3xl mx-auto leading-relaxed">
+              Comprehensive Travel Protection for Your Turkish Adventure
+            </p>
+            <p className="text-base sm:text-lg text-white/90 drop-shadow-md mt-3 max-w-2xl mx-auto">
+              Secure, affordable coverage that meets all Turkish visa requirements
+            </p>
           </div>
         </div>
       </section>
