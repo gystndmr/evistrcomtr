@@ -303,8 +303,8 @@ export function VisaForm() {
         return;
       }
       if (!selectedCountry.isEligible) {
-        // Redirect to insurance for non-eligible countries
-        window.location.href = "/insurance";
+        // Redirect to insurance for non-eligible countries with country information
+        window.location.href = `/insurance?country=${encodeURIComponent(selectedCountry.name)}`;
         return;
       }
     }

@@ -392,3 +392,10 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - **Complete Coverage**: All 6 supported languages have automatic browser detection with fallback to English
   - **Enhanced Translation System**: Added missing keys for status pages, payment pages, FAQ, requirements, and form validation for all languages
   - **Console Logging**: Detailed browser language detection logging for troubleshooting and verification
+✅ **Insurance Country Tracking Enhancement** (July 23, 2025):
+  - **Country Parameter Integration**: Insurance applications now capture country of origin from visa application flow
+  - **URL Parameter System**: Non-eligible countries redirect to insurance page with country parameter (?country=CountryName)
+  - **Admin Panel Enhancement**: Added "Ülke" column to insurance applications table showing customer's country of origin
+  - **Database Integration**: countryOfOrigin field properly stored in insurance_applications table
+  - **Customer Data Completeness**: Both direct insurance applications (no country) and visa redirect applications (with country) handled
+  - **Business Intelligence**: Complete customer geographical data available for insurance business analysis
