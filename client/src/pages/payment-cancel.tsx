@@ -21,13 +21,13 @@ export default function PaymentCancel() {
     if (error) {
       if (error.includes('fetch failed') && isDevelopment) {
         toast({
-          title: "Development Mode",
-          description: "Payment system ready for production deployment. DNS limitation in development.",
+          title: t('payment.dev.mode'),
+          description: t('payment.dev.description'),
           variant: "destructive",
         });
       } else {
         toast({
-          title: "Payment Error",
+          title: t('payment.error.title'),
           description: error,
           variant: "destructive",
         });
@@ -49,41 +49,40 @@ export default function PaymentCancel() {
           </div>
           <CardTitle className="text-red-600">
             {isDevelopment && error?.includes('fetch failed') ? 
-              "Development Mode" : "Payment Error"}
+              t('payment.dev.mode') : t('payment.error.title')}
           </CardTitle>
         </CardHeader>
         <CardContent className="text-center space-y-4">
           {isDevelopment && error?.includes('fetch failed') ? (
             <Alert>
               <AlertDescription>
-                <strong>Production System Ready!</strong><br/>
-                The payment system is fully configured for production deployment. 
-                DNS limitation prevents connection to GPay API in development environment.
+                <strong>{t('payment.dev.ready')}</strong><br/>
+                {t('payment.dev.dns.limitation')}
               </AlertDescription>
             </Alert>
           ) : (
             <Alert>
               <AlertDescription>
-                {error || "An error occurred during payment processing."}
+                {error || t('payment.error.generic')}
               </AlertDescription>
             </Alert>
           )}
           
           <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-700">
-            <h3 className="font-medium text-gray-900 mb-2">System Status</h3>
+            <h3 className="font-medium text-gray-900 mb-2">{t('payment.system.status')}</h3>
             <div className="space-y-1">
               <div className="flex justify-between">
-                <span>Payment Gateway:</span>
+                <span>{t('payment.gateway')}:</span>
                 <span className="text-green-600">✓ GPay Production</span>
               </div>
               <div className="flex justify-between">
-                <span>Merchant ID:</span>
+                <span>{t('payment.merchant.id')}:</span>
                 <span className="text-green-600">✓ 1100002537</span>
               </div>
               <div className="flex justify-between">
-                <span>Environment:</span>
+                <span>{t('payment.environment')}:</span>
                 <span className="text-blue-600">
-                  {isDevelopment ? "Development" : "Production"}
+                  {isDevelopment ? t('payment.env.development') : t('payment.env.production')}
                 </span>
               </div>
             </div>
@@ -92,18 +91,17 @@ export default function PaymentCancel() {
           <div className="space-y-2">
             <Button onClick={() => navigate("/application")} className="w-full">
               <RefreshCw className="w-4 h-4 mr-2" />
-              Try Again
+              {t('payment.try.again')}
             </Button>
             <Button variant="outline" onClick={() => navigate("/")} className="w-full">
               <Home className="w-4 h-4 mr-2" />
-              Go to Home
+              {t('payment.go.home')}
             </Button>
           </div>
           
           {isDevelopment && (
             <div className="text-xs text-gray-500 mt-4 p-3 bg-yellow-50 rounded">
-              <strong>For Production:</strong> Deploy to evisatr.xyz with SSL certificate. 
-              All payment credentials and configurations are ready.
+              <strong>{t('payment.production.note.title')}:</strong> {t('payment.production.note.description')}
             </div>
           )}
         </CardContent>

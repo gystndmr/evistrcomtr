@@ -581,8 +581,8 @@ export function VisaForm() {
         
         if (supportingStartDate >= supportingEndDate) {
           toast({
-            title: "Invalid Supporting Document Dates",
-            description: "Supporting document start date must be before end date",
+            title: t('form.validation.error.title'),
+            description: t('form.validation.error.description'),
             variant: "destructive",
           });
           return;
@@ -963,9 +963,9 @@ export function VisaForm() {
                       name="firstName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>First Name *</FormLabel>
+                          <FormLabel>{t('form.field.first.name')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="John" {...field} />
+                            <Input placeholder={t('form.placeholder.first.name')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -977,9 +977,9 @@ export function VisaForm() {
                       name="lastName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Last Name *</FormLabel>
+                          <FormLabel>{t('form.field.last.name')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Doe" {...field} />
+                            <Input placeholder={t('form.placeholder.last.name')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -991,7 +991,7 @@ export function VisaForm() {
                       name="dateOfBirth"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Date of Birth *</FormLabel>
+                          <FormLabel>{t('form.field.date.birth')}</FormLabel>
                           <FormControl>
                             <div className="grid grid-cols-3 gap-2">
                               <Select
@@ -1004,7 +1004,7 @@ export function VisaForm() {
                                 }}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Day" />
+                                  <SelectValue placeholder={t('form.placeholder.day')} />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
@@ -1023,7 +1023,7 @@ export function VisaForm() {
                                 }}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Month" />
+                                  <SelectValue placeholder={t('form.placeholder.month')} />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {[
@@ -1055,7 +1055,7 @@ export function VisaForm() {
                                 }}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Year" />
+                                  <SelectValue placeholder={t('form.placeholder.year')} />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {Array.from({ length: 80 }, (_, i) => (new Date().getFullYear() - i).toString()).map((y) => (
@@ -1075,9 +1075,9 @@ export function VisaForm() {
                       name="passportNumber"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Passport Number *</FormLabel>
+                          <FormLabel>{t('form.field.passport.number')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="A1234567" {...field} />
+                            <Input placeholder={t('form.placeholder.passport.number')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1089,7 +1089,7 @@ export function VisaForm() {
                       name="passportIssueDate"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Passport Issue Date *</FormLabel>
+                          <FormLabel>{t('form.field.passport.issue.date')}</FormLabel>
                           <FormControl>
                             <div className="grid grid-cols-3 gap-2">
                               <Select
@@ -1170,7 +1170,7 @@ export function VisaForm() {
                       name="passportExpiryDate"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Passport Expiry Date *</FormLabel>
+                          <FormLabel>{t('form.field.passport.expiry.date')}</FormLabel>
                           <FormControl>
                             <div className="grid grid-cols-3 gap-2">
                               <Select
@@ -1251,9 +1251,9 @@ export function VisaForm() {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email Address *</FormLabel>
+                          <FormLabel>{t('form.field.email')}</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder="john.doe@example.com" {...field} />
+                            <Input type="email" placeholder={t('form.placeholder.email')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1265,9 +1265,9 @@ export function VisaForm() {
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Phone Number *</FormLabel>
+                          <FormLabel>{t('form.field.phone')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="+1 555-123-4567" {...field} />
+                            <Input placeholder={t('form.placeholder.phone')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1279,9 +1279,9 @@ export function VisaForm() {
                       name="placeOfBirth"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Place of Birth *</FormLabel>
+                          <FormLabel>{t('form.field.place.birth')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="e.g., New York, USA" {...field} />
+                            <Input placeholder={t('form.placeholder.place.birth')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1293,9 +1293,9 @@ export function VisaForm() {
                       name="motherName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Mother's Name *</FormLabel>
+                          <FormLabel>{t('form.field.mother.name')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Mother's full name" {...field} />
+                            <Input placeholder={t('form.placeholder.mother.name')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1307,9 +1307,9 @@ export function VisaForm() {
                       name="fatherName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Father's Name *</FormLabel>
+                          <FormLabel>{t('form.field.father.name')}</FormLabel>
                           <FormControl>
-                            <Input placeholder="Father's full name" {...field} />
+                            <Input placeholder={t('form.placeholder.father.name')} {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1322,9 +1322,9 @@ export function VisaForm() {
                         name="address"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Full Address *</FormLabel>
+                            <FormLabel>{t('form.field.address')}</FormLabel>
                             <FormControl>
-                              <Input placeholder="Complete address with street, city, country" {...field} />
+                              <Input placeholder={t('form.placeholder.address')} {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -1336,16 +1336,16 @@ export function VisaForm() {
                     {hasSupportingDocument === true && (
                       <>
                         <div className="md:col-span-2">
-                          <h4 className="text-md font-semibold mb-3 text-blue-900">Supporting Document Details</h4>
+                          <h4 className="text-md font-semibold mb-3 text-blue-900">{t('form.section.supporting.document.details')}</h4>
                         </div>
                         <FormField
                           control={form.control}
                           name="supportingDocumentNumber"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Supporting Document Number</FormLabel>
+                              <FormLabel>{t('form.field.supporting.document.number')}</FormLabel>
                               <FormControl>
-                                <Input placeholder="Document number" {...field} />
+                                <Input placeholder={t('form.placeholder.supporting.document.number')} {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -1356,7 +1356,7 @@ export function VisaForm() {
                           name="supportingDocumentStartDate"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Document Start Date</FormLabel>
+                              <FormLabel>{t('form.field.supporting.document.start.date')}</FormLabel>
                               <FormControl>
                                 <div className="grid grid-cols-3 gap-2">
                                   <Select
@@ -1436,7 +1436,7 @@ export function VisaForm() {
                           name="supportingDocumentEndDate"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Document End Date</FormLabel>
+                              <FormLabel>{t('form.field.supporting.document.end.date')}</FormLabel>
                               <FormControl>
                                 <div className="grid grid-cols-3 gap-2">
                                   <Select
@@ -1523,15 +1523,15 @@ export function VisaForm() {
                   <h3 className="text-lg font-semibold mb-4">{hasSupportingDocument === true ? t("app.step6.title") : t("app.step5.title")}</h3>
                   
                   <div className="bg-neutral-50 rounded-lg p-6 mb-6">
-                    <h4 className="font-semibold mb-4">Order Summary</h4>
+                    <h4 className="text-lg font-semibold mb-4">{t('form.section.order.summary')}</h4>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span>E-Visa Application Fee</span>
+                        <span>{t('form.payment.evisa.fee')}</span>
                         <span>$69.00</span>
                       </div>
                       {hasSupportingDocument === true && documentProcessingType && (
                         <div className="flex justify-between">
-                          <span>Processing & Document Fee</span>
+                          <span>{t('form.payment.processing.document.fee')}</span>
                           <span>${(() => {
                             const documentProcessingTypes = [
                               { value: "slow", price: 119 },
@@ -1548,7 +1548,7 @@ export function VisaForm() {
                       )}
                       {hasSupportingDocument === false && (
                         <div className="flex justify-between">
-                          <span>Processing Fee</span>
+                          <span>{t('form.payment.processing.fee')}</span>
                           <span>${(() => {
                             const processingType = form.watch("processingType") || "standard";
                             const selectedProcessing = processingTypes.find(p => p.value === processingType);
@@ -1558,7 +1558,7 @@ export function VisaForm() {
                       )}
                       <div className="border-t pt-2 mt-2">
                         <div className="flex justify-between font-semibold">
-                          <span>Total Amount</span>
+                          <span>{t('form.payment.total.amount')}</span>
                           <span>${calculateTotal()}</span>
                         </div>
                       </div>
@@ -1570,11 +1570,10 @@ export function VisaForm() {
                       <svg className="w-5 h-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                       </svg>
-                      <h4 className="text-sm font-medium text-blue-900">Secure Payment</h4>
+                      <h4 className="text-sm font-medium text-blue-900">{t('form.payment.secure.title')}</h4>
                     </div>
                     <p className="text-sm text-blue-700">
-                      You will be redirected to our secure payment partner (GPay) to complete your payment. 
-                      You will only need to enter your card details once on their secure platform.
+                      {t('form.payment.secure.description')}
                     </p>
                   </div>
                 </div>
@@ -1583,15 +1582,15 @@ export function VisaForm() {
               {/* Payment Summary */}
               {currentStep === totalSteps && (
                 <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                  <h4 className="font-medium text-gray-900 mb-2">Payment Summary</h4>
+                  <h4 className="font-medium text-gray-900 mb-2">{t('form.payment.summary.title')}</h4>
                   <div className="text-sm text-gray-700 space-y-1">
                     <div className="flex justify-between">
-                      <span>E-Visa Application Fee:</span>
+                      <span>{t('form.payment.evisa.fee')}:</span>
                       <span>$69.00</span>
                     </div>
                     {hasSupportingDocument === true && documentProcessingType && (
                       <div className="flex justify-between">
-                        <span>Processing & Document Fee:</span>
+                        <span>{t('form.payment.processing.document.fee')}:</span>
                         <span>${(() => {
                           const documentProcessingTypes = [
                             { value: "slow", price: 119 },
@@ -1608,7 +1607,7 @@ export function VisaForm() {
                     )}
                     {hasSupportingDocument === false && (
                       <div className="flex justify-between">
-                        <span>Processing Fee:</span>
+                        <span>{t('form.payment.processing.fee')}:</span>
                         <span>${(() => {
                           const processingType = form.watch("processingType") || "standard";
                           const selectedProcessing = processingTypes.find(p => p.value === processingType);
@@ -1617,7 +1616,7 @@ export function VisaForm() {
                       </div>
                     )}
                     <div className="border-t pt-2 flex justify-between font-bold">
-                      <span>Total:</span>
+                      <span>{t('form.payment.total.amount')}:</span>
                       <span>${calculateTotal().toFixed(2)}</span>
                     </div>
                   </div>
@@ -1629,13 +1628,13 @@ export function VisaForm() {
                 {currentStep > 1 && (
                   <Button type="button" variant="outline" onClick={handlePrevStep} className="order-2 sm:order-1">
                     <ArrowLeft className="w-4 h-4 mr-2" />
-                    Previous
+                    {t('form.navigation.previous')}
                   </Button>
                 )}
                 
                 {currentStep < totalSteps ? (
                   <Button type="button" onClick={handleNextStep} className="order-1 sm:order-2 sm:ml-auto bg-primary hover:bg-primary/90 text-white">
-                    Next Step
+                    {t('form.navigation.next.step')}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 ) : (
@@ -1652,8 +1651,8 @@ export function VisaForm() {
                       
                       if (Object.keys(errors).length > 0) {
                         toast({
-                          title: "Form Validation Error",
-                          description: "Please fill in all required fields correctly",
+                          title: t('form.validation.error.title'),
+                          description: t('form.validation.error.description'),
                           variant: "destructive",
                         });
                         return;
@@ -1665,10 +1664,10 @@ export function VisaForm() {
                   >
                     <CreditCard className="w-4 h-4 mr-2" />
                     <span className="hidden sm:inline">
-                      {createApplicationMutation.isPending ? "Processing..." : "Submit Application & Pay $"}
+                      {createApplicationMutation.isPending ? t('form.button.processing') : t('form.button.submit.pay.desktop')}
                     </span>
                     <span className="sm:hidden">
-                      {createApplicationMutation.isPending ? "Processing..." : "Pay $"}
+                      {createApplicationMutation.isPending ? t('form.button.processing') : t('form.button.pay.mobile')}
                     </span>
                     {!createApplicationMutation.isPending && calculateTotal().toFixed(2)}
                   </Button>

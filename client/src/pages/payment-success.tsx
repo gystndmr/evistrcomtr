@@ -86,23 +86,23 @@ export default function PaymentSuccess() {
           <Alert>
             <AlertDescription>
               {isTest 
-                ? "Your e-visa application has been submitted successfully and test payment has been processed."
-                : "Your e-visa application has been submitted successfully and payment has been processed."
+                ? t('payment.success.test.description')
+                : t('payment.success.description')
               }
             </AlertDescription>
           </Alert>
           
           {orderId && (
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-medium text-gray-900 mb-2">Application Details</h3>
+              <h3 className="font-medium text-gray-900 mb-2">{t('payment.success.details.title')}</h3>
               <div className="text-sm text-gray-700 space-y-1">
                 <div className="flex justify-between">
-                  <span>Application Number:</span>
+                  <span>{t('payment.success.application.number')}:</span>
                   <span className="font-mono">{orderId}</span>
                 </div>
                 {transactionId && (
                   <div className="flex justify-between">
-                    <span>Transaction ID:</span>
+                    <span>{t('payment.success.transaction.id')}:</span>
                     <span className="font-mono text-xs">{transactionId}</span>
                   </div>
                 )}
@@ -113,17 +113,17 @@ export default function PaymentSuccess() {
           <div className="space-y-2">
             <Button onClick={() => navigate(`/status?ref=${orderId}`)} className="w-full">
               <Download className="w-4 h-4 mr-2" />
-              Track Application Status
+              {t('payment.success.track.application')}
             </Button>
             <Button variant="outline" onClick={() => navigate("/")} className="w-full">
               <ExternalLink className="w-4 h-4 mr-2" />
-              Back to Home
+              {t('payment.success.back.home')}
             </Button>
           </div>
           
           <div className="text-sm text-gray-600">
             <p>
-              You will receive a confirmation email shortly. Your e-visa will be processed within the selected timeframe.
+              {t('payment.success.email.confirmation')}
             </p>
           </div>
         </CardContent>

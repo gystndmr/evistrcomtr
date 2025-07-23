@@ -18,36 +18,36 @@ export default function FAQ() {
 
   const faqs = [
     {
-      question: "What is a Turkey e-visa?",
-      answer: "A Turkey e-visa is an electronic travel authorization that allows eligible foreign nationals to enter Turkey for tourism or business purposes. It is obtained online and is valid for multiple entries within its validity period."
+      question: t('faq.q1.question'),
+      answer: t('faq.q1.answer')
     },
     {
-      question: "How long does it take to process my e-visa application?",
-      answer: "Processing times vary by service level: Standard (24-48 hours), Fast (6-12 hours), Express (2-4 hours), and Urgent (1-2 hours). All processing times are business hours only."
+      question: t('faq.q2.question'),
+      answer: t('faq.q2.answer')
     },
     {
-      question: "What documents do I need for my e-visa application?",
-      answer: "You need a valid passport with at least 6 months remaining validity, a recent passport-style photograph, and supporting documents if required for your nationality (such as hotel reservations, flight tickets, or bank statements)."
+      question: t('faq.q3.question'),
+      answer: t('faq.q3.answer')
     },
     {
-      question: "How much does the Turkey e-visa cost?",
-      answer: "The e-visa application fee is $69 plus processing fees that range from $25 (Standard) to $295 (Urgent). Additional supporting document fees may apply based on your nationality."
+      question: t('faq.q4.question'),
+      answer: t('faq.q4.answer')
     },
     {
-      question: "Can I extend my e-visa once I'm in Turkey?",
-      answer: "No, e-visas cannot be extended. If you need to stay longer than your e-visa allows, you must exit Turkey and apply for a new e-visa or appropriate visa type."
+      question: t('faq.q5.question'),
+      answer: t('faq.q5.answer')
     },
     {
-      question: "Is travel insurance required for Turkey e-visa?",
-      answer: "Travel insurance is not mandatory for e-visa applications, but it is highly recommended. We offer comprehensive travel insurance plans starting from $114 for 7 days coverage."
+      question: t('faq.q6.question'),
+      answer: t('faq.q6.answer')
     },
     {
-      question: "What should I do if my e-visa application is rejected?",
-      answer: "If your application is rejected, you will receive a detailed explanation. You may reapply with corrected information or contact our support team at info@getvisa.tr for assistance."
+      question: t('faq.q7.question'),
+      answer: t('faq.q7.answer')
     },
     {
-      question: "Can I use my e-visa for multiple entries to Turkey?",
-      answer: "Yes, Turkey e-visas are valid for multiple entries within their validity period. You can enter and exit Turkey multiple times as long as your e-visa remains valid."
+      question: t('faq.q8.question'),
+      answer: t('faq.q8.answer')
     }
   ];
 

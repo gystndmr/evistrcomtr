@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import type { Country } from "@shared/schema";
 
 interface CountrySelectorProps {
@@ -28,8 +29,9 @@ export function CountrySelector({
   selectedDocumentType,
 }: CountrySelectorProps) {
   const [showEligibilityStatus, setShowEligibilityStatus] = useState(false);
+  const { t } = useLanguage();
 
-  const { data: countries = [], isLoading } = useQuery({
+  const { data: countries = [], isLoading } = useQuery<Country[]>({
     queryKey: ["/api/countries"],
   });
 
@@ -52,9 +54,9 @@ export function CountrySelector({
         <Alert className="border-blue-200 bg-blue-50">
           <AlertTriangle className="h-4 w-4 text-blue-500" />
           <AlertDescription className="text-blue-800">
-            <strong>Visa-Free Travel</strong>
+            <strong>{t('country.selector.visa.free.title')}</strong>
             <br />
-            Your country has visa-free access to Turkey. However, we offer comprehensive travel insurance services for your trip.
+            {t('country.selector.visa.free.description')}
           </AlertDescription>
         </Alert>
       );
@@ -64,9 +66,9 @@ export function CountrySelector({
       <Alert className="border-green-200 bg-green-50">
         <CheckCircle className="h-4 w-4 text-green-500" />
         <AlertDescription className="text-green-800">
-          <strong>E-Visa Available</strong>
+          <strong>{t('country.selector.evisa.available.title')}</strong>
           <br />
-          Great! You can apply for an e-visa for Turkey.
+          {t('country.selector.evisa.available.description')}
         </AlertDescription>
       </Alert>
     );

@@ -9,53 +9,53 @@ export default function ProcessingTimes() {
   const processingOptions = [
     {
       icon: Clock,
-      title: "Standard Processing",
-      time: "24-48 hours",
-      price: "$25",
-      description: "Most economical option for non-urgent travel",
+      title: t('processing.standard.title'),
+      time: t('processing.standard.time'),
+      price: t('processing.standard.price'),
+      description: t('processing.standard.description'),
       features: [
-        "Business hours processing only",
-        "Email notification upon completion",
-        "Suitable for travel planned 3+ days ahead"
+        t('processing.standard.feature1'),
+        t('processing.standard.feature2'),
+        t('processing.standard.feature3')
       ],
       color: "blue"
     },
     {
       icon: Zap,
-      title: "Fast Processing",
-      time: "6-12 hours",
-      price: "$75",
-      description: "Expedited processing for urgent travel",
+      title: t('processing.fast.title'),
+      time: t('processing.fast.time'),
+      price: t('processing.fast.price'),
+      description: t('processing.fast.description'),
       features: [
-        "Priority queue processing",
-        "Email and SMS notifications",
-        "Suitable for travel planned 1-2 days ahead"
+        t('processing.fast.feature1'),
+        t('processing.fast.feature2'),
+        t('processing.fast.feature3')
       ],
       color: "green"
     },
     {
       icon: Rocket,
-      title: "Express Processing",
-      time: "2-4 hours",
-      price: "$175",
-      description: "Super fast processing for last-minute travel",
+      title: t('processing.express.title'),
+      time: t('processing.express.time'),
+      price: t('processing.express.price'),
+      description: t('processing.express.description'),
       features: [
-        "Highest priority processing",
-        "Immediate email notifications",
-        "Suitable for same-day travel"
+        t('processing.express.feature1'),
+        t('processing.express.feature2'),
+        t('processing.express.feature3')
       ],
       color: "orange"
     },
     {
       icon: AlertTriangle,
-      title: "Urgent Processing",
-      time: "1-2 hours",
-      price: "$295",
-      description: "Emergency processing for immediate travel",
+      title: t('processing.urgent.title'),
+      time: t('processing.urgent.time'),
+      price: t('processing.urgent.price'),
+      description: t('processing.urgent.description'),
       features: [
-        "Emergency priority processing",
-        "Real-time status updates",
-        "Suitable for emergency travel"
+        t('processing.urgent.feature1'),
+        t('processing.urgent.feature2'),
+        t('processing.urgent.feature3')
       ],
       color: "red"
     }

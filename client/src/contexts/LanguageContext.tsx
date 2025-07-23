@@ -192,24 +192,113 @@ const translations: Record<string, Record<string, string>> = {
     'payment.success.transaction.id': 'Transaction ID',
     'payment.cancel.title': 'Payment Cancelled',
     'payment.cancel.message': 'Your payment was cancelled. You can return to the application form to try again.',
-    'payment.return.application': 'Return to Application',
-    'payment.go.home': 'Go to Home',
-    'payment.error.title': 'Payment Error',
-    'payment.error.message': 'An error occurred during payment processing.',
-    'payment.system.status': 'System Status',
-    'payment.gateway': 'Payment Gateway',
-    'payment.merchant.id': 'Merchant ID',
-    'payment.environment': 'Environment',
 
     // FAQ Page
     'faq.title': 'Frequently Asked Questions',
     'faq.subtitle': 'Find answers to common questions about Turkey e-visa applications',
+    'faq.q1.question': 'What is a Turkey e-visa?',
+    'faq.q1.answer': 'A Turkey e-visa is an electronic travel authorization that allows eligible foreign nationals to enter Turkey for tourism or business purposes. It is obtained online and is valid for multiple entries within its validity period.',
+    'faq.q2.question': 'How long does it take to process my e-visa application?',
+    'faq.q2.answer': 'Processing times vary by service level: Standard (24-48 hours), Fast (6-12 hours), Express (2-4 hours), and Urgent (1-2 hours). All processing times are business hours only.',
+    'faq.q3.question': 'What documents do I need for my e-visa application?',
+    'faq.q3.answer': 'You need a valid passport with at least 6 months remaining validity, a recent passport-style photograph, and supporting documents if required for your nationality (such as hotel reservations, flight tickets, or bank statements).',
+    'faq.q4.question': 'How much does the Turkey e-visa cost?',
+    'faq.q4.answer': 'The e-visa application fee is $69 plus processing fees that range from $25 (Standard) to $295 (Urgent). Additional supporting document fees may apply based on your nationality.',
+    'faq.q5.question': 'Can I extend my e-visa once I\'m in Turkey?',
+    'faq.q5.answer': 'No, e-visas cannot be extended. If you need to stay longer than your e-visa allows, you must exit Turkey and apply for a new e-visa or appropriate visa type.',
+    'faq.q6.question': 'Is travel insurance required for Turkey e-visa?',
+    'faq.q6.answer': 'Travel insurance is not mandatory for e-visa applications, but it is highly recommended. We offer comprehensive travel insurance plans starting from $114 for 7 days coverage.',
+    'faq.q7.question': 'What should I do if my e-visa application is rejected?',
+    'faq.q7.answer': 'If your application is rejected, you will receive a detailed explanation. You may reapply with corrected information or contact our support team at info@getvisa.tr for assistance.',
+    'faq.q8.question': 'Can I use my e-visa for multiple entries to Turkey?',
+    'faq.q8.answer': 'Yes, Turkey e-visas are valid for multiple entries within their validity period. You can enter and exit Turkey multiple times as long as your e-visa remains valid.',
 
     // Requirements Page
     'requirements.title': 'E-Visa Requirements',
-    'requirements.subtitle': 'Complete guide to Turkey e-visa application requirements',
+    'requirements.subtitle': 'Complete list of documents and requirements for your Turkey e-visa application',
     'requirements.general': 'General Requirements',
+    'requirements.general.passport': 'Valid passport with at least 6 months remaining validity',
+    'requirements.general.photo': 'Recent passport-style photograph (taken within last 6 months)',
+    'requirements.general.email': 'Valid email address for receiving e-visa',
+    'requirements.general.payment': 'Credit/debit card for payment processing',
     'requirements.supporting.docs': 'Supporting Documents',
+    'requirements.supporting.hotel.title': 'Hotel Reservation',
+    'requirements.supporting.hotel.description': 'Confirmed hotel booking or accommodation details for your stay in Turkey',
+    'requirements.supporting.flight.title': 'Flight Tickets',
+    'requirements.supporting.flight.description': 'Round-trip flight itinerary showing entry and exit dates',
+    'requirements.supporting.bank.title': 'Bank Statement',
+    'requirements.supporting.bank.description': 'Recent bank statement (last 3 months) showing sufficient funds',
+    'requirements.supporting.insurance.title': 'Travel Insurance',
+    'requirements.supporting.insurance.description': 'Valid travel insurance policy covering your Turkey visit (recommended)',
+
+    // Processing Times Page
+    'processing.standard.title': 'Standard Processing',
+    'processing.standard.time': '24-48 hours',
+    'processing.standard.price': '$25',
+    'processing.standard.description': 'Most economical option for non-urgent travel',
+    'processing.standard.feature1': 'Business hours processing only',
+    'processing.standard.feature2': 'Email notification upon completion',
+    'processing.standard.feature3': 'Suitable for travel planned 3+ days ahead',
+    'processing.fast.title': 'Fast Processing',
+    'processing.fast.time': '6-12 hours',
+    'processing.fast.price': '$75',
+    'processing.fast.description': 'Expedited processing for urgent travel',
+    'processing.fast.feature1': 'Priority queue processing',
+    'processing.fast.feature2': 'Email and SMS notifications',
+    'processing.fast.feature3': 'Suitable for travel planned 1-2 days ahead',
+    'processing.express.title': 'Express Processing',
+    'processing.express.time': '2-4 hours',
+    'processing.express.price': '$175',
+    'processing.express.description': 'Super fast processing for last-minute travel',
+    'processing.express.feature1': 'Highest priority processing',
+    'processing.express.feature2': 'Immediate email notifications',
+    'processing.express.feature3': 'Suitable for same-day travel',
+    'processing.urgent.title': 'Urgent Processing',
+    'processing.urgent.time': '1-2 hours',
+    'processing.urgent.price': '$295',
+    'processing.urgent.description': 'Emergency processing for immediate travel',
+    'processing.urgent.feature1': 'Emergency priority processing',
+    'processing.urgent.feature2': 'Real-time status updates',
+    'processing.urgent.feature3': 'Suitable for emergency travel',
+
+    // Insurance Payment Messages
+    'insurance.payment.created': 'Insurance Payment Created',
+    'insurance.payment.redirecting': 'Redirecting to payment...',
+    'order': 'Order',
+    'insurance.payment.ready': 'Payment Link Ready',
+    'insurance.payment.manual': 'Click the button to continue to insurance payment',
+    'insurance.payment.continue': 'Continue to Payment',
+    'insurance.payment.failed': 'Payment initialization failed',
+
+    // Payment Error Messages
+    'payment.dev.mode': 'Development Mode',
+    'payment.dev.description': 'Payment system ready for production deployment. DNS limitation in development.',
+    'payment.error.title': 'Payment Error',
+    'payment.dev.ready': 'Production System Ready!',
+    'payment.dev.dns.limitation': 'The payment system is fully configured for production deployment. DNS limitation prevents connection to GPay API in development environment.',
+    'payment.error.generic': 'An error occurred during payment processing.',
+    'payment.system.status': 'System Status',
+    'payment.gateway': 'Payment Gateway', 
+    'payment.merchant.id': 'Merchant ID',
+    'payment.environment': 'Environment',
+    'payment.env.development': 'Development',
+    'payment.env.production': 'Production',
+    'payment.try.again': 'Try Again',
+    'payment.go.home': 'Go Home',
+    'payment.production.note.title': 'For Production',
+    'payment.production.note.description': 'Deploy to evisatr.xyz with SSL certificate. All payment credentials and configurations are ready.',
+    'payment.success.test.description': 'Your e-visa application has been submitted successfully and test payment has been processed.',
+    'payment.success.description': 'Your e-visa application has been submitted successfully and payment has been processed.',
+    'payment.success.details.title': 'Application Details',
+    'payment.success.application.number': 'Application Number',
+    'payment.success.track.application': 'Track Application Status',
+    'payment.success.back.home': 'Back to Home',
+    'payment.success.email.confirmation': 'You will receive a confirmation email shortly. Your e-visa will be processed within the selected timeframe.',
+    'payment.return.application': 'Return to Application',
+    'country.selector.visa.free.title': 'Visa-Free Travel',
+    'country.selector.visa.free.description': 'Your country has visa-free access to Turkey. However, we offer comprehensive travel insurance services for your trip.',
+    'country.selector.evisa.available.title': 'E-Visa Available',
+    'country.selector.evisa.available.description': 'Great! You can apply for an e-visa for Turkey.',
 
     // Form Validation
     'form.error.first.name': 'First Name Required',
@@ -241,6 +330,38 @@ const translations: Record<string, Record<string, string>> = {
     'form.error.passport.expired': 'Passport Expired',
     'form.error.prerequisites': 'Prerequisites Required',
     'form.error.prerequisites.desc': 'Please confirm all prerequisites before proceeding',
+
+    // Form components - New visa-form translations
+    'form.field.supporting.document.number': 'Supporting Document Number',
+    'form.field.supporting.document.start.date': 'Document Start Date',
+    'form.field.supporting.document.end.date': 'Document End Date',
+    'form.placeholder.supporting.document.number': 'Document number',
+    
+    // Form sections
+    'form.section.supporting.document.details': 'Supporting Document Details',
+    'form.section.order.summary': 'Order Summary',
+    
+    // Payment section
+    'form.payment.evisa.fee': 'E-Visa Application Fee',
+    'form.payment.processing.document.fee': 'Processing & Document Fee',
+    'form.payment.processing.fee': 'Processing Fee',
+    'form.payment.total.amount': 'Total Amount',
+    'form.payment.secure.title': 'Secure Payment',
+    'form.payment.secure.description': 'You will be redirected to our secure payment partner (GPay) to complete your payment. You will only need to enter your card details once on their secure platform.',
+    'form.payment.summary.title': 'Payment Summary',
+    
+    // Navigation
+    'form.navigation.previous': 'Previous',
+    'form.navigation.next.step': 'Next Step',
+    
+    // Buttons
+    'form.button.processing': 'Processing...',
+    'form.button.submit.pay.desktop': 'Submit Application & Pay $',
+    'form.button.pay.mobile': 'Pay $',
+    
+    // Validation
+    'form.validation.error.title': 'Form Validation Error',
+    'form.validation.error.description': 'Please fill in all required fields correctly',
 
     // Footer
     'footer.application': 'Application',
@@ -372,24 +493,113 @@ const translations: Record<string, Record<string, string>> = {
     'payment.success.transaction.id': 'İşlem Numarası',
     'payment.cancel.title': 'Ödeme İptal Edildi',
     'payment.cancel.message': 'Ödemeniz iptal edildi. Başvuru formuna dönerek tekrar deneyebilirsiniz.',
-    'payment.return.application': 'Başvuruya Dön',
-    'payment.go.home': 'Ana Sayfaya Git',
-    'payment.error.title': 'Ödeme Hatası',
-    'payment.error.message': 'Ödeme işlemi sırasında bir hata oluştu.',
-    'payment.system.status': 'Sistem Durumu',
-    'payment.gateway': 'Ödeme Geçidi',
-    'payment.merchant.id': 'Satıcı Kimliği',
-    'payment.environment': 'Ortam',
 
     // FAQ Page
     'faq.title': 'Sık Sorulan Sorular',
     'faq.subtitle': 'Türkiye e-vize başvuruları hakkında yaygın soruların cevaplarını bulun',
+    'faq.q1.question': 'Türkiye e-vize nedir?',
+    'faq.q1.answer': 'Türkiye e-vize, uygun yabancı uyrukluların turizm veya iş amaçlı Türkiye\'ye giriş yapmasına izin veren elektronik bir seyahat yetkisidir. Online olarak alınır ve geçerlilik süresi boyunca çoklu giriş için geçerlidir.',
+    'faq.q2.question': 'E-vize başvurumun işlenmesi ne kadar sürer?',
+    'faq.q2.answer': 'İşlem süreleri hizmet seviyesine göre değişir: Standart (24-48 saat), Hızlı (6-12 saat), Ekspres (2-4 saat) ve Acil (1-2 saat). Tüm işlem süreleri yalnızca iş saatleridir.',
+    'faq.q3.question': 'E-vize başvurum için hangi belgelere ihtiyacım var?',
+    'faq.q3.answer': 'En az 6 ay geçerlilik süresi kalan geçerli bir pasaport, yakın tarihli pasaport fotoğrafı ve uyruğunuz için gerekli ise destekleyici belgeler (otel rezervasyonları, uçak biletleri veya banka ekstre belgeleri) gereklidir.',
+    'faq.q4.question': 'Türkiye e-vize ücreti ne kadardır?',
+    'faq.q4.answer': 'E-vize başvuru ücreti 69$ artı 25$ (Standart) ile 295$ (Acil) arasında değişen işlem ücretleridir. Uyruğunuza göre ek destekleyici belge ücretleri uygulanabilir.',
+    'faq.q5.question': 'Türkiye\'deyken e-vizemi uzatabilir miyim?',
+    'faq.q5.answer': 'Hayır, e-vizeler uzatılamaz. E-vizenizin izin verdiğinden daha uzun kalmaya ihtiyacınız varsa, Türkiye\'den çıkarak yeni bir e-vize veya uygun vize türü için başvurmalısınız.',
+    'faq.q6.question': 'Türkiye e-vize için seyahat sigortası gerekli mi?',
+    'faq.q6.answer': 'Seyahat sigortası e-vize başvuruları için zorunlu değildir, ancak şiddetle tavsiye edilir. 7 günlük kapsama için 114$\'dan başlayan kapsamlı seyahat sigortası planları sunuyoruz.',
+    'faq.q7.question': 'E-vize başvurum reddedilirse ne yapmalıyım?',
+    'faq.q7.answer': 'Başvurunuz reddedilirse, ayrıntılı bir açıklama alacaksınız. Düzeltilmiş bilgilerle yeniden başvurabilir veya yardım için info@getvisa.tr adresinden destek ekibimizle iletişime geçebilirsiniz.',
+    'faq.q8.question': 'E-vizemi Türkiye\'ye çoklu giriş için kullanabilir miyim?',
+    'faq.q8.answer': 'Evet, Türkiye e-vizeleri geçerlilik süreleri boyunca çoklu giriş için geçerlidir. E-vizeniz geçerli kaldığı sürece Türkiye\'ye birden fazla kez giriş ve çıkış yapabilirsinız.',
 
     // Requirements Page
     'requirements.title': 'E-Vize Gereksinimleri',
-    'requirements.subtitle': 'Türkiye e-vize başvuru gereksinimlerine tam rehber',
+    'requirements.subtitle': 'Türkiye e-vize başvurunuz için belge ve gereksinimlerin tam listesi',
     'requirements.general': 'Genel Gereksinimler',
+    'requirements.general.passport': 'En az 6 ay geçerlilik süresi kalan geçerli pasaport',
+    'requirements.general.photo': 'Yakın tarihli pasaport fotoğrafı (son 6 ay içinde çekilmiş)',
+    'requirements.general.email': 'E-vize almak için geçerli e-posta adresi',
+    'requirements.general.payment': 'Ödeme işlemi için kredi/banka kartı',
     'requirements.supporting.docs': 'Destekleyici Belgeler',
+    'requirements.supporting.hotel.title': 'Otel Rezervasyonu',
+    'requirements.supporting.hotel.description': 'Türkiye\'deki konaklamanız için onaylanmış otel rezervasyonu veya konaklama detayları',
+    'requirements.supporting.flight.title': 'Uçak Biletleri',
+    'requirements.supporting.flight.description': 'Giriş ve çıkış tarihlerini gösteren gidiş-dönüş uçak seyahat programı',
+    'requirements.supporting.bank.title': 'Banka Ekstre',
+    'requirements.supporting.bank.description': 'Yeterli fon gösteren güncel banka ekstre (son 3 ay)',
+    'requirements.supporting.insurance.title': 'Seyahat Sigortası',
+    'requirements.supporting.insurance.description': 'Türkiye ziyaretinizi kapsayan geçerli seyahat sigortası poliçesi (önerilir)',
+
+    // Processing Times Page
+    'processing.standard.title': 'Standart İşlem',
+    'processing.standard.time': '24-48 saat',
+    'processing.standard.price': '25$',
+    'processing.standard.description': 'Acil olmayan seyahatler için en ekonomik seçenek',
+    'processing.standard.feature1': 'Yalnızca iş saatleri işlemi',
+    'processing.standard.feature2': 'Tamamlandığında e-posta bildirimi',
+    'processing.standard.feature3': '3+ gün önceden planlanmış seyahatler için uygun',
+    'processing.fast.title': 'Hızlı İşlem',
+    'processing.fast.time': '6-12 saat',
+    'processing.fast.price': '75$',
+    'processing.fast.description': 'Acil seyahatler için hızlandırılmış işlem',
+    'processing.fast.feature1': 'Öncelikli kuyruk işlemi',
+    'processing.fast.feature2': 'E-posta ve SMS bildirimleri',
+    'processing.fast.feature3': '1-2 gün önceden planlanmış seyahatler için uygun',
+    'processing.express.title': 'Ekspres İşlem',
+    'processing.express.time': '2-4 saat',
+    'processing.express.price': '175$',
+    'processing.express.description': 'Son dakika seyahatler için süper hızlı işlem',
+    'processing.express.feature1': 'En yüksek öncelikli işlem',
+    'processing.express.feature2': 'Anlık e-posta bildirimleri',
+    'processing.express.feature3': 'Aynı gün seyahatler için uygun',
+    'processing.urgent.title': 'Acil İşlem',
+    'processing.urgent.time': '1-2 saat',
+    'processing.urgent.price': '295$',
+    'processing.urgent.description': 'Anında seyahat için acil durum işlemi',
+    'processing.urgent.feature1': 'Acil durum öncelikli işlem',
+    'processing.urgent.feature2': 'Gerçek zamanlı durum güncellemeleri',
+    'processing.urgent.feature3': 'Acil durum seyahatler için uygun',
+
+    // Insurance Payment Messages
+    'insurance.payment.created': 'Sigorta Ödemesi Oluşturuldu',
+    'insurance.payment.redirecting': 'Ödeme sayfasına yönlendiriliyor...',
+    'order': 'Sipariş',
+    'insurance.payment.ready': 'Ödeme Linki Hazır',
+    'insurance.payment.manual': 'Sigorta ödemesine devam etmek için butona tıklayın',
+    'insurance.payment.continue': 'Ödemeye Devam Et',
+    'insurance.payment.failed': 'Ödeme başlatma başarısız',
+
+    // Payment Error Messages
+    'payment.dev.mode': 'Geliştirme Modu',
+    'payment.dev.description': 'Ödeme sistemi üretim dağıtımı için hazır. Geliştirmede DNS sınırlaması.',
+    'payment.error.title': 'Ödeme Hatası',
+    'payment.dev.ready': 'Üretim Sistemi Hazır!',
+    'payment.dev.dns.limitation': 'Ödeme sistemi üretim dağıtımı için tamamen yapılandırıldı. DNS sınırlaması geliştirme ortamında GPay API\'ye bağlantıyı engelliyor.',
+    'payment.error.generic': 'Ödeme işlemi sırasında bir hata oluştu.',
+    'payment.system.status': 'Sistem Durumu',
+    'payment.gateway': 'Ödeme Ağ Geçidi',
+    'payment.merchant.id': 'Satıcı ID',
+    'payment.environment': 'Ortam',
+    'payment.env.development': 'Geliştirme',
+    'payment.env.production': 'Üretim',
+    'payment.try.again': 'Tekrar Dene',
+    'payment.go.home': 'Ana Sayfaya Git',
+    'payment.production.note.title': 'Üretim İçin',
+    'payment.production.note.description': 'SSL sertifikası ile evisatr.xyz\'ye dağıt. Tüm ödeme bilgileri ve yapılandırmaları hazır.',
+    'payment.success.test.description': 'E-vize başvurunuz başarıyla gönderildi ve test ödemesi işlendi.',
+    'payment.success.description': 'E-vize başvurunuz başarıyla gönderildi ve ödeme işlendi.',
+    'payment.success.details.title': 'Başvuru Detayları',
+    'payment.success.application.number': 'Başvuru Numarası',
+    'payment.success.track.application': 'Başvuru Durumunu Takip Et',
+    'payment.success.back.home': 'Ana Sayfaya Dön',
+    'payment.success.email.confirmation': 'Kısa süre içinde onay e-postası alacaksınız. E-vizeniz seçilen zaman dilimi içinde işlenecektir.',
+    'payment.return.application': 'Başvuruya Geri Dön',
+    'country.selector.visa.free.title': 'Vizesiz Seyahat',
+    'country.selector.visa.free.description': 'Ülkenizin Türkiye\'ye vizesiz erişimi vardır. Ancak seyahatiniz için kapsamlı seyahat sigortası hizmetleri sunuyoruz.',
+    'country.selector.evisa.available.title': 'E-Vize Mevcut',
+    'country.selector.evisa.available.description': 'Harika! Türkiye için e-vize başvurusu yapabilirsiniz.',
 
     // Form Validation
     'form.error.first.name': 'Ad Gerekli',
@@ -421,6 +631,38 @@ const translations: Record<string, Record<string, string>> = {
     'form.error.passport.expired': 'Pasaport Süresi Dolmuş',
     'form.error.prerequisites': 'Önkoşullar Gerekli',
     'form.error.prerequisites.desc': 'Devam etmeden önce lütfen tüm önkoşulları onaylayın',
+
+    // Form components - New visa-form translations
+    'form.field.supporting.document.number': 'Destekleyici Belge Numarası',
+    'form.field.supporting.document.start.date': 'Belge Başlangıç Tarihi',
+    'form.field.supporting.document.end.date': 'Belge Bitiş Tarihi',
+    'form.placeholder.supporting.document.number': 'Belge numarası',
+    
+    // Form sections
+    'form.section.supporting.document.details': 'Destekleyici Belge Detayları',
+    'form.section.order.summary': 'Sipariş Özeti',
+    
+    // Payment section
+    'form.payment.evisa.fee': 'E-Vize Başvuru Ücreti',
+    'form.payment.processing.document.fee': 'İşlem ve Belge Ücreti',
+    'form.payment.processing.fee': 'İşlem Ücreti',
+    'form.payment.total.amount': 'Toplam Tutar',
+    'form.payment.secure.title': 'Güvenli Ödeme',
+    'form.payment.secure.description': 'Ödemenizi tamamlamak için güvenli ödeme ortağımıza (GPay) yönlendirileceksiniz. Kart bilgilerinizi yalnızca güvenli platformlarında bir kez girmeniz yeterli.',
+    'form.payment.summary.title': 'Ödeme Özeti',
+    
+    // Navigation
+    'form.navigation.previous': 'Önceki',
+    'form.navigation.next.step': 'Sonraki Adım',
+    
+    // Buttons
+    'form.button.processing': 'İşleniyor...',
+    'form.button.submit.pay.desktop': 'Başvuru Gönder ve Öde $',
+    'form.button.pay.mobile': 'Öde $',
+    
+    // Validation
+    'form.validation.error.title': 'Form Doğrulama Hatası',
+    'form.validation.error.description': 'Lütfen tüm zorunlu alanları doğru şekilde doldurun',
 
     // Footer
     'footer.application': 'Başvuru',
@@ -554,6 +796,10 @@ const translations: Record<string, Record<string, string>> = {
     'payment.cancel.message': 'Votre paiement a été annulé. Vous pouvez retourner au formulaire de demande pour réessayer.',
     'payment.return.application': 'Retour à la Demande',
     'payment.go.home': 'Aller à l\'Accueil',
+    'country.selector.visa.free.title': 'Voyage sans Visa',
+    'country.selector.visa.free.description': 'Votre pays a un accès sans visa à la Turquie. Cependant, nous offrons des services d\'assurance voyage complets pour votre voyage.',
+    'country.selector.evisa.available.title': 'E-Visa Disponible',
+    'country.selector.evisa.available.description': 'Excellent! Vous pouvez faire une demande d\'e-visa pour la Turquie.',
     'payment.error.title': 'Erreur de Paiement',
     'payment.error.message': 'Une erreur s\'est produite lors du traitement du paiement.',
     'payment.system.status': 'Statut du Système',
@@ -564,6 +810,22 @@ const translations: Record<string, Record<string, string>> = {
     // FAQ Page
     'faq.title': 'Questions Fréquemment Posées',
     'faq.subtitle': 'Trouvez des réponses aux questions courantes sur les demandes d\'e-visa de Turquie',
+    'faq.q1.question': 'Qu\'est-ce qu\'un e-visa de Turquie?',
+    'faq.q1.answer': 'Un e-visa de Turquie est une autorisation de voyage électronique qui permet aux ressortissants étrangers éligibles d\'entrer en Turquie à des fins touristiques ou commerciales. Il est obtenu en ligne et est valide pour des entrées multiples dans sa période de validité.',
+    'faq.q2.question': 'Combien de temps faut-il pour traiter ma demande d\'e-visa?',
+    'faq.q2.answer': 'Les délais de traitement varient selon le niveau de service: Standard (24-48 heures), Rapide (6-12 heures), Express (2-4 heures) et Urgent (1-2 heures). Tous les temps de traitement sont uniquement pendant les heures ouvrables.',
+    'faq.q3.question': 'Quels documents ai-je besoin pour ma demande d\'e-visa?',
+    'faq.q3.answer': 'Vous avez besoin d\'un passeport valide avec au moins 6 mois de validité restante, une photo récente de style passeport, et des documents justificatifs si requis pour votre nationalité (comme des réservations d\'hôtel, billets d\'avion ou relevés bancaires).',
+    'faq.q4.question': 'Combien coûte l\'e-visa de Turquie?',
+    'faq.q4.answer': 'Les frais de demande d\'e-visa sont de 69$ plus les frais de traitement qui vont de 25$ (Standard) à 295$ (Urgent). Des frais supplémentaires pour documents justificatifs peuvent s\'appliquer selon votre nationalité.',
+    'faq.q5.question': 'Puis-je prolonger mon e-visa une fois en Turquie?',
+    'faq.q5.answer': 'Non, les e-visas ne peuvent pas être prolongés. Si vous devez rester plus longtemps que ne le permet votre e-visa, vous devez quitter la Turquie et demander un nouvel e-visa ou un type de visa approprié.',
+    'faq.q6.question': 'L\'assurance voyage est-elle requise pour l\'e-visa de Turquie?',
+    'faq.q6.answer': 'L\'assurance voyage n\'est pas obligatoire pour les demandes d\'e-visa, mais elle est fortement recommandée. Nous proposons des plans d\'assurance voyage complets à partir de 114$ pour une couverture de 7 jours.',
+    'faq.q7.question': 'Que dois-je faire si ma demande d\'e-visa est rejetée?',
+    'faq.q7.answer': 'Si votre demande est rejetée, vous recevrez une explication détaillée. Vous pouvez redemander avec des informations corrigées ou contacter notre équipe de support à info@getvisa.tr pour assistance.',
+    'faq.q8.question': 'Puis-je utiliser mon e-visa pour des entrées multiples en Turquie?',
+    'faq.q8.answer': 'Oui, les e-visas de Turquie sont valides pour des entrées multiples dans leur période de validité. Vous pouvez entrer et sortir de Turquie plusieurs fois tant que votre e-visa reste valide.',
 
     // Requirements Page
     'requirements.title': 'Exigences E-Visa',
@@ -601,6 +863,38 @@ const translations: Record<string, Record<string, string>> = {
     'form.error.passport.expired': 'Passeport Expiré',
     'form.error.prerequisites': 'Prérequis Requis',
     'form.error.prerequisites.desc': 'Veuillez confirmer tous les prérequis avant de continuer',
+
+    // Form components - New visa-form translations
+    'form.field.supporting.document.number': 'Numéro du Document Justificatif',
+    'form.field.supporting.document.start.date': 'Date de Début du Document',
+    'form.field.supporting.document.end.date': 'Date de Fin du Document',
+    'form.placeholder.supporting.document.number': 'Numéro du document',
+    
+    // Form sections
+    'form.section.supporting.document.details': 'Détails du Document Justificatif',
+    'form.section.order.summary': 'Résumé de la Commande',
+    
+    // Payment section
+    'form.payment.evisa.fee': 'Frais de Demande E-Visa',
+    'form.payment.processing.document.fee': 'Frais de Traitement et Document',
+    'form.payment.processing.fee': 'Frais de Traitement',
+    'form.payment.total.amount': 'Montant Total',
+    'form.payment.secure.title': 'Paiement Sécurisé',
+    'form.payment.secure.description': 'Vous serez redirigé vers notre partenaire de paiement sécurisé (GPay) pour finaliser votre paiement. Vous devrez saisir vos données de carte une seule fois sur leur plateforme sécurisée.',
+    'form.payment.summary.title': 'Résumé du Paiement',
+    
+    // Navigation
+    'form.navigation.previous': 'Précédent',
+    'form.navigation.next.step': 'Étape Suivante',
+    
+    // Buttons
+    'form.button.processing': 'Traitement...',
+    'form.button.submit.pay.desktop': 'Soumettre la Demande et Payer $',
+    'form.button.pay.mobile': 'Payer $',
+    
+    // Validation
+    'form.validation.error.title': 'Erreur de Validation du Formulaire',
+    'form.validation.error.description': 'Veuillez remplir correctement tous les champs obligatoires',
     
     // Footer
     'footer.application': 'Demande',
@@ -734,6 +1028,10 @@ const translations: Record<string, Record<string, string>> = {
     'payment.cancel.message': 'Ihre Zahlung wurde storniert. Sie können zum Antragsformular zurückkehren und es erneut versuchen.',
     'payment.return.application': 'Zurück zum Antrag',
     'payment.go.home': 'Zur Startseite',
+    'country.selector.visa.free.title': 'Visafreies Reisen',
+    'country.selector.visa.free.description': 'Ihr Land hat visafreien Zugang zur Türkei. Wir bieten jedoch umfassende Reiseversicherungsservices für Ihre Reise.',
+    'country.selector.evisa.available.title': 'E-Visa Verfügbar',
+    'country.selector.evisa.available.description': 'Großartig! Sie können ein e-Visa für die Türkei beantragen.',
     'payment.error.title': 'Zahlungsfehler',
     'payment.error.message': 'Ein Fehler ist bei der Zahlungsabwicklung aufgetreten.',
     'payment.system.status': 'Systemstatus',
@@ -744,6 +1042,22 @@ const translations: Record<string, Record<string, string>> = {
     // FAQ Page
     'faq.title': 'Häufig Gestellte Fragen',
     'faq.subtitle': 'Finden Sie Antworten auf häufige Fragen zu Türkei e-Visa Anträgen',
+    'faq.q1.question': 'Was ist ein Türkei e-Visa?',
+    'faq.q1.answer': 'Ein Türkei e-Visa ist eine elektronische Reisegenehmigung, die berechtigten ausländischen Staatsangehörigen die Einreise in die Türkei für touristische oder geschäftliche Zwecke ermöglicht. Es wird online bezogen und ist für mehrfache Einreisen innerhalb seiner Gültigkeitsdauer gültig.',
+    'faq.q2.question': 'Wie lange dauert die Bearbeitung meines e-Visa Antrags?',
+    'faq.q2.answer': 'Bearbeitungszeiten variieren je nach Service-Level: Standard (24-48 Stunden), Schnell (6-12 Stunden), Express (2-4 Stunden) und Dringend (1-2 Stunden). Alle Bearbeitungszeiten gelten nur während der Geschäftszeiten.',
+    'faq.q3.question': 'Welche Dokumente benötige ich für meinen e-Visa Antrag?',
+    'faq.q3.answer': 'Sie benötigen einen gültigen Reisepass mit mindestens 6 Monaten verbleibender Gültigkeit, ein aktuelles Passfoto und unterstützende Dokumente, falls für Ihre Nationalität erforderlich (wie Hotelreservierungen, Flugtickets oder Kontoauszüge).',
+    'faq.q4.question': 'Wie viel kostet das Türkei e-Visa?',
+    'faq.q4.answer': 'Die e-Visa Antragsgebühr beträgt 69$ plus Bearbeitungsgebühren von 25$ (Standard) bis 295$ (Dringend). Zusätzliche Gebühren für unterstützende Dokumente können je nach Nationalität anfallen.',
+    'faq.q5.question': 'Kann ich mein e-Visa verlängern, wenn ich in der Türkei bin?',
+    'faq.q5.answer': 'Nein, e-Visas können nicht verlängert werden. Wenn Sie länger bleiben müssen, als Ihr e-Visa erlaubt, müssen Sie die Türkei verlassen und ein neues e-Visa oder einen entsprechenden Visatyp beantragen.',
+    'faq.q6.question': 'Ist eine Reiseversicherung für das Türkei e-Visa erforderlich?',
+    'faq.q6.answer': 'Eine Reiseversicherung ist für e-Visa Anträge nicht obligatorisch, wird aber dringend empfohlen. Wir bieten umfassende Reiseversicherungspläne ab 114$ für 7 Tage Deckung.',
+    'faq.q7.question': 'Was soll ich tun, wenn mein e-Visa Antrag abgelehnt wird?',
+    'faq.q7.answer': 'Wenn Ihr Antrag abgelehnt wird, erhalten Sie eine detaillierte Erklärung. Sie können mit korrigierten Informationen erneut beantragen oder unser Support-Team unter info@getvisa.tr für Hilfe kontaktieren.',
+    'faq.q8.question': 'Kann ich mein e-Visa für mehrfache Einreisen in die Türkei verwenden?',
+    'faq.q8.answer': 'Ja, Türkei e-Visas sind für mehrfache Einreisen innerhalb ihrer Gültigkeitsdauer gültig. Sie können die Türkei mehrmals ein- und ausreisen, solange Ihr e-Visa gültig bleibt.',
 
     // Requirements Page
     'requirements.title': 'E-Visa Anforderungen',
@@ -781,6 +1095,38 @@ const translations: Record<string, Record<string, string>> = {
     'form.error.passport.expired': 'Pass Abgelaufen',
     'form.error.prerequisites': 'Voraussetzungen Erforderlich',
     'form.error.prerequisites.desc': 'Bitte bestätigen Sie alle Voraussetzungen, bevor Sie fortfahren',
+
+    // Form components - New visa-form translations
+    'form.field.supporting.document.number': 'Nummer des Unterstützenden Dokuments',
+    'form.field.supporting.document.start.date': 'Dokument Startdatum',
+    'form.field.supporting.document.end.date': 'Dokument Enddatum',
+    'form.placeholder.supporting.document.number': 'Dokumentnummer',
+    
+    // Form sections
+    'form.section.supporting.document.details': 'Details des Unterstützenden Dokuments',
+    'form.section.order.summary': 'Bestellübersicht',
+    
+    // Payment section
+    'form.payment.evisa.fee': 'E-Visa Antragsgebühr',
+    'form.payment.processing.document.fee': 'Bearbeitungs- und Dokumentgebühr',
+    'form.payment.processing.fee': 'Bearbeitungsgebühr',
+    'form.payment.total.amount': 'Gesamtbetrag',
+    'form.payment.secure.title': 'Sichere Zahlung',
+    'form.payment.secure.description': 'Sie werden zu unserem sicheren Zahlungspartner (GPay) weitergeleitet, um Ihre Zahlung abzuschließen. Sie müssen Ihre Kartendaten nur einmal auf ihrer sicheren Plattform eingeben.',
+    'form.payment.summary.title': 'Zahlungsübersicht',
+    
+    // Navigation
+    'form.navigation.previous': 'Zurück',
+    'form.navigation.next.step': 'Nächster Schritt',
+    
+    // Buttons
+    'form.button.processing': 'Verarbeitung...',
+    'form.button.submit.pay.desktop': 'Antrag Einreichen und Bezahlen $',
+    'form.button.pay.mobile': 'Bezahlen $',
+    
+    // Validation
+    'form.validation.error.title': 'Formular Validierungsfehler',
+    'form.validation.error.description': 'Bitte füllen Sie alle Pflichtfelder korrekt aus',
     
     // Footer
     'footer.application': 'Antrag',
@@ -914,6 +1260,10 @@ const translations: Record<string, Record<string, string>> = {
     'payment.cancel.message': 'Su pago fue cancelado. Puede volver al formulario de solicitud para intentar nuevamente.',
     'payment.return.application': 'Volver a Solicitud',
     'payment.go.home': 'Ir al Inicio',
+    'country.selector.visa.free.title': 'Viaje sin Visa',
+    'country.selector.visa.free.description': 'Su país tiene acceso sin visa a Turquía. Sin embargo, ofrecemos servicios integrales de seguro de viaje para su viaje.',
+    'country.selector.evisa.available.title': 'E-Visa Disponible',
+    'country.selector.evisa.available.description': '¡Excelente! Puede solicitar un e-visa para Turquía.',
     'payment.error.title': 'Error de Pago',
     'payment.error.message': 'Ocurrió un error durante el procesamiento del pago.',
     'payment.system.status': 'Estado del Sistema',
@@ -924,6 +1274,22 @@ const translations: Record<string, Record<string, string>> = {
     // FAQ Page
     'faq.title': 'Preguntas Frecuentes',
     'faq.subtitle': 'Encuentre respuestas a preguntas comunes sobre solicitudes de e-visa de Turquía',
+    'faq.q1.question': '¿Qué es un e-visa de Turquía?',
+    'faq.q1.answer': 'Un e-visa de Turquía es una autorización de viaje electrónica que permite a los ciudadanos extranjeros elegibles ingresar a Turquía con fines turísticos o comerciales. Se obtiene en línea y es válido para múltiples entradas dentro de su período de validez.',
+    'faq.q2.question': '¿Cuánto tiempo toma procesar mi solicitud de e-visa?',
+    'faq.q2.answer': 'Los tiempos de procesamiento varían según el nivel de servicio: Estándar (24-48 horas), Rápido (6-12 horas), Express (2-4 horas) y Urgente (1-2 horas). Todos los tiempos de procesamiento son solo durante horas laborables.',
+    'faq.q3.question': '¿Qué documentos necesito para mi solicitud de e-visa?',
+    'faq.q3.answer': 'Necesita un pasaporte válido con al menos 6 meses de validez restante, una fotografía reciente estilo pasaporte, y documentos de apoyo si son requeridos para su nacionalidad (como reservas de hotel, boletos de avión o estados de cuenta bancarios).',
+    'faq.q4.question': '¿Cuánto cuesta el e-visa de Turquía?',
+    'faq.q4.answer': 'La tarifa de solicitud de e-visa es de $69 más tarifas de procesamiento que van desde $25 (Estándar) hasta $295 (Urgente). Pueden aplicar tarifas adicionales por documentos de apoyo según su nacionalidad.',
+    'faq.q5.question': '¿Puedo extender mi e-visa una vez que esté en Turquía?',
+    'faq.q5.answer': 'No, los e-visas no pueden ser extendidos. Si necesita quedarse más tiempo del que permite su e-visa, debe salir de Turquía y solicitar un nuevo e-visa o tipo de visa apropiado.',
+    'faq.q6.question': '¿Se requiere seguro de viaje para el e-visa de Turquía?',
+    'faq.q6.answer': 'El seguro de viaje no es obligatorio para solicitudes de e-visa, pero es altamente recomendado. Ofrecemos planes de seguro de viaje integrales desde $114 para cobertura de 7 días.',
+    'faq.q7.question': '¿Qué debo hacer si mi solicitud de e-visa es rechazada?',
+    'faq.q7.answer': 'Si su solicitud es rechazada, recibirá una explicación detallada. Puede volver a solicitar con información corregida o contactar a nuestro equipo de soporte en info@getvisa.tr para asistencia.',
+    'faq.q8.question': '¿Puedo usar mi e-visa para múltiples entradas a Turquía?',
+    'faq.q8.answer': 'Sí, los e-visas de Turquía son válidos para múltiples entradas dentro de su período de validez. Puede entrar y salir de Turquía múltiples veces mientras su e-visa permanezca válido.',
 
     // Requirements Page
     'requirements.title': 'Requisitos de E-Visa',
@@ -961,6 +1327,38 @@ const translations: Record<string, Record<string, string>> = {
     'form.error.passport.expired': 'Pasaporte Vencido',
     'form.error.prerequisites': 'Prerequisitos Requeridos',
     'form.error.prerequisites.desc': 'Por favor confirme todos los prerequisitos antes de proceder',
+
+    // Form components - New visa-form translations
+    'form.field.supporting.document.number': 'Número del Documento de Apoyo',
+    'form.field.supporting.document.start.date': 'Fecha de Inicio del Documento',
+    'form.field.supporting.document.end.date': 'Fecha de Fin del Documento',
+    'form.placeholder.supporting.document.number': 'Número del documento',
+    
+    // Form sections
+    'form.section.supporting.document.details': 'Detalles del Documento de Apoyo',
+    'form.section.order.summary': 'Resumen del Pedido',
+    
+    // Payment section
+    'form.payment.evisa.fee': 'Tarifa de Solicitud E-Visa',
+    'form.payment.processing.document.fee': 'Tarifa de Procesamiento y Documento',
+    'form.payment.processing.fee': 'Tarifa de Procesamiento',
+    'form.payment.total.amount': 'Importe Total',
+    'form.payment.secure.title': 'Pago Seguro',
+    'form.payment.secure.description': 'Será redirigido a nuestro socio de pago seguro (GPay) para completar su pago. Solo necesitará ingresar los detalles de su tarjeta una vez en su plataforma segura.',
+    'form.payment.summary.title': 'Resumen del Pago',
+    
+    // Navigation
+    'form.navigation.previous': 'Anterior',
+    'form.navigation.next.step': 'Siguiente Paso',
+    
+    // Buttons
+    'form.button.processing': 'Procesando...',
+    'form.button.submit.pay.desktop': 'Enviar Solicitud y Pagar $',
+    'form.button.pay.mobile': 'Pagar $',
+    
+    // Validation
+    'form.validation.error.title': 'Error de Validación del Formulario',
+    'form.validation.error.description': 'Por favor complete todos los campos obligatorios correctamente',
     
     // Footer
     'footer.application': 'Solicitud',
@@ -1094,6 +1492,10 @@ const translations: Record<string, Record<string, string>> = {
     'payment.cancel.message': 'تم إلغاء دفعتك. يمكنك العودة إلى نموذج الطلب للمحاولة مرة أخرى.',
     'payment.return.application': 'العودة إلى الطلب',
     'payment.go.home': 'الذهاب إلى الرئيسية',
+    'country.selector.visa.free.title': 'سفر بدون تأشيرة',
+    'country.selector.visa.free.description': 'بلدك لديه وصول بدون تأشيرة إلى تركيا. ومع ذلك، نحن نقدم خدمات تأمين سفر شاملة لرحلتك.',
+    'country.selector.evisa.available.title': 'التأشيرة الإلكترونية متاحة',
+    'country.selector.evisa.available.description': 'رائع! يمكنك التقدم بطلب للحصول على تأشيرة إلكترونية لتركيا.',
     'payment.error.title': 'خطأ في الدفع',
     'payment.error.message': 'حدث خطأ أثناء معالجة الدفع.',
     'payment.system.status': 'حالة النظام',
@@ -1104,6 +1506,22 @@ const translations: Record<string, Record<string, string>> = {
     // FAQ Page
     'faq.title': 'الأسئلة الشائعة',
     'faq.subtitle': 'ابحث عن إجابات للأسئلة الشائعة حول طلبات التأشيرة الإلكترونية التركية',
+    'faq.q1.question': 'ما هي التأشيرة الإلكترونية التركية؟',
+    'faq.q1.answer': 'التأشيرة الإلكترونية التركية هي ترخيص سفر إلكتروني يسمح للرعايا الأجانب المؤهلين بدخول تركيا لأغراض السياحة أو الأعمال. يتم الحصول عليها عبر الإنترنت وهي صالحة لدخولات متعددة خلال فترة صلاحيتها.',
+    'faq.q2.question': 'كم من الوقت يستغرق معالجة طلب التأشيرة الإلكترونية؟',
+    'faq.q2.answer': 'تختلف أوقات المعالجة حسب مستوى الخدمة: عادي (24-48 ساعة)، سريع (6-12 ساعة)، سريع جداً (2-4 ساعات)، وعاجل (1-2 ساعة). جميع أوقات المعالجة هي فقط خلال ساعات العمل.',
+    'faq.q3.question': 'ما هي الوثائق التي أحتاجها لطلب التأشيرة الإلكترونية؟',
+    'faq.q3.answer': 'تحتاج إلى جواز سفر صالح لمدة 6 أشهر على الأقل، صورة حديثة بحجم جواز السفر، ووثائق داعمة إذا كانت مطلوبة لجنسيتك (مثل حجوزات الفنادق، تذاكر الطيران، أو كشوفات البنك).',
+    'faq.q4.question': 'كم تكلف التأشيرة الإلكترونية التركية؟',
+    'faq.q4.answer': 'رسوم طلب التأشيرة الإلكترونية هي 69$ بالإضافة إلى رسوم المعالجة التي تتراوح من 25$ (عادي) إلى 295$ (عاجل). قد تنطبق رسوم إضافية للوثائق الداعمة حسب جنسيتك.',
+    'faq.q5.question': 'هل يمكنني تمديد التأشيرة الإلكترونية بمجرد وصولي إلى تركيا؟',
+    'faq.q5.answer': 'لا، لا يمكن تمديد التأشيرات الإلكترونية. إذا كنت بحاجة للبقاء لفترة أطول مما تسمح به تأشيرتك الإلكترونية، يجب أن تغادر تركيا وتتقدم بطلب للحصول على تأشيرة إلكترونية جديدة أو نوع تأشيرة مناسب.',
+    'faq.q6.question': 'هل التأمين على السفر مطلوب للتأشيرة الإلكترونية التركية؟',
+    'faq.q6.answer': 'التأمين على السفر ليس إلزامياً لطلبات التأشيرة الإلكترونية، لكنه موصى به بشدة. نحن نقدم خطط تأمين السفر الشاملة بدءاً من 114$ لتغطية 7 أيام.',
+    'faq.q7.question': 'ماذا يجب أن أفعل إذا تم رفض طلب التأشيرة الإلكترونية؟',
+    'faq.q7.answer': 'إذا تم رفض طلبك، ستتلقى شرحاً مفصلاً. يمكنك إعادة التقديم بمعلومات مُصححة أو الاتصال بفريق الدعم لدينا على info@getvisa.tr للمساعدة.',
+    'faq.q8.question': 'هل يمكنني استخدام التأشيرة الإلكترونية لدخولات متعددة إلى تركيا؟',
+    'faq.q8.answer': 'نعم، التأشيرات الإلكترونية التركية صالحة لدخولات متعددة خلال فترة صلاحيتها. يمكنك دخول ومغادرة تركيا عدة مرات طالما بقيت تأشيرتك الإلكترونية صالحة.',
 
     // Requirements Page
     'requirements.title': 'متطلبات التأشيرة الإلكترونية',
@@ -1141,6 +1559,38 @@ const translations: Record<string, Record<string, string>> = {
     'form.error.passport.expired': 'جواز السفر منتهي الصلاحية',
     'form.error.prerequisites': 'المتطلبات الأساسية مطلوبة',
     'form.error.prerequisites.desc': 'يرجى تأكيد جميع المتطلبات الأساسية قبل المتابعة',
+
+    // Form components - New visa-form translations
+    'form.field.supporting.document.number': 'رقم الوثيقة الداعمة',
+    'form.field.supporting.document.start.date': 'تاريخ بداية الوثيقة',
+    'form.field.supporting.document.end.date': 'تاريخ انتهاء الوثيقة',
+    'form.placeholder.supporting.document.number': 'رقم الوثيقة',
+    
+    // Form sections
+    'form.section.supporting.document.details': 'تفاصيل الوثيقة الداعمة',
+    'form.section.order.summary': 'ملخص الطلب',
+    
+    // Payment section
+    'form.payment.evisa.fee': 'رسوم طلب التأشيرة الإلكترونية',
+    'form.payment.processing.document.fee': 'رسوم المعالجة والوثيقة',
+    'form.payment.processing.fee': 'رسوم المعالجة',
+    'form.payment.total.amount': 'المبلغ الإجمالي',
+    'form.payment.secure.title': 'دفع آمن',
+    'form.payment.secure.description': 'ستتم إعادة توجيهك إلى شريك الدفع الآمن (GPay) لإكمال دفعتك. ستحتاج فقط إلى إدخال تفاصيل بطاقتك مرة واحدة على منصتهم الآمنة.',
+    'form.payment.summary.title': 'ملخص الدفع',
+    
+    // Navigation
+    'form.navigation.previous': 'السابق',
+    'form.navigation.next.step': 'الخطوة التالية',
+    
+    // Buttons
+    'form.button.processing': 'جاري المعالجة...',
+    'form.button.submit.pay.desktop': 'إرسال الطلب والدفع $',
+    'form.button.pay.mobile': 'ادفع $',
+    
+    // Validation
+    'form.validation.error.title': 'خطأ في التحقق من النموذج',
+    'form.validation.error.description': 'يرجى ملء جميع الحقول المطلوبة بشكل صحيح',
     
     // Footer
     'footer.application': 'طلب',

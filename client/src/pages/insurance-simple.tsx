@@ -18,8 +18,10 @@ import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
 import turkeyLogo from "@/assets/turkey-logo.png";
 import newTurkeyLogo from "@assets/ChatGPT Image 18 Tem 2025 01_37_34_1752880645933.png";
 import diverseTravelersBg from "@assets/ChatGPT Image 23 Tem 2025 15_14_53_1753272924608.png";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Insurance() {
+  const { t } = useLanguage();
   const [selectedProduct, setSelectedProduct] = useState<InsuranceProduct | null>(null);
   
   // Get country from URL parameters
@@ -135,8 +137,8 @@ export default function Insurance() {
             
             // Always show success toast first
             toast({
-              title: "Insurance Payment Created",
-              description: `Redirecting to payment... Order: ${applicationData2.applicationNumber}`,
+              title: t('insurance.payment.created'),
+              description: `${t('insurance.payment.redirecting')} ${t('order')}: ${applicationData2.applicationNumber}`,
               duration: 5000,
             });
             
@@ -151,8 +153,8 @@ export default function Insurance() {
             
             // Ultimate fallback: show manual link
             toast({
-              title: "Payment Link Ready",
-              description: "Click the button to continue to insurance payment",
+              title: t('insurance.payment.ready'),
+              description: t('insurance.payment.manual'),
               action: (
                 <button 
                   onClick={() => {
@@ -166,7 +168,7 @@ export default function Insurance() {
                   }}
                   className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
                 >
-                  Continue to Payment
+                  {t('insurance.payment.continue')}
                 </button>
               ),
               duration: 15000,
@@ -177,7 +179,7 @@ export default function Insurance() {
         // Start redirect process immediately
         redirectToPayment();
       } else {
-        throw new Error(paymentData.error || "Payment initialization failed");
+        throw new Error(paymentData.error || t('insurance.payment.failed'));
       }
       
       return applicationData2;

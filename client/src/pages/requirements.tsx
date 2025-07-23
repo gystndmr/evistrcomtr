@@ -7,28 +7,28 @@ export default function Requirements() {
   const { t } = useLanguage();
 
   const generalRequirements = [
-    "Valid passport with at least 6 months remaining validity",
-    "Recent passport-style photograph (taken within last 6 months)",
-    "Valid email address for receiving e-visa",
-    "Credit/debit card for payment processing"
+    t('requirements.general.passport'),
+    t('requirements.general.photo'),
+    t('requirements.general.email'),
+    t('requirements.general.payment')
   ];
 
   const supportingDocuments = [
     {
-      title: "Hotel Reservation",
-      description: "Confirmed hotel booking or accommodation details for your stay in Turkey"
+      title: t('requirements.supporting.hotel.title'),
+      description: t('requirements.supporting.hotel.description')
     },
     {
-      title: "Flight Tickets",
-      description: "Round-trip flight itinerary showing entry and exit dates"
+      title: t('requirements.supporting.flight.title'),
+      description: t('requirements.supporting.flight.description')
     },
     {
-      title: "Bank Statement",
-      description: "Recent bank statement (last 3 months) showing sufficient funds"
+      title: t('requirements.supporting.bank.title'),
+      description: t('requirements.supporting.bank.description')
     },
     {
-      title: "Travel Insurance",
-      description: "Valid travel insurance policy covering your Turkey visit (recommended)"
+      title: t('requirements.supporting.insurance.title'),
+      description: t('requirements.supporting.insurance.description')
     }
   ];
 
