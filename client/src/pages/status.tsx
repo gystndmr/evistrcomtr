@@ -142,7 +142,7 @@ export default function Status() {
                     id="applicationNumber"
                     value={applicationNumber}
                     onChange={(e) => setApplicationNumber(e.target.value)}
-                    placeholder={t('status.application.number.placeholder')}
+                    placeholder="Enter your application number"
                     required
                   />
                 </div>

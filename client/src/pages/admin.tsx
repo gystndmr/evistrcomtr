@@ -334,7 +334,7 @@ export default function Admin() {
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Ad, soyad, email veya başvuru numarası ile ara..."
+              placeholder="Search by name, email or application number..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
