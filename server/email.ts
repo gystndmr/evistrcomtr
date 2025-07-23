@@ -201,7 +201,7 @@ export function generateVisaApprovalEmail(
             
             <!-- Action Buttons -->
             <div style="text-align: center; margin: 35px 0;">
-              <a href="https://getvisa.tr/status?ref=${applicationNumber}" style="background-color: #10B981; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px; margin: 0 10px 10px 0;">
+              <a href="https://getvisa.tr/api/download/visa/${applicationNumber}" style="background-color: #10B981; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px; margin: 0 10px 10px 0;">
                 📄 Download E-Visa
               </a>
               <a href="https://getvisa.tr/status?ref=${applicationNumber}" style="background-color: #DC2626; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px; margin: 0 10px 10px 0;">
@@ -435,7 +435,7 @@ export function generateInsuranceApprovalEmail(
             ` : ''}
             
             <div style="text-align: center; margin: 30px 0;">
-              <a href="https://getvisa.tr/status?ref=${applicationNumber}" style="background-color: #0284c7; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px; margin: 0 10px 10px 0;">
+              <a href="https://getvisa.tr/api/download/insurance/${applicationNumber}" style="background-color: #0284c7; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px; margin: 0 10px 10px 0;">
                 📄 Download Policy
               </a>
               <a href="https://getvisa.tr/status?ref=${applicationNumber}" style="background-color: #DC2626; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px; margin: 0 10px 10px 0;">

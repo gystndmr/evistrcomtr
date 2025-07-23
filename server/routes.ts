@@ -400,7 +400,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin routes
   app.get("/api/admin/applications", async (req, res) => {
     try {
-      const applications = await storage.getAllApplications();
+      const applications = await storage.getApplications();
       res.json(applications);
     } catch (error) {
       console.error("Error fetching applications:", error);
@@ -410,7 +410,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/admin/insurance-applications", async (req, res) => {
     try {
-      const applications = await storage.getAllInsuranceApplications();
+      const applications = await storage.getInsuranceApplications();
       res.json(applications);
     } catch (error) {
       console.error("Error fetching insurance applications:", error);
@@ -420,8 +420,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/admin/stats", async (req, res) => {
     try {
-      const applications = await storage.getAllApplications();
-      const insuranceApplications = await storage.getAllInsuranceApplications();
+      const applications = await storage.getApplications();
+      const insuranceApplications = await storage.getInsuranceApplications();
       
       const stats = {
         totalApplications: applications.length,
@@ -627,6 +627,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating insurance application status:", error);
       res.status(500).json({ message: "Failed to update insurance application status" });
+    }
+  });
+
+  // PDF Download endpoints for approved applications
+  app.get("/api/download/visa/:applicationNumber", async (req, res) => {
+    try {
+      const { applicationNumber } = req.params;
+      console.log(`Attempting to download PDF for visa application: ${applicationNumber}`);
+      
+      // Find application by application number
+      const applications = await storage.getApplications();
+      console.log(`Found ${applications.length} total applications`);
+      
+      const application = applications.find(app => app.applicationNumber === applicationNumber);
+      console.log(`Application found:`, !!application);
+      
+      if (!application) {
+        console.log(`Application ${applicationNumber} not found`);
+        return res.status(404).json({ message: "Application not found" });
+      }
+      
+      console.log(`Application status: ${application.status}, has PDF: ${!!application.pdfAttachment}`);
+      
+      if (application.status !== 'approved' || !application.pdfAttachment) {
+        console.log(`Document not available for ${applicationNumber}`);
+        return res.status(404).json({ message: "Document not available" });
+      }
+      
+      // Extract base64 data
+      const base64Data = application.pdfAttachment.replace(/^data:application\/pdf;base64,/, '');
+      const pdfBuffer = Buffer.from(base64Data, 'base64');
+      
+      console.log(`Sending PDF for ${applicationNumber}, size: ${pdfBuffer.length} bytes`);
+      
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="evisa-${applicationNumber}.pdf"`);
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error("Error downloading visa PDF:", error);
+      res.status(500).json({ message: "Failed to download document" });
+    }
+  });
+
+  app.get("/api/download/insurance/:applicationNumber", async (req, res) => {
+    try {
+      const { applicationNumber } = req.params;
+      
+      // Find insurance application by application number
+      const applications = await storage.getInsuranceApplications();
+      const application = applications.find(app => app.applicationNumber === applicationNumber);
+      
+      if (!application) {
+        return res.status(404).json({ message: "Insurance application not found" });
+      }
+      
+      if (application.status !== 'approved' || !application.pdfAttachment) {
+        return res.status(404).json({ message: "Document not available" });
+      }
+      
+      // Extract base64 data
+      const base64Data = application.pdfAttachment.replace(/^data:application\/pdf;base64,/, '');
+      const pdfBuffer = Buffer.from(base64Data, 'base64');
+      
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="insurance-policy-${applicationNumber}.pdf"`);
+      res.send(pdfBuffer);
+    } catch (error) {
+      console.error("Error downloading insurance PDF:", error);
+      res.status(500).json({ message: "Failed to download document" });
     }
   });
 

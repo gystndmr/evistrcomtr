@@ -24,7 +24,7 @@ export interface IStorage {
   // Application operations
   getApplication(id: number): Promise<Application | undefined>;
   getApplicationByNumber(applicationNumber: string): Promise<Application | undefined>;
-  getAllApplications(): Promise<Application[]>;
+  getApplications(): Promise<Application[]>;
   createApplication(application: InsertApplication): Promise<Application>;
   updateApplicationStatus(id: number, status: string): Promise<void>;
   updateApplicationPdf(id: number, pdfAttachment: string): Promise<void>;
@@ -35,7 +35,7 @@ export interface IStorage {
   createInsuranceProduct(product: InsertInsuranceProduct): Promise<InsuranceProduct>;
   createInsuranceApplication(application: InsertInsuranceApplication): Promise<InsuranceApplication>;
   getInsuranceApplicationByNumber(applicationNumber: string): Promise<InsuranceApplication | undefined>;
-  getAllInsuranceApplications(): Promise<InsuranceApplication[]>;
+  getInsuranceApplications(): Promise<InsuranceApplication[]>;
   getInsuranceApplicationById(id: number): Promise<InsuranceApplication | undefined>;
   updateInsuranceApplicationStatus(id: number, status: string): Promise<void>;
   updateInsuranceApplicationPdf(id: number, pdfAttachment: string): Promise<void>;
@@ -75,6 +75,10 @@ export class DatabaseStorage implements IStorage {
     return application;
   }
 
+  async getApplications(): Promise<Application[]> {
+    return await db.select().from(applications).orderBy(desc(applications.createdAt));
+  }
+
   async updateApplicationStatus(id: number, status: string): Promise<void> {
     await db.update(applications).set({ status, updatedAt: new Date() }).where(eq(applications.id, id));
   }
@@ -103,7 +107,7 @@ export class DatabaseStorage implements IStorage {
     return application;
   }
 
-  async getAllInsuranceApplications(): Promise<InsuranceApplication[]> {
+  async getInsuranceApplications(): Promise<InsuranceApplication[]> {
     return await db.select().from(insuranceApplications).orderBy(desc(insuranceApplications.createdAt));
   }
 
