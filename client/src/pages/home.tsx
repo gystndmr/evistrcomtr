@@ -87,19 +87,17 @@ export default function Home() {
             
 
 
-            {/* Action Buttons */}
+            {/* Transparent Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <Link href="/application">
-                <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-10 py-6 text-xl font-semibold shadow-2xl border-2 border-red-600 hover:border-red-700">
-                  <IdCard className="w-6 h-6 mr-3" />
-{t('home.buttons.apply')}
-                </Button>
+                <div className="bg-red-600/80 hover:bg-red-600/90 text-white px-12 py-4 text-xl font-semibold transition-all duration-200 cursor-pointer">
+                  Apply Now
+                </div>
               </Link>
               <Link href="/status">
-                <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-red-600 px-10 py-6 text-xl font-semibold bg-transparent shadow-2xl">
-                  <Search className="w-6 h-6 mr-3" />
-{t('home.buttons.check')}
-                </Button>
+                <div className="bg-blue-600/80 hover:bg-blue-600/90 text-white px-12 py-4 text-xl font-semibold transition-all duration-200 cursor-pointer">
+                  Check Application Status
+                </div>
               </Link>
             </div>
           </div>
