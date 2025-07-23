@@ -23,50 +23,13 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// Auto-detect browser language with English as primary/fallback
+// ENGLISH AS DEFAULT - No auto language detection
 const detectBrowserLanguage = (): Language => {
-  try {
-    // Default to English as primary language
-    const englishLang = languages.find(lang => lang.code === 'en')!;
-    
-    // Get browser language from navigator
-    const browserLang = navigator.language.toLowerCase();
-    const languageCode = browserLang.split('-')[0]; // Get primary language code
-    
-    console.log('Browser language detected:', browserLang, 'Code:', languageCode);
-    
-    // Support all languages with automatic detection:
-    // Turkish (tr): Turkish browsers → Turkish
-    // German (de): German browsers → German  
-    // French (fr): French browsers → French
-    // Spanish (es): Spanish browsers → Spanish
-    // Arabic (ar): Arabic browsers → Arabic
-    // English (en): English browsers → English (default, no change needed)
-    
-    const supportedLanguageCodes = ['tr', 'de', 'fr', 'es', 'ar'];
-    
-    // Check if browser language is one of our supported languages
-    if (supportedLanguageCodes.includes(languageCode)) {
-      const supportedLanguage = languages.find(lang => lang.code === languageCode);
-      if (supportedLanguage) {
-        console.log('Auto-switching to browser language:', supportedLanguage.name);
-        return supportedLanguage;
-      }
-    }
-    
-    // Check for English explicitly (default behavior)
-    if (languageCode === 'en') {
-      console.log('English browser detected - using English (default)');
-      return englishLang;
-    }
-    
-    // Always fallback to English as primary language for unsupported languages
-    console.log('Unsupported browser language, using English as primary language');
-    return englishLang;
-  } catch (error) {
-    console.warn('Error detecting browser language, using English:', error);
-    return languages.find(lang => lang.code === 'en')!;
-  }
+  // ALWAYS return English as default
+  // Users must manually select other languages
+  const englishLang = languages.find(lang => lang.code === 'en')!;
+  console.log('Using English as default language (manual selection required for other languages)');
+  return englishLang;
 };
 
 interface LanguageProviderProps {
@@ -494,7 +457,15 @@ const translations: Record<string, Record<string, string>> = {
     'app.step2': 'Vérification des Documents',
     'app.step3': 'Informations d\'Arrivée',
     'app.step4': 'Informations Personnelles',
+    'app.step4.prerequisites': 'Prérequis',
     'app.step5': 'Paiement',
+    'app.step1.title': 'Étape 1: Sélection Pays/Région',
+    'app.step2.title': 'Étape 2: Vérification Documents',
+    'app.step3.title': 'Étape 3: Informations de Voyage',
+    'app.step4.title': 'Étape 4: Informations Personnelles',
+    'app.step4.prerequisites.title': 'Étape 4: Prérequis',
+    'app.step5.title': 'Étape 5: Paiement',
+    'app.step6.title': 'Étape 6: Paiement',
     
     // Insurance
     'insurance.title': 'Services d\'Assurance Voyage',
@@ -650,7 +621,15 @@ const translations: Record<string, Record<string, string>> = {
     'app.step2': 'Dokument Überprüfung',
     'app.step3': 'Ankunftsinformationen',
     'app.step4': 'Persönliche Informationen',
+    'app.step4.prerequisites': 'Voraussetzungen',
     'app.step5': 'Zahlung',
+    'app.step1.title': 'Schritt 1: Land/Region Auswahl',
+    'app.step2.title': 'Schritt 2: Dokument Überprüfung',
+    'app.step3.title': 'Schritt 3: Reiseinformationen',
+    'app.step4.title': 'Schritt 4: Persönliche Informationen',
+    'app.step4.prerequisites.title': 'Schritt 4: Voraussetzungen',
+    'app.step5.title': 'Schritt 5: Zahlung',
+    'app.step6.title': 'Schritt 6: Zahlung',
     
     // Insurance
     'insurance.title': 'Reiseversicherung Services',
@@ -806,7 +785,15 @@ const translations: Record<string, Record<string, string>> = {
     'app.step2': 'Verificación de Documentos',
     'app.step3': 'Información de Llegada',
     'app.step4': 'Información Personal',
+    'app.step4.prerequisites': 'Prerequisitos',
     'app.step5': 'Pago',
+    'app.step1.title': 'Paso 1: Selección País/Región',
+    'app.step2.title': 'Paso 2: Verificación Documentos',
+    'app.step3.title': 'Paso 3: Información de Viaje',
+    'app.step4.title': 'Paso 4: Información Personal',
+    'app.step4.prerequisites.title': 'Paso 4: Prerequisitos',
+    'app.step5.title': 'Paso 5: Pago',
+    'app.step6.title': 'Paso 6: Pago',
     
     // Insurance
     'insurance.title': 'Servicios de Seguro de Viaje',
@@ -962,7 +949,15 @@ const translations: Record<string, Record<string, string>> = {
     'app.step2': 'فحص الوثائق المساعدة',
     'app.step3': 'معلومات الوصول',
     'app.step4': 'المعلومات الشخصية',
+    'app.step4.prerequisites': 'المتطلبات الأساسية',
     'app.step5': 'الدفع',
+    'app.step1.title': 'الخطوة 1: اختيار البلد/المنطقة',
+    'app.step2.title': 'الخطوة 2: فحص الوثائق',
+    'app.step3.title': 'الخطوة 3: معلومات السفر',
+    'app.step4.title': 'الخطوة 4: المعلومات الشخصية',
+    'app.step4.prerequisites.title': 'الخطوة 4: المتطلبات الأساسية',
+    'app.step5.title': 'الخطوة 5: الدفع',
+    'app.step6.title': 'الخطوة 6: الدفع',
     
     // Insurance
     'insurance.title': 'خدمات التأمين على السفر',
