@@ -24,6 +24,7 @@ import KVKK from "@/pages/kvkk";
 import CancellationPolicy from "@/pages/cancellation-policy";
 import Security from "@/pages/security";
 import Refund from "@/pages/refund";
+import MobileTest from "@/pages/mobile-test";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -49,6 +50,7 @@ function Router() {
       <Route path="/cancellation-policy" component={CancellationPolicy} />
       <Route path="/security" component={Security} />
       <Route path="/refund" component={Refund} />
+      <Route path="/mobile-test" component={MobileTest} />
       <Route component={NotFound} />
     </Switch>
   );
