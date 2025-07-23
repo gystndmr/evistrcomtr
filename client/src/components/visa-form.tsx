@@ -965,7 +965,7 @@ export function VisaForm() {
                         <FormItem>
                           <FormLabel>{t('form.field.first.name')}</FormLabel>
                           <FormControl>
-                            <Input placeholder={t('form.placeholder.first.name')} {...field} />
+                            <Input placeholder="Enter your first name" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -979,7 +979,7 @@ export function VisaForm() {
                         <FormItem>
                           <FormLabel>{t('form.field.last.name')}</FormLabel>
                           <FormControl>
-                            <Input placeholder={t('form.placeholder.last.name')} {...field} />
+                            <Input placeholder="Enter your last name" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1004,7 +1004,7 @@ export function VisaForm() {
                                 }}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder={t('form.placeholder.day')} />
+                                  <SelectValue placeholder="Day" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
@@ -1023,7 +1023,7 @@ export function VisaForm() {
                                 }}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder={t('form.placeholder.month')} />
+                                  <SelectValue placeholder="Month" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {[
@@ -1055,7 +1055,7 @@ export function VisaForm() {
                                 }}
                               >
                                 <SelectTrigger>
-                                  <SelectValue placeholder={t('form.placeholder.year')} />
+                                  <SelectValue placeholder="Year" />
                                 </SelectTrigger>
                                 <SelectContent>
                                   {Array.from({ length: 80 }, (_, i) => (new Date().getFullYear() - i).toString()).map((y) => (
@@ -1077,7 +1077,7 @@ export function VisaForm() {
                         <FormItem>
                           <FormLabel>{t('form.field.passport.number')}</FormLabel>
                           <FormControl>
-                            <Input placeholder={t('form.placeholder.passport.number')} {...field} />
+                            <Input placeholder="Enter passport number" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1253,7 +1253,7 @@ export function VisaForm() {
                         <FormItem>
                           <FormLabel>{t('form.field.email')}</FormLabel>
                           <FormControl>
-                            <Input type="email" placeholder={t('form.placeholder.email')} {...field} />
+                            <Input type="email" placeholder="Enter your email address" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1267,7 +1267,7 @@ export function VisaForm() {
                         <FormItem>
                           <FormLabel>{t('form.field.phone')}</FormLabel>
                           <FormControl>
-                            <Input placeholder={t('form.placeholder.phone')} {...field} />
+                            <Input placeholder="Enter your phone number" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1281,7 +1281,7 @@ export function VisaForm() {
                         <FormItem>
                           <FormLabel>{t('form.field.place.birth')}</FormLabel>
                           <FormControl>
-                            <Input placeholder={t('form.placeholder.place.birth')} {...field} />
+                            <Input placeholder="Enter your place of birth" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1295,7 +1295,7 @@ export function VisaForm() {
                         <FormItem>
                           <FormLabel>{t('form.field.mother.name')}</FormLabel>
                           <FormControl>
-                            <Input placeholder={t('form.placeholder.mother.name')} {...field} />
+                            <Input placeholder="Enter your mother's name" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1309,7 +1309,7 @@ export function VisaForm() {
                         <FormItem>
                           <FormLabel>{t('form.field.father.name')}</FormLabel>
                           <FormControl>
-                            <Input placeholder={t('form.placeholder.father.name')} {...field} />
+                            <Input placeholder="Enter your father's name" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -1324,7 +1324,7 @@ export function VisaForm() {
                           <FormItem>
                             <FormLabel>{t('form.field.address')}</FormLabel>
                             <FormControl>
-                              <Input placeholder={t('form.placeholder.address')} {...field} />
+                              <Input placeholder="Enter your address" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -1345,7 +1345,7 @@ export function VisaForm() {
                             <FormItem>
                               <FormLabel>{t('form.field.supporting.document.number')}</FormLabel>
                               <FormControl>
-                                <Input placeholder={t('form.placeholder.supporting.document.number')} {...field} />
+                                <Input placeholder="Enter document number" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
