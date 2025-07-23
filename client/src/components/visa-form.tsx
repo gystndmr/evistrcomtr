@@ -21,6 +21,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { ArrowLeft, ArrowRight, CreditCard } from "lucide-react";
 import type { Country } from "@shared/schema";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLocation } from "wouter";
 
 const applicationSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
@@ -54,6 +55,7 @@ const processingTypes = [
 
 export function VisaForm() {
   const { t } = useLanguage();
+  const [, setLocation] = useLocation();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
   const [selectedDocumentType, setSelectedDocumentType] = useState("");
@@ -102,155 +104,29 @@ export function VisaForm() {
 
   const createApplicationMutation = useMutation({
     mutationFn: async (data: ApplicationFormData) => {
-      // First create the application
-      const applicationResponse = await apiRequest("POST", "/api/applications", {
+      // Save data to localStorage and redirect to preview page
+      const applicationData = {
         ...data,
         countryId: selectedCountry?.id,
-        countryOfOrigin: selectedCountry?.name,
-        totalAmount: calculateTotal().toString(),
-        supportingDocumentNumber: data.supportingDocumentNumber || null,
-        supportingDocumentStartDate: data.supportingDocumentStartDate || null,
-        supportingDocumentEndDate: data.supportingDocumentEndDate || null,
-      });
-      const applicationData = await applicationResponse.json();
+        supportingDocument: hasSupportingDocument === true ? supportingDocumentDetails?.type || 'none' : 'none',
+        supportingDocumentNumber: data.supportingDocumentNumber || '',
+        supportingDocumentStartDate: data.supportingDocumentStartDate || '',
+        supportingDocumentEndDate: data.supportingDocumentEndDate || '',
+      };
+
+      localStorage.setItem('visaApplicationData', JSON.stringify(applicationData));
+      setLocation('/application-preview');
       
-      // Then create payment - let server generate unique orderRef
-      const paymentResponse = await apiRequest("POST", "/api/payment/create", {
-        amount: calculateTotal(),
-        currency: "USD",
-        description: `Turkey E-Visa Application - ${applicationData.applicationNumber}`,
-        customerEmail: data.email,
-        customerName: `${data.firstName} ${data.lastName}`
-        // Removed orderId - server will generate unique orderRef automatically
-      });
-      
-      const paymentData = await paymentResponse.json();
-      
-      if (paymentData.success && paymentData.paymentUrl) {
-        setCurrentOrderId(applicationData.applicationNumber);
-        setPaymentRedirectUrl(paymentData.paymentUrl);
-        
-        // Enhanced redirect approach for mobile compatibility with debugging
-        const redirectToPayment = () => {
-          try {
-            console.log('[Payment Debug] Starting redirect process');
-            console.log('[Payment Debug] Payment URL:', paymentData.paymentUrl);
-            console.log('[Payment Debug] User Agent:', navigator.userAgent);
-            
-            // Always show success toast first
-            toast({
-              title: "Payment Created",
-              description: `Redirecting to payment... Order: ${applicationData.applicationNumber}`,
-              duration: 5000,
-            });
-            
-            // For all devices: Direct location.href redirect
-            console.log('[Payment Debug] Using location.href redirect');
-            setTimeout(() => {
-              window.location.href = paymentData.paymentUrl;
-            }, 500); // Small delay to show toast
-            
-          } catch (error) {
-            console.error('[Payment Debug] Redirect error:', error);
-            
-            // Ultimate fallback: show manual link
-            toast({
-              title: "Payment Link Ready",
-              description: "Click the button to continue to payment",
-              action: (
-                <button 
-                  onClick={() => {
-                    try {
-                      window.open(paymentData.paymentUrl, '_blank');
-                    } catch (e) {
-                      console.error('[Payment Debug] Manual link error:', e);
-                      // Copy to clipboard as last resort
-                      navigator.clipboard?.writeText(paymentData.paymentUrl);
-                    }
-                  }}
-                  className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
-                >
-                  Continue to Payment
-                </button>
-              ),
-              duration: 15000,
-            });
-          }
-        };
-        
-        // Start redirect process immediately
-        redirectToPayment();
-      } else {
-        throw new Error(paymentData.error || "Payment initialization failed");
-      }
-      
-      return applicationData;
+      return { success: true };
     },
-    onSuccess: (data) => {
-      toast({
-        title: "Application Submitted",
-        description: `Your application number is ${data.applicationNumber}. Redirecting to payment page...`,
-        duration: 5000,
-      });
-      
-      // Show manual continue option after a short delay for mobile users
-      setTimeout(() => {
-        toast({
-          title: "Payment Ready",
-          description: "If payment page didn't open automatically, click Continue below",
-          action: paymentRedirectUrl ? (
-            <button 
-              onClick={() => window.open(paymentRedirectUrl, '_blank')}
-              className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
-            >
-              Continue
-            </button>
-          ) : undefined,
-          duration: 8000,
-        });
-      }, 2000);
-      setTimeout(() => {
-        if (paymentRedirectUrl) {
-          toast({
-            title: "Continue to Payment",
-            description: "If the page doesn't redirect automatically, click here to continue.",
-            action: (
-              <Button 
-                onClick={() => window.open(paymentRedirectUrl, '_blank')}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2"
-              >
-                Continue
-              </Button>
-            ),
-            duration: 10000,
-          });
-        }
-      }, 2500);
+    onSuccess: () => {
+      // Successfully saved to localStorage and redirected to preview
     },
-    onError: (error) => {
-      console.error('[Mobile Payment] Application/Payment error:', error);
-      
-      // Check if it's a payment-specific error
-      const isPaymentError = error.message?.includes('payment') || error.message?.includes('GPay');
-      
+    onError: (error: any) => {
       toast({
-        title: isPaymentError ? "Payment Error" : "Application Error",
-        description: isPaymentError ? 
-          "There was an issue initializing payment. Please try again or contact support." :
-          error.message,
+        title: "Error",
+        description: error.message || "An error occurred while saving your application",
         variant: "destructive",
-        action: isPaymentError ? (
-          <button 
-            onClick={() => {
-              console.log('[Mobile Payment] Retrying application...');
-              createApplicationMutation.mutate(form.getValues());
-            }}
-            className="bg-white text-red-600 px-3 py-1 rounded text-sm hover:bg-gray-100"
-          >
-            Retry
-          </button>
-        ) : undefined,
-        duration: 8000,
       });
     },
   });
