@@ -17,7 +17,7 @@ import type { InsuranceProduct } from "@shared/schema";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
 import turkeyLogo from "@/assets/turkey-logo.png";
 import newTurkeyLogo from "@assets/ChatGPT Image 18 Tem 2025 01_37_34_1752880645933.png";
-import diverseTravelersBg from "@/assets/diverse-travelers-bg.svg";
+import diverseTravelersBg from "@/assets/diverse-travelers-background.jpg";
 
 export default function Insurance() {
   const [selectedProduct, setSelectedProduct] = useState<InsuranceProduct | null>(null);
@@ -388,14 +388,14 @@ export default function Insurance() {
       {/* Simple Header with Background */}
       <section className="relative py-16 border-b border-gray-200 overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
           style={{
             backgroundImage: `url('${diverseTravelersBg}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/90 to-white/90" />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-50/85 to-white/85" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-3">Turkey Travel Insurance</h1>
