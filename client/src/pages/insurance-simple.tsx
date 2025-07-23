@@ -388,11 +388,11 @@ export default function Insurance() {
       {/* Simple Header with Background */}
       <section className="relative py-16 border-b border-gray-200 overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-70"
+          className="absolute inset-0 bg-no-repeat opacity-70"
           style={{
             backgroundImage: `url('${diverseTravelersBg}')`,
             backgroundSize: 'cover',
-            backgroundPosition: 'center'
+            backgroundPosition: 'center 30%'
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-r from-blue-50/40 to-white/50" />
