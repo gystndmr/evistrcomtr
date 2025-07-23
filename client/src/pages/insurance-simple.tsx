@@ -31,6 +31,7 @@ export default function Insurance() {
     email: "",
     phone: "",
     passportNumber: "",
+    nationality: countryFromUrl, // Auto-fill if coming from visa flow
     travelDate: "",
     returnDate: "",
     destination: "Turkey",
@@ -48,6 +49,11 @@ export default function Insurance() {
     queryKey: ["/api/insurance/products"],
     staleTime: 5 * 60 * 1000, // 5 minutes cache
   }) as { data: InsuranceProduct[], isLoading: boolean };
+
+  const { data: countries = [] } = useQuery({
+    queryKey: ["/api/countries"],
+    staleTime: 5 * 60 * 1000, // 5 minutes cache
+  }) as { data: any[], isLoading: boolean };
 
 
 
@@ -95,7 +101,7 @@ export default function Insurance() {
         tripDurationDays: tripDurationDays,
         dateOfBirth: applicationData.dateOfBirth,
         parentIdPhotos: parentIdPhotosData,
-        countryOfOrigin: countryFromUrl,
+        countryOfOrigin: applicationData.nationality || countryFromUrl,
       });
       const applicationData2 = await applicationResponse.json();
       
@@ -282,6 +288,15 @@ export default function Insurance() {
       return;
     }
     
+    if (!applicationData.nationality.trim()) {
+      toast({
+        title: "Nationality Required",
+        description: "Please select your nationality",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     if (!applicationData.travelDate) {
       toast({
         title: "Travel Date Required",
@@ -440,6 +455,23 @@ export default function Insurance() {
                         placeholder="A12345678"
                         required
                       />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="nationality">Nationality *</Label>
+                      <Select
+                        value={applicationData.nationality}
+                        onValueChange={(value) => handleInputChange("nationality", value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select your nationality" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {countries.map((country) => (
+                            <SelectItem key={country.id} value={country.name}>{country.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                     
                     <div>
