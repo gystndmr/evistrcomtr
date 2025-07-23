@@ -6,7 +6,7 @@ interface PaymentFormProps {
   onSubmit?: () => void;
 }
 
-export function PaymentForm({ paymentUrl, formData, onSubmit }: PaymentFormProps) {
+function PaymentForm({ paymentUrl, formData, onSubmit }: PaymentFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -61,3 +61,5 @@ export function PaymentForm({ paymentUrl, formData, onSubmit }: PaymentFormProps
     </div>
   );
 }
+
+export default PaymentForm;

@@ -356,222 +356,62 @@ export default function Insurance() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       
-      {/* Professional Header Section */}
-      <section className="bg-gradient-to-br from-blue-50 to-white py-16 border-b border-gray-200">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Simple Header */}
+      <section className="bg-white py-8 border-b border-gray-200">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-8 shadow-lg border border-gray-200">
-              <div className="w-16 h-16 rounded-full overflow-hidden">
-                <img src={newTurkeyLogo} alt="Turkey Flag" className="w-full h-full object-cover" />
-              </div>
-            </div>
-            
-            <div className="bg-blue-600 text-white py-2 px-6 rounded-full inline-block mb-6">
-              <div className="flex items-center space-x-2">
-                <Shield className="w-5 h-5" />
-                <span className="font-semibold">TRAVEL INSURANCE REQUIRED</span>
-              </div>
-            </div>
-            
-            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900 leading-tight">
-              Turkey Travel Insurance
-            </h1>
-            
-            <div className="bg-amber-50 border border-amber-200 rounded-xl p-8 mb-8 max-w-4xl mx-auto">
-              <div className="flex items-center justify-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <h2 className="text-2xl font-bold text-amber-900">Important Notice</h2>
-              </div>
-              <p className="text-lg text-amber-800 leading-relaxed">
-                All international visitors to Turkey are required to have valid travel health insurance coverage. 
-                This is a mandatory requirement enforced at all entry points including airports, seaports, and land borders.
-              </p>
-            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Turkey Travel Insurance</h1>
+            <p className="text-gray-600">Complete your application below</p>
           </div>
         </div>
       </section>
 
-      {/* Why Insurance is Required */}
-      <section className="bg-white py-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Travel Insurance is Essential</h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Turkey requires all international visitors to have comprehensive travel health insurance coverage for your safety and peace of mind.
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-lg p-8 border border-blue-100">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
+      {/* Main Form */}
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200">
+          <div className="p-8">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              
+              {/* Insurance Plan Selection */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Policy Period</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {sortedProducts.map((product: InsuranceProduct) => (
+                    <div key={product.id} className="relative">
+                      <input
+                        type="radio"
+                        name="insurance-product"
+                        id={`product-${product.id}`}
+                        checked={selectedProduct?.id === product.id}
+                        onChange={() => setSelectedProduct(product)}
+                        className="sr-only"
+                      />
+                      <label
+                        htmlFor={`product-${product.id}`}
+                        className={`block p-4 border rounded-lg cursor-pointer text-center transition-all ${
+                          selectedProduct?.id === product.id
+                            ? "border-blue-600 bg-blue-50"
+                            : "border-gray-300 hover:border-gray-400"
+                        }`}
+                      >
+                        <div className="font-semibold text-gray-900">{product.name.replace(" Coverage", "")}</div>
+                        <div className="text-lg font-bold text-blue-600">${product.price}</div>
+                      </label>
+                    </div>
+                  ))}
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Legal Requirement</h3>
-                <p className="text-gray-600">Mandated by Turkish Ministry of Health and Foreign Affairs for all international visitors entering Turkey.</p>
               </div>
-            </div>
-            
-            <div className="bg-gradient-to-br from-emerald-50 to-white rounded-xl shadow-lg p-8 border border-emerald-100">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Border Control</h3>
-                <p className="text-gray-600">Insurance documents are verified at airports, seaports, and land border crossings upon entry.</p>
-              </div>
-            </div>
-            
-            <div className="bg-gradient-to-br from-purple-50 to-white rounded-xl shadow-lg p-8 border border-purple-100">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield className="w-8 h-8 text-purple-600" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Health Protection</h3>
-                <p className="text-gray-600">24/7 emergency medical assistance and comprehensive coverage for hospital expenses during your stay.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-8 mb-12">
-          <div className="flex items-center space-x-4 mb-6">
-            <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-              <Shield className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h3 className="text-2xl font-bold text-blue-900">Get Your Travel Insurance Now</h3>
-              <p className="text-blue-700">Secure your Turkey travel with comprehensive coverage</p>
-            </div>
-          </div>
-          <p className="text-blue-800 leading-relaxed text-lg">
-            Before traveling to Turkey, you must purchase valid travel health insurance coverage. 
-            Choose from our approved insurance plans below and complete your application immediately.
-          </p>
-        </div>
-
-        {/* Insurance Products List */}
-        <section className="py-12">
-          <div className="text-center mb-12">
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-8 mb-8 max-w-4xl mx-auto">
-              <div className="flex items-center justify-center space-x-3 mb-4">
-                <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
-                  <Shield className="w-6 h-6 text-white" />
-                </div>
-                <h2 className="text-3xl font-bold text-green-900">Official Insurance Plans</h2>
-              </div>
-              <p className="text-lg text-green-800 font-semibold">
-                Government-approved travel insurance options for Turkey entry requirements
-              </p>
-            </div>
-          </div>
-          
-          {/* Insurance Selection Table */}
-          <div className="bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-6">
-              <div className="flex items-center space-x-3">
-                <Shield className="w-8 h-8 text-blue-100" />
+              {/* Personal Information */}
+              {selectedProduct && (
                 <div>
-                  <h3 className="text-xl font-bold">Select Your Insurance Plan</h3>
-                  <p className="text-blue-100 text-sm">Choose coverage duration that matches your travel period</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="divide-y divide-gray-200">
-              {sortedProducts.map((product: InsuranceProduct, index) => (
-                <div 
-                  key={product.id} 
-                  className={`px-6 py-6 cursor-pointer transition-all border-l-4 ${
-                    selectedProduct?.id === product.id 
-                      ? "bg-blue-50 border-l-blue-600 shadow-inner" 
-                      : "border-l-transparent hover:bg-gray-50 hover:border-l-blue-300"
-                  }`}
-                  onClick={() => setSelectedProduct(product)}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-6">
-                      <div className="flex items-center">
-                        <input
-                          type="radio"
-                          name="insurance-product"
-                          checked={selectedProduct?.id === product.id}
-                          onChange={() => setSelectedProduct(product)}
-                          className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
-                        />
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-1">{product.name}</h3>
-                        <div className="flex items-center space-x-4">
-                          <span className="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
-                            ✓ GOVERNMENT APPROVED
-                          </span>
-                          <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
-                            24/7 SUPPORT
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-3xl font-black text-blue-600">${product.price}</div>
-                      <div className="text-sm text-gray-500 font-semibold">Total Premium</div>
-                      <div className="text-xs text-green-600 font-semibold mt-1">✓ Buy Now</div>
-                    </div>
-                  </div>
-                  
-                  {selectedProduct?.id === product.id && (
-                    <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <CheckCircle className="w-5 h-5 text-blue-600" />
-                        <span className="font-semibold text-blue-800">Plan Selected</span>
-                      </div>
-                      <p className="text-sm text-gray-700">
-                        This insurance plan is approved for Turkey border control requirements. 
-                        Complete the form below to purchase immediately.
-                      </p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-            
-
-          </div>
-
-          {/* Application Form */}
-          {selectedProduct && (
-            <div className="bg-white rounded-xl shadow-xl border border-gray-200 mt-8">
-              <div className="bg-gradient-to-r from-emerald-600 to-green-600 text-white px-4 sm:px-6 py-6">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-emerald-800 rounded-full flex items-center justify-center">
-                    <Shield className="w-6 h-6 text-emerald-100" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold">Complete Your Application</h3>
-                    <p className="text-emerald-100 font-semibold">Selected Plan: {selectedProduct.name} - ${selectedProduct.price}</p>
-                    <p className="text-sm text-emerald-100">Fill out the form below and proceed to payment</p>
-                  </div>
-                </div>
-              </div>
-              <div className="p-4 sm:p-6">
-                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <Label htmlFor="firstName">First Name *</Label>
+                      <Label htmlFor="firstName">Given/First Name(s) *</Label>
                       <Input
                         id="firstName"
                         value={applicationData.firstName}
@@ -581,7 +421,7 @@ export default function Insurance() {
                     </div>
                     
                     <div>
-                      <Label htmlFor="lastName">Last Name *</Label>
+                      <Label htmlFor="lastName">Surname(s) *</Label>
                       <Input
                         id="lastName"
                         value={applicationData.lastName}
@@ -591,12 +431,13 @@ export default function Insurance() {
                     </div>
                     
                     <div>
-                      <Label htmlFor="email">Email Address *</Label>
+                      <Label htmlFor="email">Email for receive your insurance certificate *</Label>
                       <Input
                         id="email"
                         type="email"
                         value={applicationData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
+                        placeholder="Enter Email"
                         required
                       />
                     </div>
