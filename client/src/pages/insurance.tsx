@@ -356,29 +356,50 @@ export default function Insurance() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-violet-50">
       <Header />
       
-      {/* Simple Header */}
-      <section className="bg-white py-8 border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Turkey Travel Insurance</h1>
-            <p className="text-gray-600">Complete your application below</p>
+      {/* Modern Hero Section */}
+      <section className="relative py-20 sm:py-24 overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+          <div className="absolute top-20 right-10 w-64 h-64 bg-violet-300 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-75"></div>
+          <div className="absolute bottom-10 left-1/2 w-64 h-64 bg-indigo-300 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-150"></div>
+        </div>
+        
+        <div className="relative z-10">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="slide-up mb-12">
+              <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                <Shield className="w-4 h-4" />
+                Travel Protection Services
+              </div>
+              
+              <h1 className="text-5xl md:text-6xl font-bold mb-6 gradient-text leading-tight">
+                Turkey Travel
+                <br />
+                <span className="text-6xl md:text-7xl">Insurance</span>
+              </h1>
+              
+              <p className="text-xl md:text-2xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
+                Comprehensive travel insurance coverage for your Turkey adventure. Get instant protection and peace of mind.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Main Form */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200">
-          <div className="p-8">
+      {/* Modern Form Section */}
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="modern-card rounded-3xl border border-purple-100 shadow-2xl">
+          <div className="p-12">
             <form onSubmit={handleSubmit} className="space-y-8">
               
-              {/* Insurance Plan Selection */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Policy Period</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Modern Insurance Plan Selection */}
+              <div className="slide-up">
+                <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">Choose Your Protection Plan</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   {sortedProducts.map((product: InsuranceProduct) => (
                     <div key={product.id} className="relative">
                       <input
@@ -391,14 +412,17 @@ export default function Insurance() {
                       />
                       <label
                         htmlFor={`product-${product.id}`}
-                        className={`block p-4 border rounded-lg cursor-pointer text-center transition-all ${
+                        className={`block p-6 border-2 rounded-2xl cursor-pointer text-center transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1 ${
                           selectedProduct?.id === product.id
-                            ? "border-blue-600 bg-blue-50"
-                            : "border-gray-300 hover:border-gray-400"
+                            ? "border-primary bg-purple-50 shadow-lg"
+                            : "border-gray-200 hover:border-purple-300 bg-white"
                         }`}
                       >
-                        <div className="font-semibold text-gray-900">{product.name.replace(" Coverage", "")}</div>
-                        <div className="text-lg font-bold text-blue-600">${product.price}</div>
+                        <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-500 rounded-xl flex items-center justify-center mx-auto mb-4">
+                          <Shield className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="font-bold text-gray-900 text-lg mb-2">{product.name.replace(" Coverage", "")}</div>
+                        <div className="text-2xl font-bold text-primary">${product.price}</div>
                       </label>
                     </div>
                   ))}
