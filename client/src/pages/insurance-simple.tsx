@@ -187,7 +187,7 @@ export default function Insurance() {
     onSuccess: (data) => {
       toast({
         title: "Application Submitted",
-        description: `Your insurance application number is ${data.applicationNumber}. Redirecting to payment page...`,
+        description: `Application number: ${data.applicationNumber}. Redirecting to payment...`,
         duration: 5000,
       });
       
@@ -196,7 +196,7 @@ export default function Insurance() {
         if (paymentRedirectUrl) {
           toast({
             title: "Continue to Payment",
-            description: "If the page doesn't redirect automatically, click here to continue.",
+            description: "Click here if redirect doesn't work.",
             action: (
               <Button 
                 onClick={() => window.open(paymentRedirectUrl, '_blank')}
@@ -232,8 +232,8 @@ export default function Insurance() {
     // Validate all required fields
     if (!selectedProduct) {
       toast({
-        title: "Product Selection Required",
-        description: "Please select an insurance product before proceeding",
+        title: "Product Required",
+        description: "Please select an insurance product",
         variant: "destructive",
       });
       return;
@@ -242,7 +242,7 @@ export default function Insurance() {
     if (!applicationData.firstName.trim()) {
       toast({
         title: "First Name Required",
-        description: "Please enter your first name",
+        description: "Enter your first name",
         variant: "destructive",
       });
       return;
@@ -251,7 +251,7 @@ export default function Insurance() {
     if (!applicationData.lastName.trim()) {
       toast({
         title: "Last Name Required", 
-        description: "Please enter your last name",
+        description: "Enter your last name",
         variant: "destructive",
       });
       return;
@@ -260,7 +260,7 @@ export default function Insurance() {
     if (!applicationData.email.trim()) {
       toast({
         title: "Email Required",
-        description: "Please enter your email address",
+        description: "Enter your email address",
         variant: "destructive",
       });
       return;
@@ -270,8 +270,8 @@ export default function Insurance() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(applicationData.email)) {
       toast({
-        title: "Invalid Email Format",
-        description: "Please enter a valid email address",
+        title: "Invalid Email",
+        description: "Enter a valid email address",
         variant: "destructive",
       });
       return;
@@ -279,8 +279,8 @@ export default function Insurance() {
     
     if (!applicationData.phone.trim()) {
       toast({
-        title: "Phone Number Required",
-        description: "Please enter your phone number",
+        title: "Phone Required",
+        description: "Enter your phone number",
         variant: "destructive",
       });
       return;
@@ -288,8 +288,8 @@ export default function Insurance() {
     
     if (!applicationData.passportNumber.trim()) {
       toast({
-        title: "Passport Number Required",
-        description: "Please enter your passport number",
+        title: "Passport Required",
+        description: "Enter your passport number",
         variant: "destructive",
       });
       return;
@@ -298,7 +298,7 @@ export default function Insurance() {
     if (!applicationData.nationality.trim()) {
       toast({
         title: "Nationality Required",
-        description: "Please select your nationality",
+        description: "Select your nationality",
         variant: "destructive",
       });
       return;
@@ -307,7 +307,7 @@ export default function Insurance() {
     if (!applicationData.travelDate) {
       toast({
         title: "Travel Date Required",
-        description: "Please enter your travel date",
+        description: "Enter your travel date",
         variant: "destructive",
       });
       return;
@@ -316,7 +316,7 @@ export default function Insurance() {
     if (!applicationData.returnDate) {
       toast({
         title: "Return Date Required",
-        description: "Please enter your return date",
+        description: "Enter your return date",
         variant: "destructive",
       });
       return;
@@ -328,7 +328,7 @@ export default function Insurance() {
     
     if (returnDate <= travelDate) {
       toast({
-        title: "Invalid Date Range",
+        title: "Invalid Dates",
         description: "Return date must be after travel date",
         variant: "destructive",
       });
@@ -337,8 +337,8 @@ export default function Insurance() {
 
     if (!applicationData.dateOfBirth.trim()) {
       toast({
-        title: "Date of Birth Required",
-        description: "Please enter your date of birth",
+        title: "Birth Date Required",
+        description: "Enter your date of birth",
         variant: "destructive",
       });
       return;
@@ -354,8 +354,8 @@ export default function Insurance() {
 
     if (actualAge < 18 && parentIdPhotos.length === 0) {
       toast({
-        title: "Parent ID Photos Required",
-        description: "18 yaş altı başvurular için anne ve baba kimlik fotoğrafları gereklidir",
+        title: "Parent ID Required",
+        description: "Upload parent ID photos for under 18",
         variant: "destructive",
       });
       return;
