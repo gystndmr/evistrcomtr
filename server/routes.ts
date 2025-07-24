@@ -842,8 +842,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Try different domain formats for GPay callbacks
-      const baseUrl = 'https://evisatr.com.tr'; // Alternative domain format
+      // Always use production domain for GPay callbacks - required for GPay registration
+      const baseUrl = 'https://getvisa.tr';
       
       // Generate proper order reference like your successful .NET project
       const generateProperOrderRef = () => {

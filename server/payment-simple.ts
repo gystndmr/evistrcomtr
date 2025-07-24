@@ -79,10 +79,10 @@ export class GPayService {
       }
     });
     
-    // Sort keys alphabetically (simple sort for better compatibility)
+    // Sort keys with localeCompare like in the example
     const sortedData: Record<string, any> = {};
     Object.keys(clonedData)
-      .sort()
+      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
       .forEach(key => {
         sortedData[key] = clonedData[key];
       });
@@ -93,16 +93,13 @@ export class GPayService {
     // Create JSON and escape forward slashes like in the example
     const jsonData = JSON.stringify(trimmedData).replace(/\//g, '\\/');
     
-    console.log('=== DETAILED SIGNATURE DEBUG ===');
-    console.log('Original data keys:', Object.keys(data).join(', '));
-    console.log('Sorted keys:', Object.keys(sortedData).join(', '));
-    console.log('Final JSON length:', jsonData.length);
-    console.log('First 100 chars of JSON:', jsonData.substring(0, 100));
-    console.log('Last 100 chars of JSON:', jsonData.substring(jsonData.length - 100));
-    console.log('Private key first 50 chars:', this.config.privateKey.substring(0, 50));
-    console.log('Merchant ID:', this.config.merchantId);
-    console.log('Base URL:', this.config.baseUrl);
-    console.log('=== END DETAILED DEBUG ===');
+    console.log('=== Signature Generation (Node.js Example Style) ===');
+    console.log('Original data:', JSON.stringify(data, null, 2));
+    console.log('After number conversion:', JSON.stringify(clonedData, null, 2));
+    console.log('After sorting:', JSON.stringify(sortedData, null, 2));
+    console.log('After trimming:', JSON.stringify(trimmedData, null, 2));
+    console.log('Final JSON for signing:', jsonData);
+    console.log('=== End Signature Generation ===');
     
     // Sign with private key using md5WithRSAEncryption
     const sign = crypto.createSign('md5WithRSAEncryption');
