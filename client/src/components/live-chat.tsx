@@ -116,7 +116,21 @@ export function LiveChat() {
     setMessages(prev => [...prev, newMessage]);
     setInputText('');
 
-    // Auto-reply after 2 seconds (simulated)
+    // Send message to backend and get email notification
+    fetch('/api/chat/message', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: inputText,
+        sessionId: 'user_' + Date.now(),
+        customerName: 'Website Visitor',
+        timestamp: new Date().toISOString()
+      })
+    }).catch(console.error);
+
+    // Auto-reply after 2 seconds
     setTimeout(() => {
       const autoReply: Message = {
         id: (Date.now() + 1).toString(),
