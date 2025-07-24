@@ -114,14 +114,13 @@ export function VisaForm() {
       });
       const applicationData = await applicationResponse.json();
       
-      // Then create payment - let server generate unique orderRef
+      // Then create payment - let customer enter billing details on GPay POS screen
       const paymentResponse = await apiRequest("POST", "/api/payment/create", {
         amount: calculateTotal(),
         currency: "USD",
         description: `Turkey E-Visa Application - ${applicationData.applicationNumber}`,
         customerEmail: data.email,
         customerName: `${data.firstName} ${data.lastName}`
-        // Removed orderId - server will generate unique orderRef automatically
       });
       
       const paymentData = await paymentResponse.json();
@@ -130,12 +129,11 @@ export function VisaForm() {
         setCurrentOrderId(applicationData.applicationNumber);
         setPaymentRedirectUrl(paymentData.paymentUrl);
         
-        // Enhanced redirect approach for mobile compatibility with debugging
+        // Enhanced redirect approach for mobile compatibility
         const redirectToPayment = () => {
           try {
             console.log('[Payment Debug] Starting redirect process');
             console.log('[Payment Debug] Payment URL:', paymentData.paymentUrl);
-            console.log('[Payment Debug] User Agent:', navigator.userAgent);
             
             // Always show success toast first
             toast({
@@ -144,11 +142,10 @@ export function VisaForm() {
               duration: 5000,
             });
             
-            // For all devices: Direct location.href redirect
-            console.log('[Payment Debug] Using location.href redirect');
+            // Direct location.href redirect
             setTimeout(() => {
               window.location.href = paymentData.paymentUrl;
-            }, 500); // Small delay to show toast
+            }, 500);
             
           } catch (error) {
             console.error('[Payment Debug] Redirect error:', error);
@@ -164,7 +161,6 @@ export function VisaForm() {
                       window.open(paymentData.paymentUrl, '_blank');
                     } catch (e) {
                       console.error('[Payment Debug] Manual link error:', e);
-                      // Copy to clipboard as last resort
                       navigator.clipboard?.writeText(paymentData.paymentUrl);
                     }
                   }}
@@ -192,45 +188,10 @@ export function VisaForm() {
         description: `Your application number is ${data.applicationNumber}. Redirecting to payment page...`,
         duration: 5000,
       });
-      
-      // Show manual continue option after a short delay for mobile users
-      setTimeout(() => {
-        toast({
-          title: "Payment Ready",
-          description: "If payment page didn't open automatically, click Continue below",
-          action: paymentRedirectUrl ? (
-            <button 
-              onClick={() => window.open(paymentRedirectUrl, '_blank')}
-              className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
-            >
-              Continue
-            </button>
-          ) : undefined,
-          duration: 8000,
-        });
-      }, 2000);
-      setTimeout(() => {
-        if (paymentRedirectUrl) {
-          toast({
-            title: "Continue to Payment",
-            description: "If the page doesn't redirect automatically, click here to continue.",
-            action: (
-              <Button 
-                onClick={() => window.open(paymentRedirectUrl, '_blank')}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2"
-              >
-                Continue
-              </Button>
-            ),
-            duration: 10000,
-          });
-        }
-      }, 2500);
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('[Mobile Payment] Application/Payment error:', error);
       
-      // Check if it's a payment-specific error
       const isPaymentError = error.message?.includes('payment') || error.message?.includes('GPay');
       
       toast({
@@ -239,17 +200,6 @@ export function VisaForm() {
           "There was an issue initializing payment. Please try again or contact support." :
           error.message,
         variant: "destructive",
-        action: isPaymentError ? (
-          <button 
-            onClick={() => {
-              console.log('[Mobile Payment] Retrying application...');
-              createApplicationMutation.mutate(form.getValues());
-            }}
-            className="bg-white text-red-600 px-3 py-1 rounded text-sm hover:bg-gray-100"
-          >
-            Retry
-          </button>
-        ) : undefined,
         duration: 8000,
       });
     },

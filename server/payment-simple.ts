@@ -8,7 +8,7 @@ interface GPayConfig {
   privateKey: string;
 }
 
-// Payment request interface - minimal fields, no billing requirements
+// Payment request interface matching PHP example
 export interface PaymentRequest {
   orderRef: string;
   amount: number;
@@ -20,6 +20,15 @@ export interface PaymentRequest {
   errorUrl: string;
   paymentMethod: string;
   feeBySeller: number;
+  billingFirstName: string;
+  billingLastName: string;
+  billingStreet1: string;
+  billingStreet2?: string;
+  billingCity: string;
+  billingCountry: string;
+  billingZipCode?: string;
+  billingPhone?: string;
+  billingEmail?: string;
   customerIp: string; // MANDATORY field from specification
   merchantId: string;
 }

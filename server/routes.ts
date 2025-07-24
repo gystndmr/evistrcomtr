@@ -774,6 +774,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           errorUrl: testData.errorUrl,
           paymentMethod: testData.paymentMethod,
           feeBySeller: parseInt(testData.feeBySeller),
+          billingFirstName: testData.billingFirstName,
+          billingLastName: testData.billingLastName,
+          billingStreet1: testData.billingStreet1,
+          billingStreet2: testData.billingStreet2,
+          billingCity: "Test City",
+          billingCountry: testData.billingCountry,
+          billingEmail: testData.billingEmail,
           customerIp: testData.customerIp, // Mandatory field
           merchantId: testData.merchantId
         });
@@ -810,7 +817,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Create payment - following PHP merchant example with enhanced billing fields
+  // Create payment - following PHP merchant example
   app.post("/api/payment/create", async (req, res) => {
     try {
       const { 
@@ -819,42 +826,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
         amount, 
         currency = "USD", 
         orderDescription, 
-        description // Support both orderDescription and description
+        description, // Support both orderDescription and description
+        customerEmail, 
+        customerName 
       } = req.body;
       
       // Use orderRef or orderId (support both) - if none provided, generate one
       const finalOrderRef = orderRef || orderId || generateOrderReference();
       const finalDescription = orderDescription || description;
+      
+      if (!customerEmail || !customerName) {
+        return res.status(400).json({ 
+          success: false, 
+          error: "Missing required fields: customerEmail, customerName" 
+        });
+      }
 
       // Always use production domain for GPay callbacks - required for GPay registration
       const baseUrl = 'https://getvisa.tr';
       
-      // Get real customer IP - check multiple headers for proxy environments
-      const getCustomerIp = () => {
-        return req.headers['x-forwarded-for']?.toString().split(',')[0]?.trim() || 
-               req.headers['x-real-ip']?.toString() || 
-               req.connection?.remoteAddress || 
-               req.socket?.remoteAddress ||
-               req.ip || 
-               "85.34.78.112"; // Use a realistic Turkish IP as fallback instead of localhost
-      };
-
-      // Enhanced payment request with comprehensive billing fields following PHP example
       const paymentRequest = {
-        orderRef: finalOrderRef, // Use the original order reference without VIS prefix
-        amount: amount, // Keep as number, not string
+        orderRef: `VIS-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`, // Unique order reference with timestamp
+        amount: amount.toString(), // Use real amount from request
         currency: "USD", // Fixed currency
-        orderDescription: finalDescription || `Turkey E-Visa Application Payment`,
+        orderDescription: finalDescription || `E-Visa Application - ${finalOrderRef}`,
         cancelUrl: `${baseUrl}/payment/cancel`,
         callbackUrl: `${baseUrl}/api/payment/callback`,
         notificationUrl: `${baseUrl}/api/payment/callback`,
         errorUrl: `${baseUrl}/payment/cancel`,
         paymentMethod: "ALL", // Allow all payment methods
         feeBySeller: 50, // 50% fee by seller
-        
-        // No billing fields - GPay will handle all billing requirements internally
-        
-        customerIp: getCustomerIp(), // Use real customer IP
+        billingFirstName: customerName.split(' ')[0] || customerName,
+        billingLastName: customerName.split(' ').slice(1).join(' ') || 'Customer',
+        billingStreet1: "123 Main Street", // Required field from Baris example
+        billingStreet2: "",
+        billingCity: "Test City",
+        billingCountry: "US", // US for USD currency
+        billingEmail: customerEmail,
+        customerIp: (req.ip || req.connection?.remoteAddress || "127.0.0.1"), // Mandatory field
         merchantId: "" // Will be set from environment
       };
 

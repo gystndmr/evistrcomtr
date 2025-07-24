@@ -112,13 +112,14 @@ export default function Insurance() {
       });
       const applicationData2 = await applicationResponse.json();
       
-      // Then create payment - let customer enter billing details on GPay POS screen
+      // Then create payment - let server generate unique orderRef
       const paymentResponse = await apiRequest("POST", "/api/payment/create", {
         amount: selectedProduct.price,
         currency: "USD",
         description: `Turkey Travel Insurance - ${selectedProduct.name}`,
         customerEmail: applicationData.email,
         customerName: `${applicationData.firstName} ${applicationData.lastName}`
+        // Removed orderId - server will generate unique orderRef automatically
       });
       
       const paymentData = await paymentResponse.json();
@@ -127,11 +128,12 @@ export default function Insurance() {
         setCurrentOrderId(applicationData2.applicationNumber);
         setPaymentRedirectUrl(paymentData.paymentUrl);
         
-        // Enhanced redirect approach for mobile compatibility
+        // Enhanced redirect approach for mobile compatibility with debugging
         const redirectToPayment = () => {
           try {
             console.log('[Insurance Payment Debug] Starting redirect process');
             console.log('[Insurance Payment Debug] Payment URL:', paymentData.paymentUrl);
+            console.log('[Insurance Payment Debug] User Agent:', navigator.userAgent);
             
             // Always show success toast first
             toast({
@@ -140,10 +142,11 @@ export default function Insurance() {
               duration: 5000,
             });
             
-            // Direct location.href redirect
+            // For all devices: Direct location.href redirect
+            console.log('[Insurance Payment Debug] Using location.href redirect');
             setTimeout(() => {
               window.location.href = paymentData.paymentUrl;
-            }, 500);
+            }, 500); // Small delay to show toast
             
           } catch (error) {
             console.error('[Insurance Payment Debug] Redirect error:', error);
@@ -159,6 +162,7 @@ export default function Insurance() {
                       window.open(paymentData.paymentUrl, '_blank');
                     } catch (e) {
                       console.error('[Insurance Payment Debug] Manual link error:', e);
+                      // Copy to clipboard as last resort
                       navigator.clipboard?.writeText(paymentData.paymentUrl);
                     }
                   }}
@@ -186,8 +190,27 @@ export default function Insurance() {
         description: `Application number: ${data.applicationNumber}. Redirecting to payment...`,
         duration: 5000,
       });
+      
+      // Show manual continue option after a short delay for mobile users
+      setTimeout(() => {
+        if (paymentRedirectUrl) {
+          toast({
+            title: "Continue to Payment",
+            description: "Click here if redirect doesn't work.",
+            action: (
+              <Button 
+                onClick={() => window.open(paymentRedirectUrl, '_blank')}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2"
+              >
+                Continue
+              </Button>
+            ),
+            duration: 10000,
+          });
+        }
+      }, 2500);
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({
         title: "Error",
         description: error.message,
