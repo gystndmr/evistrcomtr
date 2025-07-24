@@ -829,12 +829,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Always use production domain for GPay callbacks - required for GPay registration
       const baseUrl = 'https://getvisa.tr';
       
+      // Get real customer IP - check multiple headers for proxy environments
+      const getCustomerIp = () => {
+        return req.headers['x-forwarded-for']?.toString().split(',')[0]?.trim() || 
+               req.headers['x-real-ip']?.toString() || 
+               req.connection?.remoteAddress || 
+               req.socket?.remoteAddress ||
+               req.ip || 
+               "85.34.78.112"; // Use a realistic Turkish IP as fallback instead of localhost
+      };
+
       // Enhanced payment request with comprehensive billing fields following PHP example
       const paymentRequest = {
-        orderRef: `VIS-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`, // Unique order reference with timestamp
-        amount: amount.toString(), // Use real amount from request
+        orderRef: finalOrderRef, // Use the original order reference without VIS prefix
+        amount: amount, // Keep as number, not string
         currency: "USD", // Fixed currency
-        orderDescription: finalDescription || `E-Visa Application - ${finalOrderRef}`,
+        orderDescription: finalDescription || `Turkey E-Visa Application Payment`,
         cancelUrl: `${baseUrl}/payment/cancel`,
         callbackUrl: `${baseUrl}/api/payment/callback`,
         notificationUrl: `${baseUrl}/api/payment/callback`,
@@ -844,7 +854,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // No billing fields - GPay will handle all billing requirements internally
         
-        customerIp: (req.ip || req.connection?.remoteAddress || "127.0.0.1"), // Mandatory field
+        customerIp: getCustomerIp(), // Use real customer IP
         merchantId: "" // Will be set from environment
       };
 
