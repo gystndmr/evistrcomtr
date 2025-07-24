@@ -62,6 +62,7 @@ export function VisaForm() {
   const [showPrerequisites, setShowPrerequisites] = useState(false);
   const [hasSupportingDocument, setHasSupportingDocument] = useState<boolean | null>(null);
   const [supportingDocumentDetails, setSupportingDocumentDetails] = useState<any>(null);
+  const [selectedSupportingDocType, setSelectedSupportingDocType] = useState("");
   const [documentProcessingType, setDocumentProcessingType] = useState("");
   const [isSupportingDocumentValid, setIsSupportingDocumentValid] = useState(false);
   // Removed paymentData state - now using direct redirects
@@ -108,6 +109,7 @@ export function VisaForm() {
         countryId: selectedCountry?.id,
         countryOfOrigin: selectedCountry?.name,
         totalAmount: calculateTotal().toString(),
+        supportingDocumentType: selectedSupportingDocType || null,
         supportingDocumentNumber: data.supportingDocumentNumber || null,
         supportingDocumentStartDate: data.supportingDocumentStartDate || null,
         supportingDocumentEndDate: data.supportingDocumentEndDate || null,
@@ -718,6 +720,7 @@ export function VisaForm() {
                     onHasSupportingDocument={setHasSupportingDocument}
                     onDocumentDetailsChange={setSupportingDocumentDetails}
                     onValidationChange={setIsSupportingDocumentValid}
+                    onSupportingDocTypeChange={setSelectedSupportingDocType}
                   />
                 </div>
               )}

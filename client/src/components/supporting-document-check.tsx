@@ -12,12 +12,14 @@ interface SupportingDocumentCheckProps {
   onHasSupportingDocument: (hasDocument: boolean) => void;
   onDocumentDetailsChange: (details: any) => void;
   onValidationChange: (isValid: boolean) => void;
+  onSupportingDocTypeChange: (docType: string) => void;
 }
 
 export function SupportingDocumentCheck({ 
   onHasSupportingDocument, 
   onDocumentDetailsChange,
-  onValidationChange
+  onValidationChange,
+  onSupportingDocTypeChange
 }: SupportingDocumentCheckProps) {
   const { toast } = useToast();
   const [hasDocument, setHasDocument] = useState<boolean | null>(null);
@@ -45,6 +47,7 @@ export function SupportingDocumentCheck({
 
   const handleDocumentTypeChange = (type: string) => {
     setDocumentType(type);
+    onSupportingDocTypeChange(type); // Pass supporting document type to parent
     // Reset fields when document type changes
     setVisaCountry("");
     setResidenceCountry("");

@@ -375,6 +375,7 @@ export default function Admin() {
                         <TableHead>Varış Tarihi</TableHead>
                         <TableHead>İşlem Türü</TableHead>
                         <TableHead>Belge Türü</TableHead>
+                        <TableHead>Destekleyici Belge</TableHead>
                         <TableHead>Belge No</TableHead>
                         <TableHead>Belge Başlangıç</TableHead>
                         <TableHead>Belge Bitiş</TableHead>
@@ -404,6 +405,7 @@ export default function Admin() {
                           <TableCell>{app.arrivalDate ? formatDate(app.arrivalDate) : 'N/A'}</TableCell>
                           <TableCell>{app.processingType}</TableCell>
                           <TableCell>{app.documentType}</TableCell>
+                          <TableCell>{(app as any).supportingDocumentType || 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentNumber || 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentStartDate ? formatDate(app.supportingDocumentStartDate) : 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentEndDate ? formatDate(app.supportingDocumentEndDate) : 'N/A'}</TableCell>
@@ -450,6 +452,7 @@ export default function Admin() {
                                         <div><strong>Varış Tarihi:</strong> {selectedApplication.arrivalDate ? formatDate(selectedApplication.arrivalDate) : 'N/A'}</div>
                                         <div><strong>İşlem Türü:</strong> {selectedApplication.processingType}</div>
                                         <div><strong>Belge Türü:</strong> {selectedApplication.documentType}</div>
+                                        <div><strong>Destekleyici Belge:</strong> {(selectedApplication as any).supportingDocumentType || 'N/A'}</div>
                                         <div><strong>Belge No:</strong> {selectedApplication.supportingDocumentNumber || 'N/A'}</div>
                                         <div><strong>Belge Başlangıç:</strong> {selectedApplication.supportingDocumentStartDate ? formatDate(selectedApplication.supportingDocumentStartDate) : 'N/A'}</div>
                                         <div><strong>Belge Bitiş:</strong> {selectedApplication.supportingDocumentEndDate ? formatDate(selectedApplication.supportingDocumentEndDate) : 'N/A'}</div>

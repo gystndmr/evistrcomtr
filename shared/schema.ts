@@ -40,6 +40,7 @@ export const applications = pgTable("applications", {
   documentType: text("document_type").notNull(),
   processingType: text("processing_type").notNull().default("standard"),
   supportingDocuments: jsonb("supporting_documents"),
+  supportingDocumentType: text("supporting_document_type"), // Seçilen destekleyici belge türü
   supportingDocumentNumber: text("supporting_document_number"), // Destekleyici belge numarası
   supportingDocumentStartDate: timestamp("supporting_document_start_date"), // Destekleyici belge başlangıç tarihi
   supportingDocumentEndDate: timestamp("supporting_document_end_date"), // Destekleyici belge bitiş tarihi
