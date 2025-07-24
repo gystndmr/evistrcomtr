@@ -26,7 +26,7 @@ export interface IStorage {
   getApplicationByNumber(applicationNumber: string): Promise<Application | undefined>;
   getApplications(): Promise<Application[]>;
   createApplication(application: InsertApplication): Promise<Application>;
-  updateApplicationStatus(id: number, status: string): Promise<void>;
+  updateApplicationStatus(id: number, status: string): Promise<Application | undefined>;
   updateApplicationPdf(id: number, pdfAttachment: string): Promise<void>;
   
   // Insurance operations
@@ -37,7 +37,7 @@ export interface IStorage {
   getInsuranceApplicationByNumber(applicationNumber: string): Promise<InsuranceApplication | undefined>;
   getInsuranceApplications(): Promise<InsuranceApplication[]>;
   getInsuranceApplicationById(id: number): Promise<InsuranceApplication | undefined>;
-  updateInsuranceApplicationStatus(id: number, status: string): Promise<void>;
+  updateInsuranceApplicationStatus(id: number, status: string): Promise<InsuranceApplication | undefined>;
   updateInsuranceApplicationPdf(id: number, pdfAttachment: string): Promise<void>;
 }
 
@@ -79,8 +79,9 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(applications).orderBy(desc(applications.createdAt));
   }
 
-  async updateApplicationStatus(id: number, status: string): Promise<void> {
-    await db.update(applications).set({ status, updatedAt: new Date() }).where(eq(applications.id, id));
+  async updateApplicationStatus(id: number, status: string): Promise<Application | undefined> {
+    const [updatedApp] = await db.update(applications).set({ status, updatedAt: new Date() }).where(eq(applications.id, id)).returning();
+    return updatedApp;
   }
 
   async getInsuranceProducts(): Promise<InsuranceProduct[]> {
@@ -116,8 +117,9 @@ export class DatabaseStorage implements IStorage {
     return application;
   }
 
-  async updateInsuranceApplicationStatus(id: number, status: string): Promise<void> {
-    await db.update(insuranceApplications).set({ status, updatedAt: new Date() }).where(eq(insuranceApplications.id, id));
+  async updateInsuranceApplicationStatus(id: number, status: string): Promise<InsuranceApplication | undefined> {
+    const [updatedApp] = await db.update(insuranceApplications).set({ status, updatedAt: new Date() }).where(eq(insuranceApplications.id, id)).returning();
+    return updatedApp;
   }
 
   async updateApplicationPdf(id: number, pdfAttachment: string): Promise<void> {

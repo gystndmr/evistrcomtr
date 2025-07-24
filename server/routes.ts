@@ -202,6 +202,122 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin update application status
+  app.patch("/api/admin/applications/:id/status", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status, pdfAttachment } = req.body;
+      
+      console.log(`Admin updating application ${id} status to ${status}`);
+      
+      // Update application status
+      const updatedApplication = await storage.updateApplicationStatus(parseInt(id), status);
+      
+      if (!updatedApplication) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+      
+      // Send approval email if status is approved
+      if (status === "approved") {
+        console.log(`🔄 Starting email send process for ${updatedApplication.email}`);
+        console.log(`📧 SendGrid API Key present: ${!!process.env.SENDGRID_API_KEY}`);
+        console.log(`📧 Verified Email present: ${!!process.env.VERIFIED_EMAIL_ADDRESS}`);
+        
+        try {
+          const emailContent = generateVisaApprovalEmail(
+            updatedApplication.firstName,
+            updatedApplication.applicationNumber,
+            pdfAttachment
+          );
+          
+          console.log(`📧 Email content generated, subject: ${emailContent.subject}`);
+          
+          await sendEmail({
+            to: updatedApplication.email,
+            from: process.env.VERIFIED_EMAIL_ADDRESS!,
+            subject: emailContent.subject,
+            html: emailContent.html,
+            text: emailContent.text,
+            attachments: pdfAttachment ? [{
+              content: pdfAttachment.split(',')[1], // Remove data:application/pdf;base64, prefix
+              filename: `e-visa-${updatedApplication.applicationNumber}.pdf`,
+              type: 'application/pdf',
+              disposition: 'attachment'
+            }] : undefined
+          });
+          
+          console.log(`✅ Visa approval email sent successfully to ${updatedApplication.email}`);
+        } catch (emailError) {
+          console.error('❌ Failed to send visa approval email:', emailError);
+          console.error('❌ Error details:', JSON.stringify(emailError, null, 2));
+        }
+      }
+      
+      res.json({ message: "Application status updated successfully", application: updatedApplication });
+    } catch (error) {
+      console.error("Error updating application status:", error);
+      res.status(500).json({ message: "Failed to update application status" });
+    }
+  });
+
+  // Admin update insurance application status  
+  app.patch("/api/admin/insurance-applications/:id/status", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status, pdfAttachment } = req.body;
+      
+      console.log(`Admin updating insurance application ${id} status to ${status}`);
+      
+      // Update insurance application status
+      const updatedApplication = await storage.updateInsuranceApplicationStatus(parseInt(id), status);
+      
+      if (!updatedApplication) {
+        return res.status(404).json({ message: "Insurance application not found" });
+      }
+      
+      // Send approval email if status is approved
+      if (status === "approved") {
+        console.log(`🔄 Starting insurance email send process for ${updatedApplication.email}`);
+        console.log(`📧 SendGrid API Key present: ${!!process.env.SENDGRID_API_KEY}`);
+        console.log(`📧 Verified Email present: ${!!process.env.VERIFIED_EMAIL_ADDRESS}`);
+        
+        try {
+          const emailContent = generateInsuranceApprovalEmail(
+            updatedApplication.firstName,
+            updatedApplication.applicationNumber,
+            pdfAttachment
+          );
+          
+          console.log(`📧 Insurance email content generated, subject: ${emailContent.subject}`);
+          
+          await sendEmail({
+            to: updatedApplication.email,
+            from: process.env.VERIFIED_EMAIL_ADDRESS!,
+            subject: emailContent.subject,
+            html: emailContent.html,
+            text: emailContent.text,
+            attachments: pdfAttachment ? [{
+              content: pdfAttachment.split(',')[1], // Remove data:application/pdf;base64, prefix
+              filename: `insurance-policy-${updatedApplication.applicationNumber}.pdf`,
+              type: 'application/pdf',
+              disposition: 'attachment'
+            }] : undefined
+          });
+          
+          console.log(`✅ Insurance approval email sent successfully to ${updatedApplication.email}`);
+        } catch (emailError) {
+          console.error('❌ Failed to send insurance approval email:', emailError);
+          console.error('❌ Insurance error details:', JSON.stringify(emailError, null, 2));
+        }
+      }
+      
+      res.json({ message: "Insurance application status updated successfully", application: updatedApplication });
+    } catch (error) {
+      console.error("Error updating insurance application status:", error);
+      res.status(500).json({ message: "Failed to update insurance application status" });
+    }
+  });
+
   // Seed initial data
   app.post("/api/seed", async (req, res) => {
     try {
