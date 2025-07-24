@@ -114,23 +114,13 @@ export function VisaForm() {
       });
       const applicationData = await applicationResponse.json();
       
-      // Then create payment with enhanced billing fields
+      // Then create payment - let customer enter billing details on GPay POS screen
       const paymentResponse = await apiRequest("POST", "/api/payment/create", {
         amount: calculateTotal(),
         currency: "USD",
         description: `Turkey E-Visa Application - ${applicationData.applicationNumber}`,
         customerEmail: data.email,
-        customerName: `${data.firstName} ${data.lastName}`,
-        // Enhanced billing fields from form data
-        billingFirstName: data.firstName,
-        billingLastName: data.lastName,
-        billingStreet1: data.address || "Address not provided",
-        billingStreet2: "",
-        billingCity: "Customer City",
-        billingCountry: selectedCountry?.code || "TR",
-        billingState: "",
-        billingZip: "",
-        customerPhone: data.phone || ""
+        customerName: `${data.firstName} ${data.lastName}`
       });
       
       const paymentData = await paymentResponse.json();

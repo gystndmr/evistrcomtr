@@ -8,7 +8,7 @@ interface GPayConfig {
   privateKey: string;
 }
 
-// Payment request interface matching PHP example
+// Payment request interface - billing fields optional for GPay POS entry
 export interface PaymentRequest {
   orderRef: string;
   amount: number;
@@ -20,12 +20,12 @@ export interface PaymentRequest {
   errorUrl: string;
   paymentMethod: string;
   feeBySeller: number;
-  billingFirstName: string;
-  billingLastName: string;
-  billingStreet1: string;
+  billingFirstName?: string;
+  billingLastName?: string;
+  billingStreet1?: string;
   billingStreet2?: string;
-  billingCity: string;
-  billingCountry: string;
+  billingCity?: string;
+  billingCountry?: string;
   billingZipCode?: string;
   billingPhone?: string;
   billingEmail?: string;

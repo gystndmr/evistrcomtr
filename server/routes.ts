@@ -873,16 +873,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         paymentMethod: "ALL", // Allow all payment methods
         feeBySeller: 50, // 50% fee by seller
         
-        // Enhanced billing fields following GPay documentation requirements
-        billingFirstName: firstName,
-        billingLastName: lastName,
-        billingStreet1: billingStreet1 || "Not Provided", // Required field - use provided or default
-        billingStreet2: billingStreet2 || "", // Optional field
-        billingCity: billingCity || "Not Provided", // Required field - use provided or default
-        billingCountry: billingCountry || "TR", // Default to Turkey for most transactions
-        billingState: billingState || "",
-        billingZip: billingZip || "",
-        billingPhone: customerPhone || "",
+        // Minimal billing fields - let customer enter details on GPay POS screen
         billingEmail: customerEmail,
         
         customerIp: (req.ip || req.connection?.remoteAddress || "127.0.0.1"), // Mandatory field
