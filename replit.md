@@ -313,6 +313,9 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - **Payment Data Structure**: Restored billing fields and customer validation based on working .NET implementation
   - **Production Ready**: System now mirrors successful .NET GPay integration that processed payments from Pakistan, UAE, and Turkey
   - **Channel Display**: Should now show "API" instead of "DIRECT POS" in GPay merchant panel
+  - **Billing Simplification**: Billing placeholders changed to empty strings instead of "N/A" for cleaner GPay integration
+  - **Invalid Signature Issue**: Investigating GPay checkout page signature validation errors - API creation working but checkout fails
+  - **Domain Configuration**: Testing alternative domains (evisatr.com.tr vs getvisa.tr) for callback URL registration
 
 ✅ **Comprehensive Form Validation System** (July 17, 2025):
   - Implemented mandatory field validation across all form steps
