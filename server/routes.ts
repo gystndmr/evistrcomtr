@@ -774,13 +774,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           errorUrl: testData.errorUrl,
           paymentMethod: testData.paymentMethod,
           feeBySeller: parseInt(testData.feeBySeller),
-          billingFirstName: testData.billingFirstName,
-          billingLastName: testData.billingLastName,
-          billingStreet1: testData.billingStreet1,
-          billingStreet2: testData.billingStreet2,
-          billingCity: "Test City",
-          billingCountry: testData.billingCountry,
-          billingEmail: testData.billingEmail,
           customerIp: testData.customerIp, // Mandatory field
           merchantId: testData.merchantId
         });
@@ -873,8 +866,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         paymentMethod: "ALL", // Allow all payment methods
         feeBySeller: 50, // 50% fee by seller
         
-        // Minimal billing fields - let customer enter details on GPay POS screen
-        billingEmail: customerEmail,
+        // No billing fields - GPay will handle all billing requirements internally
         
         customerIp: (req.ip || req.connection?.remoteAddress || "127.0.0.1"), // Mandatory field
         merchantId: "" // Will be set from environment

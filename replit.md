@@ -304,21 +304,22 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - **App.tsx Routes**: Preview routes removed from routing system
   - **System Status**: Back to original direct payment workflow
 
-✅ **GPay Billing Fields Pass-Through Implementation** (July 24, 2025):
+✅ **GPay Minimal Payment Implementation** (July 24, 2025):
   - **GPay Documentation Review**: Analyzed GPay Checkout API Specification 1.10.0 with PHP merchant examples
-  - **Customer POS Entry**: Billing fields removed from backend - customers enter billing details on GPay POS screen
-  - **Minimal Payment Data**: Only essential fields sent to GPay API:
-    - amount, currency, description (transaction details)
-    - customerEmail, customerName (basic customer info)
-    - billingEmail (minimal billing requirement)
-  - **Backend Simplification**: Removed hardcoded billing fields from /api/payment/create endpoint
+  - **No Billing Fields**: Completely removed all billing fields from payment requests
+  - **Minimal Payment Data**: Only essential transaction fields sent to GPay API:
+    - orderRef, amount, currency, orderDescription (transaction details)
+    - cancelUrl, callbackUrl, notificationUrl, errorUrl (flow control)
+    - paymentMethod: "ALL", feeBySeller: 50 (payment options)
+    - customerIp, merchantId (mandatory technical fields)
+  - **Backend Simplification**: PaymentRequest interface cleaned - no billing requirements
   - **Frontend Cleanup**: 
-    - Visa form simplified to core payment data only
-    - Insurance form simplified to core payment data only
-    - All billing fields removed from payment requests
-  - **User Experience**: Customers complete billing information directly on secure GPay payment page
-  - **GPay Integration**: Let GPay handle billing data collection during checkout process
-  - **Production Ready**: Streamlined payment flow with GPay POS billing entry
+    - Visa form sends only basic transaction data
+    - Insurance form sends only basic transaction data
+    - No customer billing information required
+  - **User Experience**: Customers proceed directly to payment without any billing form steps
+  - **GPay Integration**: GPay handles all billing and payment details internally
+  - **Production Ready**: Ultra-streamlined payment flow with no billing data collection
 
 ✅ **Comprehensive Form Validation System** (July 17, 2025):
   - Implemented mandatory field validation across all form steps
