@@ -845,25 +845,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Always use production domain for GPay callbacks - required for GPay registration
       const baseUrl = 'https://getvisa.tr';
       
+      // Generate proper order reference like your successful .NET project
+      const generateProperOrderRef = () => {
+        const timestamp = Date.now().toString();
+        const random = Math.random().toString(36).substr(2, 8);
+        return `${timestamp.substr(-8)}-${random}`;
+      };
+
+      // Get real customer IP with proper proxy detection like your .NET success
+      const getRealCustomerIp = () => {
+        // Check all possible proxy headers
+        const forwarded = req.headers['x-forwarded-for'];
+        const realIp = req.headers['x-real-ip'];
+        const cfConnecting = req.headers['cf-connecting-ip'];
+        
+        if (forwarded) {
+          return forwarded.toString().split(',')[0].trim();
+        }
+        if (realIp) {
+          return realIp.toString();
+        }
+        if (cfConnecting) {
+          return cfConnecting.toString();
+        }
+        
+        return req.connection?.remoteAddress || req.socket?.remoteAddress || "127.0.0.1";
+      };
+
       const paymentRequest = {
-        orderRef: `VIS-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`, // Unique order reference with timestamp
-        amount: amount.toString(), // Use real amount from request
-        currency: "USD", // Fixed currency
-        orderDescription: finalDescription || `E-Visa Application - ${finalOrderRef}`,
+        orderRef: generateProperOrderRef(), // Clean reference like your .NET project
+        amount: amount, // Keep as number like your successful transactions
+        currency: "USD", // Fixed currency matching your success
+        orderDescription: "VIZE BASVURU", // Match your .NET project description format
         cancelUrl: `${baseUrl}/payment/cancel`,
         callbackUrl: `${baseUrl}/api/payment/callback`,
         notificationUrl: `${baseUrl}/api/payment/callback`,
         errorUrl: `${baseUrl}/payment/cancel`,
-        paymentMethod: "ALL", // Allow all payment methods
-        feeBySeller: 50, // 50% fee by seller
+        paymentMethod: "ALL", // Allow all payment methods like your success
+        feeBySeller: 50, // 50% fee by seller matching your config
         billingFirstName: customerName.split(' ')[0] || customerName,
         billingLastName: customerName.split(' ').slice(1).join(' ') || 'Customer',
-        billingStreet1: "123 Main Street", // Required field from Baris example
+        billingStreet1: "Main Street", // Simplified like your working pattern
         billingStreet2: "",
-        billingCity: "Test City",
-        billingCountry: "US", // US for USD currency
+        billingCity: "Customer City", // Dynamic like your successful payments
+        billingCountry: "TR", // Turkey for better local processing like your success  
         billingEmail: customerEmail,
-        customerIp: (req.ip || req.connection?.remoteAddress || "127.0.0.1"), // Mandatory field
+        customerIp: getRealCustomerIp(), // Real IP detection like your .NET success
         merchantId: "" // Will be set from environment
       };
 

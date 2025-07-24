@@ -125,10 +125,12 @@ export class GPayService {
   // Create payment following PHP PaymentConfirmation.php logic
   async createPayment(request: PaymentRequest): Promise<PaymentResponse> {
     try {
-      // Add merchantId to request - ONLY use fields that exist in request
+      // Add critical fields for API mode like your successful .NET integration
       const paymentData = {
         ...request,
-        merchantId: this.config.merchantId
+        merchantId: this.config.merchantId,
+        connectionMode: "API", // CRITICAL: Force API mode like your .NET project
+        apiVersion: "1.0" // Ensure proper API version
       };
 
       // Generate signature
