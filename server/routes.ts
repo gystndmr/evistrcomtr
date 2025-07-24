@@ -819,36 +819,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         amount, 
         currency = "USD", 
         orderDescription, 
-        description, // Support both orderDescription and description
-        customerEmail, 
-        customerName,
-        // Enhanced billing fields from PHP documentation
-        billingFirstName,
-        billingLastName,
-        billingStreet1,
-        billingStreet2,
-        billingCity,
-        billingCountry,
-        billingState,
-        billingZip,
-        customerPhone
+        description // Support both orderDescription and description
       } = req.body;
       
       // Use orderRef or orderId (support both) - if none provided, generate one
       const finalOrderRef = orderRef || orderId || generateOrderReference();
       const finalDescription = orderDescription || description;
-      
-      if (!customerEmail || !customerName) {
-        return res.status(400).json({ 
-          success: false, 
-          error: "Missing required fields: customerEmail, customerName" 
-        });
-      }
-
-      // Parse customer name for billing if not provided separately
-      const nameparts = customerName.split(' ');
-      const firstName = billingFirstName || nameparts[0] || customerName;
-      const lastName = billingLastName || nameparts.slice(1).join(' ') || 'Customer';
 
       // Always use production domain for GPay callbacks - required for GPay registration
       const baseUrl = 'https://getvisa.tr';
