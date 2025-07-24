@@ -116,7 +116,7 @@ export function LiveChat() {
     setMessages(prev => [...prev, newMessage]);
     setInputText('');
 
-    // Send message to backend and get email notification
+    // Send message to backend and store in database for admin panel
     fetch('/api/chat/message', {
       method: 'POST',
       headers: {
@@ -124,9 +124,9 @@ export function LiveChat() {
       },
       body: JSON.stringify({
         message: inputText,
-        sessionId: 'user_' + Date.now(),
+        sessionId: sessionId,
         customerName: 'Website Visitor',
-        timestamp: new Date().toISOString()
+        customerEmail: null
       })
     }).catch(console.error);
 

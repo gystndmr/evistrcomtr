@@ -1149,48 +1149,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Chat message endpoint - sends email notifications
+  // Chat message endpoint - stores in database for admin panel
   app.post("/api/chat/message", async (req, res) => {
     try {
-      const { message, sessionId, customerName, timestamp } = req.body;
+      const { message, sessionId, customerName, customerEmail } = req.body;
       
-      // Send email notification to admin
-      const emailContent = {
-        subject: 'New Chat Message - GetVisa Support',
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #1e40af;">🔔 New Chat Message</h2>
-            <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <p><strong>Customer:</strong> ${customerName || 'Website Visitor'}</p>
-              <p><strong>Session:</strong> ${sessionId}</p>
-              <p><strong>Time:</strong> ${new Date(timestamp).toLocaleString()}</p>
-              <hr style="border: 1px solid #e2e8f0; margin: 15px 0;">
-              <p><strong>Message:</strong></p>
-              <div style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid #1e40af;">
-                ${message}
-              </div>
-            </div>
-            <p style="color: #64748b; font-size: 14px;">
-              This message was sent from the live chat system on getvisa.tr
-            </p>
-          </div>
-        `,
-        text: `New Chat Message from ${customerName || 'Website Visitor'}\\n\\nSession: ${sessionId}\\nTime: ${new Date(timestamp).toLocaleString()}\\n\\nMessage: ${message}`
-      };
-
-      await sendEmail({
-        to: "info@visatanzania.org", // Admin email address  
-        from: "info@visatanzania.org",
-        subject: emailContent.subject,
-        html: emailContent.html,
-        text: emailContent.text
+      // Store message in database
+      await storage.createChatMessage({
+        sessionId,
+        customerName,
+        customerEmail,
+        message,
+        sender: 'user',
+        isRead: false
       });
 
-      console.log(`Chat message email sent for session: ${sessionId}`);
+      console.log(`Chat message stored for session: ${sessionId}`);
       res.json({ success: true });
     } catch (error) {
-      console.error("Error sending chat message email:", error);
-      res.status(500).json({ message: "Failed to send chat message notification" });
+      console.error("Error storing chat message:", error);
+      res.status(500).json({ message: "Failed to store chat message" });
+    }
+  });
+
+  // Get chat messages for admin panel
+  app.get("/api/chat/messages", async (req, res) => {
+    try {
+      const messages = await storage.getChatMessages();
+      res.json(messages);
+    } catch (error) {
+      console.error("Error fetching chat messages:", error);
+      res.status(500).json({ message: "Failed to fetch chat messages" });
+    }
+  });
+
+  // Send reply to chat session
+  app.post("/api/chat/reply", async (req, res) => {
+    try {
+      const { sessionId, message } = req.body;
+      
+      // Store admin reply in database
+      await storage.createChatMessage({
+        sessionId,
+        customerName: 'Admin',
+        message,
+        sender: 'agent',
+        isRead: true
+      });
+
+      console.log(`Admin reply sent to session: ${sessionId}`);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error sending chat reply:", error);
+      res.status(500).json({ message: "Failed to send chat reply" });
     }
   });
 

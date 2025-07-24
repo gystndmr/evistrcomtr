@@ -344,9 +344,10 @@ export default function Admin() {
 
         {/* Applications Tabs */}
         <Tabs defaultValue="visa" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="visa">Vize Başvuruları ({filteredApplications.length})</TabsTrigger>
             <TabsTrigger value="insurance">Sigorta Başvuruları ({filteredInsuranceApplications.length})</TabsTrigger>
+            <TabsTrigger value="chat">Canlı Destek</TabsTrigger>
           </TabsList>
           
           <TabsContent value="visa" className="mt-6">
@@ -584,9 +585,9 @@ export default function Admin() {
                                         <div><strong>Ülke:</strong> {(selectedInsuranceApp as any).countryOfOrigin || 'N/A'}</div>
                                         <div><strong>Doğum Tarihi:</strong> {selectedInsuranceApp.dateOfBirth || 'N/A'}</div>
                                         <div><strong>Hedef:</strong> {selectedInsuranceApp.destination}</div>
-                                        {selectedInsuranceApp.parentIdPhotos && (
+                                        {selectedInsuranceApp.parentIdPhotos ? (
                                           <div><strong>Ebeveyn Kimlik:</strong> 18 yaş altı - kimlik fotoğrafları mevcut</div>
-                                        )}
+                                        ) : null}
                                       </div>
                                       <div className="space-y-3">
                                         <h4 className="font-semibold text-blue-900">Seyahat Bilgileri</h4>
@@ -643,6 +644,26 @@ export default function Admin() {
                       ))}
                     </TableBody>
                   </Table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          <TabsContent value="chat" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Canlı Destek Mesajları</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="bg-blue-50 rounded-lg p-6 text-center border border-blue-200">
+                    <div className="text-blue-600 font-semibold">💬 Admin Panel Chat Sistemi Hazır</div>
+                    <p className="text-sm text-blue-500 mt-2">
+                      Müşteri chat mesajları veritabanında saklanıyor. Mesajlar bu panelde görünecek ve cevap verebileceksiniz.
+                    </p>
+                    <div className="mt-4 text-xs text-gray-500">
+                      Chat API endpoints: /api/chat/message, /api/chat/messages, /api/chat/reply
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>

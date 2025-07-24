@@ -3,6 +3,7 @@ import {
   applications, 
   insuranceProducts, 
   insuranceApplications,
+  chatMessages,
   type Country, 
   type InsertCountry, 
   type Application, 
@@ -10,7 +11,9 @@ import {
   type InsuranceProduct,
   type InsertInsuranceProduct,
   type InsuranceApplication,
-  type InsertInsuranceApplication
+  type InsertInsuranceApplication,
+  type ChatMessage,
+  type InsertChatMessage
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
@@ -39,6 +42,12 @@ export interface IStorage {
   getInsuranceApplicationById(id: number): Promise<InsuranceApplication | undefined>;
   updateInsuranceApplicationStatus(id: number, status: string): Promise<InsuranceApplication | undefined>;
   updateInsuranceApplicationPdf(id: number, pdfAttachment: string): Promise<void>;
+  
+  // Chat operations
+  createChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
+  getChatMessages(): Promise<ChatMessage[]>;
+  getChatMessagesBySession(sessionId: string): Promise<ChatMessage[]>;
+  markChatMessagesRead(sessionId: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -128,6 +137,31 @@ export class DatabaseStorage implements IStorage {
 
   async updateInsuranceApplicationPdf(id: number, pdfAttachment: string): Promise<void> {
     await db.update(insuranceApplications).set({ pdfAttachment, updatedAt: new Date() }).where(eq(insuranceApplications.id, id));
+  }
+
+  // Chat operations
+  async createChatMessage(message: InsertChatMessage): Promise<ChatMessage> {
+    const [created] = await db.insert(chatMessages).values({
+      id: `msg_${Date.now()}_${Math.random().toString(36).substring(2)}`,
+      ...message
+    }).returning();
+    return created;
+  }
+
+  async getChatMessages(): Promise<ChatMessage[]> {
+    return db.select().from(chatMessages).orderBy(desc(chatMessages.timestamp));
+  }
+
+  async getChatMessagesBySession(sessionId: string): Promise<ChatMessage[]> {
+    return db.select().from(chatMessages)
+      .where(eq(chatMessages.sessionId, sessionId))
+      .orderBy(desc(chatMessages.timestamp));
+  }
+
+  async markChatMessagesRead(sessionId: string): Promise<void> {
+    await db.update(chatMessages)
+      .set({ isRead: true })
+      .where(eq(chatMessages.sessionId, sessionId));
   }
 }
 

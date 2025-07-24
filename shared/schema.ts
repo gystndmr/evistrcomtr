@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, decimal, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, decimal, jsonb, varchar } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -87,6 +87,17 @@ export const insuranceApplications = pgTable("insurance_applications", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const chatMessages = pgTable("chat_messages", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  sessionId: varchar("session_id", { length: 255 }).notNull(),
+  customerName: varchar("customer_name", { length: 255 }),
+  customerEmail: varchar("customer_email", { length: 255 }),
+  message: text("message").notNull(),
+  sender: varchar("sender", { length: 10 }).notNull(), // 'user' or 'agent'
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  isRead: boolean("is_read").default(false).notNull(),
+});
+
 // Relations
 export const countriesRelations = relations(countries, ({ many }) => ({
   applications: many(applications),
@@ -121,6 +132,8 @@ export const insertInsuranceApplicationSchema = createInsertSchema(insuranceAppl
   pdfAttachment: true
 });
 
+export const insertChatMessageSchema = createInsertSchema(chatMessages);
+
 // Types
 export type Country = typeof countries.$inferSelect;
 export type InsertCountry = z.infer<typeof insertCountrySchema>;
@@ -130,3 +143,5 @@ export type InsuranceProduct = typeof insuranceProducts.$inferSelect;
 export type InsertInsuranceProduct = z.infer<typeof insertInsuranceProductSchema>;
 export type InsuranceApplication = typeof insuranceApplications.$inferSelect;
 export type InsertInsuranceApplication = z.infer<typeof insertInsuranceApplicationSchema>;
+export type ChatMessage = typeof chatMessages.$inferSelect;
+export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
