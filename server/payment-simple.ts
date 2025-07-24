@@ -199,11 +199,12 @@ export class GPayService {
         const jsonResponse = JSON.parse(responseText);
         console.log('GPay JSON response:', jsonResponse);
         
-        if (jsonResponse.success) {
+        // GPay API returns {"status":"created","transactionId":"...","paymentLink":"...","message":"Payment Link created successfully"}
+        if (jsonResponse.status === 'created' && jsonResponse.paymentLink) {
           return {
             success: true,
-            paymentUrl: jsonResponse.paymentUrl || jsonResponse.redirect_url,
-            transactionId: request.orderRef,
+            paymentUrl: jsonResponse.paymentLink,
+            transactionId: jsonResponse.transactionId || request.orderRef,
             formData: formDataObj // Include form data for POST submission
           };
         } else {

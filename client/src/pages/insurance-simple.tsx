@@ -104,7 +104,7 @@ export default function Insurance() {
       const applicationResponse = await apiRequest("POST", "/api/insurance/applications", {
         ...applicationData,
         productId: selectedProduct.id,
-        totalAmount: selectedProduct.price,
+        totalAmount: selectedProduct.price.toString(), // Ensure it's a string as expected by schema
         tripDurationDays: tripDurationDays,
         dateOfBirth: applicationData.dateOfBirth,
         parentIdPhotos: parentIdPhotosData,
@@ -137,9 +137,9 @@ export default function Insurance() {
             
             // Always show success toast first
             toast({
-              title: t('insurance.payment.created'),
-              description: `${t('insurance.payment.redirecting')} ${t('order')}: ${applicationData2.applicationNumber}`,
-              duration: 5000,
+              title: "Payment Link Created",
+              description: `Redirecting to payment... Order: ${applicationData2.applicationNumber}`,
+              duration: 3000,
             });
             
             // For all devices: Direct location.href redirect
