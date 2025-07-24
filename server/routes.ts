@@ -883,11 +883,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         errorUrl: `${baseUrl}/payment/cancel`,
         paymentMethod: "ALL", // Allow all payment methods like your success
         feeBySeller: 50, // 50% fee by seller matching your config
-        billingFirstName: customerName.split(' ')[0] || customerName,
-        billingLastName: customerName.split(' ').slice(1).join(' ') || 'Customer',
-        billingStreet1: "Main Street", // Simplified like your working pattern
+        // Simplified billing - minimal required fields only
+        billingFirstName: customerName.split(' ')[0] || "Customer",
+        billingLastName: customerName.split(' ').slice(1).join(' ') || "User",
+        billingStreet1: "N/A", // Minimal placeholder
         billingStreet2: "",
-        billingCity: "Customer City", // Dynamic like your successful payments
+        billingCity: "N/A", // Minimal placeholder
         billingCountry: "US", // US for USD currency - keep original working setting  
         billingEmail: customerEmail,
         customerIp: getRealCustomerIp(), // Real IP detection like your .NET success
