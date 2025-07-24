@@ -888,7 +888,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         billingStreet1: "Main Street", // Simplified like your working pattern
         billingStreet2: "",
         billingCity: "Customer City", // Dynamic like your successful payments
-        billingCountry: "TR", // Turkey for better local processing like your success  
+        billingCountry: "US", // US for USD currency - keep original working setting  
         billingEmail: customerEmail,
         customerIp: getRealCustomerIp(), // Real IP detection like your .NET success
         merchantId: "" // Will be set from environment
