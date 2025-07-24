@@ -203,12 +203,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin update application status
-  app.patch("/api/admin/applications/:id/status", async (req, res) => {
+  app.post("/api/admin/applications/:id/status", async (req, res) => {
     try {
       const { id } = req.params;
       const { status, pdfAttachment } = req.body;
       
-      console.log(`Admin updating application ${id} status to ${status}`);
+      console.log(`🔄 [ADMIN] Updating application ${id} status to ${status}`);
       
       // Update application status
       const updatedApplication = await storage.updateApplicationStatus(parseInt(id), status);
@@ -226,6 +226,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         try {
           const emailContent = generateVisaApprovalEmail(
             updatedApplication.firstName,
+            updatedApplication.lastName || '',
             updatedApplication.applicationNumber,
             pdfAttachment
           );
@@ -234,7 +235,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await sendEmail({
             to: updatedApplication.email,
-            from: process.env.VERIFIED_EMAIL_ADDRESS!,
+            from: 'info@visatanzania.org',
             subject: emailContent.subject,
             html: emailContent.html,
             text: emailContent.text,
@@ -261,12 +262,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin update insurance application status  
-  app.patch("/api/admin/insurance-applications/:id/status", async (req, res) => {
+  app.post("/api/admin/insurance-applications/:id/status", async (req, res) => {
     try {
       const { id } = req.params;
       const { status, pdfAttachment } = req.body;
       
-      console.log(`Admin updating insurance application ${id} status to ${status}`);
+      console.log(`🔄 [ADMIN] Updating insurance application ${id} status to ${status}`);
       
       // Update insurance application status
       const updatedApplication = await storage.updateInsuranceApplicationStatus(parseInt(id), status);
@@ -284,7 +285,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         try {
           const emailContent = generateInsuranceApprovalEmail(
             updatedApplication.firstName,
+            updatedApplication.lastName || '',
             updatedApplication.applicationNumber,
+            'Turkey Travel Insurance',
             pdfAttachment
           );
           
@@ -292,7 +295,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await sendEmail({
             to: updatedApplication.email,
-            from: process.env.VERIFIED_EMAIL_ADDRESS!,
+            from: 'info@visatanzania.org',
             subject: emailContent.subject,
             html: emailContent.html,
             text: emailContent.text,

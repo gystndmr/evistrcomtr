@@ -18,11 +18,21 @@ interface EmailOptions {
 }
 
 export async function sendEmail(options: EmailOptions): Promise<void> {
+  console.log('🔧 SendGrid sendEmail function called');
+  console.log('🔧 API Key length:', process.env.SENDGRID_API_KEY?.length || 0);
+  console.log('🔧 From address:', options.from);
+  console.log('🔧 To address:', options.to);
+  console.log('🔧 Subject:', options.subject);
+  
   try {
-    await sgMail.send(options);
-    console.log('Email sent successfully');
-  } catch (error) {
-    console.error('Error sending email:', error);
+    const result = await sgMail.send(options);
+    console.log('✅ SendGrid response success:', result[0]?.statusCode);
+    console.log('✅ Email sent successfully to:', options.to);
+  } catch (error: any) {
+    console.error('❌ SendGrid error full object:', error);
+    console.error('❌ SendGrid error message:', error.message);
+    console.error('❌ SendGrid error code:', error.code);
+    console.error('❌ SendGrid error response body:', error.response?.body);
     throw error;
   }
 }
