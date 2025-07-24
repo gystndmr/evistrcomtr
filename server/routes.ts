@@ -817,7 +817,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Create payment - following PHP merchant example
+  // Create payment - following PHP merchant example with enhanced billing fields
   app.post("/api/payment/create", async (req, res) => {
     try {
       const { 
@@ -828,7 +828,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         orderDescription, 
         description, // Support both orderDescription and description
         customerEmail, 
-        customerName 
+        customerName,
+        // Enhanced billing fields from PHP documentation
+        billingFirstName,
+        billingLastName,
+        billingStreet1,
+        billingStreet2,
+        billingCity,
+        billingCountry,
+        billingState,
+        billingZip,
+        customerPhone
       } = req.body;
       
       // Use orderRef or orderId (support both) - if none provided, generate one
@@ -842,9 +852,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // Parse customer name for billing if not provided separately
+      const nameparts = customerName.split(' ');
+      const firstName = billingFirstName || nameparts[0] || customerName;
+      const lastName = billingLastName || nameparts.slice(1).join(' ') || 'Customer';
+
       // Always use production domain for GPay callbacks - required for GPay registration
       const baseUrl = 'https://getvisa.tr';
       
+      // Enhanced payment request with comprehensive billing fields following PHP example
       const paymentRequest = {
         orderRef: `VIS-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`, // Unique order reference with timestamp
         amount: amount.toString(), // Use real amount from request
@@ -856,13 +872,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         errorUrl: `${baseUrl}/payment/cancel`,
         paymentMethod: "ALL", // Allow all payment methods
         feeBySeller: 50, // 50% fee by seller
-        billingFirstName: customerName.split(' ')[0] || customerName,
-        billingLastName: customerName.split(' ').slice(1).join(' ') || 'Customer',
-        billingStreet1: "123 Main Street", // Required field from Baris example
-        billingStreet2: "",
-        billingCity: "Test City",
-        billingCountry: "US", // US for USD currency
+        
+        // Enhanced billing fields following GPay documentation requirements
+        billingFirstName: firstName,
+        billingLastName: lastName,
+        billingStreet1: billingStreet1 || "Not Provided", // Required field - use provided or default
+        billingStreet2: billingStreet2 || "", // Optional field
+        billingCity: billingCity || "Not Provided", // Required field - use provided or default
+        billingCountry: billingCountry || "TR", // Default to Turkey for most transactions
+        billingState: billingState || "",
+        billingZip: billingZip || "",
+        billingPhone: customerPhone || "",
         billingEmail: customerEmail,
+        
         customerIp: (req.ip || req.connection?.remoteAddress || "127.0.0.1"), // Mandatory field
         merchantId: "" // Will be set from environment
       };

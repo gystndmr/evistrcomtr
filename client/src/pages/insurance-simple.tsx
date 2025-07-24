@@ -112,13 +112,25 @@ export default function Insurance() {
       });
       const applicationData2 = await applicationResponse.json();
       
-      // Then create payment - let server generate unique orderRef
+      // Then create payment with enhanced billing fields
       const paymentResponse = await apiRequest("POST", "/api/payment/create", {
         amount: selectedProduct.price,
         currency: "USD",
         description: `Turkey Travel Insurance - ${selectedProduct.name}`,
         customerEmail: applicationData.email,
-        customerName: `${applicationData.firstName} ${applicationData.lastName}`
+        customerName: `${applicationData.firstName} ${applicationData.lastName}`,
+        // Enhanced billing fields from form data
+        billingFirstName: applicationData.firstName,
+        billingLastName: applicationData.lastName,
+        billingStreet1: "Address not provided", // Insurance form doesn't have address field
+        billingStreet2: "",
+        billingCity: "Customer City",
+        billingCountry: applicationData.nationality ? 
+          (countries.find(c => c.name === applicationData.nationality)?.code || "TR") : 
+          "TR",
+        billingState: "",
+        billingZip: "",
+        customerPhone: applicationData.phone || ""
       });
       
       const paymentData = await paymentResponse.json();
