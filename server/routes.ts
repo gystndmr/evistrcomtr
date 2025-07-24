@@ -886,9 +886,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Simplified billing - minimal required fields only
         billingFirstName: customerName.split(' ')[0] || "Customer",
         billingLastName: customerName.split(' ').slice(1).join(' ') || "User",
-        billingStreet1: "N/A", // Minimal placeholder
+        billingStreet1: "", // Empty placeholder
         billingStreet2: "",
-        billingCity: "N/A", // Minimal placeholder
+        billingCity: "", // Empty placeholder
         billingCountry: "US", // US for USD currency - keep original working setting  
         billingEmail: customerEmail,
         customerIp: getRealCustomerIp(), // Real IP detection like your .NET success
