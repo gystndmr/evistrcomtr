@@ -5,6 +5,7 @@ import { insertApplicationSchema, insertInsuranceApplicationSchema } from "@shar
 import { z } from "zod";
 import { sendEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail, generateVisaApprovalEmail } from "./email";
 import { gPayService } from "./payment-simple";
+import { nanoid } from "nanoid";
 
 function generateApplicationNumber(): string {
   const timestamp = Date.now().toString(36);
@@ -1156,6 +1157,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Store message in database
       await storage.createChatMessage({
+        id: nanoid(),
         sessionId,
         customerName,
         customerEmail,
@@ -1190,6 +1192,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Store admin reply in database
       await storage.createChatMessage({
+        id: nanoid(),
         sessionId,
         customerName: 'Admin',
         message,
