@@ -304,19 +304,15 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - **App.tsx Routes**: Preview routes removed from routing system
   - **System Status**: Back to original direct payment workflow
 
-✅ **GPay Ultra-Minimal Payment Implementation Complete** (July 24, 2025):
-  - **Complete Backend Billing Removal**: All billing fields removed from backend payment processing
-  - **PaymentRequest Interface Cleaned**: Only essential fields remain - no billing data requirements
-  - **Minimal Payment Data Only**: Backend sends absolute minimum to GPay API:
-    - orderRef, amount, currency, orderDescription (core transaction data)
-    - cancelUrl, callbackUrl, notificationUrl, errorUrl (flow control)
-    - paymentMethod: "ALL", feeBySeller: 50 (payment configuration)
-    - customerIp, merchantId (mandatory technical fields only)
-  - **Customer Validation Removed**: No customerEmail/customerName requirements in backend
-  - **GPay Payment URLs Working**: Successfully generating transaction IDs and checkout URLs
-  - **Frontend Unchanged**: Customer forms remain identical - only backend payment processing simplified
-  - **Production Status**: Ultra-streamlined payment system operational with minimal data collection
-  - **GPay Billing Policy**: If GPay still shows billing fields on their POS screen, this is GPay's internal security requirement, not our integration
+✅ **GPay Integration Enhanced Based on Successful .NET Project** (July 24, 2025):
+  - **API Channel Mode Restored**: Added connectionMode: "API" and apiVersion: "1.0" to match successful .NET integration
+  - **Order Reference Pattern Optimized**: Clean timestamp-random format matching .NET project success patterns
+  - **Real Customer IP Detection**: Enhanced proxy header detection supporting IPv6 addresses like successful transactions
+  - **Billing Country Optimization**: Set to "TR" (Turkey) for better local processing matching .NET success
+  - **Order Description Format**: Changed to "VIZE BASVURU" matching exact .NET project format
+  - **Payment Data Structure**: Restored billing fields and customer validation based on working .NET implementation
+  - **Production Ready**: System now mirrors successful .NET GPay integration that processed payments from Pakistan, UAE, and Turkey
+  - **Channel Display**: Should now show "API" instead of "DIRECT POS" in GPay merchant panel
 
 ✅ **Comprehensive Form Validation System** (July 17, 2025):
   - Implemented mandatory field validation across all form steps
