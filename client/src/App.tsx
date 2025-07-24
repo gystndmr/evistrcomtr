@@ -27,6 +27,7 @@ import Security from "@/pages/security";
 import Refund from "@/pages/refund";
 import MobileTest from "@/pages/mobile-test";
 import NotFound from "@/pages/not-found";
+import ChatAdmin from "@/pages/chat-admin";
 
 function Router() {
   return (
@@ -52,6 +53,7 @@ function Router() {
       <Route path="/security" component={Security} />
       <Route path="/refund" component={Refund} />
       <Route path="/mobile-test" component={MobileTest} />
+      <Route path="/chat-admin" component={ChatAdmin} />
       <Route component={NotFound} />
     </Switch>
   );

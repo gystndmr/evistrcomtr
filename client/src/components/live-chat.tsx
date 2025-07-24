@@ -207,14 +207,14 @@ export function LiveChat() {
                     }`}
                   >
                     <p>{message.text}</p>
-                    <p className={`text-xs mt-1 ${
+                    <span className={`text-xs mt-1 block ${
                       message.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
                     }`}>
                       {message.timestamp.toLocaleTimeString([], { 
                         hour: '2-digit', 
                         minute: '2-digit' 
                       })}
-                    </p>
+                    </span>
                   </div>
                 </div>
               ))}
