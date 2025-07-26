@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Chat Widget Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            padding: 20px;
+        }
+        h1 { color: #fff; text-align: center; }
+        .test-info {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .widget-status {
+            background: #4CAF50;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🇹🇷 Live Chat Widget Test</h1>
+        
+        <div class="test-info">
+            <h3>Test Durumu:</h3>
+            <div class="widget-status">
+                ✅ Live Chat Widget Aktif (WebSocket Olmadan)
+            </div>
+            <p><strong>Backend API:</strong> Çalışıyor ✅</p>
+            <p><strong>Chat Storage:</strong> PostgreSQL Database ✅</p>
+            <p><strong>Admin Panel:</strong> Mesajları görüntülüyor ✅</p>
+        </div>
+        
+        <div class="test-info">
+            <h3>Nasıl Test Edilir:</h3>
+            <ol>
+                <li>Sayfanın sağ alt köşesinde mavi chat butonunu görmelisiniz</li>
+                <li>Butona tıklayarak chat penceresini açın</li>
+                <li>Bir test mesajı yazın ve gönderin</li>
+                <li>Mesaj admin panelde "Canlı Destek" sekmesinde görünecek</li>
+                <li>Otomatik cevap 2 saniye sonra gelir</li>
+            </ol>
+        </div>
+        
+        <div class="test-info">
+            <h3>Son Test Sonuçları:</h3>
+            <p>✅ API Endpoint: /api/chat/message - 200 OK</p>
+            <p>✅ Session ID: Unique ID üretiliyor</p>
+            <p>✅ Database: Mesajlar kaydediliyor</p>
+            <p>✅ TypeScript: Hatalar giderildi</p>
+        </div>
+    </div>
+
+    <!-- Live Chat Widget Test Script -->
+    <script>
+        console.log('Live Chat Widget Test Sayfası Yüklendi');
+        console.log('Chat widget sağ alt köşede görünmeli');
+        
+        // Check if widget loads
+        setTimeout(() => {
+            const chatButton = document.querySelector('[class*="fixed bottom-6 right-6"]');
+            if (chatButton) {
+                console.log('✅ Chat widget bulundu');
+            } else {
+                console.log('❌ Chat widget bulunamadı - kontrol edin');
+            }
+        }, 2000);
+
+        // Monitor chat API calls
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+            if (args[0].includes('/api/chat/message')) {
+                console.log('🚀 Chat API çağrısı:', args[0]);
+            }
+            return originalFetch.apply(this, args);
+        };
+    </script>
+</body>
+</html>

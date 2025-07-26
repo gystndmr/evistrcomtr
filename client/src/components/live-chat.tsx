@@ -19,6 +19,15 @@ export function LiveChat() {
   const [isOnline, setIsOnline] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { currentLanguage } = useLanguage();
+  
+  // Generate unique session ID for this chat
+  const [sessionId] = useState(() => {
+    const stored = localStorage.getItem('chatSessionId');
+    if (stored) return stored;
+    const newId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    localStorage.setItem('chatSessionId', newId);
+    return newId;
+  });
 
   const chatTexts = {
     en: {
@@ -117,18 +126,27 @@ export function LiveChat() {
     setInputText('');
 
     // Send message to backend and store in database for admin panel
+    const messageToSend = inputText;
     fetch('/api/chat/message', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        message: inputText,
+        message: messageToSend,
         sessionId: sessionId,
         customerName: 'Website Visitor',
         customerEmail: null
       })
-    }).catch(console.error);
+    }).then(response => {
+      if (response.ok) {
+        console.log('Chat mesajı backend\'e gönderildi:', messageToSend);
+      } else {
+        console.error('Chat mesajı gönderilemedi:', response.status);
+      }
+    }).catch(error => {
+      console.error('Chat API hatası:', error);
+    });
 
     // Auto-reply after 2 seconds
     setTimeout(() => {
