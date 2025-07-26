@@ -16,6 +16,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { Application, InsuranceApplication } from "@shared/schema";
+import ChatAdminPanel from "../components/chat-admin-panel";
 
 interface AdminStats {
   totalApplications: number;
@@ -649,24 +650,7 @@ export default function Admin() {
             </Card>
           </TabsContent>
           <TabsContent value="chat" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Canlı Destek Mesajları</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="bg-blue-50 rounded-lg p-6 text-center border border-blue-200">
-                    <div className="text-blue-600 font-semibold">💬 Admin Panel Chat Sistemi Hazır</div>
-                    <p className="text-sm text-blue-500 mt-2">
-                      Müşteri chat mesajları veritabanında saklanıyor. Mesajlar bu panelde görünecek ve cevap verebileceksiniz.
-                    </p>
-                    <div className="mt-4 text-xs text-gray-500">
-                      Chat API endpoints: /api/chat/message, /api/chat/messages, /api/chat/reply
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <ChatAdminPanel />
           </TabsContent>
         </Tabs>
 
