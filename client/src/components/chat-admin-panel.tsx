@@ -169,6 +169,9 @@ export default function ChatAdminPanel() {
             <p className="text-sm text-gray-500 mt-2">
               Müşteri mesajları burada görünecek
             </p>
+            <p className="text-xs text-red-500 mt-2">
+              Debug: allMessages.length = {allMessages.length}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
