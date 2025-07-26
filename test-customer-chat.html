@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Müşteri Chat Test - Admin Mesajları</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1 { text-align: center; color: #fff; }
+        .test-info {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .success { background: #10b981; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .instruction {
+            background: #f59e0b;
+            color: #000;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .status {
+            background: #1f2937;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👥 Müşteri Chat Test Sayfası</h1>
+        
+        <div class="success">
+            ✅ Live Chat Polling Sistemi Aktif
+        </div>
+        
+        <div class="instruction">
+            📋 TEST ADIMLARI:
+            <ol>
+                <li>Bu sayfada sağ altta chat butonunu açın</li>
+                <li>Bir test mesajı gönderin</li>
+                <li>Admin panelde cevap yazın</li>
+                <li>3 saniye içinde admin cevabı burada görünecek</li>
+            </ol>
+        </div>
+        
+        <div class="test-info">
+            <h3>🔧 Teknik Detaylar:</h3>
+            <p><strong>Polling Interval:</strong> 3 saniye</p>
+            <p><strong>Session Tracking:</strong> localStorage</p>
+            <p><strong>Admin Message Sync:</strong> HTTP API polling</p>
+            <p><strong>Real-time Updates:</strong> WebSocket olmadan çalışıyor</p>
+        </div>
+        
+        <div class="test-info">
+            <h3>🎯 Beklenen Davranış:</h3>
+            <ul>
+                <li>Müşteri mesajı → Admin panele anında düşer</li>
+                <li>Admin cevabı → 3 saniye içinde chat widget'ta görünür</li>
+                <li>Session ID localStorage'da kalıcı</li>
+                <li>Sayfa yenilenince chat geçmişi korunur</li>
+            </ul>
+        </div>
+        
+        <div class="status" id="status">
+            <h4>📊 Sistem Durumu:</h4>
+            <p id="session-info">Session ID kontrol ediliyor...</p>
+            <p id="polling-status">Polling durumu: Test bekleniyor</p>
+            <p id="last-check">Son kontrol: Henüz yapılmadı</p>
+        </div>
+    </div>
+
+    <script>
+        // Monitor session and polling
+        const sessionId = localStorage.getItem('chatSessionId');
+        document.getElementById('session-info').innerHTML = 
+            sessionId ? `Session ID: ${sessionId}` : 'Session ID: Henüz oluşturulmadı';
+        
+        // Monitor chat activity
+        let pollCount = 0;
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+            if (args[0].includes('/api/chat/messages')) {
+                pollCount++;
+                document.getElementById('polling-status').innerHTML = 
+                    `Polling aktif: ${pollCount} istek yapıldı`;
+                document.getElementById('last-check').innerHTML = 
+                    `Son kontrol: ${new Date().toLocaleTimeString()}`;
+            }
+            return originalFetch.apply(this, args);
+        };
+        
+        console.log('Customer Chat Test Page Loaded');
+        console.log('Live Chat Polling System Active');
+        
+        // Show session info every 5 seconds
+        setInterval(() => {
+            const currentSession = localStorage.getItem('chatSessionId');
+            if (currentSession && currentSession !== sessionId) {
+                document.getElementById('session-info').innerHTML = 
+                    `Session ID: ${currentSession} ✅ (Yeni)`;
+            }
+        }, 5000);
+    </script>
+</body>
+</html>

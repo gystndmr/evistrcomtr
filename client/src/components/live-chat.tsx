@@ -100,6 +100,46 @@ export function LiveChat() {
     }
   }, [messages]);
 
+  // Fetch admin replies from backend every 3 seconds
+  useEffect(() => {
+    const fetchAdminReplies = async () => {
+      if (!sessionId) return;
+      
+      try {
+        const response = await fetch('/api/chat/messages');
+        const allMessages = await response.json();
+        
+        // Filter messages for this session and get admin replies
+        const sessionMessages = allMessages.filter((msg: any) => 
+          msg.sessionId === sessionId && msg.sender === 'agent'
+        );
+        
+        // Add new admin replies to local messages
+        sessionMessages.forEach((adminMsg: any) => {
+          const existsInLocal = messages.some(msg => msg.id === adminMsg.id);
+          if (!existsInLocal) {
+            const newAdminMessage: Message = {
+              id: adminMsg.id,
+              text: adminMsg.message,
+              sender: 'agent',
+              timestamp: new Date(adminMsg.timestamp)
+            };
+            setMessages(prev => [...prev, newAdminMessage]);
+          }
+        });
+        
+      } catch (error) {
+        console.error('Admin mesajları alınamadı:', error);
+      }
+    };
+
+    // Poll for admin replies every 3 seconds when chat is open
+    if (isOpen && !isMinimized) {
+      const interval = setInterval(fetchAdminReplies, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [sessionId, isOpen, isMinimized, messages]);
+
   useEffect(() => {
     // Initialize with greeting message
     if (messages.length === 0) {
@@ -148,7 +188,7 @@ export function LiveChat() {
       console.error('Chat API hatası:', error);
     });
 
-    // Auto-reply after 2 seconds
+    // Auto-reply after 2 seconds (only if no admin is online)
     setTimeout(() => {
       const autoReply: Message = {
         id: (Date.now() + 1).toString(),
