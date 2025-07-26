@@ -27,11 +27,17 @@ export default function ChatAdminPanel() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  console.log("ChatAdminPanel component render edildi");
+
   // Fetch all chat messages
-  const { data: allMessages = [], isLoading } = useQuery<ChatMessage[]>({
+  const { data: allMessages = [], isLoading, error } = useQuery<ChatMessage[]>({
     queryKey: ["/api/chat/messages"],
     refetchInterval: 3000, // Refresh every 3 seconds
   });
+
+  console.log("ChatAdminPanel - allMessages:", allMessages);
+  console.log("ChatAdminPanel - isLoading:", isLoading);
+  console.log("ChatAdminPanel - error:", error);
 
   // Group messages by session
   const chatSessions: ChatSession[] = Object.entries(
@@ -106,12 +112,13 @@ export default function ChatAdminPanel() {
     : null;
 
   if (isLoading) {
+    console.log("ChatAdminPanel - Loading state gösteriliyor");
     return (
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5" />
-            Canlı Destek Mesajları
+            Canlı Destek Mesajları - Yükleniyor...
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -124,12 +131,34 @@ export default function ChatAdminPanel() {
     );
   }
 
+  if (error) {
+    console.log("ChatAdminPanel - Error state:", error);
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MessageCircle className="h-5 w-5" />
+            Canlı Destek Mesajları - Hata
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <p className="text-red-600">Mesajlar yüklenirken hata oluştu</p>
+            <p className="text-sm text-gray-500 mt-2">Lütfen sayfayı yenileyin</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  console.log("ChatAdminPanel - Render final component, sessions:", chatSessions.length);
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MessageCircle className="h-5 w-5" />
-          Canlı Destek Mesajları ({chatSessions.length})
+          Canlı Destek Mesajları ({chatSessions.length}) - Data: {allMessages.length} mesaj
         </CardTitle>
       </CardHeader>
       <CardContent>

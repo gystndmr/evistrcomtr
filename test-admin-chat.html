@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Chat Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .chat-session { border: 1px solid #ddd; margin: 10px; padding: 10px; border-radius: 5px; }
+        .message { margin: 5px 0; padding: 5px; }
+        .user-message { background: #f0f8ff; }
+        .agent-message { background: #f0fff0; }
+        button { padding: 10px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        input { padding: 8px; margin: 5px; width: 300px; }
+    </style>
+</head>
+<body>
+    <h1>Admin Chat Paneli Test</h1>
+    <button onclick="loadMessages()">Mesajları Yükle</button>
+    <div id="messages"></div>
+
+    <h3>Cevap Gönder</h3>
+    <input type="text" id="sessionId" placeholder="Session ID">
+    <input type="text" id="replyText" placeholder="Cevap mesajı">
+    <button onclick="sendReply()">Cevap Gönder</button>
+
+    <script>
+        async function loadMessages() {
+            try {
+                const response = await fetch('/api/chat/messages');
+                const messages = await response.json();
+                
+                console.log('Chat mesajları:', messages);
+                
+                const container = document.getElementById('messages');
+                container.innerHTML = '<h2>Chat Mesajları (' + messages.length + ')</h2>';
+                
+                // Session bazında grupla
+                const sessions = {};
+                messages.forEach(msg => {
+                    if (!sessions[msg.sessionId]) {
+                        sessions[msg.sessionId] = [];
+                    }
+                    sessions[msg.sessionId].push(msg);
+                });
+                
+                Object.entries(sessions).forEach(([sessionId, sessionMessages]) => {
+                    const sessionDiv = document.createElement('div');
+                    sessionDiv.className = 'chat-session';
+                    sessionDiv.innerHTML = `
+                        <h3>Session: ${sessionId}</h3>
+                        <p>Müşteri: ${sessionMessages[0].customerName} (${sessionMessages[0].customerEmail})</p>
+                    `;
+                    
+                    sessionMessages.forEach(msg => {
+                        const msgDiv = document.createElement('div');
+                        msgDiv.className = 'message ' + (msg.sender === 'user' ? 'user-message' : 'agent-message');
+                        msgDiv.innerHTML = `
+                            <strong>${msg.sender === 'user' ? 'Müşteri' : 'Admin'}:</strong> ${msg.message}
+                            <br><small>${new Date(msg.timestamp).toLocaleString('tr-TR')}</small>
+                        `;
+                        sessionDiv.appendChild(msgDiv);
+                    });
+                    
+                    container.appendChild(sessionDiv);
+                });
+                
+            } catch (error) {
+                console.error('Mesaj yükleme hatası:', error);
+                document.getElementById('messages').innerHTML = '<p style="color: red;">Mesajlar yüklenemedi: ' + error.message + '</p>';
+            }
+        }
+
+        async function sendReply() {
+            const sessionId = document.getElementById('sessionId').value;
+            const message = document.getElementById('replyText').value;
+            
+            if (!sessionId || !message) {
+                alert('Session ID ve mesaj gerekli');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/chat/reply', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sessionId, message })
+                });
+                
+                const result = await response.json();
+                console.log('Cevap gönderildi:', result);
+                
+                if (result.success) {
+                    alert('Cevap başarıyla gönderildi!');
+                    document.getElementById('replyText').value = '';
+                    loadMessages(); // Mesajları yenile
+                } else {
+                    alert('Cevap gönderilemedi');
+                }
+            } catch (error) {
+                console.error('Cevap gönderme hatası:', error);
+                alert('Hata: ' + error.message);
+            }
+        }
+
+        // Sayfa yüklendiğinde mesajları yükle
+        window.onload = loadMessages;
+    </script>
+</body>
+</html>
