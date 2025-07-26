@@ -69,9 +69,19 @@ export default function ChatAdminPanel() {
   // Send reply mutation
   const sendReplyMutation = useMutation({
     mutationFn: async (data: { sessionId: string; message: string }) => {
-      return apiRequest(`/api/chat/reply`, "POST", data);
+      console.log("Admin reply gönderiliyor:", data);
+      
+      try {
+        const response = await apiRequest("POST", `/api/chat/reply`, data);
+        console.log("Admin reply başarılı:", response);
+        return response;
+      } catch (error) {
+        console.error("Admin reply hatası:", error);
+        throw error;
+      }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("onSuccess çalıştı:", data);
       setReplyText("");
       queryClient.invalidateQueries({ queryKey: ["/api/chat/messages"] });
       toast({
@@ -79,7 +89,8 @@ export default function ChatAdminPanel() {
         description: "Mesajınız müşteriye ulaştırıldı.",
       });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("onError çalıştı:", error);
       toast({
         title: "Hata",
         description: "Mesaj gönderilemedi. Lütfen tekrar deneyin.",

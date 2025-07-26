@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Chat Test - WebSocket Olmadan</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            background: #1e293b;
+            color: white;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .success { background: #10b981; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .test-result { background: #374151; padding: 15px; border-radius: 8px; margin: 10px 0; }
+        button { 
+            background: #3b82f6; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #2563eb; }
+        #messages { 
+            background: #111827; 
+            padding: 15px; 
+            border-radius: 8px; 
+            max-height: 400px; 
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+        .message { margin: 10px 0; padding: 8px; border-radius: 4px; }
+        .user-msg { background: #1f2937; border-left: 4px solid #3b82f6; }
+        .admin-msg { background: #064e3b; border-left: 4px solid #10b981; }
+        input[type="text"] {
+            width: 60%;
+            padding: 10px;
+            margin: 5px;
+            background: #374151;
+            border: 1px solid #6b7280;
+            color: white;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Admin Chat System Test</h1>
+        
+        <div class="success">
+            ✅ Parameter Fix Applied: apiRequest("POST", "/api/chat/reply", data)
+        </div>
+        
+        <div class="test-result">
+            <h3>Backend API Status:</h3>
+            <p id="api-status">Testing...</p>
+        </div>
+        
+        <div class="test-result">
+            <h3>Chat Messages:</h3>
+            <div id="messages">Loading messages...</div>
+        </div>
+        
+        <div class="test-result">
+            <h3>Admin Reply Test:</h3>
+            <input type="text" id="replyInput" placeholder="Admin cevabı yazın...">
+            <input type="text" id="sessionInput" placeholder="Session ID" value="debug_session_789">
+            <button onclick="sendAdminReply()">Admin Cevap Gönder</button>
+            <div id="reply-result"></div>
+        </div>
+        
+        <div class="test-result">
+            <h3>Test Results:</h3>
+            <div id="test-results"></div>
+        </div>
+    </div>
+
+    <script>
+        async function testAPI() {
+            try {
+                // Test chat messages endpoint
+                const response = await fetch('/api/chat/messages');
+                const messages = await response.json();
+                
+                document.getElementById('api-status').innerHTML = 
+                    `✅ API Working - ${messages.length} messages found`;
+                    
+                // Display messages
+                let messageHtml = '';
+                messages.slice(0, 10).forEach(msg => {
+                    const isAdmin = msg.sender === 'agent';
+                    messageHtml += `
+                        <div class="message ${isAdmin ? 'admin-msg' : 'user-msg'}">
+                            <strong>${isAdmin ? 'Admin' : msg.customerName}:</strong> ${msg.message}
+                            <br><small>Session: ${msg.sessionId} | ${new Date(msg.timestamp).toLocaleString()}</small>
+                        </div>
+                    `;
+                });
+                document.getElementById('messages').innerHTML = messageHtml;
+                
+            } catch (error) {
+                document.getElementById('api-status').innerHTML = 
+                    `❌ API Error: ${error.message}`;
+            }
+        }
+        
+        async function sendAdminReply() {
+            const replyText = document.getElementById('replyInput').value;
+            const sessionId = document.getElementById('sessionInput').value;
+            
+            if (!replyText || !sessionId) {
+                alert('Lütfen mesaj ve session ID girin');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/chat/reply', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        sessionId: sessionId,
+                        message: replyText
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('reply-result').innerHTML = 
+                        `✅ Admin Reply Sent Successfully! (${response.status})`;
+                    document.getElementById('replyInput').value = '';
+                    
+                    // Refresh messages
+                    setTimeout(testAPI, 1000);
+                } else {
+                    document.getElementById('reply-result').innerHTML = 
+                        `❌ Error: ${response.status} - ${result.message || 'Unknown error'}`;
+                }
+                
+            } catch (error) {
+                document.getElementById('reply-result').innerHTML = 
+                    `❌ Network Error: ${error.message}`;
+            }
+        }
+        
+        // Auto-test on load
+        testAPI();
+        
+        // Enter key support
+        document.getElementById('replyInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendAdminReply();
+            }
+        });
+        
+        console.log('Admin Chat Test Page Loaded');
+        console.log('Parameter fix applied: apiRequest("POST", "/api/chat/reply", data)');
+    </script>
+</body>
+</html>
