@@ -18,6 +18,7 @@ import hagiaSophiaImg from "../../../attached_assets/pexels-mustafa-eker-6491149
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
   const { t } = useLanguage();
 
   // Turkish landmark images 
@@ -28,6 +29,31 @@ export default function Home() {
     { image: bosphorusImg },
     { image: pamukkaleImg }
   ];
+
+  // Preload all images immediately when component mounts
+  useEffect(() => {
+    const preloadImages = async () => {
+      const imagePromises = turkishLandmarks.map((landmark) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = landmark.image;
+        });
+      });
+
+      try {
+        await Promise.all(imagePromises);
+        setImagesLoaded(true);
+        console.log('All homepage images preloaded successfully');
+      } catch (error) {
+        console.error('Error preloading images:', error);
+        setImagesLoaded(true); // Still show content even if some images fail
+      }
+    };
+
+    preloadImages();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -44,8 +70,18 @@ export default function Home() {
       
       {/* Hero Section with Rotating Turkish Landmarks */}
       <section className="relative h-[70vh] overflow-hidden">
+        {/* Loading Placeholder */}
+        {!imagesLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center">
+            <div className="text-white text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+              <p className="text-lg font-semibold">Loading Turkey's beautiful landmarks...</p>
+            </div>
+          </div>
+        )}
+
         {/* Background Slides */}
-        <div className="absolute inset-0">
+        <div className={`absolute inset-0 transition-opacity duration-500 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}>
           {turkishLandmarks.map((landmark, index) => (
             <div
               key={index}
@@ -53,9 +89,12 @@ export default function Home() {
                 index === currentSlide ? 'opacity-100' : 'opacity-0'
               }`}
             >
-              <div 
-                className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url(${landmark.image})` }}
+              <img 
+                src={landmark.image}
+                alt={`Turkish landmark ${index + 1}`}
+                className="absolute inset-0 w-full h-full object-cover"
+                loading="eager"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-black opacity-50" />
             </div>
