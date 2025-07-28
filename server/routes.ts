@@ -130,16 +130,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("=== INSURANCE APPLICATION DEBUG ===");
       console.log("Full request body:", JSON.stringify(req.body, null, 2));
-      console.log("travelStartDate:", req.body.travelStartDate, typeof req.body.travelStartDate);
-      console.log("travelEndDate:", req.body.travelEndDate, typeof req.body.travelEndDate);
+      console.log("travelDate:", req.body.travelDate, typeof req.body.travelDate);
+      console.log("returnDate:", req.body.returnDate, typeof req.body.returnDate);
       
       // Convert dates and amounts to proper format for schema validation
       const bodyWithDates = {
         ...req.body,
         applicationNumber: generateApplicationNumber(),
         destination: req.body.destination || "Turkey", // Default destination
-        travelDate: req.body.travelStartDate ? new Date(req.body.travelStartDate) : new Date(),
-        returnDate: req.body.travelEndDate ? new Date(req.body.travelEndDate) : new Date(),
+        travelDate: req.body.travelDate ? new Date(req.body.travelDate) : new Date(),
+        returnDate: req.body.returnDate ? new Date(req.body.returnDate) : new Date(),
         dateOfBirth: req.body.dateOfBirth, // Keep as string
         totalAmount: req.body.totalAmount, // Keep original value first
       };
