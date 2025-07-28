@@ -323,7 +323,7 @@ export default function Insurance() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-xl shadow-lg border border-gray-200">
           <div className="p-8">
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-8" noValidate>
               
               {/* Insurance Plan Selection */}
               <div>
@@ -365,7 +365,6 @@ export default function Insurance() {
                     value={applicationData.firstName}
                     onChange={(e) => handleInputChange("firstName", e.target.value)}
                     placeholder="Enter your first name"
-                    required
                   />
                 </div>
                 <div>
@@ -376,7 +375,6 @@ export default function Insurance() {
                     value={applicationData.lastName}
                     onChange={(e) => handleInputChange("lastName", e.target.value)}
                     placeholder="Enter your last name"
-                    required
                   />
                 </div>
                 <div>
@@ -387,7 +385,6 @@ export default function Insurance() {
                     value={applicationData.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
                     placeholder="Enter your email"
-                    required
                   />
                 </div>
                 <div>
@@ -398,7 +395,6 @@ export default function Insurance() {
                     value={applicationData.phone}
                     onChange={(e) => handleInputChange("phone", e.target.value)}
                     placeholder="Enter your phone number"
-                    required
                   />
                 </div>
               </div>
@@ -411,7 +407,8 @@ export default function Insurance() {
                     type="date"
                     value={applicationData.travelDate}
                     onChange={(e) => handleInputChange("travelDate", e.target.value)}
-                    required
+                    min={new Date().toISOString().split('T')[0]}
+                    pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
                   />
                 </div>
                 <div>
@@ -419,8 +416,9 @@ export default function Insurance() {
                   <Input
                     type="date"
                     value={applicationData.returnDate}
-                    onChange={(e) => handleInputChange("returnDate", e.target.value)}  
-                    required
+                    onChange={(e) => handleInputChange("returnDate", e.target.value)}
+                    min={applicationData.travelDate || new Date().toISOString().split('T')[0]}
+                    pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
                   />
                 </div>
               </div>
@@ -432,7 +430,8 @@ export default function Insurance() {
                   type="date"
                   value={applicationData.dateOfBirth}
                   onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
-                  required
+                  max={new Date(Date.now() - 18*365*24*60*60*1000).toISOString().split('T')[0]}
+                  pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
                 />
               </div>
 
