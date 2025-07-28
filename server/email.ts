@@ -24,7 +24,7 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   console.log('🔧 Subject:', options.subject);
   
   // Always use verified address to prevent customer complaints
-  const verifiedEmail = "info@visatanzania.org"; // Only verified address in SendGrid
+  const verifiedEmail = "info@getvisa.tr"; // Only verified address in SendGrid
   const emailOptions = {
     ...options,
     from: verifiedEmail
@@ -79,7 +79,7 @@ export function generateVisaReceivedEmail(
           <!-- Header -->
           <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
             ${turkeyFlagSvg}
-            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY E VISA SERVICES</h1>
+            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY E VISA</h1>
             <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
             <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">getvisa.tr</p>
           </div>
@@ -308,7 +308,7 @@ export function generateVisaApprovalEmail(
           <!-- Header -->
           <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
             ${turkeyFlagSvg}
-            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY E VISA SERVICES</h1>
+            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY E VISA</h1>
             <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
             <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">getvisa.tr</p>
           </div>
@@ -388,7 +388,7 @@ export function generateVisaApprovalEmail(
             <div style="background: #f1f5f9; padding: 20px; border-radius: 6px; margin: 30px 0; text-align: center;">
               <p style="margin: 0; color: #64748b; font-size: 14px; line-height: 1.5;">
                 <strong>Need assistance?</strong><br>
-                Contact us at <a href="mailto:info@visatanzania.org" style="color: #DC2626;">info@visatanzania.org</a><br>
+                Contact us at <a href="mailto:info@getvisa.tr" style="color: #DC2626;">info@getvisa.tr</a><br>
                 Visit: <a href="https://getvisa.tr" style="color: #DC2626;">getvisa.tr</a>
               </p>
             </div>
@@ -437,7 +437,7 @@ Travel Instructions:
 Download your e-visa: https://getvisa.tr/status?ref=${applicationNumber}
 Check status: https://getvisa.tr/status?ref=${applicationNumber}
 
-Contact: info@visatanzania.org
+Contact: info@getvisa.tr
 Website: getvisa.tr
 
 Have a wonderful trip to Turkey!
@@ -622,7 +622,7 @@ export function generateInsuranceApprovalEmail(
               <h4 style="margin: 0 0 10px 0; color: #1e40af; font-size: 16px;">💬 Customer Support:</h4>
               <p style="margin: 0; color: #1e40af; font-size: 14px; line-height: 1.6;">
                 If you have any questions about your insurance policy or need assistance:<br>
-                📧 Email: info@visatanzania.org<br>
+                📧 Email: info@getvisa.tr<br>
                 🌐 Website: https://getvisa.tr<br>
                 📱 24/7 Customer Service Available
               </p>
@@ -644,7 +644,7 @@ Issue Date: ${new Date().toLocaleDateString('en-US')}
 
 Download your policy at: https://getvisa.tr/status?ref=${applicationNumber}
 
-This email was sent automatically. For questions, contact us at info@visatanzania.org
+This email was sent automatically. For questions, contact us at info@getvisa.tr
     `
   };
 }

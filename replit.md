@@ -211,6 +211,9 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - ✅ **Complete Cleanup**: Removed ALL references to info@getvisa.tr from codebase to prevent customer complaints
   - ✅ **Email Templates Updated**: All email templates now use info@visatanzania.org consistently
   - ✅ **Production Safe**: System uses only verified address - no more 403 errors or customer complaints
+  - ✅ **Template Headers Updated**: Changed to "TURKEY E VISA" and "TURKEY INSURANCE" as requested
+  - ✅ **Dual Address System**: Templates show info@getvisa.tr for customer contact, backend uses info@visatanzania.org for sending
+  - ✅ **Professional Branding**: Template headers simplified while maintaining getvisa.tr domain visibility for customers
 ✓ **GloDiPay Payment Integration** (July 16, 2025):
   - Integrated GloDiPay payment gateway using provided credentials (Merchant ID: 1100000026)
   - RSA signature-based authentication with public/private key pair (md5WithRSAEncryption)

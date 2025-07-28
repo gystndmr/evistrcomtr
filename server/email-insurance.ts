@@ -33,9 +33,9 @@ export function generateInsuranceReceivedEmail(
           <!-- Header -->
           <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
             ${turkeyFlagSvg}
-            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY TRAVEL INSURANCE</h1>
-            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">TRAVEL INSURANCE SYSTEM</p>
-            <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">evisatr.xyz</p>
+            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY INSURANCE</h1>
+            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">TURKEY INSURANCE SYSTEM</p>
+            <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">getvisa.tr</p>
           </div>
           
           <!-- Content -->
@@ -124,7 +124,7 @@ export function generateInsuranceReceivedEmail(
               <h4 style="margin: 0 0 10px 0; color: #1e40af; font-size: 16px;">💬 Customer Service:</h4>
               <p style="margin: 0; color: #1e40af; font-size: 14px; line-height: 1.6;">
                 If you have any questions, please contact our <strong>24/7 customer service</strong>:<br>
-                📧 Email: info@visatanzania.org<br>
+                📧 Email: info@getvisa.tr<br>
                 🌐 Website: https://getvisa.tr
               </p>
             </div>
@@ -136,8 +136,8 @@ export function generateInsuranceReceivedEmail(
               ${turkeyFlagSvg}
             </div>
             <div style="margin-bottom: 20px;">
-              <h3 style="margin: 0 0 5px 0; font-size: 18px; font-weight: bold; letter-spacing: 1px;">TURKEY TRAVEL INSURANCE</h3>
-              <p style="margin: 0; font-size: 16px; opacity: 0.9; font-weight: 500;">TRAVEL INSURANCE SYSTEM</p>
+              <h3 style="margin: 0 0 5px 0; font-size: 18px; font-weight: bold; letter-spacing: 1px;">TURKEY INSURANCE</h3>
+              <p style="margin: 0; font-size: 16px; opacity: 0.9; font-weight: 500;">TURKEY INSURANCE SYSTEM</p>
             </div>
             
             <div style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 20px; margin-top: 20px;">
@@ -148,7 +148,7 @@ export function generateInsuranceReceivedEmail(
                 </div>
                 <div style="text-align: center; min-width: 200px;">
                   <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold; color: #0284c7;">Customer Support</p>
-                  <p style="margin: 0; font-size: 13px; opacity: 0.8;">info@visatanzania.org</p>
+                  <p style="margin: 0; font-size: 13px; opacity: 0.8;">info@getvisa.tr</p>
                 </div>
               </div>
               
@@ -167,7 +167,7 @@ export function generateInsuranceReceivedEmail(
       </html>
     `,
     text: `
-TURKEY TRAVEL INSURANCE SYSTEM
+TURKEY INSURANCE SYSTEM
 
 Dear ${firstName} ${lastName},
 
@@ -194,7 +194,7 @@ APPLICATION STATUS CHECK:
 https://getvisa.tr/status
 
 CUSTOMER SERVICE (24/7):
-Email: info@visatanzania.org
+Email: info@getvisa.tr
 Website: https://getvisa.tr
 
 This email was sent automatically. Please do not reply to this email.
