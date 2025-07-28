@@ -101,6 +101,7 @@ export default function Insurance() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
         },
         body: JSON.stringify(applicationPayload),
       });
@@ -111,7 +112,18 @@ export default function Insurance() {
       if (!applicationResponse.ok) {
         const errorText = await applicationResponse.text();
         console.error('Application response error:', errorText);
+        console.error('Application response URL:', applicationResponse.url);
+        console.error('Application response type:', applicationResponse.type);
         throw new Error(`Application failed: ${applicationResponse.status} - ${errorText}`);
+      }
+      
+      // Check if response is actually JSON
+      const contentType = applicationResponse.headers.get('content-type');
+      console.log('Application response content-type:', contentType);
+      if (!contentType || !contentType.includes('application/json')) {
+        const responseText = await applicationResponse.text();
+        console.error('Expected JSON but got:', responseText);
+        throw new Error(`Server returned non-JSON response: ${contentType}`);
       }
       
       const applicationData2 = await applicationResponse.json();
@@ -131,6 +143,7 @@ export default function Insurance() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
         },
         body: JSON.stringify(paymentPayload),
       });
