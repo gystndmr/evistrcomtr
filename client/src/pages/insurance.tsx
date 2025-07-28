@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,12 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Shield, CheckCircle, Calendar, MapPin, Star, Crown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-// PaymentForm removed - now using direct redirects
 import { PaymentRetry } from "@/components/payment-retry";
 import type { InsuranceProduct } from "@shared/schema";
-import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
-import turkeyLogo from "@/assets/turkey-logo.png";
-import newTurkeyLogo from "@assets/ChatGPT Image 18 Tem 2025 01_37_34_1752880645933.png";
 
 export default function Insurance() {
   const [selectedProduct, setSelectedProduct] = useState<InsuranceProduct | null>(null);
@@ -38,17 +34,13 @@ export default function Insurance() {
   const [parentIdPhotos, setParentIdPhotos] = useState<File[]>([]);
   const [showRetry, setShowRetry] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
-  const [showPaymentForm, setShowPaymentForm] = useState(false);
-  const [paymentData, setPaymentData] = useState<any>(null);
   const [paymentRedirectUrl, setPaymentRedirectUrl] = useState<string>("");
   const { toast } = useToast();
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["/api/insurance/products"],
-    staleTime: 5 * 60 * 1000, // 5 minutes cache
+    staleTime: 5 * 60 * 1000,
   }) as { data: InsuranceProduct[], isLoading: boolean };
-
-
 
   // Sort products in the order: 7, 14, 30, 60, 90, 180, 1 year
   const sortedProducts = [...products].sort((a, b) => {
@@ -104,14 +96,13 @@ export default function Insurance() {
       });
       const applicationData2 = await applicationResponse.json();
       
-      // Then create payment - let server generate unique orderRef
+      // Then create payment
       const paymentResponse = await apiRequest("POST", "/api/payment/create", {
         amount: selectedProduct.price,
         currency: "USD",
         description: `Turkey Travel Insurance - ${selectedProduct.name}`,
         customerEmail: applicationData.email,
         customerName: `${applicationData.firstName} ${applicationData.lastName}`
-        // Removed orderId - server will generate unique orderRef automatically
       });
       
       const paymentData = await paymentResponse.json();
@@ -120,117 +111,87 @@ export default function Insurance() {
         setCurrentOrderId(applicationData2.applicationNumber);
         setPaymentRedirectUrl(paymentData.paymentUrl);
         
-        // Enhanced redirect approach for mobile compatibility with debugging
+        // Enhanced redirect approach for mobile compatibility
         const redirectToPayment = () => {
           try {
             console.log('[Insurance Payment Debug] Starting redirect process');
             console.log('[Insurance Payment Debug] Payment URL:', paymentData.paymentUrl);
-            console.log('[Insurance Payment Debug] User Agent:', navigator.userAgent);
             
             // Always show success toast first
             toast({
-              title: "Insurance Payment Created",
-              description: `Redirecting to payment... Order: ${applicationData2.applicationNumber}`,
+              title: "Application Submitted Successfully!",
+              description: `Application ${applicationData2.applicationNumber} created. Redirecting to payment...`,
               duration: 5000,
             });
             
-            // For all devices: Direct location.href redirect
-            console.log('[Insurance Payment Debug] Using location.href redirect');
+            // Enhanced redirect with multiple fallbacks for mobile
             setTimeout(() => {
-              window.location.href = paymentData.paymentUrl;
-            }, 500); // Small delay to show toast
+              try {
+                // For mobile devices - try window.open first, then fallback
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                
+                if (isMobile) {
+                  console.log('[Insurance Payment Debug] Mobile device detected');
+                  // Try window.open first for mobile
+                  const newWindow = window.open(paymentData.paymentUrl, '_blank');
+                  if (!newWindow) {
+                    console.log('[Insurance Payment Debug] Pop-up blocked, using location.href');
+                    window.location.href = paymentData.paymentUrl;
+                  }
+                } else {
+                  console.log('[Insurance Payment Debug] Desktop device, using location.href');
+                  window.location.href = paymentData.paymentUrl;
+                }
+              } catch (redirectError) {
+                console.error('[Insurance Payment Debug] Redirect failed:', redirectError);
+                // Ultimate fallback - just set the location
+                window.location.replace(paymentData.paymentUrl);
+              }
+            }, 300); // Reduced timeout for better mobile experience
             
           } catch (error) {
-            console.error('[Insurance Payment Debug] Redirect error:', error);
-            
-            // Ultimate fallback: show manual link
-            toast({
-              title: "Payment Link Ready",
-              description: "Click the button to continue to insurance payment",
-              action: (
-                <button 
-                  onClick={() => {
-                    try {
-                      window.open(paymentData.paymentUrl, '_blank');
-                    } catch (e) {
-                      console.error('[Insurance Payment Debug] Manual link error:', e);
-                      // Copy to clipboard as last resort
-                      navigator.clipboard?.writeText(paymentData.paymentUrl);
-                    }
-                  }}
-                  className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
-                >
-                  Continue to Payment
-                </button>
-              ),
-              duration: 15000,
-            });
+            console.error('[Insurance Payment Debug] Payment redirect error:', error);
+            setShowRetry(true);
           }
         };
         
-        // Start redirect process immediately
         redirectToPayment();
+        return applicationData2;
       } else {
-        throw new Error(paymentData.error || "Payment initialization failed");
+        throw new Error("Failed to create payment link");
       }
-      
-      return applicationData2;
-    },
-    onSuccess: (data) => {
-      toast({
-        title: "Application Submitted",
-        description: `Your insurance application number is ${data.applicationNumber}. Redirecting to payment page...`,
-        duration: 5000,
-      });
-      
-      // Show manual continue option after a short delay for mobile users
-      setTimeout(() => {
-        if (paymentRedirectUrl) {
-          toast({
-            title: "Continue to Payment",
-            description: "If the page doesn't redirect automatically, click here to continue.",
-            action: (
-              <Button 
-                onClick={() => window.open(paymentRedirectUrl, '_blank')}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2"
-              >
-                Continue
-              </Button>
-            ),
-            duration: 10000,
-          });
-        }
-      }, 2500);
     },
     onError: (error) => {
+      console.error("Insurance application error:", error);
       toast({
-        title: "Error",
-        description: error.message,
+        title: "Application Failed",
+        description: error instanceof Error ? error.message : "Please try again",
         variant: "destructive",
       });
+      setShowRetry(true);
     },
   });
 
   const handleInputChange = (field: string, value: string) => {
     setApplicationData(prev => ({
       ...prev,
-      [field]: value,
+      [field]: value
     }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate all required fields
+    // Form validation
     if (!selectedProduct) {
       toast({
-        title: "Product Selection Required",
-        description: "Please select an insurance product before proceeding",
+        title: "Insurance Plan Required",
+        description: "Please select an insurance plan",
         variant: "destructive",
       });
       return;
     }
-    
+
     if (!applicationData.firstName.trim()) {
       toast({
         title: "First Name Required",
@@ -239,7 +200,7 @@ export default function Insurance() {
       });
       return;
     }
-    
+
     if (!applicationData.lastName.trim()) {
       toast({
         title: "Last Name Required", 
@@ -248,7 +209,7 @@ export default function Insurance() {
       });
       return;
     }
-    
+
     if (!applicationData.email.trim()) {
       toast({
         title: "Email Required",
@@ -257,21 +218,10 @@ export default function Insurance() {
       });
       return;
     }
-    
-    // Email format validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(applicationData.email)) {
-      toast({
-        title: "Invalid Email Format",
-        description: "Please enter a valid email address",
-        variant: "destructive",
-      });
-      return;
-    }
-    
+
     if (!applicationData.phone.trim()) {
       toast({
-        title: "Phone Number Required",
+        title: "Phone Required",
         description: "Please enter your phone number",
         variant: "destructive",
       });
@@ -309,7 +259,7 @@ export default function Insurance() {
       return;
     }
 
-    if (!applicationData.dateOfBirth.trim()) {
+    if (!applicationData.dateOfBirth) {
       toast({
         title: "Date of Birth Required",
         description: "Please enter your date of birth",
@@ -318,37 +268,31 @@ export default function Insurance() {
       return;
     }
 
-    // Check if under 18 and require parent ID photos
+    // Check if user is under 18 and parent ID photos are required
     const birthDate = new Date(applicationData.dateOfBirth);
     const today = new Date();
     const age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
     
-    const actualAge = age - (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate()) ? 1 : 0);
-
-    if (actualAge < 18 && parentIdPhotos.length === 0) {
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      // age--;
+    }
+    
+    if (age < 18 && parentIdPhotos.length === 0) {
       toast({
         title: "Parent ID Photos Required",
-        description: "18 yaş altı başvurular için anne ve baba kimlik fotoğrafları gereklidir",
+        description: "Applicants under 18 must upload parent ID photos",
         variant: "destructive",
       });
       return;
     }
-    
+
     createApplicationMutation.mutate();
   };
 
-  const getIcon = (productName: string) => {
-    if (productName.toLowerCase().includes("basic")) return Shield;
-    if (productName.toLowerCase().includes("premium")) return Star;
-    if (productName.toLowerCase().includes("comprehensive")) return Crown;
-    return Shield;
-  };
-
-  // Show loading state for insurance products
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gray-50">
         <Header />
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
@@ -383,7 +327,7 @@ export default function Insurance() {
               
               {/* Insurance Plan Selection */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Policy Period</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Insurance Plan *</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {sortedProducts.map((product: InsuranceProduct) => (
                     <div key={product.id} className="relative">
@@ -404,7 +348,7 @@ export default function Insurance() {
                         }`}
                       >
                         <div className="font-semibold text-gray-900">{product.name.replace(" Coverage", "")}</div>
-                        <div className="text-lg font-bold text-blue-600">${product.price}</div>
+                        <div className="text-lg font-bold text-blue-600">${product.price} USD</div>
                       </label>
                     </div>
                   ))}
@@ -412,356 +356,126 @@ export default function Insurance() {
               </div>
 
               {/* Personal Information */}
-              {selectedProduct && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <Label htmlFor="firstName">Given/First Name(s) *</Label>
-                      <Input
-                        id="firstName"
-                        value={applicationData.firstName}
-                        onChange={(e) => handleInputChange("firstName", e.target.value)}
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="lastName">Surname(s) *</Label>
-                      <Input
-                        id="lastName"
-                        value={applicationData.lastName}
-                        onChange={(e) => handleInputChange("lastName", e.target.value)}
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="email">Email for receive your insurance certificate *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={applicationData.email}
-                        onChange={(e) => handleInputChange("email", e.target.value)}
-                        placeholder="Enter Email"
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label htmlFor="phone">Phone Number *</Label>
-                      <Input
-                        id="phone"
-                        value={applicationData.phone}
-                        onChange={(e) => handleInputChange("phone", e.target.value)}
-                        required
-                      />
-                    </div>
-                    
-                    <div>
-                      <Label>Travel Date *</Label>
-                      <div className="grid grid-cols-3 gap-2">
-                        <Select
-                          value={applicationData.travelDate ? applicationData.travelDate.split('-')[2] : ''}
-                          onValueChange={(day) => {
-                            const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                            const year = parts[0]; const month = parts[1];
-                            handleInputChange("travelDate", `${year}-${month}-${day.padStart(2, '0')}`);
-                          }}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Day" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
-                              <SelectItem key={d} value={d}>{d}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-
-                        <Select
-                          value={applicationData.travelDate ? applicationData.travelDate.split('-')[1] : ''}
-                          onValueChange={(month) => {
-                            const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                            const year = parts[0]; const day = parts[2];
-                            handleInputChange("travelDate", `${year}-${month.padStart(2, '0')}-${day}`);
-                          }}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Month" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {[
-                              { value: '01', label: 'January' },
-                              { value: '02', label: 'February' },
-                              { value: '03', label: 'March' },
-                              { value: '04', label: 'April' },
-                              { value: '05', label: 'May' },
-                              { value: '06', label: 'June' },
-                              { value: '07', label: 'July' },
-                              { value: '08', label: 'August' },
-                              { value: '09', label: 'September' },
-                              { value: '10', label: 'October' },
-                              { value: '11', label: 'November' },
-                              { value: '12', label: 'December' }
-                            ].map((m) => (
-                              <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-
-                        <Select
-                          value={applicationData.travelDate ? applicationData.travelDate.split('-')[0] : ''}
-                          onValueChange={(year) => {
-                            const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                            const month = parts[1]; const day = parts[2];
-                            handleInputChange("travelDate", `${year}-${month}-${day}`);
-                          }}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Year" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
-                              <SelectItem key={y} value={y}>{y}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <Label>Return Date *</Label>
-                      <div className="grid grid-cols-3 gap-2">
-                        <Select
-                          value={applicationData.returnDate ? applicationData.returnDate.split('-')[2] : ''}
-                          onValueChange={(day) => {
-                            const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                            const year = parts[0]; const month = parts[1];
-                            handleInputChange("returnDate", `${year}-${month}-${day.padStart(2, '0')}`);
-                          }}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Day" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
-                              <SelectItem key={d} value={d}>{d}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-
-                        <Select
-                          value={applicationData.returnDate ? applicationData.returnDate.split('-')[1] : ''}
-                          onValueChange={(month) => {
-                            const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                            const year = parts[0]; const day = parts[2];
-                            handleInputChange("returnDate", `${year}-${month.padStart(2, '0')}-${day}`);
-                          }}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Month" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {[
-                              { value: '01', label: 'January' },
-                              { value: '02', label: 'February' },
-                              { value: '03', label: 'March' },
-                              { value: '04', label: 'April' },
-                              { value: '05', label: 'May' },
-                              { value: '06', label: 'June' },
-                              { value: '07', label: 'July' },
-                              { value: '08', label: 'August' },
-                              { value: '09', label: 'September' },
-                              { value: '10', label: 'October' },
-                              { value: '11', label: 'November' },
-                              { value: '12', label: 'December' }
-                            ].map((m) => (
-                              <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-
-                        <Select
-                          value={applicationData.returnDate ? applicationData.returnDate.split('-')[0] : ''}
-                          onValueChange={(year) => {
-                            const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                            const month = parts[1]; const day = parts[2];
-                            handleInputChange("returnDate", `${year}-${month}-${day}`);
-                          }}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Year" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
-                              <SelectItem key={y} value={y}>{y}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label>Date of Birth *</Label>
-                      <div className="grid grid-cols-3 gap-2">
-                        <Select
-                          value={applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-')[2] : ''}
-                          onValueChange={(day) => {
-                            const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                            const year = parts[0]; const month = parts[1];
-                            handleInputChange("dateOfBirth", `${year}-${month}-${day.padStart(2, '0')}`);
-                          }}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Day" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
-                              <SelectItem key={d} value={d}>{d}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-
-                        <Select
-                          value={applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-')[1] : ''}
-                          onValueChange={(month) => {
-                            const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                            const year = parts[0]; const day = parts[2];
-                            handleInputChange("dateOfBirth", `${year}-${month.padStart(2, '0')}-${day}`);
-                          }}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Month" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {[
-                              { value: '01', label: 'January' },
-                              { value: '02', label: 'February' },
-                              { value: '03', label: 'March' },
-                              { value: '04', label: 'April' },
-                              { value: '05', label: 'May' },
-                              { value: '06', label: 'June' },
-                              { value: '07', label: 'July' },
-                              { value: '08', label: 'August' },
-                              { value: '09', label: 'September' },
-                              { value: '10', label: 'October' },
-                              { value: '11', label: 'November' },
-                              { value: '12', label: 'December' }
-                            ].map((m) => (
-                              <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-
-                        <Select
-                          value={applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-')[0] : ''}
-                          onValueChange={(year) => {
-                            const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                            const month = parts[1]; const day = parts[2];
-                            handleInputChange("dateOfBirth", `${year}-${month}-${day}`);
-                          }}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Year" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Array.from({ length: 80 }, (_, i) => (new Date().getFullYear() - i).toString()).map((y) => (
-                              <SelectItem key={y} value={y}>{y}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Parent ID Photos for Under 18 */}
-                  {(() => {
-                    if (!applicationData.dateOfBirth) return null;
-                    
-                    const birthDate = new Date(applicationData.dateOfBirth);
-                    const today = new Date();
-                    const age = today.getFullYear() - birthDate.getFullYear();
-                    const monthDiff = today.getMonth() - birthDate.getMonth();
-                    const actualAge = age - (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate()) ? 1 : 0);
-                    
-                    if (actualAge >= 18) return null;
-                    
-                    return (
-                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 sm:p-6 col-span-1 sm:col-span-2">
-                        <h4 className="font-semibold mb-3 sm:mb-4 text-orange-800 flex items-start space-x-2">
-                          <span className="text-lg">🔒</span>
-                          <span className="text-sm sm:text-base">18 Yaş Altı - Ebeveyn Kimlik Fotoğrafları Gerekli</span>
-                        </h4>
-                        <p className="text-xs sm:text-sm text-gray-700 mb-3 sm:mb-4">
-                          18 yaş altı başvurular için anne ve babanın kimlik kartı fotoğraflarını yükleyiniz.
-                        </p>
-                        <div>
-                          <Label htmlFor="parentIds" className="text-sm sm:text-base">Anne ve Baba Kimlik Fotoğrafları *</Label>
-                          <Input
-                            id="parentIds"
-                            type="file"
-                            multiple
-                            accept="image/*"
-                            onChange={(e) => {
-                              const files = Array.from(e.target.files || []);
-                              setParentIdPhotos(files);
-                            }}
-                            className="mt-2 text-sm"
-                            required
-                          />
-                          <p className="text-xs text-gray-500 mt-2">
-                            Anne ve babanın kimlik kartlarının ön yüzlerini yükleyiniz (JPG, PNG formatında)
-                          </p>
-                        </div>
-                      </div>
-                    );
-                  })()}
-                  
-                  <div className="bg-gray-50 rounded-lg p-4 sm:p-6 border border-gray-200 col-span-1 sm:col-span-2">
-                    <h4 className="font-semibold mb-3 sm:mb-4 text-gray-900 flex items-center space-x-2">
-                      <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-red-600" />
-                      <span className="text-sm sm:text-base">Insurance Summary</span>
-                    </h4>
-                    <div className="space-y-2 sm:space-y-3">
-                      <div className="flex justify-between py-2">
-                        <span className="text-gray-700 font-medium text-sm sm:text-base">{selectedProduct.name}</span>
-                        <span className="font-semibold text-red-600 text-sm sm:text-base">${selectedProduct.price}</span>
-                      </div>
-                      <div className="border-t pt-2 sm:pt-3 mt-2 sm:mt-3 border-gray-300">
-                        <div className="flex justify-between font-bold">
-                          <span className="text-gray-900 text-sm sm:text-base">Total Premium</span>
-                          <span className="text-red-600 text-lg sm:text-xl">${selectedProduct.price}</span>
-                        </div>
-                      </div>
-                      <div className="mt-2 sm:mt-3 text-xs text-gray-500 space-y-1">
-                        <p>• Medical coverage up to $100,000</p>
-                        <p>• 24/7 emergency assistance</p>
-                        <p>• Trip cancellation protection</p>
-                        <p>• Lost baggage coverage</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-red-600 hover:bg-red-700 text-white py-4 text-base md:text-lg font-semibold transition-all duration-200 hover:shadow-lg disabled:opacity-50"
-                    disabled={createApplicationMutation.isPending}
-                  >
-                    {createApplicationMutation.isPending ? (
-                      <div className="flex items-center justify-center space-x-2">
-                        <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
-                        <span>Processing...</span>
-                      </div>
-                    ) : (
-                      "Complete Insurance Purchase"
-                    )}
-                  </Button>
-                </form>
+                  <Label htmlFor="firstName">First Name *</Label>
+                  <Input
+                    id="firstName"
+                    type="text"
+                    value={applicationData.firstName}
+                    onChange={(e) => handleInputChange("firstName", e.target.value)}
+                    placeholder="Enter your first name"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="lastName">Last Name *</Label>
+                  <Input
+                    id="lastName"  
+                    type="text"
+                    value={applicationData.lastName}
+                    onChange={(e) => handleInputChange("lastName", e.target.value)}
+                    placeholder="Enter your last name"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="email">Email Address *</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={applicationData.email}
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phone">Phone Number *</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={applicationData.phone}
+                    onChange={(e) => handleInputChange("phone", e.target.value)}
+                    placeholder="Enter your phone number"
+                    required
+                  />
+                </div>
               </div>
-            </div>
+
+              {/* Travel Dates */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <Label>Travel Date *</Label>
+                  <Input
+                    type="date"
+                    value={applicationData.travelDate}
+                    onChange={(e) => handleInputChange("travelDate", e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <Label>Return Date *</Label>
+                  <Input
+                    type="date"
+                    value={applicationData.returnDate}
+                    onChange={(e) => handleInputChange("returnDate", e.target.value)}  
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Date of Birth */}
+              <div>
+                <Label>Date of Birth *</Label>
+                <Input
+                  type="date"
+                  value={applicationData.dateOfBirth}
+                  onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Payment Summary */}
+              {selectedProduct && (
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Summary</h3>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span>Selected Plan:</span>
+                      <span className="font-semibold">{selectedProduct.name}</span>
+                    </div>
+                    <div className="flex justify-between text-xl font-bold text-blue-600">
+                      <span>Total Amount:</span>
+                      <span>${selectedProduct.price} USD</span>
+                    </div>
+                  </div>
+                  <div className="mt-4 text-xs text-gray-500 space-y-1">
+                    <p>• Medical coverage up to $100,000</p>
+                    <p>• 24/7 emergency assistance</p>
+                    <p>• Trip cancellation protection</p>
+                    <p>• Lost baggage coverage</p>
+                  </div>
+                </div>
+              )}
+              
+              <Button 
+                type="submit" 
+                className="w-full bg-red-600 hover:bg-red-700 text-white py-4 text-base md:text-lg font-semibold transition-all duration-200 hover:shadow-lg disabled:opacity-50"
+                disabled={createApplicationMutation.isPending}
+              >
+                {createApplicationMutation.isPending ? (
+                  <div className="flex items-center justify-center space-x-2">
+                    <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
+                    <span>Processing...</span>
+                  </div>
+                ) : (
+                  `Pay $${selectedProduct?.price || '0'}.00 - Complete Purchase`
+                )}
+              </Button>
+            </form>
           </div>
-        </section>
+        </div>
       </main>
 
       <Footer />
@@ -773,7 +487,6 @@ export default function Insurance() {
           orderId={currentOrderId}
           onRetry={() => {
             setShowRetry(false);
-            // Retry the payment creation
             createApplicationMutation.mutate();
           }}
         />
