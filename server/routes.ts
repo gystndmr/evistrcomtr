@@ -996,7 +996,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         orderRef: generateProperOrderRef(), // Clean reference like your .NET project
         amount: amount, // Keep as number like your successful transactions
         currency: "USD", // Fixed currency matching your success
-        orderDescription: "VIZE BASVURU", // Match your .NET project description format
+        orderDescription: finalDescription || "VIZE BASVURU", // Use provided description or default to visa
         cancelUrl: `${baseUrl}/payment/cancel`,
         callbackUrl: `${baseUrl}/api/payment/callback`,
         notificationUrl: `${baseUrl}/api/payment/callback`,
