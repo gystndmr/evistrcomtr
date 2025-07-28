@@ -182,6 +182,11 @@ export default function Insurance() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('=== FORM SUBMISSION DEBUG V3 ===');
+    console.log('Current applicationData:', applicationData);
+    console.log('selectedProduct:', selectedProduct);
+    console.log('Form validation starting...');
+    
     // Form validation
     if (!selectedProduct) {
       toast({
@@ -238,6 +243,7 @@ export default function Insurance() {
     };
 
     if (!isValidDate(applicationData.travelDate)) {
+      console.log('VALIDATION FAILED: Travel date invalid:', applicationData.travelDate);
       toast({
         title: "Travel Date Required",
         description: "Please select all travel date fields (day, month, year)",
@@ -278,6 +284,7 @@ export default function Insurance() {
     }
 
     if (!isValidDate(applicationData.dateOfBirth)) {
+      console.log('VALIDATION FAILED: Date of birth invalid:', applicationData.dateOfBirth);
       toast({
         title: "Date of Birth Required",
         description: "Please select all birth date fields (day, month, year)",
@@ -305,6 +312,7 @@ export default function Insurance() {
       return;
     }
 
+    console.log('ALL VALIDATIONS PASSED - SUBMITTING FORM');
     createApplicationMutation.mutate();
   };
 
@@ -324,7 +332,7 @@ export default function Insurance() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50" key={`insurance-page-${Date.now()}`}>
       <Header />
       
       {/* Simple Header */}
@@ -341,7 +349,7 @@ export default function Insurance() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-xl shadow-lg border border-gray-200">
           <div className="p-8">
-            <form onSubmit={handleSubmit} className="space-y-8" noValidate>
+            <form onSubmit={handleSubmit} className="space-y-8" noValidate key="insurance-form-v2">
               
               {/* Insurance Plan Selection */}
               <div>
