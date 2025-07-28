@@ -26,9 +26,10 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   console.log('🔧 Subject:', options.subject);
   
   // Use verified email address from environment - fallback to working verified address
+  const verifiedEmail = process.env.VERIFIED_EMAIL_ADDRESS || "info@visatanzania.org";
   const emailOptions = {
     ...options,
-    from: "info@visatanzania.org" // This is the only verified address that works
+    from: verifiedEmail
   };
   
   console.log('🔧 From address final:', emailOptions.from);
