@@ -228,19 +228,28 @@ export default function Insurance() {
       return;
     }
     
-    if (!applicationData.travelDate) {
+    // Validate date completeness - check for valid YYYY-MM-DD format
+    const isValidDate = (dateStr: string) => {
+      if (!dateStr) return false;
+      const parts = dateStr.split('-');
+      if (parts.length !== 3) return false;
+      const [year, month, day] = parts;
+      return year && year.length === 4 && month && month.length === 2 && day && day.length === 2;
+    };
+
+    if (!isValidDate(applicationData.travelDate)) {
       toast({
         title: "Travel Date Required",
-        description: "Please enter your travel date",
+        description: "Please select all travel date fields (day, month, year)",
         variant: "destructive",
       });
       return;
     }
     
-    if (!applicationData.returnDate) {
+    if (!isValidDate(applicationData.returnDate)) {
       toast({
-        title: "Return Date Required",
-        description: "Please enter your return date",
+        title: "Return Date Required", 
+        description: "Please select all return date fields (day, month, year)",
         variant: "destructive",
       });
       return;
@@ -249,6 +258,15 @@ export default function Insurance() {
     // Date validation - return date must be after travel date
     const travelDate = new Date(applicationData.travelDate);
     const returnDate = new Date(applicationData.returnDate);
+    
+    if (isNaN(travelDate.getTime()) || isNaN(returnDate.getTime())) {
+      toast({
+        title: "Invalid Date Format",
+        description: "Please check your date selections",
+        variant: "destructive",
+      });
+      return;
+    }
     
     if (returnDate <= travelDate) {
       toast({
@@ -259,10 +277,10 @@ export default function Insurance() {
       return;
     }
 
-    if (!applicationData.dateOfBirth || applicationData.dateOfBirth === '1990-01-01') {
+    if (!isValidDate(applicationData.dateOfBirth)) {
       toast({
         title: "Date of Birth Required",
-        description: "Please select your date of birth",
+        description: "Please select all birth date fields (day, month, year)",
         variant: "destructive",
       });
       return;
@@ -408,8 +426,9 @@ export default function Insurance() {
                       value={applicationData.travelDate ? applicationData.travelDate.split('-')[2] : ''}
                       onValueChange={(day) => {
                         const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const [year, month] = parts;
-                        handleInputChange("travelDate", `${year}-${month}-${day.padStart(2, '0')}`);
+                        const year = parts[0] || new Date().getFullYear().toString();
+                        const month = parts[1] || '01';
+                        handleInputChange("travelDate", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                       }}
                     >
                       <SelectTrigger>
@@ -426,8 +445,9 @@ export default function Insurance() {
                       value={applicationData.travelDate ? applicationData.travelDate.split('-')[1] : ''}
                       onValueChange={(month) => {
                         const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const [year, , day] = parts;
-                        handleInputChange("travelDate", `${year}-${month.padStart(2, '0')}-${day}`);
+                        const year = parts[0] || new Date().getFullYear().toString();
+                        const day = parts[2] || '01';
+                        handleInputChange("travelDate", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                       }}
                     >
                       <SelectTrigger>
@@ -457,8 +477,9 @@ export default function Insurance() {
                       value={applicationData.travelDate ? applicationData.travelDate.split('-')[0] : ''}
                       onValueChange={(year) => {
                         const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const [, month, day] = parts;
-                        handleInputChange("travelDate", `${year}-${month}-${day}`);
+                        const month = parts[1] || '01';
+                        const day = parts[2] || '01';
+                        handleInputChange("travelDate", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                       }}
                     >
                       <SelectTrigger>
@@ -479,8 +500,9 @@ export default function Insurance() {
                       value={applicationData.returnDate ? applicationData.returnDate.split('-')[2] : ''}
                       onValueChange={(day) => {
                         const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const [year, month] = parts;
-                        handleInputChange("returnDate", `${year}-${month}-${day.padStart(2, '0')}`);
+                        const year = parts[0] || new Date().getFullYear().toString();
+                        const month = parts[1] || '01';
+                        handleInputChange("returnDate", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                       }}
                     >
                       <SelectTrigger>
@@ -497,8 +519,9 @@ export default function Insurance() {
                       value={applicationData.returnDate ? applicationData.returnDate.split('-')[1] : ''}
                       onValueChange={(month) => {
                         const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const [year, , day] = parts;
-                        handleInputChange("returnDate", `${year}-${month.padStart(2, '0')}-${day}`);
+                        const year = parts[0] || new Date().getFullYear().toString();
+                        const day = parts[2] || '01';
+                        handleInputChange("returnDate", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                       }}
                     >
                       <SelectTrigger>
@@ -528,8 +551,9 @@ export default function Insurance() {
                       value={applicationData.returnDate ? applicationData.returnDate.split('-')[0] : ''}
                       onValueChange={(year) => {
                         const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const [, month, day] = parts;
-                        handleInputChange("returnDate", `${year}-${month}-${day}`);
+                        const month = parts[1] || '01';
+                        const day = parts[2] || '01';
+                        handleInputChange("returnDate", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                       }}
                     >
                       <SelectTrigger>
@@ -553,8 +577,9 @@ export default function Insurance() {
                     value={applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-')[2] : ''}
                     onValueChange={(day) => {
                       const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : ['1990', '01', '01'];
-                      const [year, month] = parts;
-                      handleInputChange("dateOfBirth", `${year}-${month}-${day.padStart(2, '0')}`);
+                      const year = parts[0] || '1990';
+                      const month = parts[1] || '01';
+                      handleInputChange("dateOfBirth", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                     }}
                   >
                     <SelectTrigger>
@@ -571,8 +596,9 @@ export default function Insurance() {
                     value={applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-')[1] : ''}
                     onValueChange={(month) => {
                       const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : ['1990', '01', '01'];
-                      const [year, , day] = parts;
-                      handleInputChange("dateOfBirth", `${year}-${month.padStart(2, '0')}-${day}`);
+                      const year = parts[0] || '1990';
+                      const day = parts[2] || '01';
+                      handleInputChange("dateOfBirth", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                     }}
                   >
                     <SelectTrigger>
@@ -602,8 +628,9 @@ export default function Insurance() {
                     value={applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-')[0] : ''}
                     onValueChange={(year) => {
                       const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : ['1990', '01', '01'];
-                      const [, month, day] = parts;
-                      handleInputChange("dateOfBirth", `${year}-${month}-${day}`);
+                      const month = parts[1] || '01';
+                      const day = parts[2] || '01';
+                      handleInputChange("dateOfBirth", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                     }}
                   >
                     <SelectTrigger>
