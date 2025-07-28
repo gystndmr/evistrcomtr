@@ -70,6 +70,6 @@ app.use((req, res, next) => {
     log(`serving on port ${port}`);
   });
 
-  // Initialize WebSocket chat system
-  new ChatManager(server);
+  // Initialize WebSocket chat system (disabled for debugging)
+  // new ChatManager(server);
 })();

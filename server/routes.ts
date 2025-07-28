@@ -236,7 +236,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await sendEmail({
             to: updatedApplication.email,
-            from: 'info@visatanzania.org',
+            from: '"info@visatanzania.org"',
             subject: emailContent.subject,
             html: emailContent.html,
             text: emailContent.text,
@@ -296,7 +296,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await sendEmail({
             to: updatedApplication.email,
-            from: 'info@visatanzania.org',
+            from: '"info@visatanzania.org"',
             subject: emailContent.subject,
             html: emailContent.html,
             text: emailContent.text,
@@ -1205,6 +1205,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error sending chat reply:", error);
       res.status(500).json({ message: "Failed to send chat reply" });
+    }
+  });
+
+  // Test email endpoint
+  app.post("/api/test/email", async (req, res) => {
+    try {
+      const { to, subject, message } = req.body;
+      
+      console.log('🔧 Test email request received');
+      console.log('🔧 To:', to);
+      console.log('🔧 Subject:', subject);
+      
+      await sendEmail({
+        to: to || 'guneskadir171@gmail.com',
+        from: "info@visatanzania.org",
+        subject: subject || "Test Email",
+        html: `
+          <div style="font-family: Arial, sans-serif; padding: 20px;">
+            <h2>Test Email</h2>
+            <p>${message || 'Bu bir test emailidir.'}</p>
+            <p>Gönderim zamanı: ${new Date().toLocaleString('tr-TR')}</p>
+          </div>
+        `,
+        text: message || 'Test email message'
+      });
+      
+      res.json({ success: true, message: 'Test email sent successfully' });
+    } catch (error) {
+      console.error('❌ Test email error:', error);
+      res.status(500).json({ error: 'Failed to send test email', details: error.message });
     }
   });
 

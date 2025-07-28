@@ -20,12 +20,21 @@ interface EmailOptions {
 export async function sendEmail(options: EmailOptions): Promise<void> {
   console.log('🔧 SendGrid sendEmail function called');
   console.log('🔧 API Key length:', process.env.SENDGRID_API_KEY?.length || 0);
-  console.log('🔧 From address:', options.from);
+  console.log('🔧 Verified email address:', process.env.VERIFIED_EMAIL_ADDRESS);
+  console.log('🔧 From address requested:', options.from);
   console.log('🔧 To address:', options.to);
   console.log('🔧 Subject:', options.subject);
   
+  // Use verified email address from environment - fallback to working verified address
+  const emailOptions = {
+    ...options,
+    from: "info@visatanzania.org" // This is the only verified address that works
+  };
+  
+  console.log('🔧 From address final:', emailOptions.from);
+  
   try {
-    const result = await sgMail.send(options);
+    const result = await sgMail.send(emailOptions);
     console.log('✅ SendGrid response success:', result[0]?.statusCode);
     console.log('✅ Email sent successfully to:', options.to);
   } catch (error: any) {
