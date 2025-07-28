@@ -1158,51 +1158,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Payment success page handler
   app.get("/payment/success", async (req, res) => {
+    console.log('🎯 /payment/success route hit');
+    console.log('🎯 Query params:', req.query);
+    console.log('🎯 Headers:', req.headers);
+    
     try {
-      const { payload } = req.query;
+      const { payload, transaction, order, status } = req.query;
       
+      // Direct GPay redirect with params (most common case)
+      if (transaction && order) {
+        console.log('🎯 Direct GPay redirect detected');
+        const paymentStatus = status === 'success' || status === 'completed' ? 'success' : 'error';
+        return res.redirect(`/payment-success?payment=${paymentStatus}&transaction=${transaction}&order=${order}`);
+      }
+      
+      // Payload-based callback (fallback)
       if (!payload) {
+        console.log('🎯 No payload or direct params - showing error');
         return res.redirect(`/payment-success?payment=error&message=Missing payment data`);
       }
 
       const paymentData = gPayService.parseCallback(payload as string);
       
       if (!paymentData) {
+        console.log('🎯 Invalid payload format');
         return res.redirect(`/payment-success?payment=error&message=Invalid payment data`);
       }
 
-      console.log("Payment success callback:", paymentData);
+      console.log("🎯 Payment success callback:", paymentData);
       
-      const { status, transactionId, orderRef } = paymentData;
+      const { status: payloadStatus, transactionId, orderRef } = paymentData;
       
-      if (status === 'completed' || status === 'successful' || status === 'approved') {
+      if (payloadStatus === 'completed' || payloadStatus === 'successful' || payloadStatus === 'approved') {
         res.redirect(`/payment-success?payment=success&transaction=${transactionId}&order=${orderRef}`);
       } else {
         res.redirect(`/payment-success?payment=error&transaction=${transactionId}&order=${orderRef}`);
       }
       
     } catch (error) {
-      console.error("Payment success callback error:", error);
+      console.error("🎯 Payment success callback error:", error);
       res.redirect(`/payment-success?payment=error&message=Processing error`);
     }
   });
 
   // Payment cancel page handler
   app.get("/payment/cancel", async (req, res) => {
+    console.log('🚫 /payment/cancel route hit');
+    console.log('🚫 Query params:', req.query);
+    
     try {
-      const { payload } = req.query;
+      const { payload, transaction, order } = req.query;
+      
+      // Direct GPay redirect with params
+      if (transaction && order) {
+        console.log('🚫 Direct GPay cancel redirect detected');
+        return res.redirect(`/payment-success?payment=cancelled&transaction=${transaction}&order=${order}`);
+      }
       
       if (!payload) {
+        console.log('🚫 No payload - showing cancel message');
         return res.redirect(`/payment-success?payment=cancelled&message=Payment cancelled`);
       }
 
       const paymentData = gPayService.parseCallback(payload as string);
       
       if (!paymentData) {
+        console.log('🚫 Invalid payload format');
         return res.redirect(`/payment-success?payment=cancelled&message=Payment cancelled`);
       }
 
-      console.log("Payment cancel callback:", paymentData);
+      console.log("🚫 Payment cancel callback:", paymentData);
       
       const { transactionId, orderRef } = paymentData;
       

@@ -39,7 +39,9 @@ function Router() {
       <Route path="/status" component={Status} />
       <Route path="/admin" component={Admin} />
       <Route path="/payment-success" component={PaymentSuccess} />
+      <Route path="/payment/success" component={PaymentSuccess} />
       <Route path="/payment-cancel" component={PaymentCancel} />
+      <Route path="/payment/cancel" component={PaymentCancel} />
       <Route path="/payment-troubleshoot" component={PaymentTroubleshoot} />
       <Route path="/mock-gpay-payment" component={MockGPayPayment} />
       <Route path="/debug-payment" component={DebugPayment} />
