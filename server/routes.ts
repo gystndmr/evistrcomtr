@@ -125,26 +125,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create insurance application
-  app.post("/api/insurance/applications", async (req, res) => {
+  // Create insurance application (main endpoint)
+  app.post("/api/insurance-applications", async (req, res) => {
     try {
       console.log("=== INSURANCE APPLICATION DEBUG ===");
-      console.log("Raw dateOfBirth:", req.body.dateOfBirth, typeof req.body.dateOfBirth);
-      console.log("Raw totalAmount:", req.body.totalAmount, typeof req.body.totalAmount);
+      console.log("Full request body:", JSON.stringify(req.body, null, 2));
+      console.log("travelStartDate:", req.body.travelStartDate, typeof req.body.travelStartDate);
+      console.log("travelEndDate:", req.body.travelEndDate, typeof req.body.travelEndDate);
       
       // Convert dates and amounts to proper format for schema validation
       const bodyWithDates = {
         ...req.body,
         applicationNumber: generateApplicationNumber(),
         destination: req.body.destination || "Turkey", // Default destination
-        travelDate: req.body.travelDate ? new Date(req.body.travelDate) : undefined,
-        returnDate: req.body.returnDate ? new Date(req.body.returnDate) : undefined,
+        travelDate: req.body.travelStartDate ? new Date(req.body.travelStartDate) : new Date(),
+        returnDate: req.body.travelEndDate ? new Date(req.body.travelEndDate) : new Date(),
         dateOfBirth: req.body.dateOfBirth, // Keep as string
         totalAmount: req.body.totalAmount, // Keep original value first
       };
       
-      console.log("After processing - dateOfBirth:", bodyWithDates.dateOfBirth, typeof bodyWithDates.dateOfBirth);
-      console.log("After processing - totalAmount:", bodyWithDates.totalAmount, typeof bodyWithDates.totalAmount);
+      console.log("After processing - travelDate:", bodyWithDates.travelDate, typeof bodyWithDates.travelDate);
+      console.log("After processing - returnDate:", bodyWithDates.returnDate, typeof bodyWithDates.returnDate);
 
       const validatedData = insertInsuranceApplicationSchema.parse(bodyWithDates);
 
