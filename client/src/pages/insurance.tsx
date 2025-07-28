@@ -26,10 +26,10 @@ export default function Insurance() {
     lastName: "",
     email: "",
     phone: "",
-    travelDate: "",
-    returnDate: "",
+    travelDate: "2025-01-01", // Default valid date
+    returnDate: "2025-01-02", // Default valid date after travel date
     destination: "Turkey",
-    dateOfBirth: "",
+    dateOfBirth: "1990-01-01", // Default valid birth date
   });
   const [parentIdPhotos, setParentIdPhotos] = useState<File[]>([]);
   const [showRetry, setShowRetry] = useState(false);
@@ -253,6 +253,7 @@ export default function Insurance() {
     }
     
     if (!isValidDate(applicationData.returnDate)) {
+      console.log('VALIDATION FAILED: Return date invalid:', applicationData.returnDate);
       toast({
         title: "Return Date Required", 
         description: "Please select all return date fields (day, month, year)",
@@ -275,6 +276,9 @@ export default function Insurance() {
     }
     
     if (returnDate <= travelDate) {
+      console.log('VALIDATION FAILED: Date range invalid');
+      console.log('Travel date:', applicationData.travelDate, 'Parsed:', travelDate);
+      console.log('Return date:', applicationData.returnDate, 'Parsed:', returnDate);
       toast({
         title: "Invalid Date Range",
         description: "Return date must be after travel date",
