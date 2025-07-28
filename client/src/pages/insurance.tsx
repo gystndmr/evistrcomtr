@@ -259,10 +259,10 @@ export default function Insurance() {
       return;
     }
 
-    if (!applicationData.dateOfBirth) {
+    if (!applicationData.dateOfBirth || applicationData.dateOfBirth === '1990-01-01') {
       toast({
         title: "Date of Birth Required",
-        description: "Please enter your date of birth",
+        description: "Please select your date of birth",
         variant: "destructive",
       });
       return;
@@ -403,36 +403,219 @@ export default function Insurance() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <Label>Travel Date *</Label>
-                  <Input
-                    type="date"
-                    value={applicationData.travelDate}
-                    onChange={(e) => handleInputChange("travelDate", e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
-                    pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
-                  />
+                  <div className="grid grid-cols-3 gap-2">
+                    <Select
+                      value={applicationData.travelDate ? applicationData.travelDate.split('-')[2] : ''}
+                      onValueChange={(day) => {
+                        const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                        const [year, month] = parts;
+                        handleInputChange("travelDate", `${year}-${month}-${day.padStart(2, '0')}`);
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Day" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                          <SelectItem key={d} value={d}>{d}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <Select
+                      value={applicationData.travelDate ? applicationData.travelDate.split('-')[1] : ''}
+                      onValueChange={(month) => {
+                        const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                        const [year, , day] = parts;
+                        handleInputChange("travelDate", `${year}-${month.padStart(2, '0')}-${day}`);
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Month" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[
+                          { value: '01', label: 'January' },
+                          { value: '02', label: 'February' },
+                          { value: '03', label: 'March' },
+                          { value: '04', label: 'April' },
+                          { value: '05', label: 'May' },
+                          { value: '06', label: 'June' },
+                          { value: '07', label: 'July' },
+                          { value: '08', label: 'August' },
+                          { value: '09', label: 'September' },
+                          { value: '10', label: 'October' },
+                          { value: '11', label: 'November' },
+                          { value: '12', label: 'December' }
+                        ].map((m) => (
+                          <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <Select
+                      value={applicationData.travelDate ? applicationData.travelDate.split('-')[0] : ''}
+                      onValueChange={(year) => {
+                        const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                        const [, month, day] = parts;
+                        handleInputChange("travelDate", `${year}-${month}-${day}`);
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
+                          <SelectItem key={y} value={y}>{y}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 <div>
                   <Label>Return Date *</Label>
-                  <Input
-                    type="date"
-                    value={applicationData.returnDate}
-                    onChange={(e) => handleInputChange("returnDate", e.target.value)}
-                    min={applicationData.travelDate || new Date().toISOString().split('T')[0]}
-                    pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
-                  />
+                  <div className="grid grid-cols-3 gap-2">
+                    <Select
+                      value={applicationData.returnDate ? applicationData.returnDate.split('-')[2] : ''}
+                      onValueChange={(day) => {
+                        const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                        const [year, month] = parts;
+                        handleInputChange("returnDate", `${year}-${month}-${day.padStart(2, '0')}`);
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Day" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                          <SelectItem key={d} value={d}>{d}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <Select
+                      value={applicationData.returnDate ? applicationData.returnDate.split('-')[1] : ''}
+                      onValueChange={(month) => {
+                        const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                        const [year, , day] = parts;
+                        handleInputChange("returnDate", `${year}-${month.padStart(2, '0')}-${day}`);
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Month" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[
+                          { value: '01', label: 'January' },
+                          { value: '02', label: 'February' },
+                          { value: '03', label: 'March' },
+                          { value: '04', label: 'April' },
+                          { value: '05', label: 'May' },
+                          { value: '06', label: 'June' },
+                          { value: '07', label: 'July' },
+                          { value: '08', label: 'August' },
+                          { value: '09', label: 'September' },
+                          { value: '10', label: 'October' },
+                          { value: '11', label: 'November' },
+                          { value: '12', label: 'December' }
+                        ].map((m) => (
+                          <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <Select
+                      value={applicationData.returnDate ? applicationData.returnDate.split('-')[0] : ''}
+                      onValueChange={(year) => {
+                        const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                        const [, month, day] = parts;
+                        handleInputChange("returnDate", `${year}-${month}-${day}`);
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
+                          <SelectItem key={y} value={y}>{y}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
 
               {/* Date of Birth */}
               <div>
                 <Label>Date of Birth *</Label>
-                <Input
-                  type="date"
-                  value={applicationData.dateOfBirth}
-                  onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
-                  max={new Date(Date.now() - 18*365*24*60*60*1000).toISOString().split('T')[0]}
-                  pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
-                />
+                <div className="grid grid-cols-3 gap-2">
+                  <Select
+                    value={applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-')[2] : ''}
+                    onValueChange={(day) => {
+                      const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : ['1990', '01', '01'];
+                      const [year, month] = parts;
+                      handleInputChange("dateOfBirth", `${year}-${month}-${day.padStart(2, '0')}`);
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Day" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                        <SelectItem key={d} value={d}>{d}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <Select
+                    value={applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-')[1] : ''}
+                    onValueChange={(month) => {
+                      const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : ['1990', '01', '01'];
+                      const [year, , day] = parts;
+                      handleInputChange("dateOfBirth", `${year}-${month.padStart(2, '0')}-${day}`);
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[
+                        { value: '01', label: 'January' },
+                        { value: '02', label: 'February' },
+                        { value: '03', label: 'March' },
+                        { value: '04', label: 'April' },
+                        { value: '05', label: 'May' },
+                        { value: '06', label: 'June' },
+                        { value: '07', label: 'July' },
+                        { value: '08', label: 'August' },
+                        { value: '09', label: 'September' },
+                        { value: '10', label: 'October' },
+                        { value: '11', label: 'November' },
+                        { value: '12', label: 'December' }
+                      ].map((m) => (
+                        <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <Select
+                    value={applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-')[0] : ''}
+                    onValueChange={(year) => {
+                      const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : ['1990', '01', '01'];
+                      const [, month, day] = parts;
+                      handleInputChange("dateOfBirth", `${year}-${month}-${day}`);
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Year" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Array.from({ length: 80 }, (_, i) => (new Date().getFullYear() - i).toString()).map((y) => (
+                        <SelectItem key={y} value={y}>{y}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               {/* Payment Summary */}
