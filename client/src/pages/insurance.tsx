@@ -30,8 +30,8 @@ export default function Insurance() {
     lastName: "",
     email: "",
     phone: "",
-    travelStartDate: "",
-    travelEndDate: "",
+    travelDate: "",
+    returnDate: "",
     destination: "Turkey",
     dateOfBirth: "",
   });
@@ -70,8 +70,8 @@ export default function Insurance() {
       if (!selectedProduct) throw new Error("No product selected");
       
       // Calculate trip duration in days
-      const travelDate = new Date(applicationData.travelStartDate);
-      const returnDate = new Date(applicationData.travelEndDate);
+      const travelDate = new Date(applicationData.travelDate);
+      const returnDate = new Date(applicationData.returnDate);
       const diffTime = Math.abs(returnDate.getTime() - travelDate.getTime());
       const tripDurationDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       
@@ -92,8 +92,8 @@ export default function Insurance() {
         lastName: applicationData.lastName,
         email: applicationData.email,
         phone: applicationData.phone,
-        travelDate: applicationData.travelStartDate,
-        returnDate: applicationData.travelEndDate,
+        travelDate: applicationData.travelDate,
+        returnDate: applicationData.returnDate,
         destination: applicationData.destination,
         productId: selectedProduct.id,
         totalAmount: selectedProduct.price,
@@ -278,7 +278,7 @@ export default function Insurance() {
       return;
     }
     
-    if (!applicationData.travelStartDate) {
+    if (!applicationData.travelDate) {
       toast({
         title: "Travel Date Required",
         description: "Please enter your travel date",
@@ -287,7 +287,7 @@ export default function Insurance() {
       return;
     }
     
-    if (!applicationData.travelEndDate) {
+    if (!applicationData.returnDate) {
       toast({
         title: "Return Date Required",
         description: "Please enter your return date",
@@ -297,8 +297,8 @@ export default function Insurance() {
     }
     
     // Date validation - return date must be after travel date
-    const travelDate = new Date(applicationData.travelStartDate);
-    const returnDate = new Date(applicationData.travelEndDate);
+    const travelDate = new Date(applicationData.travelDate);
+    const returnDate = new Date(applicationData.returnDate);
     
     if (returnDate <= travelDate) {
       toast({
@@ -462,11 +462,11 @@ export default function Insurance() {
                       <Label>Travel Date *</Label>
                       <div className="grid grid-cols-3 gap-2">
                         <Select
-                          value={applicationData.travelStartDate ? applicationData.travelStartDate.split('-')[2] : ''}
+                          value={applicationData.travelDate ? applicationData.travelDate.split('-')[2] : ''}
                           onValueChange={(day) => {
-                            const parts = applicationData.travelStartDate ? applicationData.travelStartDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                            const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                             const year = parts[0]; const month = parts[1];
-                            handleInputChange("travelStartDate", `${year}-${month}-${day.padStart(2, '0')}`);
+                            handleInputChange("travelDate", `${year}-${month}-${day.padStart(2, '0')}`);
                           }}
                         >
                           <SelectTrigger>
@@ -480,11 +480,11 @@ export default function Insurance() {
                         </Select>
 
                         <Select
-                          value={applicationData.travelStartDate ? applicationData.travelStartDate.split('-')[1] : ''}
+                          value={applicationData.travelDate ? applicationData.travelDate.split('-')[1] : ''}
                           onValueChange={(month) => {
-                            const parts = applicationData.travelStartDate ? applicationData.travelStartDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                            const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                             const year = parts[0]; const day = parts[2];
-                            handleInputChange("travelStartDate", `${year}-${month.padStart(2, '0')}-${day}`);
+                            handleInputChange("travelDate", `${year}-${month.padStart(2, '0')}-${day}`);
                           }}
                         >
                           <SelectTrigger>
@@ -511,11 +511,11 @@ export default function Insurance() {
                         </Select>
 
                         <Select
-                          value={applicationData.travelStartDate ? applicationData.travelStartDate.split('-')[0] : ''}
+                          value={applicationData.travelDate ? applicationData.travelDate.split('-')[0] : ''}
                           onValueChange={(year) => {
-                            const parts = applicationData.travelStartDate ? applicationData.travelStartDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                            const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                             const month = parts[1]; const day = parts[2];
-                            handleInputChange("travelStartDate", `${year}-${month}-${day}`);
+                            handleInputChange("travelDate", `${year}-${month}-${day}`);
                           }}
                         >
                           <SelectTrigger>
@@ -534,11 +534,11 @@ export default function Insurance() {
                       <Label>Return Date *</Label>
                       <div className="grid grid-cols-3 gap-2">
                         <Select
-                          value={applicationData.travelEndDate ? applicationData.travelEndDate.split('-')[2] : ''}
+                          value={applicationData.returnDate ? applicationData.returnDate.split('-')[2] : ''}
                           onValueChange={(day) => {
-                            const parts = applicationData.travelEndDate ? applicationData.travelEndDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                            const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                             const year = parts[0]; const month = parts[1];
-                            handleInputChange("travelEndDate", `${year}-${month}-${day.padStart(2, '0')}`);
+                            handleInputChange("returnDate", `${year}-${month}-${day.padStart(2, '0')}`);
                           }}
                         >
                           <SelectTrigger>
@@ -552,11 +552,11 @@ export default function Insurance() {
                         </Select>
 
                         <Select
-                          value={applicationData.travelEndDate ? applicationData.travelEndDate.split('-')[1] : ''}
+                          value={applicationData.returnDate ? applicationData.returnDate.split('-')[1] : ''}
                           onValueChange={(month) => {
-                            const parts = applicationData.travelEndDate ? applicationData.travelEndDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                            const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                             const year = parts[0]; const day = parts[2];
-                            handleInputChange("travelEndDate", `${year}-${month.padStart(2, '0')}-${day}`);
+                            handleInputChange("returnDate", `${year}-${month.padStart(2, '0')}-${day}`);
                           }}
                         >
                           <SelectTrigger>
@@ -583,11 +583,11 @@ export default function Insurance() {
                         </Select>
 
                         <Select
-                          value={applicationData.travelEndDate ? applicationData.travelEndDate.split('-')[0] : ''}
+                          value={applicationData.returnDate ? applicationData.returnDate.split('-')[0] : ''}
                           onValueChange={(year) => {
-                            const parts = applicationData.travelEndDate ? applicationData.travelEndDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                            const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                             const month = parts[1]; const day = parts[2];
-                            handleInputChange("travelEndDate", `${year}-${month}-${day}`);
+                            handleInputChange("returnDate", `${year}-${month}-${day}`);
                           }}
                         >
                           <SelectTrigger>
