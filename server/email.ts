@@ -24,7 +24,7 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   console.log('🔧 Subject:', options.subject);
   
   // Always use verified address to prevent customer complaints
-  const verifiedEmail = "info@getvisa.tr"; // Only verified address in SendGrid
+  const verifiedEmail = "info@visatanzania.org"; // Only verified address in SendGrid
   const emailOptions = {
     ...options,
     from: verifiedEmail

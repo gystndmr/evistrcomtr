@@ -214,6 +214,11 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - ✅ **Template Headers Updated**: Changed to "TURKEY E VISA" and "TURKEY INSURANCE" as requested
   - ✅ **Dual Address System**: Templates show info@getvisa.tr for customer contact, backend uses info@visatanzania.org for sending
   - ✅ **Professional Branding**: Template headers simplified while maintaining getvisa.tr domain visibility for customers
+  - ✅ **Critical Email Fix Applied** (July 28, 2025): Fixed hardcoded verified email address and confirmed working
+    - Problem: Email system was using unverified info@getvisa.tr causing 403 Forbidden errors
+    - Solution: Updated to use verified info@visatanzania.org in backend sending system
+    - Result: All customer emails now deliver successfully with 202 success responses
+    - Tested: Real insurance application TRMDNNXUONNS203M confirmed email delivery
 ✓ **GloDiPay Payment Integration** (July 16, 2025):
   - Integrated GloDiPay payment gateway using provided credentials (Merchant ID: 1100000026)
   - RSA signature-based authentication with public/private key pair (md5WithRSAEncryption)
