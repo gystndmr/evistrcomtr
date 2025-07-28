@@ -80,6 +80,7 @@ export default function Insurance() {
 
       // First create the insurance application with mapped field names
       console.log('Making insurance application request...');
+      console.log('🔍 Frontend URL being used:', "/api/insurance-applications");
       const applicationPayload = {
         firstName: applicationData.firstName,
         lastName: applicationData.lastName,

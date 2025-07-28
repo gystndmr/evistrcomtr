@@ -193,6 +193,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // EMERGENCY FIX: Add POST route to handle wrong URL pattern
+  app.post("/api/insurance/applications", async (req, res) => {
+    console.log('🚨 WRONG URL PATTERN HIT - REDIRECTING TO CORRECT ENDPOINT');
+    console.log('🚨 Request body:', JSON.stringify(req.body, null, 2));
+    
+    // Instead of redirect, directly handle the request here to avoid redirect issues
+    try {
+      // Copy the exact logic from the correct route
+      const bodyWithDates = {
+        ...req.body,
+        applicationNumber: generateApplicationNumber(),
+        destination: req.body.destination || "Turkey",
+        travelDate: req.body.travelDate ? new Date(req.body.travelDate) : new Date(),
+        returnDate: req.body.returnDate ? new Date(req.body.returnDate) : new Date(),
+        dateOfBirth: req.body.dateOfBirth,
+        totalAmount: req.body.totalAmount,
+      };
+
+      const validatedData = insertInsuranceApplicationSchema.parse(bodyWithDates);
+      const application = await storage.createInsuranceApplication(validatedData);
+      
+      // Send email
+      try {
+        const product = application.productId ? await storage.getInsuranceProduct(application.productId) : null;
+        const productName = product ? product.name : 'Travel Insurance';
+        
+        const { generateInsuranceReceivedEmail } = await import('./email-insurance');
+        const emailContent = generateInsuranceReceivedEmail(
+          application.firstName, 
+          application.lastName, 
+          application.applicationNumber,
+          productName,
+          application
+        );
+        
+        await sendEmail({
+          to: application.email,
+          from: "info@visatanzania.org",
+          subject: emailContent.subject,
+          html: emailContent.html,
+          text: emailContent.text
+        });
+        
+        console.log(`Insurance application received email sent to ${application.email}`);
+      } catch (emailError) {
+        console.error('Failed to send insurance application received email:', emailError);
+      }
+      
+      res.status(201).json(application);
+    } catch (error) {
+      console.error("Error creating insurance application:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid application data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create insurance application" });
+    }
+  });
+
   // Get insurance application by number  
   app.get("/api/insurance/applications/:applicationNumber", async (req, res) => {
     console.log('🔍 GET INSURANCE APPLICATION BY NUMBER ROUTE HIT');
