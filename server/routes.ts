@@ -157,6 +157,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // E-posta gönderimi (sigorta başvuru alındı)
       try {
+        console.log('🔧 INSURANCE EMAIL DEBUG - Starting email process');
+        console.log('🔧 Email recipient:', application.email);
+        console.log('🔧 SendGrid API Key available:', !!process.env.SENDGRID_API_KEY);
+        console.log('🔧 SendGrid API Key length:', process.env.SENDGRID_API_KEY?.length || 0);
+        
         // Sigorta ürün bilgisini al
         const product = application.productId ? await storage.getInsuranceProduct(application.productId) : null;
         const productName = product ? product.name : 'Travel Insurance';
@@ -170,6 +175,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           application
         );
         
+        console.log('🔧 Email content generated, subject:', emailContent.subject);
+        
         await sendEmail({
           to: application.email,
           from: "info@visatanzania.org",
@@ -178,9 +185,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           text: emailContent.text
         });
         
-        console.log(`Insurance application received email sent to ${application.email}`);
+        console.log(`✅ Insurance application received email sent to ${application.email}`);
       } catch (emailError) {
-        console.error('Failed to send insurance application received email:', emailError);
+        console.error('❌ FAILED to send insurance application received email:', emailError);
+        console.error('❌ Email error details:', {
+          message: emailError?.message,
+          code: emailError?.code,
+          response: emailError?.response?.body
+        });
       }
       
       res.status(201).json(application);
@@ -214,8 +226,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validatedData = insertInsuranceApplicationSchema.parse(bodyWithDates);
       const application = await storage.createInsuranceApplication(validatedData);
       
-      // Send email
+      // Send email with enhanced debugging
       try {
+        console.log('🔧 DUPLICATE ROUTE EMAIL DEBUG - Starting email process');
+        console.log('🔧 Email recipient:', application.email);
+        console.log('🔧 SendGrid API Key available:', !!process.env.SENDGRID_API_KEY);
+        
         const product = application.productId ? await storage.getInsuranceProduct(application.productId) : null;
         const productName = product ? product.name : 'Travel Insurance';
         
@@ -228,6 +244,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           application
         );
         
+        console.log('🔧 Email content generated, subject:', emailContent.subject);
+        
         await sendEmail({
           to: application.email,
           from: "info@visatanzania.org",
@@ -236,9 +254,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           text: emailContent.text
         });
         
-        console.log(`Insurance application received email sent to ${application.email}`);
+        console.log(`✅ DUPLICATE ROUTE Insurance application received email sent to ${application.email}`);
       } catch (emailError) {
-        console.error('Failed to send insurance application received email:', emailError);
+        console.error('❌ DUPLICATE ROUTE FAILED to send insurance application received email:', emailError);
+        console.error('❌ Email error details:', {
+          message: emailError?.message,
+          code: emailError?.code,
+          response: emailError?.response?.body
+        });
       }
       
       res.status(201).json(application);
