@@ -79,7 +79,8 @@ export default function Insurance() {
         })) : null;
 
       // First create the insurance application with mapped field names
-      const applicationResponse = await apiRequest("POST", "/api/insurance-applications", {
+      console.log('Making insurance application request...');
+      const applicationPayload = {
         firstName: applicationData.firstName,
         lastName: applicationData.lastName,
         email: applicationData.email,
@@ -93,17 +94,55 @@ export default function Insurance() {
         dateOfBirth: applicationData.dateOfBirth,
         parentIdPhotos: parentIdPhotosData,
         countryOfOrigin: countryFromUrl,
+      };
+      console.log('Application payload:', applicationPayload);
+      
+      const applicationResponse = await fetch("/api/insurance-applications", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(applicationPayload),
       });
+      
+      console.log('Application response status:', applicationResponse.status);
+      console.log('Application response headers:', Object.fromEntries(applicationResponse.headers));
+      
+      if (!applicationResponse.ok) {
+        const errorText = await applicationResponse.text();
+        console.error('Application response error:', errorText);
+        throw new Error(`Application failed: ${applicationResponse.status} - ${errorText}`);
+      }
+      
       const applicationData2 = await applicationResponse.json();
       
       // Then create payment
-      const paymentResponse = await apiRequest("POST", "/api/payment/create", {
+      console.log('Making payment request...');
+      const paymentPayload = {
         amount: selectedProduct.price,
         currency: "USD",
         description: `Turkey Travel Insurance - ${selectedProduct.name}`,
         customerEmail: applicationData.email,
         customerName: `${applicationData.firstName} ${applicationData.lastName}`
+      };
+      console.log('Payment payload:', paymentPayload);
+      
+      const paymentResponse = await fetch("/api/payment/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(paymentPayload),
       });
+      
+      console.log('Payment response status:', paymentResponse.status);
+      console.log('Payment response headers:', Object.fromEntries(paymentResponse.headers));
+      
+      if (!paymentResponse.ok) {
+        const errorText = await paymentResponse.text();
+        console.error('Payment response error:', errorText);
+        throw new Error(`Payment failed: ${paymentResponse.status} - ${errorText}`);
+      }
       
       const paymentData = await paymentResponse.json();
       
