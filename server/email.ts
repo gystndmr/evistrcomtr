@@ -87,23 +87,180 @@ export function generateVisaReceivedEmail(
               </p>
             </div>
             
+            <!-- Application Summary -->
+            <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 20px; border-radius: 10px; margin: 25px 0; text-align: center;">
+              <h3 style="margin: 0 0 10px 0; font-size: 20px; font-weight: bold;">📋 APPLICATION SUMMARY</h3>
+              <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-top: 15px;">
+                <p style="margin: 0; font-size: 18px; font-weight: bold; letter-spacing: 2px;">${applicationNumber}</p>
+                <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Application Reference Number</p>
+              </div>
+            </div>
+
+            <!-- Visa Information -->
+            <div style="background-color: #fef2f2; padding: 25px; border-radius: 10px; margin: 25px 0; border: 1px solid #DC2626;">
+              <h3 style="color: #DC2626; margin-top: 0; font-size: 18px; margin-bottom: 20px; border-bottom: 2px solid #DC2626; padding-bottom: 10px;">🇹🇷 VISA APPLICATION DETAILS</h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                  <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                      <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">Full Name:</td>
+                      <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${firstName} ${lastName}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px 0; color: #666; font-weight: bold;">Passport Number:</td>
+                      <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">${applicationData.passportNumber || 'Not specified'}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px 0; color: #666; font-weight: bold;">Date of Birth:</td>
+                      <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.dateOfBirth ? new Date(applicationData.dateOfBirth).toLocaleDateString('en-US') : 'Not specified'}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px 0; color: #666; font-weight: bold;">Country of Origin:</td>
+                      <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.countryOfOrigin || 'Not specified'}</td>
+                    </tr>
+                  </table>
+                </div>
+                <div>
+                  <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                      <td style="padding: 12px 0; color: #666; font-weight: bold; width: 45%;">Arrival Date:</td>
+                      <td style="padding: 12px 0; color: #1a1a1a;">${applicationData.arrivalDate ? new Date(applicationData.arrivalDate).toLocaleDateString('en-US') : 'Not specified'}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px 0; color: #666; font-weight: bold;">Processing Type:</td>
+                      <td style="padding: 12px 0; color: #1a1a1a; text-transform: capitalize;">${applicationData.processingType || 'Standard'}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px 0; color: #666; font-weight: bold;">Total Amount:</td>
+                      <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">$${applicationData.totalAmount || 'Not specified'}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px 0; color: #666; font-weight: bold;">Status:</td>
+                      <td style="padding: 12px 0; color: #f59e0b; font-weight: bold;">⏳ UNDER REVIEW</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              
+              ${applicationData.placeOfBirth || applicationData.motherName || applicationData.fatherName || applicationData.address ? `
+              <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #fecaca;">
+                <h4 style="color: #DC2626; margin: 0 0 15px 0; font-size: 16px;">👤 PERSONAL INFORMATION</h4>
+                <table style="width: 100%; border-collapse: collapse;">
+                  ${applicationData.placeOfBirth ? `
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-weight: bold; width: 30%;">Place of Birth:</td>
+                    <td style="padding: 8px 0; color: #1a1a1a;">${applicationData.placeOfBirth}</td>
+                  </tr>` : ''}
+                  ${applicationData.motherName ? `
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-weight: bold;">Mother's Name:</td>
+                    <td style="padding: 8px 0; color: #1a1a1a;">${applicationData.motherName}</td>
+                  </tr>` : ''}
+                  ${applicationData.fatherName ? `
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-weight: bold;">Father's Name:</td>
+                    <td style="padding: 8px 0; color: #1a1a1a;">${applicationData.fatherName}</td>
+                  </tr>` : ''}
+                  ${applicationData.address ? `
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-weight: bold;">Address:</td>
+                    <td style="padding: 8px 0; color: #1a1a1a;">${applicationData.address}</td>
+                  </tr>` : ''}
+                </table>
+              </div>` : ''}
+              
+              ${applicationData.supportingDocumentType ? `
+              <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #fecaca;">
+                <h4 style="color: #DC2626; margin: 0 0 15px 0; font-size: 16px;">📄 SUPPORTING DOCUMENTS</h4>
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-weight: bold; width: 30%;">Document Type:</td>
+                    <td style="padding: 8px 0; color: #1a1a1a; text-transform: capitalize;">${applicationData.supportingDocumentType}</td>
+                  </tr>
+                  ${applicationData.supportingDocumentNumber ? `
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-weight: bold;">Document Number:</td>
+                    <td style="padding: 8px 0; color: #1a1a1a;">${applicationData.supportingDocumentNumber}</td>
+                  </tr>` : ''}
+                  ${applicationData.supportingDocumentStartDate ? `
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-weight: bold;">Valid From:</td>
+                    <td style="padding: 8px 0; color: #1a1a1a;">${new Date(applicationData.supportingDocumentStartDate).toLocaleDateString('en-US')}</td>
+                  </tr>` : ''}
+                  ${applicationData.supportingDocumentEndDate ? `
+                  <tr>
+                    <td style="padding: 8px 0; color: #666; font-weight: bold;">Valid Until:</td>
+                    <td style="padding: 8px 0; color: #1a1a1a;">${new Date(applicationData.supportingDocumentEndDate).toLocaleDateString('en-US')}</td>
+                  </tr>` : ''}
+                </table>
+              </div>` : ''}
+            </div>
+            
+            <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; margin: 25px 0; border-radius: 4px;">
+              <p style="margin: 0; color: #92400e; font-size: 15px; line-height: 1.5;">
+                <strong>⚠️ Important Information:</strong><br>
+                • Your e-visa application evaluation takes 3-5 business days<br>
+                • You can check the current status using your application number<br>
+                • When your e-visa is approved, you will receive your electronic visa via email<br>
+                • Processing time may vary based on the selected processing type
+              </p>
+            </div>
+            
             <div style="text-align: center; margin: 30px 0;">
               <a href="https://getvisa.tr/status?ref=${applicationNumber}" style="background-color: #DC2626; color: white; padding: 15px 35px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; font-size: 16px;">
                 🔍 Check Application Status
               </a>
+            </div>
+            
+            <div style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #cbd5e1;">
+              <h4 style="margin: 0 0 10px 0; color: #475569; font-size: 16px;">📱 Quick Status Check:</h4>
+              <p style="margin: 0; color: #64748b; font-size: 14px; line-height: 1.6;">
+                Visit <strong>https://getvisa.tr/status</strong> and enter your application number:<br>
+                <span style="background-color: #e2e8f0; padding: 4px 8px; border-radius: 4px; font-family: monospace; font-weight: bold; color: #1e293b;">${applicationNumber}</span>
+              </p>
+            </div>
+            
+            <div style="background-color: #f0f9ff; padding: 20px; border-radius: 6px; margin: 25px 0;">
+              <h4 style="margin: 0 0 10px 0; color: #1e40af; font-size: 16px;">💬 Customer Service:</h4>
+              <p style="margin: 0; color: #1e40af; font-size: 14px; line-height: 1.6;">
+                If you have any questions, please visit our website or contact our support team. We're here to help you throughout the application process.
+              </p>
             </div>
           </div>
         </body>
       </html>
     `,
     text: `
+TURKEY E-VISA APPLICATION SYSTEM
+
 Dear ${firstName} ${lastName},
 
 Your Turkey Electronic Visa application has been successfully received and recorded.
 
-Application Number: ${applicationNumber}
+APPLICATION DETAILS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Application Reference No: ${applicationNumber}
+Applicant: ${firstName} ${lastName}
+Passport Number: ${applicationData.passportNumber || 'Not specified'}
+Date of Birth: ${applicationData.dateOfBirth ? new Date(applicationData.dateOfBirth).toLocaleDateString('en-US') : 'Not specified'}
+Country of Origin: ${applicationData.countryOfOrigin || 'Not specified'}
+Arrival Date: ${applicationData.arrivalDate ? new Date(applicationData.arrivalDate).toLocaleDateString('en-US') : 'Not specified'}
+Processing Type: ${applicationData.processingType || 'Standard'}
+Total Amount: $${applicationData.totalAmount || 'Not specified'}
+Status: UNDER REVIEW
+Application Date: ${new Date().toLocaleDateString('en-US')} ${new Date().toLocaleTimeString('en-US')}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-You can check your application status at: https://getvisa.tr/status?ref=${applicationNumber}
+IMPORTANT INFORMATION:
+• Your e-visa application evaluation takes 3-5 business days
+• You can check the current status using your application number
+• When your e-visa is approved, you will receive your electronic visa via email
+• Processing time may vary based on the selected processing type
+
+CHECK STATUS: https://getvisa.tr/status?ref=${applicationNumber}
+
+Best regards,
+Turkey E-Visa Services Team
     `
   };
 }
