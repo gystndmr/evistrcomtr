@@ -46,12 +46,12 @@ export function generateVisaReceivedEmail(
 ): { subject: string; html: string; text: string } {
   
   const turkeyFlagSvg = `
-    <svg width="40" height="30" viewBox="0 0 40 30" style="margin: 0 auto; border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-      <rect width="40" height="30" fill="#E30A17"/>
+    <svg width="32" height="24" viewBox="0 0 32 24" style="margin: 0 auto;">
+      <rect width="32" height="24" fill="#E30A17"/>
       <g fill="#FFFFFF">
-        <circle cx="12" cy="15" r="5"/>
-        <circle cx="14" cy="15" r="4" fill="#E30A17"/>
-        <path d="M22 10 L24.5 12.5 L27 10 L25.5 13.5 L29 15 L25.5 16.5 L27 20 L24.5 17.5 L22 20 L23.5 16.5 L20 15 L23.5 13.5 Z"/>
+        <circle cx="10" cy="12" r="4"/>
+        <circle cx="11.5" cy="12" r="3.2" fill="#E30A17"/>
+        <path d="M18 8 L20 10 L22 8 L21 11 L24 12 L21 13 L22 16 L20 14 L18 16 L19 13 L16 12 L19 11 Z"/>
       </g>
     </svg>
   `;
