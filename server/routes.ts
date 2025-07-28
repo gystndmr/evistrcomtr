@@ -78,7 +78,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         await sendEmail({
           to: application.email,
-          from: process.env.VERIFIED_EMAIL_ADDRESS || "info@visatanzania.org",
+          from: "info@visatanzania.org",
           subject: emailContent.subject,
           html: emailContent.html,
           text: emailContent.text
@@ -172,7 +172,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         await sendEmail({
           to: application.email,
-          from: process.env.VERIFIED_EMAIL_ADDRESS || "info@visatanzania.org",
+          from: "info@visatanzania.org",
           subject: emailContent.subject,
           html: emailContent.html,
           text: emailContent.text
@@ -230,7 +230,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         await sendEmail({
           to: application.email,
-          from: process.env.VERIFIED_EMAIL_ADDRESS || "info@visatanzania.org",
+          from: "info@visatanzania.org",
           subject: emailContent.subject,
           html: emailContent.html,
           text: emailContent.text
@@ -659,7 +659,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             const emailOptions: any = {
               to: application.email,
-              from: process.env.VERIFIED_EMAIL_ADDRESS || "info@visatanzania.org",
+              from: "info@visatanzania.org",
               subject: emailContent.subject,
               html: emailContent.html,
               text: emailContent.text
@@ -683,7 +683,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Basit reddetme email template
             await sendEmail({
               to: application.email,
-              from: process.env.VERIFIED_EMAIL_ADDRESS || "info@visatanzania.org",
+              from: "info@visatanzania.org",
               subject: `[${application.applicationNumber}] Turkey E-Visa Application Update`,
               html: `
                 <h2>Turkey E-Visa Application Update</h2>
@@ -751,7 +751,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           const emailOptions: any = {
             to: application.email,
-            from: process.env.VERIFIED_EMAIL_ADDRESS || "info@visatanzania.org",
+            from: "info@visatanzania.org",
             subject: emailContent.subject,
             html: emailContent.html,
             text: emailContent.text
@@ -795,7 +795,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await sendEmail({
             to: application.email,
-            from: process.env.VERIFIED_EMAIL_ADDRESS || "info@visatanzania.org",
+            from: "info@visatanzania.org",
             subject: rejectionEmailContent.subject,
             html: rejectionEmailContent.html,
             text: rejectionEmailContent.text
@@ -1308,7 +1308,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       await sendEmail({
         to: to || 'guneskadir171@gmail.com',
-        from: process.env.VERIFIED_EMAIL_ADDRESS || "info@visatanzania.org",
+        from: "info@visatanzania.org",
         subject: subject || "Test Email",
         html: `
           <div style="font-family: Arial, sans-serif; padding: 20px;">

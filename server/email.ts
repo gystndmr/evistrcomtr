@@ -20,20 +20,17 @@ interface EmailOptions {
 export async function sendEmail(options: EmailOptions): Promise<void> {
   console.log('🔧 SendGrid sendEmail function called');
   console.log('🔧 API Key length:', process.env.SENDGRID_API_KEY?.length || 0);
-  console.log('🔧 Verified email address:', process.env.VERIFIED_EMAIL_ADDRESS);
-  console.log('🔧 From address requested:', options.from);
   console.log('🔧 To address:', options.to);
   console.log('🔧 Subject:', options.subject);
   
-  // Use verified email address from environment - fallback to working verified address
-  // Currently only info@visatanzania.org is verified in SendGrid
-  const verifiedEmail = "info@visatanzania.org"; // Force use verified address until info@getvisa.tr is verified
+  // Always use verified address to prevent customer complaints
+  const verifiedEmail = "info@visatanzania.org"; // Only verified address in SendGrid
   const emailOptions = {
     ...options,
     from: verifiedEmail
   };
   
-  console.log('🔧 From address final:', emailOptions.from);
+  console.log('🔧 From address (verified only):', emailOptions.from);
   
   try {
     const result = await sgMail.send(emailOptions);
@@ -391,7 +388,7 @@ export function generateVisaApprovalEmail(
             <div style="background: #f1f5f9; padding: 20px; border-radius: 6px; margin: 30px 0; text-align: center;">
               <p style="margin: 0; color: #64748b; font-size: 14px; line-height: 1.5;">
                 <strong>Need assistance?</strong><br>
-                Contact us at <a href="mailto:info@getvisa.tr" style="color: #DC2626;">info@getvisa.tr</a><br>
+                Contact us at <a href="mailto:info@visatanzania.org" style="color: #DC2626;">info@visatanzania.org</a><br>
                 Visit: <a href="https://getvisa.tr" style="color: #DC2626;">getvisa.tr</a>
               </p>
             </div>
@@ -440,7 +437,7 @@ Travel Instructions:
 Download your e-visa: https://getvisa.tr/status?ref=${applicationNumber}
 Check status: https://getvisa.tr/status?ref=${applicationNumber}
 
-Contact: info@getvisa.tr
+Contact: info@visatanzania.org
 Website: getvisa.tr
 
 Have a wonderful trip to Turkey!
@@ -625,7 +622,7 @@ export function generateInsuranceApprovalEmail(
               <h4 style="margin: 0 0 10px 0; color: #1e40af; font-size: 16px;">💬 Customer Support:</h4>
               <p style="margin: 0; color: #1e40af; font-size: 14px; line-height: 1.6;">
                 If you have any questions about your insurance policy or need assistance:<br>
-                📧 Email: info@getvisa.tr<br>
+                📧 Email: info@visatanzania.org<br>
                 🌐 Website: https://getvisa.tr<br>
                 📱 24/7 Customer Service Available
               </p>
@@ -647,7 +644,7 @@ Issue Date: ${new Date().toLocaleDateString('en-US')}
 
 Download your policy at: https://getvisa.tr/status?ref=${applicationNumber}
 
-This email was sent automatically. For questions, contact us at info@getvisa.tr
+This email was sent automatically. For questions, contact us at info@visatanzania.org
     `
   };
 }

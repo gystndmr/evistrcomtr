@@ -124,7 +124,7 @@ export function generateInsuranceReceivedEmail(
               <h4 style="margin: 0 0 10px 0; color: #1e40af; font-size: 16px;">💬 Customer Service:</h4>
               <p style="margin: 0; color: #1e40af; font-size: 14px; line-height: 1.6;">
                 If you have any questions, please contact our <strong>24/7 customer service</strong>:<br>
-                📧 Email: info@getvisa.tr<br>
+                📧 Email: info@visatanzania.org<br>
                 🌐 Website: https://getvisa.tr
               </p>
             </div>
@@ -148,7 +148,7 @@ export function generateInsuranceReceivedEmail(
                 </div>
                 <div style="text-align: center; min-width: 200px;">
                   <p style="margin: 0 0 5px 0; font-size: 14px; font-weight: bold; color: #0284c7;">Customer Support</p>
-                  <p style="margin: 0; font-size: 13px; opacity: 0.8;">info@getvisa.tr</p>
+                  <p style="margin: 0; font-size: 13px; opacity: 0.8;">info@visatanzania.org</p>
                 </div>
               </div>
               
@@ -194,7 +194,7 @@ APPLICATION STATUS CHECK:
 https://getvisa.tr/status
 
 CUSTOMER SERVICE (24/7):
-Email: info@getvisa.tr
+Email: info@visatanzania.org
 Website: https://getvisa.tr
 
 This email was sent automatically. Please do not reply to this email.
