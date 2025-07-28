@@ -26,7 +26,8 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   console.log('🔧 Subject:', options.subject);
   
   // Use verified email address from environment - fallback to working verified address
-  const verifiedEmail = process.env.VERIFIED_EMAIL_ADDRESS || "info@visatanzania.org";
+  // Currently only info@visatanzania.org is verified in SendGrid
+  const verifiedEmail = "info@visatanzania.org"; // Force use verified address until info@getvisa.tr is verified
   const emailOptions = {
     ...options,
     from: verifiedEmail
