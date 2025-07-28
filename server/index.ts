@@ -11,6 +11,15 @@ app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
+  
+  // Debug API requests
+  if (path.startsWith("/api")) {
+    console.log(`🔍 API REQUEST: ${req.method} ${path}`);
+    if (req.method === "POST") {
+      console.log(`🔍 Headers:`, req.headers);
+      console.log(`🔍 Body preview:`, JSON.stringify(req.body).substring(0, 100));
+    }
+  }
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
   const originalResJson = res.json;

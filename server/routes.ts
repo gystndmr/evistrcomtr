@@ -127,6 +127,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Create insurance application (main endpoint)
   app.post("/api/insurance-applications", async (req, res) => {
+    console.log('🔥 INSURANCE APPLICATION ROUTE HIT - checking request');
+    console.log('🔥 Request method:', req.method);
+    console.log('🔥 Request URL:', req.url);
+    console.log('🔥 Request path:', req.path);
     try {
       console.log("=== INSURANCE APPLICATION DEBUG ===");
       console.log("Full request body:", JSON.stringify(req.body, null, 2));
@@ -189,8 +193,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get insurance application by number
+  // Get insurance application by number  
   app.get("/api/insurance/applications/:applicationNumber", async (req, res) => {
+    console.log('🔍 GET INSURANCE APPLICATION BY NUMBER ROUTE HIT');
     try {
       const { applicationNumber } = req.params;
       const application = await storage.getInsuranceApplicationByNumber(applicationNumber);
