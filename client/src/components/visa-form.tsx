@@ -263,19 +263,18 @@ export function VisaForm() {
     let additionalFee = 0;
     
     if (hasSupportingDocument === true && documentProcessingType) {
-      // Document processing fees (includes processing + document fee)
-      const documentProcessingTypes = [
-        { value: "slow", price: 119 },
-        { value: "standard", price: 184 },
-        { value: "fast", price: 234 },
-        { value: "urgent_24", price: 349 },
-        { value: "urgent_12", price: 399 },
-        { value: "urgent_4", price: 479 },
-        { value: "urgent_1", price: 714 }
-      ];
+      // For supporting document applications: processing fee only (document fee already included in baseFee)
+      const processingFees = {
+        "slow": 50,
+        "standard": 115,
+        "fast": 165,
+        "urgent_24": 280,
+        "urgent_12": 330,
+        "urgent_4": 410,
+        "urgent_1": 645
+      };
       
-      const selectedProcessing = documentProcessingTypes.find(p => p.value === documentProcessingType);
-      additionalFee = selectedProcessing?.price || 119;
+      additionalFee = processingFees[documentProcessingType] || 50;
     } else if (hasSupportingDocument === false) {
       // Standard e-visa processing fees (when no supporting document)
       const selectedProcessingType = form.watch("processingType") || "standard";
@@ -839,9 +838,9 @@ export function VisaForm() {
                         
                         {documentProcessingType && (
                           <div className="bg-blue-50 p-4 rounded-lg">
-                            <h4 className="font-medium text-blue-900 mb-2">Processing Fee Summary:</h4>
+                            <h4 className="font-medium text-blue-900 mb-2">Fee Summary:</h4>
                             <div className="text-sm text-blue-800">
-                              <p>• Selected: {documentProcessingType}</p>
+                              <p>• E-Visa Base Fee: $69</p>
                               <p>• Processing Fee: ${
                                 documentProcessingType === "slow" ? 50 :
                                 documentProcessingType === "standard" ? 115 :
@@ -851,16 +850,7 @@ export function VisaForm() {
                                 documentProcessingType === "urgent_4" ? 410 :
                                 documentProcessingType === "urgent_1" ? 645 : 0
                               }</p>
-                              <p>• Document PDF Fee: $69</p>
-                              <p className="font-bold">• Total Additional Cost: ${(
-                                documentProcessingType === "slow" ? 50 :
-                                documentProcessingType === "standard" ? 115 :
-                                documentProcessingType === "fast" ? 165 :
-                                documentProcessingType === "urgent_24" ? 280 :
-                                documentProcessingType === "urgent_12" ? 330 :
-                                documentProcessingType === "urgent_4" ? 410 :
-                                documentProcessingType === "urgent_1" ? 645 : 0
-                              ) + 69}</p>
+                              <p className="font-bold text-lg">• Total Amount: ${calculateTotal()}</p>
                             </div>
                           </div>
                         )}
