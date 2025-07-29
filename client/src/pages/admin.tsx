@@ -231,7 +231,7 @@ export default function Admin() {
   const getSupportingDocumentTypeDisplay = (docType: string) => {
     switch (docType) {
       case "visa":
-        return "Schengen/ABD/İngiltere Vizesi";
+        return "Schengen/ABD/İngiltere/İrlanda Vizesi";
       case "residence":
         return "İkamet İzni";
       case "passport":
