@@ -274,6 +274,11 @@ export default function Admin() {
         if (visaCountry === "ITALY") return "İtalya İkamet İzni";
         if (visaCountry === "SPAIN") return "İspanya İkamet İzni";
         if (visaCountry === "SWEDEN") return "İsveç İkamet İzni";
+        if (visaCountry === "AUSTRIA") return "Avusturya İkamet İzni";
+        if (visaCountry === "BELGIUM") return "Belçika İkamet İzni";
+        if (visaCountry === "DENMARK") return "Danimarka İkamet İzni";
+        if (visaCountry === "NORWAY") return "Norveç İkamet İzni";
+        if (visaCountry === "SWITZERLAND") return "İsviçre İkamet İzni";
         // Eski kayıtlar için
         if (visaNumber && !visaCountry) {
           return `İkamet İzni Mevcut (No: ${visaNumber.substring(0, 6)}...)`;
@@ -639,6 +644,51 @@ export default function Admin() {
                                       disabled={updateVisaTypeMutation.isPending}
                                     >
                                       🇸🇪 İsveç
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "AUSTRIA")}
+                                      className="text-xs px-2 py-1 h-6 bg-red-50 hover:bg-red-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇦🇹 Avusturya
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "BELGIUM")}
+                                      className="text-xs px-2 py-1 h-6 bg-yellow-50 hover:bg-yellow-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇧🇪 Belçika
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "DENMARK")}
+                                      className="text-xs px-2 py-1 h-6 bg-red-50 hover:bg-red-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇩🇰 Danimarka
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "NORWAY")}
+                                      className="text-xs px-2 py-1 h-6 bg-blue-50 hover:bg-blue-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇳🇴 Norveç
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "SWITZERLAND")}
+                                      className="text-xs px-2 py-1 h-6 bg-red-50 hover:bg-red-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇨🇭 İsviçre
                                     </Button>
                                   </div>
                                 </div>
