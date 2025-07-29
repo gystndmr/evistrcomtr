@@ -110,6 +110,7 @@ export function VisaForm() {
         countryOfOrigin: selectedCountry?.name,
         totalAmount: calculateTotal().toString(),
         supportingDocumentType: selectedSupportingDocType || null,
+        supportingDocumentCountry: documentDetails?.visaCountry || documentDetails?.residenceCountry || null,
         supportingDocumentNumber: data.supportingDocumentNumber || null,
         supportingDocumentStartDate: data.supportingDocumentStartDate || null,
         supportingDocumentEndDate: data.supportingDocumentEndDate || null,
