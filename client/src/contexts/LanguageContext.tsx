@@ -23,13 +23,30 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// ENGLISH AS DEFAULT - No auto language detection
+// AUTO BROWSER LANGUAGE DETECTION
 const detectBrowserLanguage = (): Language => {
-  // ALWAYS return English as default
-  // Users must manually select other languages
-  const englishLang = languages.find(lang => lang.code === 'en')!;
-  console.log('Using English as default language (manual selection required for other languages)');
-  return englishLang;
+  try {
+    const browserLang = navigator.language.toLowerCase();
+    console.log('Browser language detected:', browserLang);
+    
+    // Check for exact matches first (tr-tr, en-us, etc.)
+    let detectedLang = languages.find(lang => 
+      browserLang.startsWith(lang.code.toLowerCase())
+    );
+    
+    // If no match found, default to English
+    if (!detectedLang) {
+      detectedLang = languages.find(lang => lang.code === 'en')!;
+      console.log('No matching language found, defaulting to English');
+    } else {
+      console.log('Auto-detected language:', detectedLang.name);
+    }
+    
+    return detectedLang;
+  } catch (error) {
+    console.error('Error detecting browser language:', error);
+    return languages.find(lang => lang.code === 'en')!;
+  }
 };
 
 interface LanguageProviderProps {
@@ -150,6 +167,8 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.government.approved': 'Government Approved Insurance',
     'insurance.available.plans': 'Available Insurance Plans',
     'insurance.total.premium': 'Total Premium',
+    'insurance.header.new': 'New Insurance',
+    'insurance.header.covid19': 'Covid-19',
     
     // Status Page
     'status.title': 'Check Application Status',
@@ -451,6 +470,8 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.government.approved': 'Devlet Onaylı Sigorta',
     'insurance.available.plans': 'Mevcut Sigorta Planları',
     'insurance.total.premium': 'Toplam Prim',
+    'insurance.header.new': 'Yeni Sigorta',
+    'insurance.header.covid19': 'Covid-19',
     
     // Status Page
     'status.title': 'Başvuru Durumu Sorgula',
@@ -752,6 +773,8 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.government.approved': 'Assurance Approuvée par le Gouvernement',
     'insurance.available.plans': 'Plans d\'Assurance Disponibles',
     'insurance.total.premium': 'Prime Totale',
+    'insurance.header.new': 'Nouvelle Assurance',
+    'insurance.header.covid19': 'Covid-19',
     
     // Status Page
     'status.title': 'Vérifier le Statut de la Demande',
@@ -984,6 +1007,8 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.government.approved': 'Regierung Genehmigte Versicherung',
     'insurance.available.plans': 'Verfügbare Versicherung Pläne',
     'insurance.total.premium': 'Gesamtprämie',
+    'insurance.header.new': 'Neue Versicherung',
+    'insurance.header.covid19': 'Covid-19',
     
     // Status Page
     'status.title': 'Antragsstatus Prüfen',
@@ -1216,6 +1241,8 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.government.approved': 'Seguro Aprobado por el Gobierno',
     'insurance.available.plans': 'Planes de Seguro Disponibles',
     'insurance.total.premium': 'Prima Total',
+    'insurance.header.new': 'Nuevo Seguro',
+    'insurance.header.covid19': 'Covid-19',
     
     // Status Page
     'status.title': 'Verificar Estado de Solicitud',
@@ -1448,6 +1475,8 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.government.approved': 'تأمين معتمد من الحكومة',
     'insurance.available.plans': 'خطط التأمين المتاحة',
     'insurance.total.premium': 'إجمالي القسط',
+    'insurance.header.new': 'تأمين جديد',
+    'insurance.header.covid19': 'Covid-19',
     
     // Status Page
     'status.title': 'التحقق من حالة الطلب',

@@ -428,10 +428,10 @@ export default function Insurance() {
             {/* Transparent styled boxes for header text */}
             <div className="inline-block mb-4">
               <div className="bg-black/70 text-white px-8 py-4 text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
-                New Insurance
+                {t('insurance.header.new')}
               </div>
               <div className="bg-blue-500/80 text-white px-6 py-3 text-lg sm:text-xl lg:text-2xl font-semibold">
-                Covid-19
+                {t('insurance.header.covid19')}
               </div>
             </div>
           </div>

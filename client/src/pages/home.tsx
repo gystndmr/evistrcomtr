@@ -124,12 +124,12 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <Link href="/application">
                 <div className="bg-red-600/80 hover:bg-red-600/90 text-white px-12 py-4 text-xl font-semibold transition-all duration-200 cursor-pointer">
-                  Apply Now
+                  {t('home.buttons.apply')}
                 </div>
               </Link>
               <Link href="/status">
                 <div className="bg-blue-600/80 hover:bg-blue-600/90 text-white px-12 py-4 text-xl font-semibold transition-all duration-200 cursor-pointer">
-                  Check Application Status
+                  {t('home.buttons.check')}
                 </div>
               </Link>
             </div>
