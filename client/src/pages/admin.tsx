@@ -202,6 +202,31 @@ export default function Admin() {
     },
   });
 
+  const updateVisaTypeMutation = useMutation({
+    mutationFn: async ({ id, visaCountry }: { id: number; visaCountry: string }) => {
+      const response = await apiRequest("PATCH", `/api/admin/applications/${id}/visa-type`, { supportingDocumentCountry: visaCountry });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/applications"] });
+      toast({
+        title: "Başarılı",
+        description: "Visa türü güncellendi.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Hata",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateVisaType = (id: number, visaCountry: string) => {
+    updateVisaTypeMutation.mutate({ id, visaCountry });
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "pending":
@@ -237,7 +262,7 @@ export default function Admin() {
         if (visaCountry === "GBR") return "İngiltere Vizesi";
         if (visaCountry === "IRL") return "İrlanda Vizesi";
         // Eski kayıtlar için (visa country bilgisi yok)
-        return "Eski Visa Kaydı";
+        return "Visa (Tür Belirsiz - Manuel Kontrol)";
       case "residence":
         return "İkamet İzni";
       case "passport":
@@ -437,7 +462,53 @@ export default function Admin() {
                           <TableCell>{getStatusBadge(app.status)}</TableCell>
                           <TableCell>{formatDate(app.createdAt!)}</TableCell>
                           <TableCell>
-                            <div className="flex gap-2">
+                            <div className="flex flex-col gap-2">
+                              {/* Eski visa kayıtları için visa türü güncelleme */}
+                              {(app as any).supportingDocumentType === "visa" && !(app as any).supportingDocumentCountry && (
+                                <div className="flex flex-col gap-1 p-2 bg-orange-50 rounded text-xs">
+                                  <div className="text-orange-600 font-medium">⚠️ Visa Türü Belirsiz</div>
+                                  <div className="flex gap-1 flex-wrap">
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "SCHENGEN")}
+                                      className="text-xs px-2 py-1 h-6"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      Schengen
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "USA")}
+                                      className="text-xs px-2 py-1 h-6"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      ABD
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "GBR")}
+                                      className="text-xs px-2 py-1 h-6"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      İngiltere
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "IRL")}
+                                      className="text-xs px-2 py-1 h-6"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      İrlanda
+                                    </Button>
+                                  </div>
+                                </div>
+                              )}
+                              
+                              <div className="flex gap-2">
                               <Dialog>
                                 <DialogTrigger asChild>
                                   <Button
