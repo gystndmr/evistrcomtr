@@ -110,7 +110,7 @@ export function VisaForm() {
         countryOfOrigin: selectedCountry?.name,
         totalAmount: calculateTotal().toString(),
         supportingDocumentType: selectedSupportingDocType || null,
-        supportingDocumentCountry: documentDetails?.visaCountry || documentDetails?.residenceCountry || null,
+        supportingDocumentCountry: supportingDocumentDetails?.visaCountry || supportingDocumentDetails?.residenceCountry || null,
         supportingDocumentNumber: data.supportingDocumentNumber || null,
         supportingDocumentStartDate: data.supportingDocumentStartDate || null,
         supportingDocumentEndDate: data.supportingDocumentEndDate || null,
@@ -722,6 +722,7 @@ export function VisaForm() {
                     onDocumentDetailsChange={setSupportingDocumentDetails}
                     onValidationChange={setIsSupportingDocumentValid}
                     onSupportingDocTypeChange={setSelectedSupportingDocType}
+                    onProcessingTypeChange={setDocumentProcessingType}
                   />
                 </div>
               )}

@@ -13,13 +13,15 @@ interface SupportingDocumentCheckProps {
   onDocumentDetailsChange: (details: any) => void;
   onValidationChange: (isValid: boolean) => void;
   onSupportingDocTypeChange: (docType: string) => void;
+  onProcessingTypeChange?: (processingType: string) => void;
 }
 
 export function SupportingDocumentCheck({ 
   onHasSupportingDocument, 
   onDocumentDetailsChange,
   onValidationChange,
-  onSupportingDocTypeChange
+  onSupportingDocTypeChange,
+  onProcessingTypeChange
 }: SupportingDocumentCheckProps) {
   const { toast } = useToast();
   const [hasDocument, setHasDocument] = useState<boolean | null>(null);
@@ -37,6 +39,9 @@ export function SupportingDocumentCheck({
     onHasSupportingDocument(value);
     if (!value) {
       setProcessingType("");
+      if (onProcessingTypeChange) {
+        onProcessingTypeChange("");
+      }
       // Ultra-fast redirect to insurance for "No" selection - no toast delay
       window.location.href = '/insurance';
       return;
@@ -95,9 +100,13 @@ export function SupportingDocumentCheck({
       documentNumber,
       startDate,
       endDate: isUnlimited ? "unlimited" : endDate,
+      processingType,
     };
     onDocumentDetailsChange(details);
     onValidationChange(validateFields());
+    if (onProcessingTypeChange && processingType) {
+      onProcessingTypeChange(processingType);
+    }
   };
 
   // Auto-update details when any field changes
