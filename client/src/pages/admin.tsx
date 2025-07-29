@@ -236,7 +236,8 @@ export default function Admin() {
         if (visaCountry === "USA") return "ABD Vizesi";
         if (visaCountry === "GBR") return "İngiltere Vizesi";
         if (visaCountry === "IRL") return "İrlanda Vizesi";
-        return "Visa";
+        // Eski kayıtlar için (visa country bilgisi yok)
+        return "Eski Visa Kaydı";
       case "residence":
         return "İkamet İzni";
       case "passport":
