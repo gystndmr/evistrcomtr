@@ -253,7 +253,7 @@ export default function Admin() {
     }
   };
 
-  const getSupportingDocumentTypeDisplay = (docType: string, visaCountry?: string) => {
+  const getSupportingDocumentTypeDisplay = (docType: string, visaCountry?: string, visaNumber?: string) => {
     switch (docType) {
       case "visa":
         // Spesifik visa ülkesini göster
@@ -261,8 +261,11 @@ export default function Admin() {
         if (visaCountry === "USA") return "ABD Vizesi";
         if (visaCountry === "GBR") return "İngiltere Vizesi";
         if (visaCountry === "IRL") return "İrlanda Vizesi";
-        // Eski kayıtlar için (visa country bilgisi yok)
-        return "Visa (Tür Belirsiz - Manuel Kontrol)";
+        // Eski kayıtlar için (visa country bilgisi yok ama visa number var)
+        if (visaNumber && !visaCountry) {
+          return `Visa Mevcut (No: ${visaNumber.substring(0, 6)}...)`;
+        }
+        return "Visa (Tür Belirsiz)";
       case "residence":
         return "İkamet İzni";
       case "passport":
@@ -453,7 +456,7 @@ export default function Admin() {
                           <TableCell>{app.arrivalDate ? formatDate(app.arrivalDate) : 'N/A'}</TableCell>
                           <TableCell>{app.processingType}</TableCell>
                           <TableCell>{app.documentType}</TableCell>
-                          <TableCell>{getSupportingDocumentTypeDisplay((app as any).supportingDocumentType, (app as any).supportingDocumentCountry)}</TableCell>
+                          <TableCell>{getSupportingDocumentTypeDisplay((app as any).supportingDocumentType, (app as any).supportingDocumentCountry, app.supportingDocumentNumber)}</TableCell>
                           <TableCell>{app.supportingDocumentNumber || 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentStartDate ? formatDate(app.supportingDocumentStartDate) : 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentEndDate ? formatDate(app.supportingDocumentEndDate) : 'N/A'}</TableCell>
@@ -464,46 +467,100 @@ export default function Admin() {
                           <TableCell>
                             <div className="flex flex-col gap-2">
                               {/* Eski visa kayıtları için visa türü güncelleme */}
-                              {(app as any).supportingDocumentType === "visa" && !(app as any).supportingDocumentCountry && (
-                                <div className="flex flex-col gap-1 p-2 bg-orange-50 rounded text-xs">
-                                  <div className="text-orange-600 font-medium">⚠️ Visa Türü Belirsiz</div>
+                              {(app as any).supportingDocumentType === "visa" && !(app as any).supportingDocumentCountry && app.supportingDocumentNumber && (
+                                <div className="flex flex-col gap-1 p-2 bg-blue-50 rounded text-xs">
+                                  <div className="text-blue-600 font-medium">
+                                    📋 Visa Mevcut: {app.supportingDocumentNumber}
+                                  </div>
+                                  <div className="text-gray-600 mb-1">
+                                    {app.countryOfOrigin} → Hangi ülke vizesi?
+                                  </div>
                                   <div className="flex gap-1 flex-wrap">
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      onClick={() => updateVisaType(app.id, "SCHENGEN")}
-                                      className="text-xs px-2 py-1 h-6"
-                                      disabled={updateVisaTypeMutation.isPending}
-                                    >
-                                      Schengen
-                                    </Button>
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      onClick={() => updateVisaType(app.id, "USA")}
-                                      className="text-xs px-2 py-1 h-6"
-                                      disabled={updateVisaTypeMutation.isPending}
-                                    >
-                                      ABD
-                                    </Button>
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      onClick={() => updateVisaType(app.id, "GBR")}
-                                      className="text-xs px-2 py-1 h-6"
-                                      disabled={updateVisaTypeMutation.isPending}
-                                    >
-                                      İngiltere
-                                    </Button>
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      onClick={() => updateVisaType(app.id, "IRL")}
-                                      className="text-xs px-2 py-1 h-6"
-                                      disabled={updateVisaTypeMutation.isPending}
-                                    >
-                                      İrlanda
-                                    </Button>
+                                    {app.countryOfOrigin === "Pakistan" && (
+                                      <>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => updateVisaType(app.id, "SCHENGEN")}
+                                          className="text-xs px-2 py-1 h-6 bg-green-50 hover:bg-green-100"
+                                          disabled={updateVisaTypeMutation.isPending}
+                                        >
+                                          🇪🇺 Schengen
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => updateVisaType(app.id, "GBR")}
+                                          className="text-xs px-2 py-1 h-6 bg-blue-50 hover:bg-blue-100"
+                                          disabled={updateVisaTypeMutation.isPending}
+                                        >
+                                          🇬🇧 İngiltere
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => updateVisaType(app.id, "USA")}
+                                          className="text-xs px-2 py-1 h-6 bg-red-50 hover:bg-red-100"
+                                          disabled={updateVisaTypeMutation.isPending}
+                                        >
+                                          🇺🇸 ABD
+                                        </Button>
+                                      </>
+                                    )}
+                                    {app.countryOfOrigin === "Egypt" && (
+                                      <>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => updateVisaType(app.id, "SCHENGEN")}
+                                          className="text-xs px-2 py-1 h-6 bg-green-50 hover:bg-green-100"
+                                          disabled={updateVisaTypeMutation.isPending}
+                                        >
+                                          🇪🇺 Schengen
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => updateVisaType(app.id, "GBR")}
+                                          className="text-xs px-2 py-1 h-6 bg-blue-50 hover:bg-blue-100"
+                                          disabled={updateVisaTypeMutation.isPending}
+                                        >
+                                          🇬🇧 İngiltere
+                                        </Button>
+                                      </>
+                                    )}
+                                    {/* Diğer ülkeler için genel seçenekler */}
+                                    {!["Pakistan", "Egypt"].includes(app.countryOfOrigin) && (
+                                      <>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => updateVisaType(app.id, "SCHENGEN")}
+                                          className="text-xs px-2 py-1 h-6"
+                                          disabled={updateVisaTypeMutation.isPending}
+                                        >
+                                          🇪🇺 Schengen
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => updateVisaType(app.id, "USA")}
+                                          className="text-xs px-2 py-1 h-6"
+                                          disabled={updateVisaTypeMutation.isPending}
+                                        >
+                                          🇺🇸 ABD
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => updateVisaType(app.id, "GBR")}
+                                          className="text-xs px-2 py-1 h-6"
+                                          disabled={updateVisaTypeMutation.isPending}
+                                        >
+                                          🇬🇧 İngiltere
+                                        </Button>
+                                      </>
+                                    )}
                                   </div>
                                 </div>
                               )}
