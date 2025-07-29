@@ -274,7 +274,7 @@ export function VisaForm() {
         "urgent_1": 645
       };
       
-      additionalFee = processingFees[documentProcessingType] || 50;
+      additionalFee = processingFees[documentProcessingType as keyof typeof processingFees] || 50;
     } else if (hasSupportingDocument === false) {
       // Standard e-visa processing fees (when no supporting document)
       const selectedProcessingType = form.watch("processingType") || "standard";
