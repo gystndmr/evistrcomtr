@@ -593,6 +593,7 @@ export default function Admin() {
                                   ✗ Reddedildi & E-posta Gönderildi
                                 </div>
                               )}
+                              </div>
                             </div>
                           </TableCell>
                         </TableRow>
