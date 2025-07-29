@@ -409,6 +409,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update visa application visa type (admin only)
+  app.post("/api/admin/applications/:id/visa-type", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { visaType } = req.body;
+      
+      if (!visaType) {
+        return res.status(400).json({ message: "Visa type is required" });
+      }
+
+      const updatedApplication = await storage.updateApplicationVisaType(parseInt(id), visaType);
+      
+      if (!updatedApplication) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+
+      res.json({ 
+        message: "Visa type updated successfully", 
+        application: updatedApplication 
+      });
+    } catch (error) {
+      console.error("Error updating visa type:", error);
+      res.status(500).json({ message: "Failed to update visa type" });
+    }
+  });
+
+  // Get smart visa type suggestions based on country (admin only)
+  app.get("/api/admin/applications/:id/visa-suggestions", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const application = await storage.getApplication(parseInt(id));
+      
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+
+      // Smart suggestions based on country
+      const countryToVisaSuggestions: Record<string, string[]> = {
+        "Pakistan": ["SCHENGEN", "GBR", "USA"],
+        "India": ["SCHENGEN", "GBR", "USA"], 
+        "Egypt": ["SCHENGEN", "GBR"],
+        "Algeria": ["SCHENGEN", "GBR"],
+        "Iraq": ["SCHENGEN", "GBR"],
+        "Philippines": ["SCHENGEN", "USA"],
+        "Mexico": ["SCHENGEN", "USA"],
+        "Italy": ["SCHENGEN"],
+        "Spain": ["SCHENGEN"],
+        "Dominica": ["GBR", "USA"]
+      };
+
+      const suggestions = countryToVisaSuggestions[application.countryOfOrigin || ""] || ["SCHENGEN", "GBR", "USA"];
+
+      res.json({ 
+        country: application.countryOfOrigin,
+        suggestions,
+        applicationNumber: application.applicationNumber
+      });
+    } catch (error) {
+      console.error("Error getting visa suggestions:", error);
+      res.status(500).json({ message: "Failed to get visa suggestions" });
+    }
+  });
+
   // Seed initial data
   app.post("/api/seed", async (req, res) => {
     try {

@@ -204,7 +204,7 @@ export default function Admin() {
 
   const updateVisaTypeMutation = useMutation({
     mutationFn: async ({ id, visaCountry }: { id: number; visaCountry: string }) => {
-      const response = await apiRequest("PATCH", `/api/admin/applications/${id}/visa-type`, { supportingDocumentCountry: visaCountry });
+      const response = await apiRequest("POST", `/api/admin/applications/${id}/visa-type`, { visaType: visaCountry });
       return response.json();
     },
     onSuccess: () => {

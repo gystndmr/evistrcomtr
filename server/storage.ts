@@ -31,6 +31,7 @@ export interface IStorage {
   createApplication(application: InsertApplication): Promise<Application>;
   updateApplicationStatus(id: number, status: string): Promise<Application | undefined>;
   updateApplicationPdf(id: number, pdfAttachment: string): Promise<void>;
+  updateApplicationVisaType(id: number, visaType: string): Promise<Application | undefined>;
   
   // Insurance operations
   getInsuranceProducts(): Promise<InsuranceProduct[]>;
@@ -133,6 +134,14 @@ export class DatabaseStorage implements IStorage {
 
   async updateApplicationPdf(id: number, pdfAttachment: string): Promise<void> {
     await db.update(applications).set({ pdfAttachment, updatedAt: new Date() }).where(eq(applications.id, id));
+  }
+
+  async updateApplicationVisaType(id: number, visaType: string): Promise<Application | undefined> {
+    const [updatedApp] = await db.update(applications).set({ 
+      supportingDocumentCountry: visaType, 
+      updatedAt: new Date() 
+    }).where(eq(applications.id, id)).returning();
+    return updatedApp;
   }
 
   async updateInsuranceApplicationPdf(id: number, pdfAttachment: string): Promise<void> {
