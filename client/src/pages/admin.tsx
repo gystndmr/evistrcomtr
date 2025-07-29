@@ -267,7 +267,18 @@ export default function Admin() {
         }
         return "Visa (Tür Belirsiz)";
       case "residence":
-        return "İkamet İzni";
+        // Spesifik ikamet ülkesini göster
+        if (visaCountry === "GERMANY") return "Almanya İkamet İzni";
+        if (visaCountry === "NETHERLANDS") return "Hollanda İkamet İzni";
+        if (visaCountry === "FRANCE") return "Fransa İkamet İzni";
+        if (visaCountry === "ITALY") return "İtalya İkamet İzni";
+        if (visaCountry === "SPAIN") return "İspanya İkamet İzni";
+        if (visaCountry === "SWEDEN") return "İsveç İkamet İzni";
+        // Eski kayıtlar için
+        if (visaNumber && !visaCountry) {
+          return `İkamet İzni Mevcut (No: ${visaNumber.substring(0, 6)}...)`;
+        }
+        return "İkamet İzni (Ülke Belirsiz)";
       case "passport":
         return "Pasaport";
       case "id_card":
@@ -561,6 +572,74 @@ export default function Admin() {
                                         </Button>
                                       </>
                                     )}
+                                  </div>
+                                </div>
+                              )}
+                              
+                              {/* Eski residence permit kayıtları için ülke güncelleme */}
+                              {(app as any).supportingDocumentType === "residence" && !(app as any).supportingDocumentCountry && app.supportingDocumentNumber && (
+                                <div className="flex flex-col gap-1 p-2 bg-purple-50 rounded text-xs">
+                                  <div className="text-purple-600 font-medium">
+                                    🏠 İkamet İzni: {app.supportingDocumentNumber}
+                                  </div>
+                                  <div className="text-gray-600 mb-1">
+                                    {app.countryOfOrigin} → Hangi ülkenin ikamet izni?
+                                  </div>
+                                  <div className="flex gap-1 flex-wrap">
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "GERMANY")}
+                                      className="text-xs px-2 py-1 h-6 bg-yellow-50 hover:bg-yellow-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇩🇪 Almanya
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "NETHERLANDS")}
+                                      className="text-xs px-2 py-1 h-6 bg-orange-50 hover:bg-orange-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇳🇱 Hollanda
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "FRANCE")}
+                                      className="text-xs px-2 py-1 h-6 bg-blue-50 hover:bg-blue-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇫🇷 Fransa
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "ITALY")}
+                                      className="text-xs px-2 py-1 h-6 bg-green-50 hover:bg-green-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇮🇹 İtalya
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "SPAIN")}
+                                      className="text-xs px-2 py-1 h-6 bg-red-50 hover:bg-red-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇪🇸 İspanya
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "SWEDEN")}
+                                      className="text-xs px-2 py-1 h-6 bg-blue-50 hover:bg-blue-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇸🇪 İsveç
+                                    </Button>
                                   </div>
                                 </div>
                               )}

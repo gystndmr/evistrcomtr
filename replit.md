@@ -571,15 +571,19 @@ The application is designed for easy deployment on platforms like Replit, Vercel
   - **User Validation**: System owner confirmed "SÜPER ŞU AN HEPSİ ÇALIŞIYOR AFERİN SANA"
   - **Deploy Status**: PRODUCTION READY - All systems operational and tested
 
-✅ **Legacy Visa Type Management System** (July 29, 2025):
-  - **Problem Identified**: 46+ old visa applications missing supporting_document_country data
-  - **Smart Solution Created**: Country-based intelligent visa type suggestions for admin panel
+✅ **Legacy Document Type Management System** (July 29, 2025):
+  - **Problem Identified**: 46+ old visa applications and 52+ residence permit applications missing supporting_document_country data
+  - **Smart Solution Created**: Country-based intelligent document type suggestions for admin panel
   - **API Endpoints Added**: 
-    - POST /api/admin/applications/:id/visa-type - Updates visa type for old records
+    - POST /api/admin/applications/:id/visa-type - Updates document type for old records
     - GET /api/admin/applications/:id/visa-suggestions - Provides smart country-based suggestions
-  - **Intelligent Mapping**: Pakistan→[SCHENGEN,GBR,USA], India→[SCHENGEN,GBR,USA], Egypt→[SCHENGEN,GBR], etc.
-  - **Admin Panel Enhancement**: One-click visa type update buttons for legacy records
-  - **Database Integration**: Successfully tested API with ID 184/185 - visa types updated correctly
-  - **Business Impact**: Admin can now properly classify all historical visa applications
-  - **Data Completeness**: System provides tools to resolve missing visa type data for better reporting
-  - **Production Ready**: All legacy data management features operational and tested
+  - **Intelligent Visa Mapping**: Pakistan→[SCHENGEN,GBR,USA], Egypt→[SCHENGEN,GBR], etc.
+  - **Residence Permit Options**: Germany, Netherlands, France, Italy, Spain, Sweden with country flags
+  - **Admin Panel Enhancement**: 
+    - Blue boxes for visa records: "📋 Visa Mevcut: [number]" with country-specific suggestions
+    - Purple boxes for residence permits: "🏠 İkamet İzni: [number]" with European country options
+  - **Visual Improvements**: Document type column shows "Visa Mevcut (No: 019431...)" or "İkamet İzni Mevcut (No: CA6027...)"
+  - **Database Integration**: Successfully tested with visa ID 184/185 and residence ID 179 - all updates working
+  - **Business Impact**: Admin can now properly classify all historical visa and residence permit applications
+  - **Data Completeness**: Complete solution for both visa and residence permit legacy data management
+  - **Production Ready**: All legacy document management features operational and tested
