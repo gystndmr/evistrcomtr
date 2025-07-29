@@ -1254,7 +1254,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Direct GPay redirect with params (most common case)
       if (transaction && order) {
         console.log('🎯 Direct GPay redirect detected');
-        const paymentStatus = status === 'success' || status === 'completed' ? 'success' : 'error';
+        // URL'deki payment parametresini kontrol et, status değil
+        const { payment } = req.query;
+        const paymentStatus = payment === 'success' || payment === 'completed' ? 'success' : 'error';
         return res.redirect(`/payment-success?payment=${paymentStatus}&transaction=${transaction}&order=${order}`);
       }
       
