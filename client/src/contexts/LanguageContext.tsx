@@ -55,6 +55,8 @@ interface LanguageProviderProps {
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
   const [currentLanguage, setCurrentLanguage] = useState<Language>(() => {
+
+    
     // Try to get from localStorage first, then auto-detect, finally fallback to English
     const savedLanguage = localStorage.getItem('preferred-language');
     if (savedLanguage) {
