@@ -259,9 +259,6 @@ export function VisaForm() {
   });
 
   const calculateTotal = () => {
-    const baseFee = 69; // E-Visa Application Fee is always $69
-    let additionalFee = 0;
-    
     if (hasSupportingDocument === true && documentProcessingType) {
       // Processing fee + Document PDF fee
       const processingFee = 
@@ -274,14 +271,14 @@ export function VisaForm() {
         documentProcessingType === "urgent_1" ? 645 : 0;
       
       const documentPdfFee = 69; // Document PDF fee
-      additionalFee = processingFee + documentPdfFee;
+      return processingFee + documentPdfFee;
     } else if (hasSupportingDocument === false) {
       // Standard e-visa processing fees (when no supporting document)
       const selectedProcessingType = form.watch("processingType") || "standard";
-      additionalFee = processingTypes.find(p => p.value === selectedProcessingType)?.price || 25;
+      return processingTypes.find(p => p.value === selectedProcessingType)?.price || 25;
     }
     
-    return baseFee + additionalFee;
+    return 0;
   };
 
   const handleCountrySelect = (country: Country | null) => {
@@ -851,15 +848,6 @@ export function VisaForm() {
                                 documentProcessingType === "urgent_1" ? 645 : 0
                               }</p>
                               <p>• Document PDF Fee: $69</p>
-                              <p className="font-bold">• Total Additional Cost: ${(
-                                documentProcessingType === "slow" ? 50 :
-                                documentProcessingType === "standard" ? 115 :
-                                documentProcessingType === "fast" ? 165 :
-                                documentProcessingType === "urgent_24" ? 280 :
-                                documentProcessingType === "urgent_12" ? 330 :
-                                documentProcessingType === "urgent_4" ? 410 :
-                                documentProcessingType === "urgent_1" ? 645 : 0
-                              ) + 69}</p>
                               <p className="font-bold text-lg">• Total Amount: ${calculateTotal()}</p>
                             </div>
                           </div>
