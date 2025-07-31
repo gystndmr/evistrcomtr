@@ -46,10 +46,10 @@ const applicationSchema = z.object({
 type ApplicationFormData = z.infer<typeof applicationSchema>;
 
 const processingTypes = [
-  { value: "standard", label: "Standard Processing (5-7 days)", price: 25 },
-  { value: "fast", label: "Fast Processing (1-3 days)", price: 75 },
-  { value: "express", label: "Express Processing (24 hours)", price: 175 },
-  { value: "urgent", label: "Urgent Processing (4 hours)", price: 295 },
+  { value: "standard", label: "Ready in 5-7 days", price: 25 },
+  { value: "fast", label: "Ready in 1-3 days", price: 75 },
+  { value: "express", label: "Ready in 24 hours", price: 175 },
+  { value: "urgent", label: "Ready in 4 hours", price: 295 },
 ];
 
 export function VisaForm() {
@@ -823,13 +823,13 @@ export function VisaForm() {
                             <SelectValue placeholder="Select processing type" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="slow">Slow Processing (7 days) - $50</SelectItem>
-                            <SelectItem value="standard">Standard Processing (4 days) - $115</SelectItem>
-                            <SelectItem value="fast">Fast Processing (2 days) - $165</SelectItem>
-                            <SelectItem value="urgent_24">Urgent Processing (24 hours) - $280</SelectItem>
-                            <SelectItem value="urgent_12">Urgent Processing (12 hours) - $330</SelectItem>
-                            <SelectItem value="urgent_4">Urgent Processing (4 hours) - $410</SelectItem>
-                            <SelectItem value="urgent_1">Urgent Processing (1 hour) - $645</SelectItem>
+                            <SelectItem value="slow">Ready in 7 days - $50</SelectItem>
+                            <SelectItem value="standard">Ready in 4 days - $115</SelectItem>
+                            <SelectItem value="fast">Ready in 2 days - $165</SelectItem>
+                            <SelectItem value="urgent_24">Ready in 24 hours - $280</SelectItem>
+                            <SelectItem value="urgent_12">Ready in 12 hours - $330</SelectItem>
+                            <SelectItem value="urgent_4">Ready in 4 hours - $410</SelectItem>
+                            <SelectItem value="urgent_1">Ready in 1 hour - $645</SelectItem>
                           </SelectContent>
                         </Select>
                         
