@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Insurance Test</title>
+</head>
+<body>
+    <h1>Admin Panel Insurance Applications Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        async function testInsuranceAPI() {
+            try {
+                console.log('Testing insurance applications API...');
+                
+                const response = await fetch('/api/admin/insurance-applications?page=1&limit=5');
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Data received:', data);
+                
+                document.getElementById('results').innerHTML = `
+                    <h2>API Test Results:</h2>
+                    <p><strong>Status:</strong> ${response.status} ${response.statusText}</p>
+                    <p><strong>Total Count:</strong> ${data.totalCount}</p>
+                    <p><strong>Applications:</strong> ${data.applications?.length || 0}</p>
+                    <p><strong>Current Page:</strong> ${data.currentPage}</p>
+                    <p><strong>Total Pages:</strong> ${data.totalPages}</p>
+                    
+                    <h3>Sample Applications:</h3>
+                    <pre>${JSON.stringify(data.applications?.slice(0, 2), null, 2)}</pre>
+                `;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('results').innerHTML = `
+                    <h2>API Test Error:</h2>
+                    <p style="color: red;">${error.message}</p>
+                `;
+            }
+        }
+        
+        // Test when page loads
+        testInsuranceAPI();
+    </script>
+</body>
+</html>

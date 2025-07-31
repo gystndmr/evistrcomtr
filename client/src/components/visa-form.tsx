@@ -263,19 +263,18 @@ export function VisaForm() {
     let additionalFee = 0;
     
     if (hasSupportingDocument === true && documentProcessingType) {
-      // Document processing fees (includes processing + document fee)
-      const documentProcessingTypes = [
-        { value: "slow", price: 119 },
-        { value: "standard", price: 184 },
-        { value: "fast", price: 234 }, 
-        { value: "urgent_24", price: 349 },
-        { value: "urgent_12", price: 399 },
-        { value: "urgent_4", price: 479 },
-        { value: "urgent_1", price: 714 }
-      ];
+      // Processing fee + Document PDF fee
+      const processingFee = 
+        documentProcessingType === "slow" ? 50 :
+        documentProcessingType === "standard" ? 115 :
+        documentProcessingType === "fast" ? 165 :
+        documentProcessingType === "urgent_24" ? 280 :
+        documentProcessingType === "urgent_12" ? 330 :
+        documentProcessingType === "urgent_4" ? 410 :
+        documentProcessingType === "urgent_1" ? 645 : 0;
       
-      const selectedProcessing = documentProcessingTypes.find(p => p.value === documentProcessingType);
-      additionalFee = selectedProcessing?.price || 119;
+      const documentPdfFee = 69; // Document PDF fee
+      additionalFee = processingFee + documentPdfFee;
     } else if (hasSupportingDocument === false) {
       // Standard e-visa processing fees (when no supporting document)
       const selectedProcessingType = form.watch("processingType") || "standard";
@@ -827,30 +826,40 @@ export function VisaForm() {
                             <SelectValue placeholder="Select processing type" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="slow">Slow Document Processing (7 days) - $119</SelectItem>
-                            <SelectItem value="standard">Standard Document Processing (4 days) - $184</SelectItem>
-                            <SelectItem value="fast">Fast Document Processing (2 days) - $234</SelectItem>
-                            <SelectItem value="urgent_24">Urgent Document Processing (24 hours) - $349</SelectItem>
-                            <SelectItem value="urgent_12">Urgent Document Processing (12 hours) - $399</SelectItem>
-                            <SelectItem value="urgent_4">Urgent Document Processing (4 hours) - $479</SelectItem>
-                            <SelectItem value="urgent_1">Urgent Document Processing (1 hour) - $714</SelectItem>
+                            <SelectItem value="slow">Slow Processing (7 days) - $50</SelectItem>
+                            <SelectItem value="standard">Standard Processing (4 days) - $115</SelectItem>
+                            <SelectItem value="fast">Fast Processing (2 days) - $165</SelectItem>
+                            <SelectItem value="urgent_24">Urgent Processing (24 hours) - $280</SelectItem>
+                            <SelectItem value="urgent_12">Urgent Processing (12 hours) - $330</SelectItem>
+                            <SelectItem value="urgent_4">Urgent Processing (4 hours) - $410</SelectItem>
+                            <SelectItem value="urgent_1">Urgent Processing (1 hour) - $645</SelectItem>
                           </SelectContent>
                         </Select>
                         
                         {documentProcessingType && (
                           <div className="bg-blue-50 p-4 rounded-lg">
-                            <h4 className="font-medium text-blue-900 mb-2">Fee Summary:</h4>
+                            <h4 className="font-medium text-blue-900 mb-2">Processing Fee Summary:</h4>
                             <div className="text-sm text-blue-800">
-                              <p>• E-Visa Base Fee: $69</p>
-                              <p>• Document Processing Fee: ${
-                                documentProcessingType === "slow" ? 119 :
-                                documentProcessingType === "standard" ? 184 :
-                                documentProcessingType === "fast" ? 234 :
-                                documentProcessingType === "urgent_24" ? 349 :
-                                documentProcessingType === "urgent_12" ? 399 :
-                                documentProcessingType === "urgent_4" ? 479 :
-                                documentProcessingType === "urgent_1" ? 714 : 0
-                              } (includes processing + document fee)</p>
+                              <p>• Selected: {documentProcessingType}</p>
+                              <p>• Processing Fee: ${
+                                documentProcessingType === "slow" ? 50 :
+                                documentProcessingType === "standard" ? 115 :
+                                documentProcessingType === "fast" ? 165 :
+                                documentProcessingType === "urgent_24" ? 280 :
+                                documentProcessingType === "urgent_12" ? 330 :
+                                documentProcessingType === "urgent_4" ? 410 :
+                                documentProcessingType === "urgent_1" ? 645 : 0
+                              }</p>
+                              <p>• Document PDF Fee: $69</p>
+                              <p className="font-bold">• Total Additional Cost: ${(
+                                documentProcessingType === "slow" ? 50 :
+                                documentProcessingType === "standard" ? 115 :
+                                documentProcessingType === "fast" ? 165 :
+                                documentProcessingType === "urgent_24" ? 280 :
+                                documentProcessingType === "urgent_12" ? 330 :
+                                documentProcessingType === "urgent_4" ? 410 :
+                                documentProcessingType === "urgent_1" ? 645 : 0
+                              ) + 69}</p>
                               <p className="font-bold text-lg">• Total Amount: ${calculateTotal()}</p>
                             </div>
                           </div>
