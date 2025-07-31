@@ -78,7 +78,7 @@ export default function Admin() {
     enabled: isAuthenticated,
   });
 
-  const { data: insuranceApplicationsData } = useQuery<PaginatedResponse<InsuranceApplication>>({
+  const { data: insuranceApplicationsData, isLoading: insuranceLoading, error: insuranceError } = useQuery<PaginatedResponse<InsuranceApplication>>({
     queryKey: ["/api/admin/insurance-applications", insuranceCurrentPage, debouncedSearchTerm],
     queryFn: async () => {
       const params = new URLSearchParams({
@@ -87,13 +87,24 @@ export default function Admin() {
         search: debouncedSearchTerm
       });
       const response = await fetch(`/api/admin/insurance-applications?${params}`);
-      return response.json();
+      const data = await response.json();
+      console.log('Insurance applications data received:', data);
+      return data;
     },
     enabled: isAuthenticated,
   });
 
   const applications = applicationsData?.applications || [];
   const insuranceApplications = insuranceApplicationsData?.applications || [];
+  
+  // Debug log
+  console.log('Insurance applications state:', {
+    isAuthenticated,
+    insuranceLoading,
+    insuranceError,
+    insuranceApplicationsData,
+    insuranceApplications: insuranceApplications.length
+  });
 
   const { data: stats } = useQuery<AdminStats>({
     queryKey: ["/api/admin/stats"],
@@ -884,7 +895,26 @@ export default function Admin() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredInsuranceApplications.map((app) => (
+                      {insuranceLoading ? (
+                        <TableRow>
+                          <TableCell colSpan={16} className="text-center py-8">
+                            Sigorta başvuruları yükleniyor...
+                          </TableCell>
+                        </TableRow>
+                      ) : insuranceError ? (
+                        <TableRow>
+                          <TableCell colSpan={16} className="text-center py-8 text-red-500">
+                            Hata: {insuranceError.message}
+                          </TableCell>
+                        </TableRow>
+                      ) : filteredInsuranceApplications.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={16} className="text-center py-8">
+                            Hiç sigorta başvurusu bulunamadı.
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        filteredInsuranceApplications.map((app) => (
                         <TableRow key={app.id}>
                           <TableCell className="font-medium">{app.applicationNumber}</TableCell>
                           <TableCell>{app.firstName} {app.lastName}</TableCell>
@@ -985,7 +1015,8 @@ export default function Admin() {
                             </div>
                           </TableCell>
                         </TableRow>
-                      ))}
+                        ))
+                      )}
                     </TableBody>
                   </Table>
                 </div>
