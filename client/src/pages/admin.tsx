@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -31,6 +31,9 @@ export default function Admin() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const [selectedInsuranceApp, setSelectedInsuranceApp] = useState<InsuranceApplication | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [insuranceCurrentPage, setInsuranceCurrentPage] = useState(1);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [pdfFile, setPdfFile] = useState<string>("");
   const [pdfDialogOpen, setPdfDialogOpen] = useState(false);
   const [currentAppId, setCurrentAppId] = useState<number | null>(null);
@@ -39,15 +42,58 @@ export default function Admin() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: applications = [] } = useQuery<Application[]>({
-    queryKey: ["/api/admin/applications"],
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Reset page when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+    setInsuranceCurrentPage(1);
+  }, [debouncedSearchTerm]);
+
+  interface PaginatedResponse<T> {
+    applications: T[];
+    totalCount: number;
+    currentPage: number;
+    totalPages: number;
+    hasMore: boolean;
+  }
+
+  const { data: applicationsData } = useQuery<PaginatedResponse<Application>>({
+    queryKey: ["/api/admin/applications", currentPage, debouncedSearchTerm],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: "50",
+        search: debouncedSearchTerm
+      });
+      const response = await fetch(`/api/admin/applications?${params}`);
+      return response.json();
+    },
     enabled: isAuthenticated,
   });
 
-  const { data: insuranceApplications = [] } = useQuery<InsuranceApplication[]>({
-    queryKey: ["/api/admin/insurance-applications"],
+  const { data: insuranceApplicationsData } = useQuery<PaginatedResponse<InsuranceApplication>>({
+    queryKey: ["/api/admin/insurance-applications", insuranceCurrentPage, debouncedSearchTerm],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        page: insuranceCurrentPage.toString(),
+        limit: "50", 
+        search: debouncedSearchTerm
+      });
+      const response = await fetch(`/api/admin/insurance-applications?${params}`);
+      return response.json();
+    },
     enabled: isAuthenticated,
   });
+
+  const applications = applicationsData?.applications || [];
+  const insuranceApplications = insuranceApplicationsData?.applications || [];
 
   const { data: stats } = useQuery<AdminStats>({
     queryKey: ["/api/admin/stats"],
@@ -63,19 +109,9 @@ export default function Admin() {
     }
   };
 
-  const filteredApplications = applications.filter(app => 
-    app.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.applicationNumber.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const filteredInsuranceApplications = insuranceApplications.filter(app => 
-    app.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.applicationNumber.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // No need for client-side filtering since backend handles it
+  const filteredApplications = applications;
+  const filteredInsuranceApplications = insuranceApplications;
 
   // Helper function to format dates - handle both Date objects and strings
   const formatDate = (date: string | Date | null | undefined) => {
@@ -411,8 +447,8 @@ export default function Admin() {
         {/* Applications Tabs */}
         <Tabs defaultValue="visa" className="w-full">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="visa">Vize Başvuruları ({filteredApplications.length})</TabsTrigger>
-            <TabsTrigger value="insurance">Sigorta Başvuruları ({filteredInsuranceApplications.length})</TabsTrigger>
+            <TabsTrigger value="visa">Vize Başvuruları ({applicationsData?.totalCount || 0})</TabsTrigger>
+            <TabsTrigger value="insurance">Sigorta Başvuruları ({insuranceApplicationsData?.totalCount || 0})</TabsTrigger>
             <TabsTrigger value="chat">Canlı Destek</TabsTrigger>
           </TabsList>
           
@@ -787,6 +823,34 @@ export default function Admin() {
                     </TableBody>
                   </Table>
                 </div>
+                
+                {/* Visa Applications Pagination */}
+                {applicationsData && applicationsData.totalPages > 1 && (
+                  <div className="flex items-center justify-between px-4 py-3 border-t">
+                    <div className="text-sm text-gray-700">
+                      Sayfa {applicationsData.currentPage} / {applicationsData.totalPages} 
+                      (Toplam {applicationsData.totalCount} kayıt)
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                        disabled={currentPage === 1}
+                      >
+                        Önceki
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(Math.min(applicationsData.totalPages, currentPage + 1))}
+                        disabled={currentPage === applicationsData.totalPages}
+                      >
+                        Sonraki
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -925,6 +989,34 @@ export default function Admin() {
                     </TableBody>
                   </Table>
                 </div>
+                
+                {/* Insurance Applications Pagination */}
+                {insuranceApplicationsData && insuranceApplicationsData.totalPages > 1 && (
+                  <div className="flex items-center justify-between px-4 py-3 border-t">
+                    <div className="text-sm text-gray-700">
+                      Sayfa {insuranceApplicationsData.currentPage} / {insuranceApplicationsData.totalPages} 
+                      (Toplam {insuranceApplicationsData.totalCount} kayıt)
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setInsuranceCurrentPage(Math.max(1, insuranceCurrentPage - 1))}
+                        disabled={insuranceCurrentPage === 1}
+                      >
+                        Önceki
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setInsuranceCurrentPage(Math.min(insuranceApplicationsData.totalPages, insuranceCurrentPage + 1))}
+                        disabled={insuranceCurrentPage === insuranceApplicationsData.totalPages}
+                      >
+                        Sonraki
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

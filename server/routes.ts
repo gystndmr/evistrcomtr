@@ -670,8 +670,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin routes
   app.get("/api/admin/applications", async (req, res) => {
     try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 50;
+      const search = req.query.search as string || '';
+      
       const applications = await storage.getApplications();
-      res.json(applications);
+      
+      // Filter applications based on search term
+      let filteredApplications = applications;
+      if (search) {
+        filteredApplications = applications.filter(app => 
+          app.firstName.toLowerCase().includes(search.toLowerCase()) ||
+          app.lastName.toLowerCase().includes(search.toLowerCase()) ||
+          app.email.toLowerCase().includes(search.toLowerCase()) ||
+          app.applicationNumber.toLowerCase().includes(search.toLowerCase())
+        );
+      }
+      
+      // Pagination
+      const startIndex = (page - 1) * limit;
+      const endIndex = startIndex + limit;
+      const paginatedApplications = filteredApplications.slice(startIndex, endIndex);
+      
+      res.json({
+        applications: paginatedApplications,
+        totalCount: filteredApplications.length,
+        currentPage: page,
+        totalPages: Math.ceil(filteredApplications.length / limit),
+        hasMore: endIndex < filteredApplications.length
+      });
     } catch (error) {
       console.error("Error fetching applications:", error);
       res.status(500).json({ message: "Failed to fetch applications" });
@@ -680,8 +707,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/admin/insurance-applications", async (req, res) => {
     try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 50;
+      const search = req.query.search as string || '';
+      
       const applications = await storage.getInsuranceApplications();
-      res.json(applications);
+      
+      // Filter applications based on search term
+      let filteredApplications = applications;
+      if (search) {
+        filteredApplications = applications.filter(app => 
+          app.firstName.toLowerCase().includes(search.toLowerCase()) ||
+          app.lastName.toLowerCase().includes(search.toLowerCase()) ||
+          app.email.toLowerCase().includes(search.toLowerCase()) ||
+          app.applicationNumber.toLowerCase().includes(search.toLowerCase())
+        );
+      }
+      
+      // Pagination
+      const startIndex = (page - 1) * limit;
+      const endIndex = startIndex + limit;
+      const paginatedApplications = filteredApplications.slice(startIndex, endIndex);
+      
+      res.json({
+        applications: paginatedApplications,
+        totalCount: filteredApplications.length,
+        currentPage: page,
+        totalPages: Math.ceil(filteredApplications.length / limit),
+        hasMore: endIndex < filteredApplications.length
+      });
     } catch (error) {
       console.error("Error fetching insurance applications:", error);
       res.status(500).json({ message: "Failed to fetch insurance applications" });
