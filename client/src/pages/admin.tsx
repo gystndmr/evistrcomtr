@@ -472,7 +472,7 @@ export default function Admin() {
                           <TableCell>{app.arrivalDate ? formatDate(app.arrivalDate) : 'N/A'}</TableCell>
                           <TableCell>{app.processingType}</TableCell>
                           <TableCell>{app.documentType}</TableCell>
-                          <TableCell>{getSupportingDocumentTypeDisplay((app as any).supportingDocumentType, (app as any).supportingDocumentCountry, app.supportingDocumentNumber)}</TableCell>
+                          <TableCell>{getSupportingDocumentTypeDisplay((app as any).supportingDocumentType, (app as any).supportingDocumentCountry, app.supportingDocumentNumber || undefined)}</TableCell>
                           <TableCell>{app.supportingDocumentNumber || 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentStartDate ? formatDate(app.supportingDocumentStartDate) : 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentEndDate ? formatDate(app.supportingDocumentEndDate) : 'N/A'}</TableCell>
@@ -546,7 +546,7 @@ export default function Admin() {
                                       </>
                                     )}
                                     {/* Diğer ülkeler için genel seçenekler */}
-                                    {!["Pakistan", "Egypt"].includes(app.countryOfOrigin) && (
+                                    {!["Pakistan", "Egypt"].includes(app.countryOfOrigin || "") && (
                                       <>
                                         <Button
                                           size="sm"
