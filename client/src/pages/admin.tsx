@@ -81,14 +81,36 @@ export default function Admin() {
   const { data: insuranceApplicationsData, isLoading: insuranceLoading, error: insuranceError } = useQuery<PaginatedResponse<InsuranceApplication>>({
     queryKey: ["/api/admin/insurance-applications", insuranceCurrentPage, debouncedSearchTerm],
     queryFn: async () => {
+      console.log('Making insurance applications request with params:', {
+        page: insuranceCurrentPage,
+        limit: 50,
+        search: debouncedSearchTerm,
+        isAuthenticated
+      });
+      
       const params = new URLSearchParams({
         page: insuranceCurrentPage.toString(),
         limit: "50", 
         search: debouncedSearchTerm
       });
-      const response = await fetch(`/api/admin/insurance-applications?${params}`);
+      
+      const url = `/api/admin/insurance-applications?${params}`;
+      console.log('Request URL:', url);
+      
+      const response = await fetch(url);
+      console.log('Response status:', response.status, response.statusText);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
       const data = await response.json();
-      console.log('Insurance applications data received:', data);
+      console.log('Insurance applications data received:', {
+        applications: data.applications?.length || 0,
+        totalCount: data.totalCount,
+        currentPage: data.currentPage,
+        totalPages: data.totalPages
+      });
       return data;
     },
     enabled: isAuthenticated,
@@ -910,7 +932,7 @@ export default function Admin() {
                       ) : filteredInsuranceApplications.length === 0 ? (
                         <TableRow>
                           <TableCell colSpan={16} className="text-center py-8">
-                            Hiç sigorta başvurusu bulunamadı.
+                            Hiç sigorta başvurusu bulunamadı. Debug: isAuth={isAuthenticated ? 'true' : 'false'}, hasData={!!insuranceApplicationsData ? 'true' : 'false'}
                           </TableCell>
                         </TableRow>
                       ) : (
