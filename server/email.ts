@@ -23,11 +23,11 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   console.log('🔧 To address:', options.to);
   console.log('🔧 Subject:', options.subject);
   
-  // Always use verified address to prevent customer complaints
-  const verifiedEmail = "info@visatanzania.org"; // Only verified address in SendGrid
+  // Use environment variable or fallback to verified address
+  const fromEmail = process.env.SENDGRID_FROM_EMAIL || "info@visatanzania.org";
   const emailOptions = {
     ...options,
-    from: verifiedEmail
+    from: fromEmail
   };
   
   console.log('🔧 From address (verified only):', emailOptions.from);

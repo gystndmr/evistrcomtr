@@ -1465,7 +1465,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ success: true, message: 'Test email sent successfully' });
     } catch (error) {
       console.error('❌ Test email error:', error);
-      res.status(500).json({ error: 'Failed to send test email', details: error.message });
+      res.status(500).json({ error: 'Failed to send test email', details: (error as any).message });
     }
   });
 
