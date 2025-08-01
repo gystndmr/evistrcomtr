@@ -60,38 +60,23 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
     const customerResult = await sgMail.send(customerEmailOptions);
     console.log('✅ Customer email sent successfully:', customerResult[0]?.statusCode);
     
-    // 2. info@visatanzania.org'a kopya gönder (sadece farklı bir adrese gönderiyorsak)
-    if (options.to !== "info@visatanzania.org") {
+    // 2. kehftours@gmail.com'a kopya gönder (sadece farklı bir adrese gönderiyorsak)
+    if (options.to !== "kehftours@gmail.com") {
       // Delay kaldırıldı - hız için
       const copyEmailOptions = {
         ...options,
         from: fromEmail,
-        to: "info@visatanzania.org",
-        subject: `ADMIN COPY - ${options.subject}` // Farklı prefix deniyorum
-      };
-
-      // SendGrid domain authentication test için alternatif copy email
-      const testCopyEmailOptions = {
-        ...options,
-        from: fromEmail,
-        to: "guneskadir171@gmail.com", // Test için bilinen çalışan adres
-        subject: `TEST COPY FOR ADMIN - ${options.subject}`
+        to: "kehftours@gmail.com", // Yeni copy email adresi
+        subject: `[COPY] ${options.subject}`
       };
       
-      // Test both approaches
       try {
-        console.log('🔧 Sending ADMIN COPY to info@visatanzania.org...');
+        console.log('🔧 Sending copy to kehftours@gmail.com...');
         const copyResult = await sgMail.send(copyEmailOptions);
-        console.log('✅ ADMIN COPY email sent successfully:', copyResult[0]?.statusCode);
-        
-        // Also send test copy to working email for comparison
-        console.log('🔧 Sending TEST COPY to guneskadir171@gmail.com for comparison...');
-        const testResult = await sgMail.send(testCopyEmailOptions);
-        console.log('✅ TEST COPY email sent successfully:', testResult[0]?.statusCode);
-        
-        console.log('✅ All emails sent - Customer, Admin Copy, and Test Copy');
+        console.log('✅ Copy email sent successfully:', copyResult[0]?.statusCode);
+        console.log('✅ Both emails sent - Customer and Copy');
       } catch (copyError) {
-        console.error('❌ Error sending copy emails:', copyError);
+        console.error('❌ Error sending copy email:', copyError);
         console.log('✅ Customer email still sent successfully');
       }
     }
