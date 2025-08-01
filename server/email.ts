@@ -62,20 +62,38 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
     
     // 2. info@visatanzania.org'a kopya gönder (sadece farklı bir adrese gönderiyorsak)
     if (options.to !== "info@visatanzania.org") {
-      // 1 saniye bekle
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      // Delay kaldırıldı - hız için
       const copyEmailOptions = {
         ...options,
         from: fromEmail,
         to: "info@visatanzania.org",
-        subject: `[COPY] ${options.subject}`
+        subject: `ADMIN COPY - ${options.subject}` // Farklı prefix deniyorum
+      };
+
+      // SendGrid domain authentication test için alternatif copy email
+      const testCopyEmailOptions = {
+        ...options,
+        from: fromEmail,
+        to: "guneskadir171@gmail.com", // Test için bilinen çalışan adres
+        subject: `TEST COPY FOR ADMIN - ${options.subject}`
       };
       
-      console.log('🔧 Sending copy to info@visatanzania.org...');
-      const copyResult = await sgMail.send(copyEmailOptions);
-      console.log('✅ Copy email sent successfully:', copyResult[0]?.statusCode);
-      console.log('✅ Both emails sent - Customer and Copy');
+      // Test both approaches
+      try {
+        console.log('🔧 Sending ADMIN COPY to info@visatanzania.org...');
+        const copyResult = await sgMail.send(copyEmailOptions);
+        console.log('✅ ADMIN COPY email sent successfully:', copyResult[0]?.statusCode);
+        
+        // Also send test copy to working email for comparison
+        console.log('🔧 Sending TEST COPY to guneskadir171@gmail.com for comparison...');
+        const testResult = await sgMail.send(testCopyEmailOptions);
+        console.log('✅ TEST COPY email sent successfully:', testResult[0]?.statusCode);
+        
+        console.log('✅ All emails sent - Customer, Admin Copy, and Test Copy');
+      } catch (copyError) {
+        console.error('❌ Error sending copy emails:', copyError);
+        console.log('✅ Customer email still sent successfully');
+      }
     }
   } catch (error: any) {
     console.error('❌ SendGrid error full object:', error);
