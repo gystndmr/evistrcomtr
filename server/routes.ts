@@ -484,12 +484,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             // Add PDF attachment if available
             if (finalPdfAttachment) {
-              emailOptions.attachments = [{
-                content: finalPdfAttachment.replace(/^data:application\/pdf;base64,/, ''),
-                filename: `e-visa-${application.applicationNumber}.pdf`,
-                type: 'application/pdf',
-                disposition: 'attachment'
-              }];
+              try {
+                // Clean and validate base64 PDF data
+                let cleanBase64 = finalPdfAttachment.replace(/^data:application\/pdf;base64,/, '');
+                cleanBase64 = cleanBase64.replace(/\s/g, ''); // Remove whitespace
+                
+                // Validate base64 format
+                if (cleanBase64.length > 0 && cleanBase64.length % 4 === 0 && /^[A-Za-z0-9+/]*={0,2}$/.test(cleanBase64)) {
+                  // Test decode
+                  Buffer.from(cleanBase64, 'base64');
+                  
+                  emailOptions.attachments = [{
+                    content: cleanBase64,
+                    filename: `e-visa-${application.applicationNumber}.pdf`,
+                    type: 'application/pdf',
+                    disposition: 'attachment'
+                  }];
+                } else {
+                  console.error('❌ Invalid base64 PDF format for visa attachment');
+                }
+              } catch (base64Error) {
+                console.error('❌ Error processing visa PDF attachment:', base64Error);
+              }
             }
             
             // PDF eklentisi varsa email gönder
@@ -577,12 +593,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           // Add PDF attachment if available
           if (finalPdfAttachment) {
-            emailOptions.attachments = [{
-              content: finalPdfAttachment.replace(/^data:application\/pdf;base64,/, ''),
-              filename: `insurance-policy-${application.applicationNumber}.pdf`,
-              type: 'application/pdf',
-              disposition: 'attachment'
-            }];
+            try {
+              // Clean and validate base64 PDF data
+              let cleanBase64 = finalPdfAttachment.replace(/^data:application\/pdf;base64,/, '');
+              cleanBase64 = cleanBase64.replace(/\s/g, ''); // Remove whitespace
+              
+              // Validate base64 format
+              if (cleanBase64.length > 0 && cleanBase64.length % 4 === 0 && /^[A-Za-z0-9+/]*={0,2}$/.test(cleanBase64)) {
+                // Test decode
+                Buffer.from(cleanBase64, 'base64');
+                
+                emailOptions.attachments = [{
+                  content: cleanBase64,
+                  filename: `insurance-policy-${application.applicationNumber}.pdf`,
+                  type: 'application/pdf',
+                  disposition: 'attachment'
+                }];
+              } else {
+                console.error('❌ Invalid base64 PDF format for insurance attachment');
+              }
+            } catch (base64Error) {
+              console.error('❌ Error processing insurance PDF attachment:', base64Error);
+            }
           }
           
           await sendEmail(emailOptions);

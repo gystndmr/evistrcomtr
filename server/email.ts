@@ -48,30 +48,35 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   // Use environment variable or fallback to verified address
   const fromEmail = process.env.SENDGRID_FROM_EMAIL || "info@visatanzania.org";
   
-  // SendGrid multiple recipient approach - hem müşteriye hem info@visatanzania.org'a aynı anda gönder
-  const recipients = [options.to];
-  if (options.to !== "info@visatanzania.org") {
-    recipients.push("info@visatanzania.org");
-  }
-  
-  const emailOptions = {
-    ...options,
-    from: fromEmail,
-    to: recipients, // Multiple recipients array
-    personalizations: recipients.map(recipient => ({
-      to: [{ email: recipient }],
-      subject: recipient === "info@visatanzania.org" ? `[COPY] ${options.subject}` : options.subject
-    }))
-  };
-  
-  console.log('🔧 From address (verified only):', emailOptions.from);
-  console.log('🔧 Recipients:', recipients);
+  console.log('🔧 From address (verified only):', fromEmail);
   
   try {
-    const result = await sgMail.send(emailOptions);
-    console.log('✅ SendGrid response success:', result[0]?.statusCode);
-    console.log('✅ Email sent successfully to all recipients:', recipients);
-    console.log('✅ Full SendGrid response:', JSON.stringify(result, null, 2));
+    // 1. Müşteriye ana email gönder
+    const customerEmailOptions = {
+      ...options,
+      from: fromEmail
+    };
+    
+    const customerResult = await sgMail.send(customerEmailOptions);
+    console.log('✅ Customer email sent successfully:', customerResult[0]?.statusCode);
+    
+    // 2. info@visatanzania.org'a kopya gönder (sadece farklı bir adrese gönderiyorsak)
+    if (options.to !== "info@visatanzania.org") {
+      // 1 saniye bekle
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const copyEmailOptions = {
+        ...options,
+        from: fromEmail,
+        to: "info@visatanzania.org",
+        subject: `[COPY] ${options.subject}`
+      };
+      
+      console.log('🔧 Sending copy to info@visatanzania.org...');
+      const copyResult = await sgMail.send(copyEmailOptions);
+      console.log('✅ Copy email sent successfully:', copyResult[0]?.statusCode);
+      console.log('✅ Both emails sent - Customer and Copy');
+    }
   } catch (error: any) {
     console.error('❌ SendGrid error full object:', error);
     console.error('❌ SendGrid error message:', error.message);
