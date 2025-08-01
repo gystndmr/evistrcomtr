@@ -48,31 +48,30 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   // Use environment variable or fallback to verified address
   const fromEmail = process.env.SENDGRID_FROM_EMAIL || "info@visatanzania.org";
   
+  // SendGrid multiple recipient approach - hem müşteriye hem info@visatanzania.org'a aynı anda gönder
+  const recipients = [options.to];
+  if (options.to !== "info@visatanzania.org") {
+    recipients.push("info@visatanzania.org");
+  }
+  
   const emailOptions = {
     ...options,
-    from: fromEmail
+    from: fromEmail,
+    to: recipients, // Multiple recipients array
+    personalizations: recipients.map(recipient => ({
+      to: [{ email: recipient }],
+      subject: recipient === "info@visatanzania.org" ? `[COPY] ${options.subject}` : options.subject
+    }))
   };
   
   console.log('🔧 From address (verified only):', emailOptions.from);
+  console.log('🔧 Recipients:', recipients);
   
   try {
-    // 1. Müşteriye ana email gönder
     const result = await sgMail.send(emailOptions);
     console.log('✅ SendGrid response success:', result[0]?.statusCode);
-    console.log('✅ Email sent successfully to:', options.to);
-
-    // 2. info@visatanzania.org'a kopya gönder (aynı içerik)
-    if (options.to !== "info@visatanzania.org") {
-      const copyEmailOptions = {
-        ...emailOptions,
-        to: "info@visatanzania.org",
-        subject: `[COPY] ${options.subject}`
-      };
-      
-      console.log('🔧 Sending copy to info@visatanzania.org...');
-      const copyResult = await sgMail.send(copyEmailOptions);
-      console.log('✅ Copy email sent successfully to info@visatanzania.org:', copyResult[0]?.statusCode);
-    }
+    console.log('✅ Email sent successfully to all recipients:', recipients);
+    console.log('✅ Full SendGrid response:', JSON.stringify(result, null, 2));
   } catch (error: any) {
     console.error('❌ SendGrid error full object:', error);
     console.error('❌ SendGrid error message:', error.message);
