@@ -169,10 +169,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           from: "info@visatanzania.org",
           subject: emailContent.subject,
           html: emailContent.html,
-          text: emailContent.text
+          text: emailContent.text,
+          attachments: []
         });
         
-        console.log(`Insurance application received email sent to ${application.email}`);
+        console.log(`✅ Insurance application received email sent to ${application.email}`);
       } catch (emailError) {
         console.error('Failed to send insurance application received email:', emailError);
       }
@@ -507,7 +508,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 <p>Your e-visa application ${application.applicationNumber} requires additional review.</p>
                 <p>Best regards,<br>Turkey E-Visa Team</p>
               `,
-              text: `Your Turkey E-Visa application ${application.applicationNumber} requires additional review.`
+              text: `Your Turkey E-Visa application ${application.applicationNumber} requires additional review.`,
+              attachments: []
             });
             
             console.log(`Visa status email sent to ${application.email}`);
@@ -614,7 +616,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             from: "info@visatanzania.org",
             subject: rejectionEmailContent.subject,
             html: rejectionEmailContent.html,
-            text: rejectionEmailContent.text
+            text: rejectionEmailContent.text,
+            attachments: []
           });
           
           console.log(`Insurance rejection email sent to ${application.email}`);

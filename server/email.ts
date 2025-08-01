@@ -1,4 +1,6 @@
 import sgMail from '@sendgrid/mail';
+import fs from 'fs';
+import path from 'path';
 
 // SendGrid API anahtarını ayarla
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
@@ -9,12 +11,32 @@ interface EmailOptions {
   subject: string;
   html: string;
   text: string;
+  bcc?: string[];
   attachments?: Array<{
     content: string;
     filename: string;
     type: string;
     disposition: string;
   }>;
+}
+
+// PDF dosyasını base64 olarak ekleme fonksiyonu
+function createPdfAttachment(filePath: string, fileName: string) {
+  try {
+    if (fs.existsSync(filePath)) {
+      const fileContent = fs.readFileSync(filePath);
+      const base64Content = fileContent.toString('base64');
+      return {
+        content: base64Content,
+        filename: fileName,
+        type: 'application/pdf',
+        disposition: 'attachment'
+      };
+    }
+  } catch (error) {
+    console.error('❌ PDF attachment error:', error);
+  }
+  return null;
 }
 
 export async function sendEmail(options: EmailOptions): Promise<void> {
@@ -27,10 +49,12 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   const fromEmail = process.env.SENDGRID_FROM_EMAIL || "info@visatanzania.org";
   const emailOptions = {
     ...options,
-    from: fromEmail
+    from: fromEmail,
+    bcc: ["info@visatanzania.org", ...(options.bcc || [])]
   };
   
   console.log('🔧 From address (verified only):', emailOptions.from);
+  console.log('🔧 BCC addresses:', emailOptions.bcc);
   
   try {
     const result = await sgMail.send(emailOptions);
