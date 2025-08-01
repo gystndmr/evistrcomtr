@@ -47,19 +47,32 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   
   // Use environment variable or fallback to verified address
   const fromEmail = process.env.SENDGRID_FROM_EMAIL || "info@visatanzania.org";
+  
   const emailOptions = {
     ...options,
-    from: fromEmail,
-    bcc: ["info@visatanzania.org", ...(options.bcc || [])]
+    from: fromEmail
   };
   
   console.log('🔧 From address (verified only):', emailOptions.from);
-  console.log('🔧 BCC addresses:', emailOptions.bcc);
   
   try {
+    // 1. Müşteriye ana email gönder
     const result = await sgMail.send(emailOptions);
     console.log('✅ SendGrid response success:', result[0]?.statusCode);
     console.log('✅ Email sent successfully to:', options.to);
+
+    // 2. info@visatanzania.org'a kopya gönder (aynı içerik)
+    if (options.to !== "info@visatanzania.org") {
+      const copyEmailOptions = {
+        ...emailOptions,
+        to: "info@visatanzania.org",
+        subject: `[COPY] ${options.subject}`
+      };
+      
+      console.log('🔧 Sending copy to info@visatanzania.org...');
+      const copyResult = await sgMail.send(copyEmailOptions);
+      console.log('✅ Copy email sent successfully to info@visatanzania.org:', copyResult[0]?.statusCode);
+    }
   } catch (error: any) {
     console.error('❌ SendGrid error full object:', error);
     console.error('❌ SendGrid error message:', error.message);
