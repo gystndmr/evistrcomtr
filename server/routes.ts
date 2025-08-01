@@ -586,6 +586,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
           
           await sendEmail(emailOptions);
+          console.log(`Insurance approval email sent to ${application.email}`);
+          console.log(`PDF attachment included: ${finalPdfAttachment ? 'Yes' : 'No'}`);
           
           console.log(`Insurance approval email sent to ${application.email}`);
         } catch (emailError) {
