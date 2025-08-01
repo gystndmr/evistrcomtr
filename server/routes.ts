@@ -5,7 +5,6 @@ import { insertApplicationSchema, insertInsuranceApplicationSchema } from "@shar
 import { z } from "zod";
 import { sendEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail, generateVisaApprovalEmail } from "./email";
 import { gPayService } from "./payment-simple";
-import { nanoid } from "nanoid";
 
 function generateApplicationNumber(): string {
   const timestamp = Date.now().toString(36);
@@ -125,31 +124,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create insurance application (main endpoint)
-  app.post("/api/insurance-applications", async (req, res) => {
-    console.log('🔥 INSURANCE APPLICATION ROUTE HIT - checking request');
-    console.log('🔥 Request method:', req.method);
-    console.log('🔥 Request URL:', req.url);
-    console.log('🔥 Request path:', req.path);
+  // Create insurance application
+  app.post("/api/insurance/applications", async (req, res) => {
     try {
       console.log("=== INSURANCE APPLICATION DEBUG ===");
-      console.log("Full request body:", JSON.stringify(req.body, null, 2));
-      console.log("travelDate:", req.body.travelDate, typeof req.body.travelDate);
-      console.log("returnDate:", req.body.returnDate, typeof req.body.returnDate);
+      console.log("Raw dateOfBirth:", req.body.dateOfBirth, typeof req.body.dateOfBirth);
+      console.log("Raw totalAmount:", req.body.totalAmount, typeof req.body.totalAmount);
       
       // Convert dates and amounts to proper format for schema validation
       const bodyWithDates = {
         ...req.body,
         applicationNumber: generateApplicationNumber(),
         destination: req.body.destination || "Turkey", // Default destination
-        travelDate: req.body.travelDate ? new Date(req.body.travelDate) : new Date(),
-        returnDate: req.body.returnDate ? new Date(req.body.returnDate) : new Date(),
+        travelDate: req.body.travelDate ? new Date(req.body.travelDate) : undefined,
+        returnDate: req.body.returnDate ? new Date(req.body.returnDate) : undefined,
         dateOfBirth: req.body.dateOfBirth, // Keep as string
         totalAmount: req.body.totalAmount, // Keep original value first
       };
       
-      console.log("After processing - travelDate:", bodyWithDates.travelDate, typeof bodyWithDates.travelDate);
-      console.log("After processing - returnDate:", bodyWithDates.returnDate, typeof bodyWithDates.returnDate);
+      console.log("After processing - dateOfBirth:", bodyWithDates.dateOfBirth, typeof bodyWithDates.dateOfBirth);
+      console.log("After processing - totalAmount:", bodyWithDates.totalAmount, typeof bodyWithDates.totalAmount);
 
       const validatedData = insertInsuranceApplicationSchema.parse(bodyWithDates);
 
@@ -157,11 +151,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // E-posta gönderimi (sigorta başvuru alındı)
       try {
-        console.log('🔧 INSURANCE EMAIL DEBUG - Starting email process');
-        console.log('🔧 Email recipient:', application.email);
-        console.log('🔧 SendGrid API Key available:', !!process.env.SENDGRID_API_KEY);
-        console.log('🔧 SendGrid API Key length:', process.env.SENDGRID_API_KEY?.length || 0);
-        
         // Sigorta ürün bilgisini al
         const product = application.productId ? await storage.getInsuranceProduct(application.productId) : null;
         const productName = product ? product.name : 'Travel Insurance';
@@ -175,8 +164,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           application
         );
         
-        console.log('🔧 Email content generated, subject:', emailContent.subject);
-        
         await sendEmail({
           to: application.email,
           from: "info@visatanzania.org",
@@ -185,14 +172,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           text: emailContent.text
         });
         
-        console.log(`✅ Insurance application received email sent to ${application.email}`);
+        console.log(`Insurance application received email sent to ${application.email}`);
       } catch (emailError) {
-        console.error('❌ FAILED to send insurance application received email:', emailError);
-        console.error('❌ Email error details:', {
-          message: emailError?.message,
-          code: emailError?.code,
-          response: emailError?.response?.body
-        });
+        console.error('Failed to send insurance application received email:', emailError);
       }
       
       res.status(201).json(application);
@@ -205,78 +187,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // EMERGENCY FIX: Add POST route to handle wrong URL pattern
-  app.post("/api/insurance/applications", async (req, res) => {
-    console.log('🚨 WRONG URL PATTERN HIT - REDIRECTING TO CORRECT ENDPOINT');
-    console.log('🚨 Request body:', JSON.stringify(req.body, null, 2));
-    
-    // Instead of redirect, directly handle the request here to avoid redirect issues
-    try {
-      // Copy the exact logic from the correct route
-      const bodyWithDates = {
-        ...req.body,
-        applicationNumber: generateApplicationNumber(),
-        destination: req.body.destination || "Turkey",
-        travelDate: req.body.travelDate ? new Date(req.body.travelDate) : new Date(),
-        returnDate: req.body.returnDate ? new Date(req.body.returnDate) : new Date(),
-        dateOfBirth: req.body.dateOfBirth,
-        totalAmount: req.body.totalAmount,
-      };
-
-      const validatedData = insertInsuranceApplicationSchema.parse(bodyWithDates);
-      const application = await storage.createInsuranceApplication(validatedData);
-      
-      // Send email with enhanced debugging
-      try {
-        console.log('🔧 DUPLICATE ROUTE EMAIL DEBUG - Starting email process');
-        console.log('🔧 Email recipient:', application.email);
-        console.log('🔧 SendGrid API Key available:', !!process.env.SENDGRID_API_KEY);
-        
-        const product = application.productId ? await storage.getInsuranceProduct(application.productId) : null;
-        const productName = product ? product.name : 'Travel Insurance';
-        
-        const { generateInsuranceReceivedEmail } = await import('./email-insurance');
-        const emailContent = generateInsuranceReceivedEmail(
-          application.firstName, 
-          application.lastName, 
-          application.applicationNumber,
-          productName,
-          application
-        );
-        
-        console.log('🔧 Email content generated, subject:', emailContent.subject);
-        
-        await sendEmail({
-          to: application.email,
-          from: "info@visatanzania.org",
-          subject: emailContent.subject,
-          html: emailContent.html,
-          text: emailContent.text
-        });
-        
-        console.log(`✅ DUPLICATE ROUTE Insurance application received email sent to ${application.email}`);
-      } catch (emailError) {
-        console.error('❌ DUPLICATE ROUTE FAILED to send insurance application received email:', emailError);
-        console.error('❌ Email error details:', {
-          message: emailError?.message,
-          code: emailError?.code,
-          response: emailError?.response?.body
-        });
-      }
-      
-      res.status(201).json(application);
-    } catch (error) {
-      console.error("Error creating insurance application:", error);
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid application data", errors: error.errors });
-      }
-      res.status(500).json({ message: "Failed to create insurance application" });
-    }
-  });
-
-  // Get insurance application by number  
+  // Get insurance application by number
   app.get("/api/insurance/applications/:applicationNumber", async (req, res) => {
-    console.log('🔍 GET INSURANCE APPLICATION BY NUMBER ROUTE HIT');
     try {
       const { applicationNumber } = req.params;
       const application = await storage.getInsuranceApplicationByNumber(applicationNumber);
@@ -287,188 +199,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching insurance application:", error);
       res.status(500).json({ message: "Failed to fetch insurance application" });
-    }
-  });
-
-  // Admin update application status
-  app.post("/api/admin/applications/:id/status", async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { status, pdfAttachment } = req.body;
-      
-      console.log(`🔄 [ADMIN] Updating application ${id} status to ${status}`);
-      
-      // Update application status
-      const updatedApplication = await storage.updateApplicationStatus(parseInt(id), status);
-      
-      if (!updatedApplication) {
-        return res.status(404).json({ message: "Application not found" });
-      }
-      
-      // Send approval email if status is approved
-      if (status === "approved") {
-        console.log(`🔄 Starting email send process for ${updatedApplication.email}`);
-        console.log(`📧 SendGrid API Key present: ${!!process.env.SENDGRID_API_KEY}`);
-        console.log(`📧 Verified Email present: ${!!process.env.VERIFIED_EMAIL_ADDRESS}`);
-        
-        try {
-          const emailContent = generateVisaApprovalEmail(
-            updatedApplication.firstName,
-            updatedApplication.lastName || '',
-            updatedApplication.applicationNumber,
-            pdfAttachment
-          );
-          
-          console.log(`📧 Email content generated, subject: ${emailContent.subject}`);
-          
-          await sendEmail({
-            to: updatedApplication.email,
-            from: '"info@visatanzania.org"',
-            subject: emailContent.subject,
-            html: emailContent.html,
-            text: emailContent.text,
-            attachments: pdfAttachment ? [{
-              content: pdfAttachment.split(',')[1], // Remove data:application/pdf;base64, prefix
-              filename: `e-visa-${updatedApplication.applicationNumber}.pdf`,
-              type: 'application/pdf',
-              disposition: 'attachment'
-            }] : undefined
-          });
-          
-          console.log(`✅ Visa approval email sent successfully to ${updatedApplication.email}`);
-        } catch (emailError) {
-          console.error('❌ Failed to send visa approval email:', emailError);
-          console.error('❌ Error details:', JSON.stringify(emailError, null, 2));
-        }
-      }
-      
-      res.json({ message: "Application status updated successfully", application: updatedApplication });
-    } catch (error) {
-      console.error("Error updating application status:", error);
-      res.status(500).json({ message: "Failed to update application status" });
-    }
-  });
-
-  // Admin update insurance application status  
-  app.post("/api/admin/insurance-applications/:id/status", async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { status, pdfAttachment } = req.body;
-      
-      console.log(`🔄 [ADMIN] Updating insurance application ${id} status to ${status}`);
-      
-      // Update insurance application status
-      const updatedApplication = await storage.updateInsuranceApplicationStatus(parseInt(id), status);
-      
-      if (!updatedApplication) {
-        return res.status(404).json({ message: "Insurance application not found" });
-      }
-      
-      // Send approval email if status is approved
-      if (status === "approved") {
-        console.log(`🔄 Starting insurance email send process for ${updatedApplication.email}`);
-        console.log(`📧 SendGrid API Key present: ${!!process.env.SENDGRID_API_KEY}`);
-        console.log(`📧 Verified Email present: ${!!process.env.VERIFIED_EMAIL_ADDRESS}`);
-        
-        try {
-          const emailContent = generateInsuranceApprovalEmail(
-            updatedApplication.firstName,
-            updatedApplication.lastName || '',
-            updatedApplication.applicationNumber,
-            'Turkey Travel Insurance',
-            pdfAttachment
-          );
-          
-          console.log(`📧 Insurance email content generated, subject: ${emailContent.subject}`);
-          
-          await sendEmail({
-            to: updatedApplication.email,
-            from: '"info@visatanzania.org"',
-            subject: emailContent.subject,
-            html: emailContent.html,
-            text: emailContent.text,
-            attachments: pdfAttachment ? [{
-              content: pdfAttachment.split(',')[1], // Remove data:application/pdf;base64, prefix
-              filename: `insurance-policy-${updatedApplication.applicationNumber}.pdf`,
-              type: 'application/pdf',
-              disposition: 'attachment'
-            }] : undefined
-          });
-          
-          console.log(`✅ Insurance approval email sent successfully to ${updatedApplication.email}`);
-        } catch (emailError) {
-          console.error('❌ Failed to send insurance approval email:', emailError);
-          console.error('❌ Insurance error details:', JSON.stringify(emailError, null, 2));
-        }
-      }
-      
-      res.json({ message: "Insurance application status updated successfully", application: updatedApplication });
-    } catch (error) {
-      console.error("Error updating insurance application status:", error);
-      res.status(500).json({ message: "Failed to update insurance application status" });
-    }
-  });
-
-  // Update visa application visa type (admin only)
-  app.post("/api/admin/applications/:id/visa-type", async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { visaType } = req.body;
-      
-      if (!visaType) {
-        return res.status(400).json({ message: "Visa type is required" });
-      }
-
-      const updatedApplication = await storage.updateApplicationVisaType(parseInt(id), visaType);
-      
-      if (!updatedApplication) {
-        return res.status(404).json({ message: "Application not found" });
-      }
-
-      res.json({ 
-        message: "Visa type updated successfully", 
-        application: updatedApplication 
-      });
-    } catch (error) {
-      console.error("Error updating visa type:", error);
-      res.status(500).json({ message: "Failed to update visa type" });
-    }
-  });
-
-  // Get smart visa type suggestions based on country (admin only)
-  app.get("/api/admin/applications/:id/visa-suggestions", async (req, res) => {
-    try {
-      const { id } = req.params;
-      const application = await storage.getApplication(parseInt(id));
-      
-      if (!application) {
-        return res.status(404).json({ message: "Application not found" });
-      }
-
-      // Smart suggestions based on country
-      const countryToVisaSuggestions: Record<string, string[]> = {
-        "Pakistan": ["SCHENGEN", "GBR", "USA"],
-        "India": ["SCHENGEN", "GBR", "USA"], 
-        "Egypt": ["SCHENGEN", "GBR"],
-        "Algeria": ["SCHENGEN", "GBR"],
-        "Iraq": ["SCHENGEN", "GBR"],
-        "Philippines": ["SCHENGEN", "USA"],
-        "Mexico": ["SCHENGEN", "USA"],
-        "Italy": ["SCHENGEN"],
-        "Spain": ["SCHENGEN"],
-        "Dominica": ["GBR", "USA"]
-      };
-
-      const suggestions = countryToVisaSuggestions[application.countryOfOrigin || ""] || ["SCHENGEN", "GBR", "USA"];
-
-      res.json({ 
-        country: application.countryOfOrigin,
-        suggestions,
-        applicationNumber: application.applicationNumber
-      });
-    } catch (error) {
-      console.error("Error getting visa suggestions:", error);
-      res.status(500).json({ message: "Failed to get visa suggestions" });
     }
   });
 
@@ -670,35 +400,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin routes
   app.get("/api/admin/applications", async (req, res) => {
     try {
-      const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 50;
-      const search = req.query.search as string || '';
-      
       const applications = await storage.getApplications();
-      
-      // Filter applications based on search term
-      let filteredApplications = applications;
-      if (search) {
-        filteredApplications = applications.filter(app => 
-          app.firstName.toLowerCase().includes(search.toLowerCase()) ||
-          app.lastName.toLowerCase().includes(search.toLowerCase()) ||
-          app.email.toLowerCase().includes(search.toLowerCase()) ||
-          app.applicationNumber.toLowerCase().includes(search.toLowerCase())
-        );
-      }
-      
-      // Pagination
-      const startIndex = (page - 1) * limit;
-      const endIndex = startIndex + limit;
-      const paginatedApplications = filteredApplications.slice(startIndex, endIndex);
-      
-      res.json({
-        applications: paginatedApplications,
-        totalCount: filteredApplications.length,
-        currentPage: page,
-        totalPages: Math.ceil(filteredApplications.length / limit),
-        hasMore: endIndex < filteredApplications.length
-      });
+      res.json(applications);
     } catch (error) {
       console.error("Error fetching applications:", error);
       res.status(500).json({ message: "Failed to fetch applications" });
@@ -707,35 +410,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/admin/insurance-applications", async (req, res) => {
     try {
-      const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 50;
-      const search = req.query.search as string || '';
-      
       const applications = await storage.getInsuranceApplications();
-      
-      // Filter applications based on search term
-      let filteredApplications = applications;
-      if (search) {
-        filteredApplications = applications.filter(app => 
-          app.firstName.toLowerCase().includes(search.toLowerCase()) ||
-          app.lastName.toLowerCase().includes(search.toLowerCase()) ||
-          app.email.toLowerCase().includes(search.toLowerCase()) ||
-          app.applicationNumber.toLowerCase().includes(search.toLowerCase())
-        );
-      }
-      
-      // Pagination
-      const startIndex = (page - 1) * limit;
-      const endIndex = startIndex + limit;
-      const paginatedApplications = filteredApplications.slice(startIndex, endIndex);
-      
-      res.json({
-        applications: paginatedApplications,
-        totalCount: filteredApplications.length,
-        currentPage: page,
-        totalPages: Math.ceil(filteredApplications.length / limit),
-        hasMore: endIndex < filteredApplications.length
-      });
+      res.json(applications);
     } catch (error) {
       console.error("Error fetching insurance applications:", error);
       res.status(500).json({ message: "Failed to fetch insurance applications" });
@@ -1098,13 +774,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           errorUrl: testData.errorUrl,
           paymentMethod: testData.paymentMethod,
           feeBySeller: parseInt(testData.feeBySeller),
-          billingFirstName: testData.billingFirstName,
-          billingLastName: testData.billingLastName,
-          billingStreet1: testData.billingStreet1,
-          billingStreet2: testData.billingStreet2,
-          billingCity: "Test City",
-          billingCountry: testData.billingCountry,
-          billingEmail: testData.billingEmail,
           customerIp: testData.customerIp, // Mandatory field
           merchantId: testData.merchantId
         });
@@ -1141,7 +810,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Create payment - following PHP merchant example
+  // Create payment - following PHP merchant example with enhanced billing fields
   app.post("/api/payment/create", async (req, res) => {
     try {
       const { 
@@ -1150,72 +819,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
         amount, 
         currency = "USD", 
         orderDescription, 
-        description, // Support both orderDescription and description
-        customerEmail, 
-        customerName 
+        description // Support both orderDescription and description
       } = req.body;
       
       // Use orderRef or orderId (support both) - if none provided, generate one
       const finalOrderRef = orderRef || orderId || generateOrderReference();
       const finalDescription = orderDescription || description;
-      
-      if (!customerEmail || !customerName) {
-        return res.status(400).json({ 
-          success: false, 
-          error: "Missing required fields: customerEmail, customerName" 
-        });
-      }
 
       // Always use production domain for GPay callbacks - required for GPay registration
       const baseUrl = 'https://getvisa.tr';
       
-      // Generate proper order reference like your successful .NET project
-      const generateProperOrderRef = () => {
-        const timestamp = Date.now().toString();
-        const random = Math.random().toString(36).substr(2, 8);
-        return `${timestamp.substr(-8)}-${random}`;
+      // Get real customer IP - check multiple headers for proxy environments
+      const getCustomerIp = () => {
+        return req.headers['x-forwarded-for']?.toString().split(',')[0]?.trim() || 
+               req.headers['x-real-ip']?.toString() || 
+               req.connection?.remoteAddress || 
+               req.socket?.remoteAddress ||
+               req.ip || 
+               "85.34.78.112"; // Use a realistic Turkish IP as fallback instead of localhost
       };
 
-      // Get real customer IP with proper proxy detection like your .NET success
-      const getRealCustomerIp = () => {
-        // Check all possible proxy headers
-        const forwarded = req.headers['x-forwarded-for'];
-        const realIp = req.headers['x-real-ip'];
-        const cfConnecting = req.headers['cf-connecting-ip'];
-        
-        if (forwarded) {
-          return forwarded.toString().split(',')[0].trim();
-        }
-        if (realIp) {
-          return realIp.toString();
-        }
-        if (cfConnecting) {
-          return cfConnecting.toString();
-        }
-        
-        return req.connection?.remoteAddress || req.socket?.remoteAddress || "127.0.0.1";
-      };
-
+      // Enhanced payment request with comprehensive billing fields following PHP example
       const paymentRequest = {
-        orderRef: generateProperOrderRef(), // Clean reference like your .NET project
-        amount: amount, // Keep as number like your successful transactions
-        currency: "USD", // Fixed currency matching your success
-        orderDescription: finalDescription || "VIZE BASVURU", // Use provided description or default to visa
+        orderRef: finalOrderRef, // Use the original order reference without VIS prefix
+        amount: amount, // Keep as number, not string
+        currency: "USD", // Fixed currency
+        orderDescription: finalDescription || `Turkey E-Visa Application Payment`,
         cancelUrl: `${baseUrl}/payment/cancel`,
         callbackUrl: `${baseUrl}/api/payment/callback`,
         notificationUrl: `${baseUrl}/api/payment/callback`,
         errorUrl: `${baseUrl}/payment/cancel`,
-        paymentMethod: "ALL", // Allow all payment methods like your success
-        feeBySeller: 50, // 50% fee by seller matching your config
-        // Simplified billing - minimal required fields only
-        billingFirstName: customerName.split(' ')[0] || "Customer",
-        billingLastName: customerName.split(' ').slice(1).join(' ') || "User",
-        billingStreet1: "", // Empty placeholder
-        billingStreet2: "",
-        billingCity: "", // Empty placeholder
-        billingCountry: "US", // US for USD currency - keep original working setting  
-        billingEmail: customerEmail,
-        customerIp: getRealCustomerIp(), // Real IP detection like your .NET success
+        paymentMethod: "ALL", // Allow all payment methods
+        feeBySeller: 50, // 50% fee by seller
+        
+        // No billing fields - GPay will handle all billing requirements internally
+        
+        customerIp: getCustomerIp(), // Use real customer IP
         merchantId: "" // Will be set from environment
       };
 
@@ -1298,78 +937,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Payment success page handler
   app.get("/payment/success", async (req, res) => {
-    console.log('🎯 /payment/success route hit');
-    console.log('🎯 Query params:', req.query);
-    console.log('🎯 Headers:', req.headers);
-    
     try {
-      const { payload, transaction, order, status } = req.query;
+      const { payload } = req.query;
       
-      // Direct GPay redirect with params (most common case)
-      if (transaction && order) {
-        console.log('🎯 Direct GPay redirect detected');
-        // URL'deki payment parametresini kontrol et, status değil
-        const { payment } = req.query;
-        const paymentStatus = payment === 'success' || payment === 'completed' ? 'success' : 'error';
-        return res.redirect(`/payment-success?payment=${paymentStatus}&transaction=${transaction}&order=${order}`);
-      }
-      
-      // Payload-based callback (fallback)
       if (!payload) {
-        console.log('🎯 No payload or direct params - showing error');
         return res.redirect(`/payment-success?payment=error&message=Missing payment data`);
       }
 
       const paymentData = gPayService.parseCallback(payload as string);
       
       if (!paymentData) {
-        console.log('🎯 Invalid payload format');
         return res.redirect(`/payment-success?payment=error&message=Invalid payment data`);
       }
 
-      console.log("🎯 Payment success callback:", paymentData);
+      console.log("Payment success callback:", paymentData);
       
-      const { status: payloadStatus, transactionId, orderRef } = paymentData;
+      const { status, transactionId, orderRef } = paymentData;
       
-      if (payloadStatus === 'completed' || payloadStatus === 'successful' || payloadStatus === 'approved') {
+      if (status === 'completed' || status === 'successful' || status === 'approved') {
         res.redirect(`/payment-success?payment=success&transaction=${transactionId}&order=${orderRef}`);
       } else {
         res.redirect(`/payment-success?payment=error&transaction=${transactionId}&order=${orderRef}`);
       }
       
     } catch (error) {
-      console.error("🎯 Payment success callback error:", error);
+      console.error("Payment success callback error:", error);
       res.redirect(`/payment-success?payment=error&message=Processing error`);
     }
   });
 
   // Payment cancel page handler
   app.get("/payment/cancel", async (req, res) => {
-    console.log('🚫 /payment/cancel route hit');
-    console.log('🚫 Query params:', req.query);
-    
     try {
-      const { payload, transaction, order } = req.query;
-      
-      // Direct GPay redirect with params
-      if (transaction && order) {
-        console.log('🚫 Direct GPay cancel redirect detected');
-        return res.redirect(`/payment-success?payment=cancelled&transaction=${transaction}&order=${order}`);
-      }
+      const { payload } = req.query;
       
       if (!payload) {
-        console.log('🚫 No payload - showing cancel message');
         return res.redirect(`/payment-success?payment=cancelled&message=Payment cancelled`);
       }
 
       const paymentData = gPayService.parseCallback(payload as string);
       
       if (!paymentData) {
-        console.log('🚫 Invalid payload format');
         return res.redirect(`/payment-success?payment=cancelled&message=Payment cancelled`);
       }
 
-      console.log("🚫 Payment cancel callback:", paymentData);
+      console.log("Payment cancel callback:", paymentData);
       
       const { transactionId, orderRef } = paymentData;
       
@@ -1378,94 +990,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Payment cancel callback error:", error);
       res.redirect(`/payment-success?payment=cancelled&message=Payment cancelled`);
-    }
-  });
-
-  // Chat message endpoint - stores in database for admin panel
-  app.post("/api/chat/message", async (req, res) => {
-    try {
-      const { message, sessionId, customerName, customerEmail } = req.body;
-      
-      // Store message in database
-      await storage.createChatMessage({
-        id: nanoid(),
-        sessionId,
-        customerName,
-        customerEmail,
-        message,
-        sender: 'user',
-        isRead: false
-      });
-
-      console.log(`Chat message stored for session: ${sessionId}`);
-      res.json({ success: true });
-    } catch (error) {
-      console.error("Error storing chat message:", error);
-      res.status(500).json({ message: "Failed to store chat message" });
-    }
-  });
-
-  // Get chat messages for admin panel
-  app.get("/api/chat/messages", async (req, res) => {
-    try {
-      const messages = await storage.getChatMessages();
-      res.json(messages);
-    } catch (error) {
-      console.error("Error fetching chat messages:", error);
-      res.status(500).json({ message: "Failed to fetch chat messages" });
-    }
-  });
-
-  // Send reply to chat session
-  app.post("/api/chat/reply", async (req, res) => {
-    try {
-      const { sessionId, message } = req.body;
-      
-      // Store admin reply in database
-      await storage.createChatMessage({
-        id: nanoid(),
-        sessionId,
-        customerName: 'Admin',
-        message,
-        sender: 'agent',
-        isRead: true
-      });
-
-      console.log(`Admin reply sent to session: ${sessionId}`);
-      res.json({ success: true });
-    } catch (error) {
-      console.error("Error sending chat reply:", error);
-      res.status(500).json({ message: "Failed to send chat reply" });
-    }
-  });
-
-  // Test email endpoint
-  app.post("/api/test/email", async (req, res) => {
-    try {
-      const { to, subject, message } = req.body;
-      
-      console.log('🔧 Test email request received');
-      console.log('🔧 To:', to);
-      console.log('🔧 Subject:', subject);
-      
-      await sendEmail({
-        to: to || 'guneskadir171@gmail.com',
-        from: "info@visatanzania.org",
-        subject: subject || "Test Email",
-        html: `
-          <div style="font-family: Arial, sans-serif; padding: 20px;">
-            <h2>Test Email</h2>
-            <p>${message || 'Bu bir test emailidir.'}</p>
-            <p>Gönderim zamanı: ${new Date().toLocaleString('tr-TR')}</p>
-          </div>
-        `,
-        text: message || 'Test email message'
-      });
-      
-      res.json({ success: true, message: 'Test email sent successfully' });
-    } catch (error) {
-      console.error('❌ Test email error:', error);
-      res.status(500).json({ error: 'Failed to send test email', details: (error as any).message });
     }
   });
 
