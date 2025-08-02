@@ -251,7 +251,7 @@ export default function Admin() {
 
   const updateInsuranceStatusMutation = useMutation({
     mutationFn: async ({ id, status, pdfAttachment }: { id: number; status: string; pdfAttachment?: string }) => {
-      const response = await apiRequest("POST", `/api/admin/insurance-applications/${id}/status`, { status, pdfAttachment });
+      const response = await apiRequest("PATCH", `/api/admin/insurance-applications/${id}/status`, { status, pdfAttachment });
       return response.json();
     },
     onSuccess: () => {
