@@ -778,6 +778,9 @@ export default function Admin() {
                                 <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" aria-describedby="visa-application-details">
                                   <DialogHeader>
                                     <DialogTitle>Başvuru Detayları - {app.applicationNumber}</DialogTitle>
+                                    <DialogDescription id="visa-application-details">
+                                      Vize başvurusunun detaylı bilgilerini görüntüleme ve düzenleme paneli
+                                    </DialogDescription>
                                   </DialogHeader>
                                   {selectedApplication && (
                                     <div className="grid md:grid-cols-2 gap-4 py-4">
@@ -969,6 +972,9 @@ export default function Admin() {
                                 <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" aria-describedby="insurance-application-details">
                                   <DialogHeader>
                                     <DialogTitle>Sigorta Başvuru Detayları - {app.applicationNumber}</DialogTitle>
+                                    <DialogDescription id="insurance-application-details">
+                                      Sigorta başvurusunun detaylı bilgilerini görüntüleme ve onaylama paneli
+                                    </DialogDescription>
                                   </DialogHeader>
                                   {selectedInsuranceApp && (
                                     <div className="grid md:grid-cols-2 gap-4 py-4">
