@@ -70,10 +70,11 @@ export function VisaForm() {
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
   const [paymentRedirectUrl, setPaymentRedirectUrl] = useState<string>("");
   const [prerequisites, setPrerequisites] = useState({
-    ordinaryPassport: false,
-    validPassport: false,
-    enterWithin3Months: false,
-    stayWithin30Days: false,
+    tourismBusiness: false,
+    financialProof: false,
+    supportingDocuments: false,
+    passportValidity: false,
+    allRequirements: false,
   });
   const { toast } = useToast();
 
@@ -383,10 +384,11 @@ export function VisaForm() {
     
     // Step 4: Prerequisites (only if supporting document exists)
     if (currentStep === 4 && selectedCountry?.isEligible && hasSupportingDocument === true) {
-      const allPrerequisitesMet = prerequisites.ordinaryPassport && 
-                                  prerequisites.validPassport && 
-                                  prerequisites.enterWithin3Months && 
-                                  prerequisites.stayWithin30Days;
+      const allPrerequisitesMet = prerequisites.tourismBusiness && 
+                                  prerequisites.financialProof && 
+                                  prerequisites.supportingDocuments && 
+                                  prerequisites.passportValidity && 
+                                  prerequisites.allRequirements;
                                   
       if (!allPrerequisitesMet) {
         toast({
@@ -892,43 +894,52 @@ export function VisaForm() {
                   <h3 className="text-lg font-semibold mb-4">{t("app.step4.prerequisites.title")}</h3>
                   <div className="space-y-4">
                     <div className="bg-blue-50 p-4 rounded-lg">
-                      <h4 className="font-medium text-blue-900 mb-2">Please confirm you meet the following criteria:</h4>
-                      <div className="space-y-2">
-                        <label className="flex items-center">
+                      <h4 className="font-medium text-blue-900 mb-2">{t("prerequisites.confirm.title")}</h4>
+                      <div className="space-y-3">
+                        <label className="flex items-start">
                           <input 
                             type="checkbox" 
-                            className="mr-2" 
-                            checked={prerequisites.ordinaryPassport}
-                            onChange={(e) => setPrerequisites({...prerequisites, ordinaryPassport: e.target.checked})}
+                            className="mr-3 mt-1" 
+                            checked={prerequisites.tourismBusiness}
+                            onChange={(e) => setPrerequisites({...prerequisites, tourismBusiness: e.target.checked})}
                           />
-                          <span className="text-sm text-blue-800">You have an ordinary passport (not diplomatic or service passport)</span>
+                          <span className="text-sm text-blue-800">{t("prerequisites.tourism.business")}</span>
                         </label>
-                        <label className="flex items-center">
+                        <label className="flex items-start">
                           <input 
                             type="checkbox" 
-                            className="mr-2" 
-                            checked={prerequisites.validPassport}
-                            onChange={(e) => setPrerequisites({...prerequisites, validPassport: e.target.checked})}
+                            className="mr-3 mt-1" 
+                            checked={prerequisites.financialProof}
+                            onChange={(e) => setPrerequisites({...prerequisites, financialProof: e.target.checked})}
                           />
-                          <span className="text-sm text-blue-800">Your passport is valid for at least 6 months</span>
+                          <span className="text-sm text-blue-800">{t("prerequisites.financial.proof")}</span>
                         </label>
-                        <label className="flex items-center">
+                        <label className="flex items-start">
                           <input 
                             type="checkbox" 
-                            className="mr-2" 
-                            checked={prerequisites.enterWithin3Months}
-                            onChange={(e) => setPrerequisites({...prerequisites, enterWithin3Months: e.target.checked})}
+                            className="mr-3 mt-1" 
+                            checked={prerequisites.supportingDocuments}
+                            onChange={(e) => setPrerequisites({...prerequisites, supportingDocuments: e.target.checked})}
                           />
-                          <span className="text-sm text-blue-800">You will enter Turkey within 3 months of visa issuance</span>
+                          <span className="text-sm text-blue-800">{t("prerequisites.supporting.documents")}</span>
                         </label>
-                        <label className="flex items-center">
+                        <label className="flex items-start">
                           <input 
                             type="checkbox" 
-                            className="mr-2" 
-                            checked={prerequisites.stayWithin30Days}
-                            onChange={(e) => setPrerequisites({...prerequisites, stayWithin30Days: e.target.checked})}
+                            className="mr-3 mt-1" 
+                            checked={prerequisites.passportValidity}
+                            onChange={(e) => setPrerequisites({...prerequisites, passportValidity: e.target.checked})}
                           />
-                          <span className="text-sm text-blue-800">Your stay will not exceed 30 days in a 180-day period</span>
+                          <span className="text-sm text-blue-800">{t("prerequisites.passport.validity")}</span>
+                        </label>
+                        <label className="flex items-start">
+                          <input 
+                            type="checkbox" 
+                            className="mr-3 mt-1" 
+                            checked={prerequisites.allRequirements}
+                            onChange={(e) => setPrerequisites({...prerequisites, allRequirements: e.target.checked})}
+                          />
+                          <span className="text-sm text-blue-800 font-medium">{t("prerequisites.all.requirements")}</span>
                         </label>
                       </div>
                     </div>

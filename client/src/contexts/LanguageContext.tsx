@@ -321,6 +321,14 @@ const translations: Record<string, Record<string, string>> = {
     'country.selector.evisa.available.title': 'E-Visa Available',
     'country.selector.evisa.available.description': 'Great! You can apply for an e-visa for Turkey.',
 
+    // Prerequisites
+    'prerequisites.confirm.title': 'Please confirm you meet the following criteria:',
+    'prerequisites.tourism.business': 'I am traveling for tourism or business purposes.',
+    'prerequisites.financial.proof': 'I can prove that I have return tickets, hotel reservations, and at least $50 for each day I stay.',
+    'prerequisites.supporting.documents': 'I have valid supporting documents (Schengen visa or valid residence permit, or visa/residence permit from USA, UK, or Ireland). E-visas are not accepted as supporting documents.',
+    'prerequisites.passport.validity': 'My passport validity period covers the period I will stay in Turkey.',
+    'prerequisites.all.requirements': 'I have carefully read all items and confirm that I meet all requirements.',
+
     // Form Validation
     'form.error.first.name': 'First Name Required',
     'form.error.first.name.desc': 'Please enter your first name',
@@ -442,6 +450,14 @@ const translations: Record<string, Record<string, string>> = {
     'header.site.title': 'Türkiye E-Vize',
     'header.site.subtitle': 'Profesyonel Vize Başvuru Hizmeti',
     
+    // Prerequisites
+    'prerequisites.confirm.title': 'Lütfen aşağıdaki kriterleri karşıladığınızı onaylayın:',
+    'prerequisites.tourism.business': 'Turizm veya ticari görüşme amacıyla seyahat ediyorum.',
+    'prerequisites.financial.proof': 'Dönüş biletimin, otel rezervasyonumun ve kalacağım her gün için en az 50 Dolarımın olduğunu kanıtlayabilirim.',
+    'prerequisites.supporting.documents': 'Geçerli destekleyici belgeye sahibim (Schengen vizesi veya geçerli ikamet izni, ABD, İngiltere ve İrlanda ülkelerinden birinin vizesi veya geçerli ikamet izni). e-Vizeler destekleyici belge olarak kabul edilememektedir.',
+    'prerequisites.passport.validity': 'Pasaportumun geçerlilik süresi Türkiye\'de kalacağım dönemi kapsamaktadır.',
+    'prerequisites.all.requirements': 'Tüm maddeleri dikkatlice okudum ve tamamını sağladığımı kabul ediyorum.',
+
     // Homepage
     'home.hero.title': 'Türkiye E-Vize Başvurusu',
     'home.hero.subtitle': 'Türkiye e-vizenizi dakikalar içinde online olarak alın',
@@ -754,6 +770,14 @@ const translations: Record<string, Record<string, string>> = {
     'cookies.marketing.description': 'Kişiselleştirilmiş reklamlar sunmak ve kampanya etkinliğini takip etmek için kullanılır.',
   },
   fr: {
+    // Prerequisites
+    'prerequisites.confirm.title': 'Veuillez confirmer que vous répondez aux critères suivants :',
+    'prerequisites.tourism.business': 'Je voyage à des fins touristiques ou d\'affaires.',
+    'prerequisites.financial.proof': 'Je peux prouver que j\'ai des billets de retour, des réservations d\'hôtel et au moins 50 $ pour chaque jour de séjour.',
+    'prerequisites.supporting.documents': 'J\'ai des documents justificatifs valides (visa Schengen ou permis de séjour valide, ou visa/permis de séjour des États-Unis, du Royaume-Uni ou d\'Irlande). Les e-visas ne sont pas acceptés comme documents justificatifs.',
+    'prerequisites.passport.validity': 'La période de validité de mon passeport couvre la période de mon séjour en Turquie.',
+    'prerequisites.all.requirements': 'J\'ai lu attentivement tous les éléments et confirme que je réponds à toutes les exigences.',
+
     // Header
     'header.title': 'RÉPUBLIQUE DE TURQUIE',
     'header.subtitle': 'Ministère de l\'Intérieur',
@@ -1008,6 +1032,14 @@ const translations: Record<string, Record<string, string>> = {
     'cookies.marketing.description': 'Utilisés pour diffuser des publicités personnalisées et suivre l\'efficacité des campagnes.',
   },
   de: {
+    // Prerequisites
+    'prerequisites.confirm.title': 'Bitte bestätigen Sie, dass Sie die folgenden Kriterien erfüllen:',
+    'prerequisites.tourism.business': 'Ich reise zu touristischen oder geschäftlichen Zwecken.',
+    'prerequisites.financial.proof': 'Ich kann beweisen, dass ich Rückflugtickets, Hotelreservierungen und mindestens 50 $ für jeden Tag meines Aufenthalts habe.',
+    'prerequisites.supporting.documents': 'Ich besitze gültige Belege (Schengen-Visa oder gültige Aufenthaltserlaubnis, oder Visa/Aufenthaltserlaubnis aus den USA, Großbritannien oder Irland). E-Visa werden nicht als Belege akzeptiert.',
+    'prerequisites.passport.validity': 'Die Gültigkeitsdauer meines Passes deckt den Zeitraum meines Aufenthalts in der Türkei ab.',
+    'prerequisites.all.requirements': 'Ich habe alle Punkte sorgfältig gelesen und bestätige, dass ich alle Anforderungen erfülle.',
+
     // Header
     'header.title': 'REPUBLIK TÜRKEI',
     'header.subtitle': 'Innenministerium',
@@ -1262,6 +1294,14 @@ const translations: Record<string, Record<string, string>> = {
     'cookies.marketing.description': 'Werden verwendet, um personalisierte Werbung zu liefern und die Kampagneneffektivität zu verfolgen.',
   },
   es: {
+    // Prerequisites
+    'prerequisites.confirm.title': 'Por favor confirme que cumple con los siguientes criterios:',
+    'prerequisites.tourism.business': 'Estoy viajando con fines turísticos o de negocios.',
+    'prerequisites.financial.proof': 'Puedo demostrar que tengo boletos de regreso, reservas de hotel y al menos $50 por cada día de estadía.',
+    'prerequisites.supporting.documents': 'Tengo documentos de apoyo válidos (visa Schengen o permiso de residencia válido, o visa/permiso de residencia de EE.UU., Reino Unido o Irlanda). Las e-visas no se aceptan como documentos de apoyo.',
+    'prerequisites.passport.validity': 'El período de validez de mi pasaporte cubre el período de mi estadía en Turquía.',
+    'prerequisites.all.requirements': 'He leído cuidadosamente todos los elementos y confirmo que cumplo con todos los requisitos.',
+
     // Header
     'header.title': 'REPÚBLICA DE TURQUÍA',
     'header.subtitle': 'Ministerio del Interior',
@@ -1516,6 +1556,14 @@ const translations: Record<string, Record<string, string>> = {
     'cookies.marketing.description': 'Utilizadas para entregar publicidad personalizada y rastrear la efectividad de las campañas.',
   },
   ar: {
+    // Prerequisites
+    'prerequisites.confirm.title': 'يرجى تأكيد أنك تستوفي المعايير التالية:',
+    'prerequisites.tourism.business': 'أسافر لأغراض سياحية أو تجارية.',
+    'prerequisites.financial.proof': 'يمكنني إثبات أن لدي تذاكر عودة وحجوزات فندقية وما لا يقل عن 50 دولاراً لكل يوم إقامة.',
+    'prerequisites.supporting.documents': 'لدي وثائق داعمة صالحة (تأشيرة شنغن أو إقامة صالحة، أو تأشيرة/إقامة من الولايات المتحدة أو المملكة المتحدة أو أيرلندا). التأشيرات الإلكترونية غير مقبولة كوثائق داعمة.',
+    'prerequisites.passport.validity': 'فترة صلاحية جواز سفري تغطي فترة إقامتي في تركيا.',
+    'prerequisites.all.requirements': 'لقد قرأت جميع البنود بعناية وأؤكد أنني أستوفي جميع المتطلبات.',
+
     // Header
     'header.title': 'جمهورية تركيا',
     'header.subtitle': 'وزارة الداخلية',
