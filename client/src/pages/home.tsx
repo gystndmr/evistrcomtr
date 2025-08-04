@@ -68,19 +68,6 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <Header />
       
-      {/* Temporary Cookie Test Button */}
-      <div className="bg-yellow-100 border border-yellow-300 p-3 text-center">
-        <Button 
-          onClick={() => {
-            localStorage.removeItem('cookie-consent');
-            window.location.reload();
-          }}
-          className="bg-yellow-600 hover:bg-yellow-700 text-white"
-        >
-          🍪 Test Cookie Banner (Clear & Reload)
-        </Button>
-        <p className="text-yellow-800 text-sm mt-1">Cookie consent durumu: {localStorage.getItem('cookie-consent') ? 'Verilmiş' : 'Verilmemiş'}</p>
-      </div>
       
       {/* Hero Section with Rotating Turkish Landmarks */}
       <section className="relative h-[70vh] overflow-hidden">
