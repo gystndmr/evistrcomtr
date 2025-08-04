@@ -1,0 +1,843 @@
+📄 FOOTER'DAKİ TÜM SÖZLEŞME DOSYALARI
+1. TERMS & CONDITIONS (client/src/pages/terms.tsx)
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+export default function Terms() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      
+      <main className="max-w-4xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-lg shadow-sm p-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">Terms & Conditions</h1>
+          <p className="text-gray-600 mb-2">EURAMED LTD</p>
+          <p className="text-gray-600 mb-2">Company Number: 16621355</p>
+          <p className="text-gray-600 mb-2">Incorporation Date: August 1st, 2025</p>
+          <p className="text-gray-600 mb-2">Registered Address: 71–75, Shelton Street, Covent Garden, London, WC2H 9JQ</p>
+          <p className="text-gray-600 mb-2">Website: <a href="https://euramedglobal.com/" className="text-blue-600 hover:text-blue-800 underline">www.euramedglobal.com</a></p>
+          <p className="text-gray-600 mb-8">Effective Date: August 1st, 2025</p>
+          
+          <div className="space-y-8">
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">1. About Our Service</h2>
+              <p className="text-gray-700 mb-4">
+                www.euramedglobal.com offers e-Visa consultancy services through our website. We operate as a private, independent consultancy and are not affiliated with the Turkish government or any official immigration authority.
+              </p>
+              <p className="text-gray-700">
+                By using our services, you understand and agree that we are not responsible for the final decision of your visa application, which is solely at the discretion of the official government systems.
+              </p>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">2. Scope of Service</h2>
+              <p className="text-gray-700 mb-4">Our service includes:</p>
+              <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                <li>Collecting your application data via an online form</li>
+                <li>Reviewing the information for completeness</li>
+                <li>Submitting the e-Visa application on your behalf to the official platform</li>
+                <li>Providing updates and approved visa documents via email</li>
+              </ul>
+              <p className="text-gray-700 mt-4">
+                The service is considered complete once the application is submitted, regardless of the final approval or rejection by the official authorities.
+              </p>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">3. User Responsibilities</h2>
+              <p className="text-gray-700 mb-4">By submitting your information and payment through our platform, you confirm that:</p>
+              <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                <li>All the information provided is accurate, truthful, and complete</li>
+                <li>You are authorized to use the credit or debit card provided</li>
+                <li>You are aware of the non-refundable nature of the digital service once submitted</li>
+                <li>You will not hold www.euramedglobal.com liable for any visa refusal, delay, or error originating from official systems or incorrect information provided by you</li>
+              </ul>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">4. Payment and Refund Policy</h2>
+              <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                <li>All payments are processed via secure, 3D Secure-enabled payment gateways.</li>
+                <li>The service is classified as a custom digital product, and once the application is submitted, it becomes non-refundable (UK Consumer Contracts Regulation 2013, Article 28(b)).</li>
+                <li>If a refund is approved (prior to application submission), a processing fee of up to 20% may be retained.</li>
+              </ul>
+              <p className="text-gray-700 mt-4">
+                For full refund terms, refer to our Refund & Cancellation Policy at: <strong><a href="https://euramedglobal.com/refund" className="text-blue-600 hover:text-blue-800 underline">www.euramedglobal.com/refund</a></strong>
+              </p>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">5. Intellectual Property</h2>
+              <p className="text-gray-700 mb-4">
+                All website content including text, logos, and form structures are the intellectual property of www.euramedglobal.com and are protected by copyright laws.
+              </p>
+              <p className="text-gray-700">
+                Unauthorized copying, use, or distribution is strictly prohibited.
+              </p>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">6. Limitation of Liability</h2>
+              <p className="text-gray-700 mb-4">www.euramedglobal.com shall not be held liable for:</p>
+              <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                <li>Delays or failures caused by third-party systems or Turkish e-Visa platforms</li>
+                <li>Incorrect or false information submitted by the user</li>
+                <li>Refusal or cancellation of visa applications by official authorities</li>
+              </ul>
+              <p className="text-gray-700 mt-4">
+                Our maximum liability is limited to the amount paid for the service.
+              </p>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">7. Governing Law and Jurisdiction</h2>
+              <p className="text-gray-700 mb-4">
+                This agreement shall be governed by the laws of England and Wales.
+              </p>
+              <p className="text-gray-700">
+                Any disputes shall be resolved exclusively in the courts of London, United Kingdom.
+              </p>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">8. Contact</h2>
+              <p className="text-gray-700 mb-4">
+                For any inquiries related to these terms or your service, you may contact us at:
+              </p>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <p className="text-gray-700"><strong>📧 Email:</strong> info@euramedglobal.com</p>
+                <p className="text-gray-700"><strong>🌐 Website:</strong> <a href="https://euramedglobal.com/" className="text-blue-600 hover:text-blue-800 underline">www.euramedglobal.com</a></p>
+                <p className="text-gray-700"><strong>📅 Effective Date:</strong> August 1st, 2025</p>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+      
+      <Footer />
+    </div>
+  );
+}
+2. PRIVACY POLICY (client/src/pages/privacy.tsx)
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+export default function Privacy() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      
+      <main className="max-w-4xl mx-auto px-4 py-8">
+        <div className="bg-white rounded-lg shadow-sm p-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">Privacy Policy</h1>
+          <p className="text-gray-600 mb-2">EURAMED LTD</p>
+          <p className="text-gray-600 mb-2">Company Number: 16621355</p>
+          <p className="text-gray-600 mb-2">Incorporation Date: August 1st, 2025</p>
+          <p className="text-gray-600 mb-2">Registered Address: 71–75, Shelton Street, Covent Garden, London, WC2H 9JQ</p>
+          <p className="text-gray-600 mb-2">Website: <a href="https://euramedglobal.com/" className="text-blue-600 hover:text-blue-800 underline">www.euramedglobal.com</a></p>
+          <p className="text-gray-600 mb-8">Effective Date: August 1st, 2025</p>
+          
+          <div className="space-y-8">
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">1. Introduction</h2>
+              <p className="text-gray-700 mb-4">
+                This Privacy Policy outlines how www.euramedglobal.com ("we", "us", "our") collects, uses, stores, and shares your personal data when you use our e-Visa consultation services via our website.
+              </p>
+              <p className="text-gray-700 mb-4">
+                We are committed to protecting your privacy in accordance with applicable data protection laws including:
+              </p>
+              <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                <li>The UK Data Protection Act 2018</li>
+                <li>The General Data Protection Regulation (EU) 2016/679 (GDPR)</li>
+                <li>The Privacy and Electronic Communications Regulations (PECR)</li>
+              </ul>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">2. Data We Collect</h2>
+              <p className="text-gray-700 mb-4">We may collect the following types of personal information when you use our services:</p>
+              <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                <li>Full name</li>
+                <li>Date of birth</li>
+                <li>Nationality and country of residence</li>
+                <li>Passport number, issue and expiry dates</li>
+                <li>Travel dates and purpose of visit</li>
+                <li>Contact information (email address, phone number)</li>
+                <li>IP address, browser, device type and timestamp</li>
+                <li>Payment confirmation details (only via secure 3D gateway; we do not store card numbers)</li>
+              </ul>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">3. Purpose of Data Processing</h2>
+              <p className="text-gray-700 mb-4">Your personal data is collected and used for the following purposes:</p>
+              <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                <li>To prepare and submit e-Visa applications on your behalf</li>
+                <li>To communicate with you during the visa application process</li>
+                <li>To process secure payments via 3D Secure channels</li>
+                <li>To comply with legal and regulatory obligations</li>
+                <li>To prevent fraud and ensure transaction security</li>
+              </ul>
+              <p className="text-gray-700 mb-4 mt-4">
+                <strong>Legal Basis for Processing:</strong><br/>
+                As per GDPR Article 6(1):
+              </p>
+              <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                <li>(a) Consent</li>
+                <li>(b) Performance of a contract</li>
+                <li>(c) Compliance with legal obligations</li>
+              </ul>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">4. Data Retention</h2>
+              <p className="text-gray-700 mb-4">Your data will be stored:</p>
+              <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                <li>For a period of up to 12 months after your application is completed</li>
+                <li>Or longer if required by legal, regulatory, or tax obligations</li>
+                <li>After this period, data is securely deleted or anonymized</li>
+              </ul>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">5. Your Rights Under GDPR</h2>
+              <p className="text-gray-700 mb-4">You have the following rights regarding your personal data:</p>
+              <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                <li>Access – You can request a copy of your data</li>
+                <li>Rectification – You can correct incorrect or incomplete data</li>
+                <li>Erasure – You can request deletion under certain conditions</li>
+                <li>Restriction – You can limit processing under certain conditions</li>
+                <li>Objection – You can object to processing based on legitimate interests</li>
+                <li>Portability – You can receive your data in a portable format</li>
+                <li>Withdraw Consent – You may revoke consent at any time</li>
+              </ul>
+              <p className="text-gray-700 mt-4">
+                To exercise any of these rights, contact us at: info@euramedglobal.com
+              </p>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">6. Data Security</h2>
+              <p className="text-gray-700 mb-4">We apply robust security measures to protect your data, including:</p>
+              <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                <li>256-bit SSL encryption</li>
+                <li>ISO-certified cloud data storage</li>
+                <li>Role-based access control</li>
+                <li>Multi-factor authentication</li>
+                <li>Regular security audits</li>
+              </ul>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">7. Third-Party Disclosures</h2>
+              <p className="text-gray-700 mb-4">
+                We may share your data with third parties only when necessary and with appropriate safeguards:
+              </p>
+              <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                <li>Turkish government e-Visa application systems</li>
+                <li>Payment processors for secure card transactions</li>
+                <li>Cloud-based secure email communication platforms</li>
+              </ul>
+              <p className="text-gray-700 mt-4">We never sell or lease your data to any third party.</p>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">8. International Transfers</h2>
+              <p className="text-gray-700 mb-4">If your data is transferred outside the UK or EU, we ensure:</p>
+              <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                <li>Standard Contractual Clauses (SCCs) are in place</li>
+                <li>Third-party processors are GDPR-compliant</li>
+                <li>Encryption and minimization measures are enforced</li>
+              </ul>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">9. Cookies and Tracking</h2>
+              <p className="text-gray-700 mb-4">Our website may use cookies for:</p>
+              <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                <li>Session management</li>
+                <li>Language preferences</li>
+                <li>Analytics (anonymous)</li>
+              </ul>
+              <p className="text-gray-700 mt-4">
+                Users can manage cookies via their browser settings. Full cookie policy is available on our website.
+              </p>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">10. Changes to This Policy</h2>
+              <p className="text-gray-700 mb-4">
+                We may occasionally update this Privacy Policy. The updated version will always be available at 
+                <a href="https://euramedglobal.com/privacy" className="text-blue-600 hover:text-blue-800 underline">www.euramedglobal.com/privacy</a> and marked with the latest "Effective Date".
+              </p>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">11. Contact</h2>
+              <p className="text-gray-700 mb-4">
+                If you have any questions or concerns regarding your data or this policy, you may contact us at:
+              </p>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <p className="text-gray-700"><strong>📧 Email:</strong> info@euramedglobal.com</p>
+                <p className="text-gray-700"><strong>🌐 Website:</strong> <a href="https://euramedglobal.com/" className="text-blue-600 hover:text-blue-800 underline">www.euramedglobal.com</a></p>
+                <p className="text-gray-700"><strong>📅 Effective Date:</strong> August 1st, 2025</p>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+      
+      <Footer />
+    </div>
+  );
+}
+3. SECURITY POLICY (client/src/pages/security.tsx)
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+export default function Security() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      
+      <main className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
+        <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
+            Security & Legal Protection Policy
+          </h1>
+          <p className="text-gray-600 mb-2">EURAMED LTD</p>
+          <p className="text-gray-600 mb-2">Company Number: 16621355</p>
+          <p className="text-gray-600 mb-8">Effective Date: August 1st, 2025</p>
+          
+          <div className="prose max-w-none space-y-8">
+            
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">1. Data Security Commitment</h2>
+              
+              <p className="text-gray-700 mb-4">
+                EURAMED LTD is committed to maintaining the highest standards of data security and protection. 
+                We implement comprehensive security measures to safeguard personal and sensitive information 
+                in accordance with applicable laws and regulations.
+              </p>
+              <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-4">
+                <h3 className="font-semibold text-blue-900 mb-3">Our Security Standards</h3>
+                <ul className="text-blue-800 space-y-2">
+                  <li>• <strong>UK Data Protection Act 2018:</strong> Full compliance with UK data protection regulations</li>
+                  <li>• <strong>EU General Data Protection Regulation (GDPR):</strong> Adherence to European data protection standards</li>
+                  <li>• <strong>ISO/IEC 27001 Information Security Standards:</strong> Implementation of internationally recognized security frameworks</li>
+                  <li>• <strong>Industry Best Practices:</strong> Continuous adoption of evolving security technologies and methodologies</li>
+                </ul>
+              </div>
+              <p className="text-gray-700">
+                We regularly review and update our security policies to ensure continued effectiveness 
+                and compliance with emerging threats and regulatory requirements.
+              </p>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">2. Security Practices</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="border border-green-200 bg-green-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-green-900 mb-3">Technical Security Measures</h3>
+                  <ul className="text-green-800 space-y-2">
+                    <li>• <strong>SSL/TLS Encryption:</strong> All data transmissions protected with advanced encryption protocols</li>
+                    <li>• <strong>3D Secure Payment Processing:</strong> Enhanced authentication for all financial transactions</li>
+                    <li>• <strong>Secure Data Storage:</strong> Encrypted databases with restricted access controls</li>
+                    <li>• <strong>Network Security:</strong> Firewall protection and intrusion detection systems</li>
+                    <li>• <strong>Regular Security Updates:</strong> Continuous system patching and vulnerability management</li>
+                  </ul>
+                </div>
+                <div className="border border-purple-200 bg-purple-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-purple-900 mb-3">Administrative Security Controls</h3>
+                  <ul className="text-purple-800 space-y-2">
+                    <li>• <strong>Role-Based Access Controls:</strong> Principle of least privilege for all system access</li>
+                    <li>• <strong>Multi-Factor Authentication:</strong> Additional security layers for administrative access</li>
+                    <li>• <strong>Employee Training:</strong> Regular security awareness and best practices education</li>
+                    <li>• <strong>Background Checks:</strong> Thorough vetting of personnel with access to sensitive data</li>
+                    <li>• <strong>Confidentiality Agreements:</strong> Legal obligations for all staff handling personal data</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="bg-gray-100 border border-gray-300 p-4 rounded-lg mt-6">
+                <h3 className="font-semibold text-gray-900 mb-3">Monitoring and Auditing</h3>
+                <p className="text-gray-700 mb-3">
+                  We maintain comprehensive logs of all system activities and conduct regular security audits 
+                  to ensure the effectiveness of our security measures.
+                </p>
+                <ul className="text-gray-700 space-y-1">
+                  <li>• 24/7 security monitoring and threat detection</li>
+                  <li>• Regular penetration testing and vulnerability assessments</li>
+                  <li>• Annual third-party security audits</li>
+                  <li>• Continuous compliance monitoring</li>
+                </ul>
+              </div>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">3. Fraud Detection and Prevention</h2>
+              
+              <p className="text-gray-700 mb-4">
+                EURAMED LTD employs advanced fraud detection systems and procedures to protect our 
+                users and maintain the integrity of our services.
+              </p>
+              <div className="space-y-4">
+                <div className="border-l-4 border-red-500 pl-4">
+                  <h3 className="font-semibold text-gray-900 mb-2">Automated Monitoring Systems</h3>
+                  <ul className="text-gray-700 space-y-1">
+                    <li>• Real-time transaction monitoring for suspicious activity patterns</li>
+                    <li>• Machine learning algorithms for fraud pattern recognition</li>
+                    <li>• Automated alerts for high-risk transactions</li>
+                    <li>• IP address and device fingerprinting for identity verification</li>
+                  </ul>
+                </div>
+                <div className="border-l-4 border-orange-500 pl-4">
+                  <h3 className="font-semibold text-gray-900 mb-2">Manual Review Processes</h3>
+                  <ul className="text-gray-700 space-y-1">
+                    <li>• Trained fraud analysts review flagged transactions</li>
+                    <li>• Customer verification procedures for suspicious activities</li>
+                    <li>• Documentation and investigation of fraud attempts</li>
+                    <li>• Coordination with payment processors and financial institutions</li>
+                  </ul>
+                </div>
+                <div className="border-l-4 border-yellow-500 pl-4">
+                  <h3 className="font-semibold text-gray-900 mb-2">Reporting and Response</h3>
+                  <p className="text-gray-700 mb-2">
+                    When fraud is detected or suspected, we take immediate action including:
+                  </p>
+                  <ul className="text-gray-700 space-y-1">
+                    <li>• Immediate transaction suspension or reversal</li>
+                    <li>• Customer notification and account protection measures</li>
+                    <li>• Reporting to relevant authorities as required by law</li>
+                    <li>• Cooperation with law enforcement investigations</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">4. Legal Reporting Obligations</h2>
+              
+              <p className="text-gray-700 mb-4">
+                EURAMED LTD maintains strict compliance with all applicable legal reporting requirements 
+                and cooperates fully with regulatory authorities and law enforcement agencies.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="border border-blue-200 bg-blue-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-blue-900 mb-3">UK Legal Framework</h3>
+                  <ul className="text-blue-800 space-y-2">
+                    <li>• <strong>UK Fraud Act 2006:</strong> Compliance with fraud prevention and reporting requirements</li>
+                    <li>• <strong>Proceeds of Crime Act 2002:</strong> Anti-money laundering obligations</li>
+                    <li>• <strong>Data Protection Act 2018:</strong> Data breach notification requirements</li>
+                    <li>• <strong>Consumer Rights Act 2015:</strong> Consumer protection compliance</li>
+                  </ul>
+                </div>
+                <div className="border border-indigo-200 bg-indigo-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-indigo-900 mb-3">International Compliance</h3>
+                  <ul className="text-indigo-800 space-y-2">
+                    <li>• <strong>Turkish Penal Code:</strong> Compliance with Turkish fraud and cybercrime laws</li>
+                    <li>• <strong>EU GDPR:</strong> Cross-border data protection compliance</li>
+                    <li>• <strong>International Sanctions:</strong> Adherence to UK and EU sanctions regimes</li>
+                    <li>• <strong>Cross-Border Cooperation:</strong> Support for international investigations</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg mt-6">
+                <h3 className="font-semibold text-yellow-900 mb-3">Reporting Procedures</h3>
+                <p className="text-yellow-800 mb-3">
+                  We maintain established procedures for reporting to relevant authorities:
+                </p>
+                <ul className="text-yellow-800 space-y-1">
+                  <li>• Action Fraud (UK): Suspicious financial activities and fraud attempts</li>
+                  <li>• Information Commissioner's Office (ICO): Data protection incidents</li>
+                  <li>• National Crime Agency (NCA): Serious organized crime matters</li>
+                  <li>• Turkish Authorities: Matters involving Turkish jurisdiction</li>
+                  <li>• Financial Conduct Authority (FCA): Payment service related incidents</li>
+                </ul>
+              </div>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">5. Data Breach Protocol</h2>
+              
+              <p className="text-gray-700 mb-4">
+                In the unlikely event of a data security incident, EURAMED LTD has established 
+                comprehensive procedures to ensure rapid response, containment, and notification.
+              </p>
+              <div className="space-y-6">
+                <div className="border border-red-200 bg-red-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-red-900 mb-3">Immediate Response (0-24 hours)</h3>
+                  <ul className="text-red-800 space-y-2">
+                    <li>• <strong>Incident Detection:</strong> Automated systems and staff training ensure rapid identification</li>
+                    <li>• <strong>Containment:</strong> Immediate steps to prevent further unauthorized access</li>
+                    <li>• <strong>Assessment:</strong> Evaluation of the scope and potential impact</li>
+                    <li>• <strong>Documentation:</strong> Detailed logging of all incident details and response actions</li>
+                  </ul>
+                </div>
+                <div className="border border-orange-200 bg-orange-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-orange-900 mb-3">Investigation and Remediation (24-72 hours)</h3>
+                  <ul className="text-orange-800 space-y-2">
+                    <li>• <strong>Forensic Analysis:</strong> Detailed investigation to determine cause and extent</li>
+                    <li>• <strong>System Restoration:</strong> Secure restoration of affected systems and data</li>
+                    <li>• <strong>Security Enhancement:</strong> Implementation of additional protective measures</li>
+                    <li>• <strong>Evidence Preservation:</strong> Secure storage of digital evidence for potential legal proceedings</li>
+                  </ul>
+                </div>
+                <div className="border border-green-200 bg-green-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-green-900 mb-3">Notification and Communication</h3>
+                  <ul className="text-green-800 space-y-2">
+                    <li>• <strong>Regulatory Notification:</strong> ICO notification within 72 hours if required</li>
+                    <li>• <strong>Customer Communication:</strong> Affected individuals notified without undue delay</li>
+                    <li>• <strong>Transparency:</strong> Clear, accurate information about the incident and protective actions</li>
+                    <li>• <strong>Support Services:</strong> Assistance and guidance for affected individuals</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">6. Limitation of Security Liability</h2>
+              
+              <div className="bg-amber-50 border border-amber-200 p-6 rounded-lg">
+                <p className="text-amber-900 mb-4">
+                  <strong>Important Legal Notice:</strong> While EURAMED LTD implements comprehensive security 
+                  measures and maintains the highest industry standards, no security system can provide 
+                  absolute protection against all possible threats.
+                </p>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-semibold text-amber-900 mb-2">Security Commitment</h3>
+                    <ul className="text-amber-800 space-y-1">
+                      <li>• We employ industry-leading security practices and technologies</li>
+                      <li>• Regular security audits and updates are performed</li>
+                      <li>• Staff receive ongoing security training and certification</li>
+                      <li>• We maintain appropriate cyber security insurance coverage</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-amber-900 mb-2">User Responsibilities</h3>
+                    <ul className="text-amber-800 space-y-1">
+                      <li>• Users must maintain the confidentiality of their account credentials</li>
+                      <li>• Prompt reporting of suspected security incidents is required</li>
+                      <li>• Users should follow recommended security practices</li>
+                      <li>• Regular monitoring of account activity is advised</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-amber-900 mb-2">Liability Limitations</h3>
+                    <p className="text-amber-800">
+                      Subject to applicable law, EURAMED LTD's liability for security incidents is limited 
+                      to direct damages and excludes consequential, indirect, or punitive damages. 
+                      Our maximum liability shall not exceed the amount paid by the affected user 
+                      for services in the 12 months preceding the incident.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">7. Contact Information</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="border border-gray-200 bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-900 mb-3">Security Incidents</h3>
+                  <div className="text-gray-700 space-y-2">
+                    <p><strong>Email:</strong> security@euramedglobal.com</p>
+                    <p><strong>Phone:</strong> +44 20 3807 0060</p>
+                    <p><strong>Response Time:</strong> Within 24 hours</p>
+                    <p><strong>Severity Level:</strong> Immediate escalation for critical incidents</p>
+                  </div>
+                </div>
+                <div className="border border-gray-200 bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-900 mb-3">General Inquiries</h3>
+                  <div className="text-gray-700 space-y-2">
+                    <p><strong>Email:</strong> info@euramedglobal.com</p>
+                    <p><strong>Phone:</strong> +44 20 3807 0060</p>
+                    <p><strong>Response Time:</strong> Within 48 hours</p>
+                    <p><strong>Office Hours:</strong> Monday-Friday, 9:00 AM - 6:00 PM GMT</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mt-6">
+                <h3 className="font-semibold text-blue-900 mb-3">Company Information</h3>
+                <div className="text-blue-800 space-y-1">
+                  <p><strong>Company Name:</strong> EURAMED LTD</p>
+                  <p><strong>Company Number:</strong> 16621355</p>
+                  <p><strong>Registered Address:</strong> 71-75 Shelton Street, London, WC2H 9JQ, United Kingdom</p>
+                  <p><strong>Website:</strong> <a href="https://euramedglobal.com/" className="text-blue-600 hover:text-blue-800 underline">www.euramedglobal.com</a></p>
+                  <p><strong>Data Protection Registration:</strong> ICO Registration Number [Available upon request]</p>
+                </div>
+              </div>
+              <div className="bg-green-50 border border-green-200 p-4 rounded-lg mt-6">
+                <h3 className="font-semibold text-green-900 mb-3">Emergency Contacts</h3>
+                <div className="text-green-800 space-y-2">
+                  <p><strong>Critical Security Incidents:</strong> security-emergency@euramedglobal.com</p>
+                  <p><strong>Data Protection Officer:</strong> dpo@euramedglobal.com</p>
+                  <p><strong>Legal Compliance:</strong> legal@euramedglobal.com</p>
+                  <p><strong>24/7 Emergency Line:</strong> +44 20 3807 0060 (Press 1 for emergencies)</p>
+                </div>
+              </div>
+            </section>
+            <div className="bg-gray-100 border border-gray-300 p-4 rounded-lg mt-8">
+              <p className="text-sm text-gray-600 text-center">
+                This Security & Legal Protection Policy is effective as of August 1st, 2025, and may be updated 
+                periodically to reflect changes in our security practices, legal requirements, or business operations. 
+                Users will be notified of material changes through appropriate channels.
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+      
+      <Footer />
+    </div>
+  );
+}
+4. REFUND POLICY (client/src/pages/refund.tsx)
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+export default function Refund() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <Header />
+      
+      <main className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
+        <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
+            Refund & Cancellation Policy
+          </h1>
+          <p className="text-gray-600 mb-2">EURAMED LTD</p>
+          <p className="text-gray-600 mb-2">Company Number: 16621355</p>
+          <p className="text-gray-600 mb-2">Incorporation Date: August 1st, 2025</p>
+          <p className="text-gray-600 mb-2">Registered Address: 71–75, Shelton Street, Covent Garden, London, WC2H 9JQ</p>
+          <p className="text-gray-600 mb-2">Website: <a href="https://euramedglobal.com/" className="text-blue-600 hover:text-blue-800 underline">www.euramedglobal.com</a></p>
+          <p className="text-gray-600 mb-8">Effective Date: August 1st, 2025</p>
+          
+          <div className="prose max-w-none space-y-8">
+            
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">1. Nature of Our Service</h2>
+              
+              <p className="text-gray-700 mb-4">
+                EURAMED LTD provides a custom digital consultancy service for processing e-Visa applications. 
+                Once a user's application is submitted to the relevant government portal, the service is considered delivered and complete.
+              </p>
+              <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-4">
+                <h3 className="font-semibold text-blue-900 mb-3">Legal Classification</h3>
+                <p className="text-blue-800 mb-3">
+                  This type of service falls under the classification of non-refundable digital content, as outlined in:
+                </p>
+                <ul className="text-blue-800 space-y-2">
+                  <li>• <strong>UK Consumer Contracts Regulation 2013, Article 28(b)</strong></li>
+                  <li>• <strong>EU Consumer Rights Directive (Directive 2011/83/EU)</strong></li>
+                </ul>
+              </div>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">2. Refund Eligibility</h2>
+              
+              <p className="text-gray-700 mb-4">
+                Refunds may be considered under the following limited conditions:
+              </p>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-300 rounded-lg">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
+                        Condition
+                      </th>
+                      <th className="border border-gray-300 px-4 py-3 text-center font-semibold text-gray-900">
+                        Refund Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border border-gray-300 px-4 py-3 text-gray-700">
+                        Application not submitted yet
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3 text-center">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
+                          ✅ Possible (with up to 20% service fee deducted)
+                        </span>
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="border border-gray-300 px-4 py-3 text-gray-700">
+                        Application submitted but not yet reviewed by authorities
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3 text-center">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-red-100 text-red-800">
+                          ❌ Not refundable
+                        </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-4 py-3 text-gray-700">
+                        Government rejection or denial
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3 text-center">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-red-100 text-red-800">
+                          ❌ Not refundable
+                        </span>
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="border border-gray-300 px-4 py-3 text-gray-700">
+                        Duplicate payment or technical error
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3 text-center">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
+                          ✅ Full refund upon verification
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg mt-4">
+                <p className="text-amber-800 text-sm">
+                  <strong>Note:</strong> Refund requests will be evaluated on a case-by-case basis.
+                </p>
+              </div>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">3. How to Request a Refund</h2>
+              
+              <p className="text-gray-700 mb-4">To request a refund, you must:</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="border border-gray-200 bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-900 mb-3">Required Steps</h3>
+                  <ul className="text-gray-700 space-y-2">
+                    <li>• <strong>Contact us within 7 calendar days of payment</strong></li>
+                    <li>• <strong>Provide your full name, email, transaction ID, and reason</strong></li>
+                    <li>• <strong>Email your request to:</strong> info@euramedglobal.com</li>
+                  </ul>
+                </div>
+                <div className="border border-blue-200 bg-blue-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-blue-900 mb-3">Processing Timeline</h3>
+                  <ul className="text-blue-800 space-y-2">
+                    <li>• <strong>Review Period:</strong> 5-7 business days</li>
+                    <li>• <strong>Response Time:</strong> Typically reviewed and responded to within this period</li>
+                    <li>• <strong>Refund Processing:</strong> If approved, processed within 14 business days</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">4. Non-Refundable Circumstances</h2>
+              
+              <p className="text-gray-700 mb-4">No refund will be issued under the following conditions:</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="border-l-4 border-red-500 pl-4">
+                  <h3 className="font-semibold text-gray-900 mb-2">User-Related Issues</h3>
+                  <ul className="text-gray-700 space-y-1">
+                    <li>• User provides incorrect or false information</li>
+                    <li>• User fails to upload necessary documents on time</li>
+                    <li>• User changes mind after application is submitted</li>
+                    <li>• User fails to respond to follow-up emails for required actions</li>
+                  </ul>
+                </div>
+                <div className="border-l-4 border-orange-500 pl-4">
+                  <h3 className="font-semibold text-gray-900 mb-2">External Factors</h3>
+                  <ul className="text-gray-700 space-y-1">
+                    <li>• Government denies or delays the visa without fault of EURAMED LTD</li>
+                    <li>• Changes in government policies or procedures</li>
+                    <li>• Processing delays due to external factors beyond our control</li>
+                    <li>• Force majeure events affecting service delivery</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">5. Chargebacks and Disputes</h2>
+              
+              <div className="bg-red-50 border border-red-200 p-6 rounded-lg">
+                <h3 className="font-semibold text-red-900 mb-4">⚠️ Important Warning</h3>
+                <p className="text-red-800 mb-4">
+                  Users who initiate unauthorized chargebacks or payment disputes without first contacting us will be:
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <ul className="text-red-800 space-y-2">
+                    <li>• <strong>Blocked from future use of our services</strong></li>
+                    <li>• <strong>Reported to payment processors and flagged in global fraud monitoring databases</strong></li>
+                  </ul>
+                  <ul className="text-red-800 space-y-2">
+                    <li>• <strong>Legally pursued if the chargeback is deemed fraudulent</strong></li>
+                    <li>• <strong>Subject to recovery of legal costs and damages</strong></li>
+                  </ul>
+                </div>
+                
+                <div className="bg-red-100 border border-red-300 p-3 rounded mt-4">
+                  <p className="text-red-900 text-sm">
+                    <strong>Reference:</strong> Our full Payment & 3D Secure Policy is available at: 
+                    <br />
+                    📄 <a href="https://euramedglobal.com/payment-policy" className="font-mono text-blue-600 hover:text-blue-800 underline">www.euramedglobal.com/payment-policy</a>
+                  </p>
+                </div>
+              </div>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">6. Currency and Payment Method of Refunds</h2>
+              
+              <p className="text-gray-700 mb-4">Approved refunds will:</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="border border-green-200 bg-green-50 p-4 rounded-lg text-center">
+                  <div className="text-2xl mb-2">💳</div>
+                  <h3 className="font-semibold text-green-900 mb-2">Original Payment Method</h3>
+                  <p className="text-green-800 text-sm">
+                    Be returned using the original payment method
+                  </p>
+                </div>
+                <div className="border border-blue-200 bg-blue-50 p-4 rounded-lg text-center">
+                  <div className="text-2xl mb-2">💱</div>
+                  <h3 className="font-semibold text-blue-900 mb-2">Same Currency</h3>
+                  <p className="text-blue-800 text-sm">
+                    Be processed in the same currency used during payment
+                  </p>
+                </div>
+                <div className="border border-purple-200 bg-purple-50 p-4 rounded-lg text-center">
+                  <div className="text-2xl mb-2">⏱️</div>
+                  <h3 className="font-semibold text-purple-900 mb-2">Processing Time</h3>
+                  <p className="text-purple-800 text-sm">
+                    Be issued within 14 business days of approval
+                  </p>
+                </div>
+              </div>
+              <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg mt-4">
+                <h3 className="font-semibold text-yellow-900 mb-2">Additional Charges</h3>
+                <p className="text-yellow-800 text-sm">
+                  Bank transfer charges or currency conversion fees (if any) will be deducted from the refunded amount.
+                </p>
+              </div>
+            </section>
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">7. Contact</h2>
+              
+              <p className="text-gray-700 mb-4">For refund-related queries, please reach out to:</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="border border-gray-200 bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-900 mb-3">📧 Email Contact</h3>
+                  <div className="text-gray-700 space-y-2">
+                    <p><strong>Email:</strong> info@euramedglobal.com</p>
+                    <p><strong>Subject Line:</strong> "Refund Request - [Transaction ID]"</p>
+                    <p><strong>Response Time:</strong> 5-7 business days</p>
+                  </div>
+                </div>
+                <div className="border border-gray-200 bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-900 mb-3">🌐 Company Information</h3>
+                  <div className="text-gray-700 space-y-2">
+                    <p><strong>Website:</strong> <a href="https://euramedglobal.com/" className="text-blue-600 hover:text-blue-800 underline">www.euramedglobal.com</a></p>
+                    <p><strong>Company:</strong> EURAMED LTD</p>
+                    <p><strong>Registration:</strong> 16621355</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mt-6">
+                <h3 className="font-semibold text-blue-900 mb-3">🏢 Registered Address</h3>
+                <div className="text-blue-800 space-y-1">
+                  <p><strong>EURAMED LTD</strong></p>
+                  <p>71–75, Shelton Street, Covent Garden</p>
+                  <p>London, WC2H 9JQ</p>
+                  <p>United Kingdom</p>
+                </div>
+              </div>
+            </section>
+            <div className="bg-gray-100 border border-gray-300 p-4 rounded-lg mt-8">
+              <p className="text-sm text-gray-600 text-center">
+                This Refund & Cancellation Policy is effective as of August 1st, 2025, and may be updated 
+                periodically to reflect changes in our business operations, legal requirements, or service offerings. 
+                Customers will be notified of material changes through appropriate channels.
+              </p>
+            </div>
+          </div>
+        </div>
+      </main>
+      
+      <Footer />
+    </div>
+  );
+}
+5. PAYMENT POLICY (client/src/pages/payment-policy.tsx)
+Daha önceden okuduğumuz dosya - 282 satırdan oluşan kapsamlı ödeme politikası. İçinde 3D Secure, chargeback koruması, fraud önleme ve EURAMED LTD şirket bilgileri var.
+
