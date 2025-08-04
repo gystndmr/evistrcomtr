@@ -91,16 +91,6 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/kvkk" className="hover:text-primary transition-colors">
-                  {t('footer.privacy')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/cancellation-policy" className="hover:text-primary transition-colors">
-                  {t('footer.refund')}
-                </Link>
-              </li>
-              <li>
                 <Link href="/security" className="hover:text-primary transition-colors">
                   {t('footer.security')}
                 </Link>
