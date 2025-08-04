@@ -53,7 +53,12 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   async getCountries(): Promise<Country[]> {
-    return await db.select().from(countries);
+    try {
+      return await db.select().from(countries);
+    } catch (error) {
+      console.error('Database error in getCountries:', error);
+      return [];
+    }
   }
 
   async getCountryByCode(code: string): Promise<Country | undefined> {
@@ -67,13 +72,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getApplication(id: number): Promise<Application | undefined> {
-    const [application] = await db.select().from(applications).where(eq(applications.id, id));
-    return application;
+    try {
+      const [application] = await db.select().from(applications).where(eq(applications.id, id));
+      return application;
+    } catch (error) {
+      console.error('Database error in getApplication:', error);
+      return undefined;
+    }
   }
 
   async getApplicationByNumber(applicationNumber: string): Promise<Application | undefined> {
-    const [application] = await db.select().from(applications).where(eq(applications.applicationNumber, applicationNumber));
-    return application;
+    try {
+      const [application] = await db.select().from(applications).where(eq(applications.applicationNumber, applicationNumber));
+      return application;
+    } catch (error) {
+      console.error('Database error in getApplicationByNumber:', error);
+      return undefined;
+    }
   }
 
   async getAllApplications(): Promise<Application[]> {
@@ -86,7 +101,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getApplications(): Promise<Application[]> {
-    return await db.select().from(applications).orderBy(desc(applications.createdAt));
+    try {
+      return await db.select().from(applications).orderBy(desc(applications.createdAt));
+    } catch (error) {
+      console.error('Database error in getApplications:', error);
+      return [];
+    }
   }
 
   async updateApplicationStatus(id: number, status: string): Promise<Application | undefined> {
@@ -95,7 +115,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getInsuranceProducts(): Promise<InsuranceProduct[]> {
-    return await db.select().from(insuranceProducts).orderBy(desc(insuranceProducts.isPopular));
+    try {
+      return await db.select().from(insuranceProducts).orderBy(desc(insuranceProducts.isPopular));
+    } catch (error) {
+      console.error('Database error in getInsuranceProducts:', error);
+      return [];
+    }
   }
 
   async getInsuranceProduct(id: number): Promise<InsuranceProduct | undefined> {
@@ -114,17 +139,32 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getInsuranceApplicationByNumber(applicationNumber: string): Promise<InsuranceApplication | undefined> {
-    const [application] = await db.select().from(insuranceApplications).where(eq(insuranceApplications.applicationNumber, applicationNumber));
-    return application;
+    try {
+      const [application] = await db.select().from(insuranceApplications).where(eq(insuranceApplications.applicationNumber, applicationNumber));
+      return application;
+    } catch (error) {
+      console.error('Database error in getInsuranceApplicationByNumber:', error);
+      return undefined;
+    }
   }
 
   async getInsuranceApplications(): Promise<InsuranceApplication[]> {
-    return await db.select().from(insuranceApplications).orderBy(desc(insuranceApplications.createdAt));
+    try {
+      return await db.select().from(insuranceApplications).orderBy(desc(insuranceApplications.createdAt));
+    } catch (error) {
+      console.error('Database error in getInsuranceApplications:', error);
+      return [];
+    }
   }
 
   async getInsuranceApplicationById(id: number): Promise<InsuranceApplication | undefined> {
-    const [application] = await db.select().from(insuranceApplications).where(eq(insuranceApplications.id, id));
-    return application;
+    try {
+      const [application] = await db.select().from(insuranceApplications).where(eq(insuranceApplications.id, id));
+      return application;
+    } catch (error) {
+      console.error('Database error in getInsuranceApplicationById:', error);
+      return undefined;
+    }
   }
 
   async updateInsuranceApplicationStatus(id: number, status: string): Promise<InsuranceApplication | undefined> {
@@ -159,7 +199,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getChatMessages(): Promise<ChatMessage[]> {
-    return db.select().from(chatMessages).orderBy(desc(chatMessages.timestamp));
+    try {
+      return db.select().from(chatMessages).orderBy(desc(chatMessages.timestamp));
+    } catch (error) {
+      console.error('Database error in getChatMessages:', error);
+      return [];
+    }
   }
 
   async getChatMessagesBySession(sessionId: string): Promise<ChatMessage[]> {
