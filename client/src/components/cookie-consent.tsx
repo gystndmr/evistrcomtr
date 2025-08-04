@@ -12,11 +12,14 @@ export function CookieConsent() {
   useEffect(() => {
     // Check if user has already made a choice
     const consent = localStorage.getItem('cookie-consent');
+    console.log('Cookie consent check:', consent ? 'Already given' : 'Not given yet');
+    
     if (!consent) {
       // Show banner after a brief delay
       const timer = setTimeout(() => {
+        console.log('Showing cookie banner...');
         setIsVisible(true);
-      }, 2000);
+      }, 1000); // Reduced delay to 1 second
       return () => clearTimeout(timer);
     }
   }, []);

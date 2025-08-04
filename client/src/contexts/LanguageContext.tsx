@@ -1750,5 +1750,23 @@ const translations: Record<string, Record<string, string>> = {
     'footer.copyright': '© 2024 خدمة طلب التأشيرة الإلكترونية التركية. جميع الحقوق محفوظة.',
     'footer.professional': 'خدمة طلب التأشيرة المهنية',
     'footer.reliable': 'معالجة التأشيرة سريعة وموثوقة وآمنة',
+    
+    // Cookies (Arabic)
+    'cookies.title': 'نحن نستخدم ملفات تعريف الارتباط',
+    'cookies.description': 'نحن نستخدم ملفات تعريف الارتباط لتحسين تجربة التصفح الخاصة بك وتقديم محتوى مخصص وتحليل حركة المرور لدينا. بالنقر على "قبول الكل"، فإنك توافق على استخدامنا لملفات تعريف الارتباط.',
+    'cookies.privacy.policy': 'سياسة الخصوصية',
+    'cookies.manage': 'إدارة التفضيلات',
+    'cookies.accept.all': 'قبول الكل',
+    'cookies.necessary.only': 'الضرورية فقط',
+    'cookies.reject.all': 'رفض الكل',
+    'cookies.preferences': 'تفضيلات ملفات تعريف الارتباط',
+    'cookies.necessary': 'ملفات تعريف الارتباط الضرورية',
+    'cookies.analytics': 'ملفات تعريف الارتباط التحليلية',
+    'cookies.marketing': 'ملفات تعريف الارتباط التسويقية',
+    'cookies.required': 'مطلوب',
+    'cookies.optional': 'اختياري',
+    'cookies.necessary.description': 'ضرورية لعمل الموقع بشكل صحيح. لا يمكن تعطيلها.',
+    'cookies.analytics.description': 'تساعدنا على فهم كيفية استخدام الزوار لموقعنا لتحسين تجربة المستخدم.',
+    'cookies.marketing.description': 'تُستخدم لتقديم إعلانات مخصصة وتتبع فعالية الحملات.',
   },
 };
