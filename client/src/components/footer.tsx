@@ -102,12 +102,17 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/security" className="hover:text-primary transition-colors">
-                  {t('footer.terms')}
+                  {t('footer.security')}
                 </Link>
               </li>
               <li>
                 <Link href="/refund" className="hover:text-primary transition-colors">
                   {t('footer.refund')}
+                </Link>
+              </li>
+              <li>
+                <Link href="/payment-policy" className="hover:text-primary transition-colors">
+                  {t('footer.payment')}
                 </Link>
               </li>
               <li>

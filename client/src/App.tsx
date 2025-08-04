@@ -25,6 +25,7 @@ import KVKK from "@/pages/kvkk";
 import CancellationPolicy from "@/pages/cancellation-policy";
 import Security from "@/pages/security";
 import Refund from "@/pages/refund";
+import PaymentPolicy from "@/pages/payment-policy";
 import MobileTest from "@/pages/mobile-test";
 import NotFound from "@/pages/not-found";
 import ChatAdmin from "@/pages/chat-admin";
@@ -54,6 +55,7 @@ function Router() {
       <Route path="/cancellation-policy" component={CancellationPolicy} />
       <Route path="/security" component={Security} />
       <Route path="/refund" component={Refund} />
+      <Route path="/payment-policy" component={PaymentPolicy} />
       <Route path="/mobile-test" component={MobileTest} />
       <Route path="/chat-admin" component={ChatAdmin} />
       <Route component={NotFound} />
