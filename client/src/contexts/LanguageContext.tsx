@@ -411,6 +411,24 @@ const translations: Record<string, Record<string, string>> = {
     'footer.copyright': '© 2024 Turkey E-Visa Application Service. All rights reserved.',
     'footer.professional': 'Professional Visa Application Service',
     'footer.reliable': 'Fast, reliable and secure visa processing',
+    
+    // Cookie Consent
+    'cookies.title': 'We use cookies',
+    'cookies.description': 'We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.',
+    'cookies.privacy.policy': 'Privacy Policy',
+    'cookies.manage': 'Manage Preferences',
+    'cookies.accept.all': 'Accept All',
+    'cookies.necessary.only': 'Necessary Only',
+    'cookies.reject.all': 'Reject All',
+    'cookies.preferences': 'Cookie Preferences',
+    'cookies.necessary': 'Necessary Cookies',
+    'cookies.analytics': 'Analytics Cookies',
+    'cookies.marketing': 'Marketing Cookies',
+    'cookies.required': 'Required',
+    'cookies.optional': 'Optional',
+    'cookies.necessary.description': 'Essential for the website to function properly. These cannot be disabled.',
+    'cookies.analytics.description': 'Help us understand how visitors use our website to improve user experience.',
+    'cookies.marketing.description': 'Used to deliver personalized advertisements and track campaign effectiveness.',
   },
   tr: {
     // Header
@@ -716,6 +734,24 @@ const translations: Record<string, Record<string, string>> = {
     'footer.copyright': '© 2024 Türkiye E-Vize Başvuru Hizmeti. Tüm hakları saklıdır.',
     'footer.professional': 'Profesyonel Vize Başvuru Hizmeti',
     'footer.reliable': 'Hızlı, güvenilir ve güvenli vize işleme',
+    
+    // Cookie Consent
+    'cookies.title': 'Çerezleri kullanıyoruz',
+    'cookies.description': 'Tarama deneyiminizi geliştirmek, kişiselleştirilmiş içerik sunmak ve trafiğimizi analiz etmek için çerezleri kullanıyoruz. "Tümünü Kabul Et"e tıklayarak çerez kullanımımızı kabul etmiş olursunuz.',
+    'cookies.privacy.policy': 'Gizlilik Politikası',
+    'cookies.manage': 'Tercihleri Yönet',
+    'cookies.accept.all': 'Tümünü Kabul Et',
+    'cookies.necessary.only': 'Sadece Gerekli',
+    'cookies.reject.all': 'Tümünü Reddet',
+    'cookies.preferences': 'Çerez Tercihleri',
+    'cookies.necessary': 'Gerekli Çerezler',
+    'cookies.analytics': 'Analitik Çerezler',
+    'cookies.marketing': 'Pazarlama Çerezleri',
+    'cookies.required': 'Gerekli',
+    'cookies.optional': 'İsteğe Bağlı',
+    'cookies.necessary.description': 'Web sitesinin düzgün çalışması için gereklidir. Bunlar devre dışı bırakılamaz.',
+    'cookies.analytics.description': 'Kullanıcı deneyimini iyileştirmek için ziyaretçilerin web sitesini nasıl kullandığını anlamamıza yardımcı olur.',
+    'cookies.marketing.description': 'Kişiselleştirilmiş reklamlar sunmak ve kampanya etkinliğini takip etmek için kullanılır.',
   },
   fr: {
     // Header
@@ -952,6 +988,24 @@ const translations: Record<string, Record<string, string>> = {
     'footer.copyright': '© 2024 Service de Demande E-Visa Turquie. Tous droits réservés.',
     'footer.professional': 'Service Professionnel de Demande de Visa',
     'footer.reliable': 'Traitement de visa rapide, fiable et sécurisé',
+    
+    // Cookie Consent
+    'cookies.title': 'Nous utilisons des cookies',
+    'cookies.description': 'Nous utilisons des cookies pour améliorer votre expérience de navigation, servir du contenu personnalisé et analyser notre trafic. En cliquant sur "Accepter tout", vous consentez à notre utilisation des cookies.',
+    'cookies.privacy.policy': 'Politique de Confidentialité',
+    'cookies.manage': 'Gérer les Préférences',
+    'cookies.accept.all': 'Accepter Tout',
+    'cookies.necessary.only': 'Nécessaires Seulement',
+    'cookies.reject.all': 'Rejeter Tout',
+    'cookies.preferences': 'Préférences de Cookies',
+    'cookies.necessary': 'Cookies Nécessaires',
+    'cookies.analytics': 'Cookies Analytiques',
+    'cookies.marketing': 'Cookies Marketing',
+    'cookies.required': 'Requis',
+    'cookies.optional': 'Optionnel',
+    'cookies.necessary.description': 'Essentiels pour le bon fonctionnement du site web. Ils ne peuvent pas être désactivés.',
+    'cookies.analytics.description': 'Nous aident à comprendre comment les visiteurs utilisent notre site web pour améliorer l\'expérience utilisateur.',
+    'cookies.marketing.description': 'Utilisés pour diffuser des publicités personnalisées et suivre l\'efficacité des campagnes.',
   },
   de: {
     // Header
@@ -1188,6 +1242,24 @@ const translations: Record<string, Record<string, string>> = {
     'footer.copyright': '© 2024 Türkei E-Visa Antrag Service. Alle Rechte vorbehalten.',
     'footer.professional': 'Professioneller Visa Antrag Service',
     'footer.reliable': 'Schnelle, zuverlässige und sichere Visa Bearbeitung',
+    
+    // Cookie Consent
+    'cookies.title': 'Wir verwenden Cookies',
+    'cookies.description': 'Wir verwenden Cookies, um Ihr Surferlebnis zu verbessern, personalisierte Inhalte bereitzustellen und unseren Traffic zu analysieren. Durch Klicken auf "Alle akzeptieren" stimmen Sie unserer Verwendung von Cookies zu.',
+    'cookies.privacy.policy': 'Datenschutzrichtlinie',
+    'cookies.manage': 'Einstellungen Verwalten',
+    'cookies.accept.all': 'Alle Akzeptieren',
+    'cookies.necessary.only': 'Nur Notwendige',
+    'cookies.reject.all': 'Alle Ablehnen',
+    'cookies.preferences': 'Cookie-Einstellungen',
+    'cookies.necessary': 'Notwendige Cookies',
+    'cookies.analytics': 'Analytische Cookies',
+    'cookies.marketing': 'Marketing Cookies',
+    'cookies.required': 'Erforderlich',
+    'cookies.optional': 'Optional',
+    'cookies.necessary.description': 'Wesentlich für das ordnungsgemäße Funktionieren der Website. Diese können nicht deaktiviert werden.',
+    'cookies.analytics.description': 'Helfen uns zu verstehen, wie Besucher unsere Website nutzen, um die Benutzererfahrung zu verbessern.',
+    'cookies.marketing.description': 'Werden verwendet, um personalisierte Werbung zu liefern und die Kampagneneffektivität zu verfolgen.',
   },
   es: {
     // Header
@@ -1424,6 +1496,24 @@ const translations: Record<string, Record<string, string>> = {
     'footer.copyright': '© 2024 Servicio de Solicitud E-Visa Turquía. Todos los derechos reservados.',
     'footer.professional': 'Servicio Profesional de Solicitud de Visa',
     'footer.reliable': 'Procesamiento de visa rápido, confiable y seguro',
+    
+    // Cookie Consent
+    'cookies.title': 'Usamos cookies',
+    'cookies.description': 'Usamos cookies para mejorar su experiencia de navegación, servir contenido personalizado y analizar nuestro tráfico. Al hacer clic en "Aceptar todo", acepta nuestro uso de cookies.',
+    'cookies.privacy.policy': 'Política de Privacidad',
+    'cookies.manage': 'Gestionar Preferencias',
+    'cookies.accept.all': 'Aceptar Todo',
+    'cookies.necessary.only': 'Solo Necesarias',
+    'cookies.reject.all': 'Rechazar Todo',
+    'cookies.preferences': 'Preferencias de Cookies',
+    'cookies.necessary': 'Cookies Necesarias',
+    'cookies.analytics': 'Cookies Analíticas',
+    'cookies.marketing': 'Cookies de Marketing',
+    'cookies.required': 'Requeridas',
+    'cookies.optional': 'Opcional',
+    'cookies.necessary.description': 'Esenciales para que el sitio web funcione correctamente. Estas no se pueden desactivar.',
+    'cookies.analytics.description': 'Nos ayudan a entender cómo los visitantes usan nuestro sitio web para mejorar la experiencia del usuario.',
+    'cookies.marketing.description': 'Utilizadas para entregar publicidad personalizada y rastrear la efectividad de las campañas.',
   },
   ar: {
     // Header

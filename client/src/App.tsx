@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { LiveChat } from "@/components/live-chat";
+import { CookieConsent } from "@/components/cookie-consent";
 
 import Home from "@/pages/home";
 import Application from "@/pages/application";
@@ -71,6 +72,7 @@ function App() {
           <Toaster />
           <Router />
           <LiveChat />
+          <CookieConsent />
         </TooltipProvider>
       </LanguageProvider>
     </QueryClientProvider>
