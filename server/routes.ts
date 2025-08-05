@@ -77,7 +77,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         await sendEmail({
           to: application.email,
-          from: "info@visatanzania.org",
+          from: "info@getvisa.tr",
           subject: emailContent.subject,
           html: emailContent.html,
           text: emailContent.text
@@ -166,7 +166,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         await sendEmail({
           to: application.email,
-          from: "info@visatanzania.org",
+          from: "info@getvisa.tr",
           subject: emailContent.subject,
           html: emailContent.html,
           text: emailContent.text,
@@ -532,7 +532,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             const emailOptions: any = {
               to: application.email,
-              from: "info@visatanzania.org",
+              from: "info@getvisa.tr",
               subject: emailContent.subject,
               html: emailContent.html,
               text: emailContent.text
@@ -572,7 +572,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Basit reddetme email template
             await sendEmail({
               to: application.email,
-              from: "info@visatanzania.org",
+              from: "info@getvisa.tr",
               subject: `[${application.applicationNumber}] Turkey E-Visa Application Update`,
               html: `
                 <h2>Turkey E-Visa Application Update</h2>
@@ -641,7 +641,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           const emailOptions: any = {
             to: application.email,
-            from: "info@visatanzania.org",
+            from: "info@getvisa.tr",
             subject: emailContent.subject,
             html: emailContent.html,
             text: emailContent.text
@@ -703,7 +703,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await sendEmail({
             to: application.email,
-            from: "info@visatanzania.org",
+            from: "info@getvisa.tr",
             subject: rejectionEmailContent.subject,
             html: rejectionEmailContent.html,
             text: rejectionEmailContent.text,

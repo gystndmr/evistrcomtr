@@ -46,7 +46,7 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   console.log('🔧 Subject:', options.subject);
   
   // Use environment variable or fallback to verified address
-  const fromEmail = process.env.SENDGRID_FROM_EMAIL || "info@visatanzania.org";
+  const fromEmail = process.env.SENDGRID_FROM_EMAIL || "info@getvisa.tr";
   
   console.log('🔧 From address (verified only):', fromEmail);
   
