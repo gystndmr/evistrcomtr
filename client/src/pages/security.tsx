@@ -13,6 +13,9 @@ export default function Security() {
           </h1>
           <p className="text-gray-600 mb-2">EURAMED LTD</p>
           <p className="text-gray-600 mb-2">Company Number: 16621355</p>
+          <p className="text-gray-600 mb-2">Incorporation Date: August 1st, 2025</p>
+          <p className="text-gray-600 mb-2">Registered Address: 71–75, Shelton Street, Covent Garden, London, WC2H 9JQ</p>
+          <p className="text-gray-600 mb-2">Website: <a href="https://euramedglobal.com/" className="text-blue-600 hover:text-blue-800 underline">www.euramedglobal.com</a></p>
           <p className="text-gray-600 mb-8">Effective Date: August 1st, 2025</p>
           
           <div className="prose max-w-none space-y-8">
