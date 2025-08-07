@@ -269,11 +269,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         { code: "ITA", name: "Italy", isEligible: false, requiresSupportingDocs: false },
         { code: "ESP", name: "Spain", isEligible: false, requiresSupportingDocs: false },
         { code: "NLD", name: "Netherlands", isEligible: false, requiresSupportingDocs: false },
-        { code: "RUS", name: "Russian Federation", isEligible: false, requiresSupportingDocs: false },
+
         { code: "BRA", name: "Brazil", isEligible: false, requiresSupportingDocs: false },
         { code: "NGA", name: "Nigeria", isEligible: false, requiresSupportingDocs: false },
-        { code: "SYR", name: "Syria", isEligible: false, requiresSupportingDocs: false },
-        { code: "IRN", name: "Iran", isEligible: false, requiresSupportingDocs: false },
+
+
       ];
 
       for (const countryData of countriesData) {
