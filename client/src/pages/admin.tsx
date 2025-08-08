@@ -323,6 +323,9 @@ export default function Admin() {
   };
 
   const getSupportingDocumentTypeDisplay = (docType: string, visaCountry?: string, visaNumber?: string) => {
+    // Debug: Hangi parametreler geldiğini görelim
+    console.log('🔍 DEBUG - Parameters:', { docType, visaCountry, visaNumber });
+    
     switch (docType) {
       case "visa":
         // Spesifik visa ülkesini göster
@@ -336,6 +339,7 @@ export default function Admin() {
         }
         return "Visa (Tür Belirsiz)";
       case "residence":
+        console.log('🏠 RESIDENCE DEBUG - visaCountry:', visaCountry, typeof visaCountry);
         // ISO ülke kodlarına göre ikamet ülkesini göster
         if (visaCountry === "USA") return "Amerika İkamet İzni";
         if (visaCountry === "GBR") return "İngiltere İkamet İzni";
@@ -361,6 +365,7 @@ export default function Admin() {
         if (visaNumber && !visaCountry) {
           return `İkamet İzni Mevcut (No: ${visaNumber.substring(0, 6)}...)`;
         }
+        console.log('❌ FALLBACK - No country match, visaCountry:', visaCountry);
         return "İkamet İzni (Ülke Belirsiz)";
       case "passport":
         return "Pasaport";
