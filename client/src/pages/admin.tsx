@@ -323,8 +323,6 @@ export default function Admin() {
   };
 
   const getSupportingDocumentTypeDisplay = (docType: string, visaCountry?: string, visaNumber?: string) => {
-    console.log('🔧 FUNC CALLED:', { docType, visaCountry, visaNumber });
-    
     switch (docType) {
       case "visa":
         // Spesifik visa ülkesini göster
@@ -552,30 +550,7 @@ export default function Admin() {
                           <TableCell>{app.arrivalDate ? formatDate(app.arrivalDate) : 'N/A'}</TableCell>
                           <TableCell>{app.processingType}</TableCell>
                           <TableCell>{app.documentType}</TableCell>
-                          <TableCell>
-                            {(() => {
-                              console.log('🔧 APP DATA:', {
-                                appNumber: app.applicationNumber,
-                                supportingDocumentType: (app as any).supportingDocumentType,
-                                supportingDocumentCountry: (app as any).supportingDocumentCountry,
-                                supporting_document_country: (app as any).supporting_document_country,
-                                supportingDocumentNumber: app.supportingDocumentNumber,
-                                supporting_document_number: (app as any).supporting_document_number,
-                                allKeys: Object.keys(app)
-                              });
-                              
-                              if (app.applicationNumber === 'TRME2M3FUQ3LU8CW') {
-                                return 'Almanya İkamet İzni (TEST FIXED)';
-                              }
-                              
-                              return getSupportingDocumentTypeDisplay(
-                                (app as any).supportingDocumentType, 
-                                (app as any).supportingDocumentCountry || (app as any).supporting_document_country, 
-                                app.supportingDocumentNumber || (app as any).supporting_document_number || undefined
-                              );
-                            })()
-                            }
-                          </TableCell>
+                          <TableCell>{getSupportingDocumentTypeDisplay((app as any).supportingDocumentType || (app as any).supporting_document_type, (app as any).supportingDocumentCountry || (app as any).supporting_document_country, (app as any).supportingDocumentNumber || (app as any).supporting_document_number)}</TableCell>
                           <TableCell>{app.supportingDocumentNumber || 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentStartDate ? formatDate(app.supportingDocumentStartDate) : 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentEndDate ? formatDate(app.supportingDocumentEndDate) : 'N/A'}</TableCell>
@@ -838,7 +813,7 @@ export default function Admin() {
                                         <div><strong>Varış Tarihi:</strong> {selectedApplication.arrivalDate ? formatDate(selectedApplication.arrivalDate) : 'N/A'}</div>
                                         <div><strong>İşlem Türü:</strong> {selectedApplication.processingType}</div>
                                         <div><strong>Belge Türü:</strong> {selectedApplication.documentType}</div>
-                                        <div><strong>Destekleyici Belge:</strong> {getSupportingDocumentTypeDisplay((selectedApplication as any).supportingDocumentType, (selectedApplication as any).supportingDocumentCountry || (selectedApplication as any).supporting_document_country)}</div>
+                                        <div><strong>Destekleyici Belge:</strong> {getSupportingDocumentTypeDisplay((selectedApplication as any).supportingDocumentType || (selectedApplication as any).supporting_document_type, (selectedApplication as any).supportingDocumentCountry || (selectedApplication as any).supporting_document_country, (selectedApplication as any).supportingDocumentNumber || (selectedApplication as any).supporting_document_number)}</div>
                                         <div><strong>Belge No:</strong> {selectedApplication.supportingDocumentNumber || 'N/A'}</div>
                                         <div><strong>Belge Başlangıç:</strong> {selectedApplication.supportingDocumentStartDate ? formatDate(selectedApplication.supportingDocumentStartDate) : 'N/A'}</div>
                                         <div><strong>Belge Bitiş:</strong> {selectedApplication.supportingDocumentEndDate ? formatDate(selectedApplication.supportingDocumentEndDate) : 'N/A'}</div>

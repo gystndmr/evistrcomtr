@@ -104,7 +104,7 @@ export class DatabaseStorage implements IStorage {
     try {
       const results = await db.select().from(applications).orderBy(desc(applications.createdAt));
       
-      // DEBUG: Test başvurusunu kontrol et
+      // TEST: Log specific application to verify data structure
       const testApp = results.find(app => app.applicationNumber === 'TRME2M3FUQ3LU8CW');
       if (testApp) {
         console.log('🔧 DEBUG Storage Test Application:', {

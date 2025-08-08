@@ -407,19 +407,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const allApplications = await storage.getApplications();
       
-      // DEBUG: Test başvurusunu kontrol et
-      const testApp = allApplications.find(app => app.applicationNumber === 'TRME2M3FUQ3LU8CW');
-      if (testApp) {
-        console.log('🔧 DEBUG Test Application Data:', {
-          applicationNumber: testApp.applicationNumber,
-          supportingDocumentType: testApp.supportingDocumentType,
-          supportingDocumentCountry: testApp.supportingDocumentCountry,
-          supportingDocumentNumber: testApp.supportingDocumentNumber
-        });
-      }
+      // Ensure both snake_case and camelCase fields for frontend compatibility
+      const normalizedApplications = allApplications.map(app => ({
+        ...app,
+        // Add camelCase versions if they don't exist
+        supportingDocumentType: app.supportingDocumentType || (app as any).supporting_document_type,
+        supportingDocumentCountry: app.supportingDocumentCountry || (app as any).supporting_document_country,
+        supportingDocumentNumber: app.supportingDocumentNumber || (app as any).supporting_document_number,
+        supportingDocumentStartDate: app.supportingDocumentStartDate || (app as any).supporting_document_start_date,
+        supportingDocumentEndDate: app.supportingDocumentEndDate || (app as any).supporting_document_end_date,
+        // Also keep snake_case versions for backward compatibility
+        supporting_document_type: (app as any).supporting_document_type || app.supportingDocumentType,
+        supporting_document_country: (app as any).supporting_document_country || app.supportingDocumentCountry,
+        supporting_document_number: (app as any).supporting_document_number || app.supportingDocumentNumber,
+        supporting_document_start_date: (app as any).supporting_document_start_date || app.supportingDocumentStartDate,
+        supporting_document_end_date: (app as any).supporting_document_end_date || app.supportingDocumentEndDate
+      }));
       
       // Filter by search term if provided
-      let filteredApplications = allApplications;
+      let filteredApplications = normalizedApplications;
       if (search) {
         filteredApplications = allApplications.filter(app => 
           app.firstName?.toLowerCase().includes(search.toLowerCase()) ||
