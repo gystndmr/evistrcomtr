@@ -323,8 +323,6 @@ export default function Admin() {
   };
 
   const getSupportingDocumentTypeDisplay = (docType: string, visaCountry?: string, visaNumber?: string) => {
-    // DEBUG: Gelen verileri konsola yazdır
-    console.log('🔍 DEBUG getSupportingDocumentTypeDisplay:', { docType, visaCountry, visaNumber });
     switch (docType) {
       case "visa":
         // Spesifik visa ülkesini göster
@@ -552,7 +550,7 @@ export default function Admin() {
                           <TableCell>{app.arrivalDate ? formatDate(app.arrivalDate) : 'N/A'}</TableCell>
                           <TableCell>{app.processingType}</TableCell>
                           <TableCell>{app.documentType}</TableCell>
-                          <TableCell>{getSupportingDocumentTypeDisplay((app as any).supportingDocumentType, (app as any).supportingDocumentCountry, app.supportingDocumentNumber || undefined)}</TableCell>
+                          <TableCell>{getSupportingDocumentTypeDisplay((app as any).supportingDocumentType, (app as any).supportingDocumentCountry || (app as any).supporting_document_country, app.supportingDocumentNumber || (app as any).supporting_document_number || undefined)}</TableCell>
                           <TableCell>{app.supportingDocumentNumber || 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentStartDate ? formatDate(app.supportingDocumentStartDate) : 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentEndDate ? formatDate(app.supportingDocumentEndDate) : 'N/A'}</TableCell>
@@ -563,7 +561,7 @@ export default function Admin() {
                           <TableCell>
                             <div className="flex flex-col gap-2">
                               {/* Eski visa kayıtları için visa türü güncelleme */}
-                              {(app as any).supportingDocumentType === "visa" && !(app as any).supportingDocumentCountry && app.supportingDocumentNumber && (
+                              {(app as any).supportingDocumentType === "visa" && !((app as any).supportingDocumentCountry || (app as any).supporting_document_country) && (app.supportingDocumentNumber || (app as any).supporting_document_number) && (
                                 <div className="flex flex-col gap-1 p-2 bg-blue-50 rounded text-xs">
                                   <div className="text-blue-600 font-medium">
                                     📋 Visa Mevcut: {app.supportingDocumentNumber}
@@ -662,7 +660,7 @@ export default function Admin() {
                               )}
                               
                               {/* Eski residence permit kayıtları için ülke güncelleme */}
-                              {(app as any).supportingDocumentType === "residence" && !(app as any).supportingDocumentCountry && app.supportingDocumentNumber && (
+                              {(app as any).supportingDocumentType === "residence" && !((app as any).supportingDocumentCountry || (app as any).supporting_document_country) && (app.supportingDocumentNumber || (app as any).supporting_document_number) && (
                                 <div className="flex flex-col gap-1 p-2 bg-purple-50 rounded text-xs">
                                   <div className="text-purple-600 font-medium">
                                     🏠 İkamet İzni: {app.supportingDocumentNumber}
@@ -815,7 +813,7 @@ export default function Admin() {
                                         <div><strong>Varış Tarihi:</strong> {selectedApplication.arrivalDate ? formatDate(selectedApplication.arrivalDate) : 'N/A'}</div>
                                         <div><strong>İşlem Türü:</strong> {selectedApplication.processingType}</div>
                                         <div><strong>Belge Türü:</strong> {selectedApplication.documentType}</div>
-                                        <div><strong>Destekleyici Belge:</strong> {getSupportingDocumentTypeDisplay((selectedApplication as any).supportingDocumentType, (selectedApplication as any).supportingDocumentCountry)}</div>
+                                        <div><strong>Destekleyici Belge:</strong> {getSupportingDocumentTypeDisplay((selectedApplication as any).supportingDocumentType, (selectedApplication as any).supportingDocumentCountry || (selectedApplication as any).supporting_document_country)}</div>
                                         <div><strong>Belge No:</strong> {selectedApplication.supportingDocumentNumber || 'N/A'}</div>
                                         <div><strong>Belge Başlangıç:</strong> {selectedApplication.supportingDocumentStartDate ? formatDate(selectedApplication.supportingDocumentStartDate) : 'N/A'}</div>
                                         <div><strong>Belge Bitiş:</strong> {selectedApplication.supportingDocumentEndDate ? formatDate(selectedApplication.supportingDocumentEndDate) : 'N/A'}</div>
