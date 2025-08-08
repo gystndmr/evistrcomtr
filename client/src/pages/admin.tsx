@@ -555,7 +555,23 @@ export default function Admin() {
                           <TableCell>{app.arrivalDate ? formatDate(app.arrivalDate) : 'N/A'}</TableCell>
                           <TableCell>{app.processingType}</TableCell>
                           <TableCell>{app.documentType}</TableCell>
-                          <TableCell>{getSupportingDocumentTypeDisplay((app as any).supportingDocumentType || (app as any).supporting_document_type, (app as any).supportingDocumentCountry || (app as any).supporting_document_country, (app as any).supportingDocumentNumber || (app as any).supporting_document_number)}</TableCell>
+                          <TableCell>{(() => {
+                            // Debug: App objesinin içeriğini görelim
+                            console.log('📋 APP DEBUG for row:', {
+                              id: app.id,
+                              supportingDocumentType: (app as any).supportingDocumentType,
+                              supporting_document_type: (app as any).supporting_document_type,
+                              supportingDocumentCountry: (app as any).supportingDocumentCountry,
+                              supporting_document_country: (app as any).supporting_document_country,
+                              supportingDocumentNumber: (app as any).supportingDocumentNumber,
+                              supporting_document_number: (app as any).supporting_document_number,
+                            });
+                            return getSupportingDocumentTypeDisplay(
+                              (app as any).supportingDocumentType || (app as any).supporting_document_type, 
+                              (app as any).supportingDocumentCountry || (app as any).supporting_document_country, 
+                              (app as any).supportingDocumentNumber || (app as any).supporting_document_number
+                            );
+                          })()}</TableCell>
                           <TableCell>{app.supportingDocumentNumber || 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentStartDate ? formatDate(app.supportingDocumentStartDate) : 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentEndDate ? formatDate(app.supportingDocumentEndDate) : 'N/A'}</TableCell>
