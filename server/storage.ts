@@ -102,7 +102,20 @@ export class DatabaseStorage implements IStorage {
 
   async getApplications(): Promise<Application[]> {
     try {
-      return await db.select().from(applications).orderBy(desc(applications.createdAt));
+      const results = await db.select().from(applications).orderBy(desc(applications.createdAt));
+      
+      // DEBUG: Test başvurusunu kontrol et
+      const testApp = results.find(app => app.applicationNumber === 'TRME2M3FUQ3LU8CW');
+      if (testApp) {
+        console.log('🔧 DEBUG Storage Test Application:', {
+          applicationNumber: testApp.applicationNumber,
+          supportingDocumentType: testApp.supportingDocumentType,
+          supportingDocumentCountry: testApp.supportingDocumentCountry,
+          keys: Object.keys(testApp)
+        });
+      }
+      
+      return results;
     } catch (error) {
       console.error('Database error in getApplications:', error);
       return [];

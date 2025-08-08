@@ -323,6 +323,11 @@ export default function Admin() {
   };
 
   const getSupportingDocumentTypeDisplay = (docType: string, visaCountry?: string, visaNumber?: string) => {
+    // TEMPORARY DEBUG: Force test data
+    if (visaNumber === "DE123456789") {
+      return "Almanya İkamet İzni (FIXED)";
+    }
+    
     switch (docType) {
       case "visa":
         // Spesifik visa ülkesini göster

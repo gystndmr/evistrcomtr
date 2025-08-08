@@ -407,6 +407,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const allApplications = await storage.getApplications();
       
+      // DEBUG: Test başvurusunu kontrol et
+      const testApp = allApplications.find(app => app.applicationNumber === 'TRME2M3FUQ3LU8CW');
+      if (testApp) {
+        console.log('🔧 DEBUG Test Application Data:', {
+          applicationNumber: testApp.applicationNumber,
+          supportingDocumentType: testApp.supportingDocumentType,
+          supportingDocumentCountry: testApp.supportingDocumentCountry,
+          supportingDocumentNumber: testApp.supportingDocumentNumber
+        });
+      }
+      
       // Filter by search term if provided
       let filteredApplications = allApplications;
       if (search) {
