@@ -336,18 +336,27 @@ export default function Admin() {
         }
         return "Visa (Tür Belirsiz)";
       case "residence":
-        // Spesifik ikamet ülkesini göster
-        if (visaCountry === "GERMANY") return "Almanya İkamet İzni";
-        if (visaCountry === "NETHERLANDS") return "Hollanda İkamet İzni";
-        if (visaCountry === "FRANCE") return "Fransa İkamet İzni";
-        if (visaCountry === "ITALY") return "İtalya İkamet İzni";
-        if (visaCountry === "SPAIN") return "İspanya İkamet İzni";
-        if (visaCountry === "SWEDEN") return "İsveç İkamet İzni";
-        if (visaCountry === "AUSTRIA") return "Avusturya İkamet İzni";
-        if (visaCountry === "BELGIUM") return "Belçika İkamet İzni";
-        if (visaCountry === "DENMARK") return "Danimarka İkamet İzni";
-        if (visaCountry === "NORWAY") return "Norveç İkamet İzni";
-        if (visaCountry === "SWITZERLAND") return "İsviçre İkamet İzni";
+        // ISO ülke kodlarına göre ikamet ülkesini göster
+        if (visaCountry === "USA") return "Amerika İkamet İzni";
+        if (visaCountry === "GBR") return "İngiltere İkamet İzni";
+        if (visaCountry === "DEU") return "Almanya İkamet İzni";
+        if (visaCountry === "FRA") return "Fransa İkamet İzni";
+        if (visaCountry === "ITA") return "İtalya İkamet İzni";
+        if (visaCountry === "ESP") return "İspanya İkamet İzni";
+        if (visaCountry === "NLD") return "Hollanda İkamet İzni";
+        if (visaCountry === "BEL") return "Belçika İkamet İzni";
+        if (visaCountry === "AUT") return "Avusturya İkamet İzni";
+        if (visaCountry === "CHE") return "İsviçre İkamet İzni";
+        if (visaCountry === "SWE") return "İsveç İkamet İzni";
+        if (visaCountry === "NOR") return "Norveç İkamet İzni";
+        if (visaCountry === "DNK") return "Danimarka İkamet İzni";
+        if (visaCountry === "FIN") return "Finlandiya İkamet İzni";
+        if (visaCountry === "CAN") return "Kanada İkamet İzni";
+        if (visaCountry === "AUS") return "Avustralya İkamet İzni";
+        if (visaCountry === "JPN") return "Japonya İkamet İzni";
+        if (visaCountry === "KOR") return "Güney Kore İkamet İzni";
+        if (visaCountry === "SGP") return "Singapur İkamet İzni";
+        if (visaCountry === "ARE") return "BAE İkamet İzni";
         // Eski kayıtlar için
         if (visaNumber && !visaCountry) {
           return `İkamet İzni Mevcut (No: ${visaNumber.substring(0, 6)}...)`;
