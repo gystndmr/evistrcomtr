@@ -323,6 +323,8 @@ export default function Admin() {
   };
 
   const getSupportingDocumentTypeDisplay = (docType: string, visaCountry?: string, visaNumber?: string) => {
+    // DEBUG: Gelen verileri konsola yazdır
+    console.log('🔍 DEBUG getSupportingDocumentTypeDisplay:', { docType, visaCountry, visaNumber });
     switch (docType) {
       case "visa":
         // Spesifik visa ülkesini göster
