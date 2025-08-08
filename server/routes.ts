@@ -427,7 +427,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Filter by search term if provided
       let filteredApplications = normalizedApplications;
       if (search) {
-        filteredApplications = allApplications.filter(app => 
+        filteredApplications = normalizedApplications.filter(app => 
           app.firstName?.toLowerCase().includes(search.toLowerCase()) ||
           app.lastName?.toLowerCase().includes(search.toLowerCase()) ||
           app.email?.toLowerCase().includes(search.toLowerCase()) ||

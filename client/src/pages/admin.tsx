@@ -323,8 +323,6 @@ export default function Admin() {
   };
 
   const getSupportingDocumentTypeDisplay = (docType: string, visaCountry?: string, visaNumber?: string) => {
-    // Debug: Hangi parametreler geldiğini görelim
-    console.log('🔍 DEBUG - Parameters:', { docType, visaCountry, visaNumber });
     
     switch (docType) {
       case "visa":
@@ -339,7 +337,6 @@ export default function Admin() {
         }
         return "Visa (Tür Belirsiz)";
       case "residence":
-        console.log('🏠 RESIDENCE DEBUG - visaCountry:', visaCountry, typeof visaCountry);
         // ISO ülke kodlarına göre ikamet ülkesini göster
         if (visaCountry === "USA") return "Amerika İkamet İzni";
         if (visaCountry === "GBR") return "İngiltere İkamet İzni";
@@ -365,7 +362,6 @@ export default function Admin() {
         if (visaNumber && !visaCountry) {
           return `İkamet İzni Mevcut (No: ${visaNumber.substring(0, 6)}...)`;
         }
-        console.log('❌ FALLBACK - No country match, visaCountry:', visaCountry);
         return "İkamet İzni (Ülke Belirsiz)";
       case "passport":
         return "Pasaport";
@@ -555,23 +551,7 @@ export default function Admin() {
                           <TableCell>{app.arrivalDate ? formatDate(app.arrivalDate) : 'N/A'}</TableCell>
                           <TableCell>{app.processingType}</TableCell>
                           <TableCell>{app.documentType}</TableCell>
-                          <TableCell>{(() => {
-                            // Debug: App objesinin içeriğini görelim
-                            console.log('📋 APP DEBUG for row:', {
-                              id: app.id,
-                              supportingDocumentType: (app as any).supportingDocumentType,
-                              supporting_document_type: (app as any).supporting_document_type,
-                              supportingDocumentCountry: (app as any).supportingDocumentCountry,
-                              supporting_document_country: (app as any).supporting_document_country,
-                              supportingDocumentNumber: (app as any).supportingDocumentNumber,
-                              supporting_document_number: (app as any).supporting_document_number,
-                            });
-                            return getSupportingDocumentTypeDisplay(
-                              (app as any).supportingDocumentType || (app as any).supporting_document_type, 
-                              (app as any).supportingDocumentCountry || (app as any).supporting_document_country, 
-                              (app as any).supportingDocumentNumber || (app as any).supporting_document_number
-                            );
-                          })()}</TableCell>
+                          <TableCell>{getSupportingDocumentTypeDisplay((app as any).supportingDocumentType || (app as any).supporting_document_type, (app as any).supportingDocumentCountry || (app as any).supporting_document_country, (app as any).supportingDocumentNumber || (app as any).supporting_document_number)}</TableCell>
                           <TableCell>{app.supportingDocumentNumber || 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentStartDate ? formatDate(app.supportingDocumentStartDate) : 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentEndDate ? formatDate(app.supportingDocumentEndDate) : 'N/A'}</TableCell>
