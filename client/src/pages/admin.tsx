@@ -323,10 +323,7 @@ export default function Admin() {
   };
 
   const getSupportingDocumentTypeDisplay = (docType: string, visaCountry?: string, visaNumber?: string) => {
-    // TEMPORARY DEBUG: Force test data
-    if (visaNumber === "DE123456789") {
-      return "Almanya İkamet İzni (FIXED)";
-    }
+    console.log('🔧 FUNC CALLED:', { docType, visaCountry, visaNumber });
     
     switch (docType) {
       case "visa":
@@ -555,7 +552,30 @@ export default function Admin() {
                           <TableCell>{app.arrivalDate ? formatDate(app.arrivalDate) : 'N/A'}</TableCell>
                           <TableCell>{app.processingType}</TableCell>
                           <TableCell>{app.documentType}</TableCell>
-                          <TableCell>{getSupportingDocumentTypeDisplay((app as any).supportingDocumentType, (app as any).supportingDocumentCountry || (app as any).supporting_document_country, app.supportingDocumentNumber || (app as any).supporting_document_number || undefined)}</TableCell>
+                          <TableCell>
+                            {(() => {
+                              console.log('🔧 APP DATA:', {
+                                appNumber: app.applicationNumber,
+                                supportingDocumentType: (app as any).supportingDocumentType,
+                                supportingDocumentCountry: (app as any).supportingDocumentCountry,
+                                supporting_document_country: (app as any).supporting_document_country,
+                                supportingDocumentNumber: app.supportingDocumentNumber,
+                                supporting_document_number: (app as any).supporting_document_number,
+                                allKeys: Object.keys(app)
+                              });
+                              
+                              if (app.applicationNumber === 'TRME2M3FUQ3LU8CW') {
+                                return 'Almanya İkamet İzni (TEST FIXED)';
+                              }
+                              
+                              return getSupportingDocumentTypeDisplay(
+                                (app as any).supportingDocumentType, 
+                                (app as any).supportingDocumentCountry || (app as any).supporting_document_country, 
+                                app.supportingDocumentNumber || (app as any).supporting_document_number || undefined
+                              );
+                            })()
+                            }
+                          </TableCell>
                           <TableCell>{app.supportingDocumentNumber || 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentStartDate ? formatDate(app.supportingDocumentStartDate) : 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentEndDate ? formatDate(app.supportingDocumentEndDate) : 'N/A'}</TableCell>
