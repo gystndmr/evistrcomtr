@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -46,11 +46,42 @@ const applicationSchema = z.object({
 type ApplicationFormData = z.infer<typeof applicationSchema>;
 
 const processingTypes = [
-  { value: "standard", label: "Ready in 5-7 days", price: 25 },
-  { value: "fast", label: "Ready in 1-3 days", price: 75 },
-  { value: "express", label: "Ready in 24 hours", price: 175 },
-  { value: "urgent", label: "Ready in 4 hours", price: 295 },
+  { value: "standard", label: "Ready in 5-7 days", price: 25, minDays: 7 },
+  { value: "fast", label: "Ready in 1-3 days", price: 75, minDays: 3 },
+  { value: "express", label: "Ready in 24 hours", price: 175, minDays: 1 },
+  { value: "urgent", label: "Ready in 4 hours", price: 295, minDays: 1 },
 ];
+
+// Supporting document processing types with minDays
+const supportingDocProcessingTypes = [
+  { value: "slow", label: "Ready in 7 days", price: 50, minDays: 7 },
+  { value: "standard", label: "Ready in 4 days", price: 115, minDays: 4 },
+  { value: "fast", label: "Ready in 2 days", price: 165, minDays: 2 },
+  { value: "urgent_24", label: "Ready in 24 hours", price: 280, minDays: 1 },
+  { value: "urgent_12", label: "Ready in 12 hours", price: 330, minDays: 1 },
+  { value: "urgent_4", label: "Ready in 4 hours", price: 410, minDays: 1 },
+  { value: "urgent_1", label: "Ready in 1 hour", price: 645, minDays: 1 },
+];
+
+// Helper function to calculate days between two dates
+const calculateDaysDifference = (arrivalDate: string): number => {
+  if (!arrivalDate) return Infinity;
+  
+  const today = new Date();
+  const arrival = new Date(arrivalDate);
+  const diffTime = arrival.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  return diffDays;
+};
+
+// Helper function to filter processing types based on arrival date
+const getAvailableProcessingTypes = (arrivalDate: string, isSupporting: boolean = false) => {
+  const daysUntilArrival = calculateDaysDifference(arrivalDate);
+  const types = isSupporting ? supportingDocProcessingTypes : processingTypes;
+  
+  return types.filter(type => type.minDays <= daysUntilArrival);
+};
 
 export function VisaForm() {
   const { t } = useLanguage();
@@ -65,6 +96,8 @@ export function VisaForm() {
   const [selectedSupportingDocType, setSelectedSupportingDocType] = useState("");
   const [documentProcessingType, setDocumentProcessingType] = useState("");
   const [isSupportingDocumentValid, setIsSupportingDocumentValid] = useState(false);
+  const [availableProcessingTypes, setAvailableProcessingTypes] = useState(processingTypes);
+  const [availableSupportingDocTypes, setAvailableSupportingDocTypes] = useState(supportingDocProcessingTypes);
   // Removed paymentData state - now using direct redirects
   const [showRetry, setShowRetry] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
@@ -101,6 +134,41 @@ export function VisaForm() {
       supportingDocumentEndDate: "",
     },
   });
+
+  // Watch arrival date changes and update available processing types
+  const watchedArrivalDate = form.watch("arrivalDate");
+  
+  useEffect(() => {
+    if (watchedArrivalDate) {
+      // Update available processing types based on arrival date
+      const standardTypes = getAvailableProcessingTypes(watchedArrivalDate, false);
+      const supportingTypes = getAvailableProcessingTypes(watchedArrivalDate, true);
+      
+      setAvailableProcessingTypes(standardTypes);
+      setAvailableSupportingDocTypes(supportingTypes);
+      
+      // Reset processing type if current selection is no longer available
+      const currentProcessingType = form.getValues("processingType");
+      if (currentProcessingType && !standardTypes.some(type => type.value === currentProcessingType)) {
+        form.setValue("processingType", standardTypes.length > 0 ? standardTypes[0].value : "");
+        toast({
+          title: "Processing Type Updated",
+          description: "Your processing type was adjusted based on your arrival date.",
+          duration: 3000,
+        });
+      }
+      
+      // Reset supporting document processing type if no longer available
+      if (documentProcessingType && !supportingTypes.some(type => type.value === documentProcessingType)) {
+        setDocumentProcessingType(supportingTypes.length > 0 ? supportingTypes[0].value : "");
+        toast({
+          title: "Processing Type Updated", 
+          description: "Your processing type was adjusted based on your arrival date.",
+          duration: 3000,
+        });
+      }
+    }
+  }, [watchedArrivalDate, form, documentProcessingType, toast]);
 
   const createApplicationMutation = useMutation({
     mutationFn: async (data: ApplicationFormData) => {
@@ -261,20 +329,12 @@ export function VisaForm() {
 
   const calculateTotal = () => {
     if (hasSupportingDocument === true && documentProcessingType) {
-      // Processing fee + Document PDF fee
-      const processingFee = 
-        documentProcessingType === "slow" ? 50 :
-        documentProcessingType === "standard" ? 115 :
-        documentProcessingType === "fast" ? 165 :
-        documentProcessingType === "urgent_24" ? 280 :
-        documentProcessingType === "urgent_12" ? 330 :
-        documentProcessingType === "urgent_4" ? 410 :
-        documentProcessingType === "urgent_1" ? 645 : 0;
-      
+      // Find processing fee from dynamic list
+      const processingFee = supportingDocProcessingTypes.find(type => type.value === documentProcessingType)?.price || 0;
       const documentPdfFee = 69; // Document PDF fee
       return processingFee + documentPdfFee;
     } else if (hasSupportingDocument === false) {
-      // Standard e-visa processing fees (when no supporting document)
+      // Standard e-visa processing fees (when no supporting document) 
       const selectedProcessingType = form.watch("processingType") || "standard";
       return processingTypes.find(p => p.value === selectedProcessingType)?.price || 25;
     }
@@ -820,37 +880,42 @@ export function VisaForm() {
                     {hasSupportingDocument === true && (
                       <div className="space-y-4">
                         <Label htmlFor="processingType">Processing Type *</Label>
-                        <Select onValueChange={setDocumentProcessingType}>
+                        <Select value={documentProcessingType} onValueChange={setDocumentProcessingType}>
                           <SelectTrigger>
                             <SelectValue placeholder="Select processing type" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="slow">Ready in 7 days - $50</SelectItem>
-                            <SelectItem value="standard">Ready in 4 days - $115</SelectItem>
-                            <SelectItem value="fast">Ready in 2 days - $165</SelectItem>
-                            <SelectItem value="urgent_24">Ready in 24 hours - $280</SelectItem>
-                            <SelectItem value="urgent_12">Ready in 12 hours - $330</SelectItem>
-                            <SelectItem value="urgent_4">Ready in 4 hours - $410</SelectItem>
-                            <SelectItem value="urgent_1">Ready in 1 hour - $645</SelectItem>
+                            {availableSupportingDocTypes.map((type) => (
+                              <SelectItem key={type.value} value={type.value}>
+                                {type.label} - ${type.price}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
+                        
+                        {availableSupportingDocTypes.length === 0 && (
+                          <div className="bg-red-50 p-4 rounded-lg">
+                            <p className="text-red-800 text-sm">
+                              No processing options available for your selected arrival date. Please choose a later date.
+                            </p>
+                          </div>
+                        )}
                         
                         {documentProcessingType && (
                           <div className="bg-blue-50 p-4 rounded-lg">
                             <h4 className="font-medium text-blue-900 mb-2">Processing Fee Summary:</h4>
                             <div className="text-sm text-blue-800">
-                              <p>• Selected: {documentProcessingType}</p>
-                              <p>• Processing Fee: ${
-                                documentProcessingType === "slow" ? 50 :
-                                documentProcessingType === "standard" ? 115 :
-                                documentProcessingType === "fast" ? 165 :
-                                documentProcessingType === "urgent_24" ? 280 :
-                                documentProcessingType === "urgent_12" ? 330 :
-                                documentProcessingType === "urgent_4" ? 410 :
-                                documentProcessingType === "urgent_1" ? 645 : 0
-                              }</p>
-                              <p>• Document PDF Fee: $69</p>
-                              <p className="font-bold text-lg">• Total Amount: ${calculateTotal()}</p>
+                              {(() => {
+                                const selectedType = supportingDocProcessingTypes.find(type => type.value === documentProcessingType);
+                                return (
+                                  <>
+                                    <p>• Selected: {selectedType?.label || documentProcessingType}</p>
+                                    <p>• Processing Fee: ${selectedType?.price || 0}</p>
+                                    <p>• Document PDF Fee: $69</p>
+                                    <p className="font-bold text-lg">• Total Amount: ${calculateTotal()}</p>
+                                  </>
+                                );
+                              })()}
                             </div>
                           </div>
                         )}
@@ -865,14 +930,14 @@ export function VisaForm() {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Processing Type *</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl>
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select processing type" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {processingTypes.map((type) => (
+                                {availableProcessingTypes.map((type) => (
                                   <SelectItem key={type.value} value={type.value}>
                                     {type.label} - ${type.price}
                                   </SelectItem>
@@ -880,6 +945,14 @@ export function VisaForm() {
                               </SelectContent>
                             </Select>
                             <FormMessage />
+                            
+                            {availableProcessingTypes.length === 0 && (
+                              <div className="bg-red-50 p-4 rounded-lg mt-2">
+                                <p className="text-red-800 text-sm">
+                                  No processing options available for your selected arrival date. Please choose a later date.
+                                </p>
+                              </div>
+                            )}
                           </FormItem>
                         )}
                       />
