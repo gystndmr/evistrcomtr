@@ -185,11 +185,15 @@ export function VisaForm() {
 
   const createApplicationMutation = useMutation({
     mutationFn: async (data: ApplicationFormData) => {
-      // First create the application
+      // Ensure we have the correct processing type based on supporting document status
+      const finalProcessingType = hasSupportingDocument === true ? documentProcessingType : data.processingType;
+      
+      // First create the application - ALL DATA IS PRESERVED
       const applicationResponse = await apiRequest("POST", "/api/applications", {
         ...data,
         countryId: selectedCountry?.id,
         countryOfOrigin: selectedCountry?.name,
+        processingType: finalProcessingType, // Use the correct processing type
         totalAmount: calculateTotal().toString(),
         supportingDocumentType: selectedSupportingDocType || null,
         supportingDocumentCountry: supportingDocumentDetails?.visaCountry || supportingDocumentDetails?.residenceCountry || null,
