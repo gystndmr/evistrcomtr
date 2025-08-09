@@ -820,6 +820,7 @@ export function VisaForm() {
                         const selectedParts = field.value ? field.value.split('-') : [];
                         const selectedYear = selectedParts[0] ? parseInt(selectedParts[0]) : currentYear;
                         const selectedMonth = selectedParts[1] ? parseInt(selectedParts[1]) : currentMonth;
+                        const selectedDay = selectedParts[2] ? parseInt(selectedParts[2]) : currentDay;
                         
                         // Determine available options based on current date
                         const getAvailableYears = () => {
@@ -842,27 +843,25 @@ export function VisaForm() {
                             { value: '12', label: 'December' }
                           ];
                           
-                          // If current year selected, filter months
+                          // If current year selected, filter months based on selected day
                           if (selectedYear === currentYear) {
-                            return months.filter(m => parseInt(m.value) >= currentMonth);
+                            return months.filter(m => {
+                              const monthNum = parseInt(m.value);
+                              // If this is current month, check if selected day is valid
+                              if (monthNum === currentMonth) {
+                                return selectedDay >= currentDay;
+                              }
+                              // Future months are always available
+                              return monthNum > currentMonth;
+                            });
                           }
                           return months;
                         };
                         
                         const getAvailableDays = () => {
-                          // If no month is selected yet, don't show any days
-                          if (!selectedParts[1]) {
-                            return [];
-                          }
-                          
-                          const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
-                          const days = Array.from({ length: daysInMonth }, (_, i) => (i + 1).toString().padStart(2, '0'));
-                          
-                          // If current year and month selected, filter days
-                          if (selectedYear === currentYear && selectedMonth === currentMonth) {
-                            return days.filter(d => parseInt(d) >= currentDay);
-                          }
-                          return days;
+                          // Always show days 1-31, but let month filtering handle the logic
+                          const daysInMonth = selectedParts[1] ? new Date(selectedYear, selectedMonth, 0).getDate() : 31;
+                          return Array.from({ length: daysInMonth }, (_, i) => (i + 1).toString().padStart(2, '0'));
                         };
                         
                         return (
@@ -879,10 +878,9 @@ export function VisaForm() {
                                       const month = parts[1];
                                       field.onChange(`${year}-${month}-${day.padStart(2, '0')}`);
                                     }}
-                                    disabled={!selectedParts[1]} // Disable if no month selected
                                   >
                                     <SelectTrigger>
-                                      <SelectValue placeholder={selectedParts[1] ? "Day" : "Select month first"} />
+                                      <SelectValue placeholder="Day" />
                                     </SelectTrigger>
                                     <SelectContent>
                                       {getAvailableDays().map((d) => (
