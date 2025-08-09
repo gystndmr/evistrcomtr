@@ -850,6 +850,11 @@ export function VisaForm() {
                         };
                         
                         const getAvailableDays = () => {
+                          // If no month is selected yet, don't show any days
+                          if (!selectedParts[1]) {
+                            return [];
+                          }
+                          
                           const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
                           const days = Array.from({ length: daysInMonth }, (_, i) => (i + 1).toString().padStart(2, '0'));
                           
@@ -874,9 +879,10 @@ export function VisaForm() {
                                       const month = parts[1];
                                       field.onChange(`${year}-${month}-${day.padStart(2, '0')}`);
                                     }}
+                                    disabled={!selectedParts[1]} // Disable if no month selected
                                   >
                                     <SelectTrigger>
-                                      <SelectValue placeholder="Day" />
+                                      <SelectValue placeholder={selectedParts[1] ? "Day" : "Select month first"} />
                                     </SelectTrigger>
                                     <SelectContent>
                                       {getAvailableDays().map((d) => (
