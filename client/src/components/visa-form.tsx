@@ -843,16 +843,29 @@ export function VisaForm() {
                             { value: '12', label: 'December' }
                           ];
                           
-                          // If current year selected, filter months based on selected day
+                          // If current year selected, filter months based on date logic
                           if (selectedYear === currentYear) {
                             return months.filter(m => {
                               const monthNum = parseInt(m.value);
-                              // If this is current month, check if selected day is valid
-                              if (monthNum === currentMonth) {
-                                return selectedDay >= currentDay;
-                              }
                               // Future months are always available
-                              return monthNum > currentMonth;
+                              if (monthNum > currentMonth) {
+                                return true;
+                              }
+                              // For current month, check if user can select a valid day
+                              if (monthNum === currentMonth) {
+                                // If day is selected and it's valid for current month, show current month
+                                if (selectedParts[2] && selectedDay >= currentDay) {
+                                  return true;
+                                }
+                                // If no day selected yet, show current month
+                                if (!selectedParts[2]) {
+                                  return true;
+                                }
+                                // Day is selected but invalid for current month
+                                return false;
+                              }
+                              // Past months are never available
+                              return false;
                             });
                           }
                           return months;
