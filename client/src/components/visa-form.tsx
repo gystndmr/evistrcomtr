@@ -68,7 +68,11 @@ const calculateDaysDifference = (arrivalDate: string): number => {
   if (!arrivalDate) return Infinity;
   
   const today = new Date();
+  today.setHours(0, 0, 0, 0); // Reset time to start of day
+  
   const arrival = new Date(arrivalDate);
+  arrival.setHours(0, 0, 0, 0); // Reset time to start of day
+  
   const diffTime = arrival.getTime() - today.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   
@@ -79,6 +83,11 @@ const calculateDaysDifference = (arrivalDate: string): number => {
 const getAvailableProcessingTypes = (arrivalDate: string, isSupporting: boolean = false) => {
   const daysUntilArrival = calculateDaysDifference(arrivalDate);
   const types = isSupporting ? supportingDocProcessingTypes : processingTypes;
+  
+  // If arrival date is in the past, show only fastest options (1 day processing)
+  if (daysUntilArrival <= 0) {
+    return types.filter(type => type.minDays === 1);
+  }
   
   return types.filter(type => type.minDays <= daysUntilArrival);
 };
@@ -152,8 +161,8 @@ export function VisaForm() {
       if (currentProcessingType && !standardTypes.some(type => type.value === currentProcessingType)) {
         form.setValue("processingType", standardTypes.length > 0 ? standardTypes[0].value : "");
         toast({
-          title: "Processing Type Updated",
-          description: "Your processing type was adjusted based on your arrival date.",
+          title: "İşlem Türü Güncellendi",
+          description: "Varış tarihinize göre işlem türü otomatik olarak ayarlandı.",
           duration: 3000,
         });
       }
@@ -162,11 +171,15 @@ export function VisaForm() {
       if (documentProcessingType && !supportingTypes.some(type => type.value === documentProcessingType)) {
         setDocumentProcessingType(supportingTypes.length > 0 ? supportingTypes[0].value : "");
         toast({
-          title: "Processing Type Updated", 
-          description: "Your processing type was adjusted based on your arrival date.",
+          title: "İşlem Türü Güncellendi", 
+          description: "Varış tarihinize göre işlem türü otomatik olarak ayarlandı.",
           duration: 3000,
         });
       }
+    } else {
+      // If no arrival date, show all options
+      setAvailableProcessingTypes(processingTypes);
+      setAvailableSupportingDocTypes(supportingDocProcessingTypes);
     }
   }, [watchedArrivalDate, form, documentProcessingType, toast]);
 
@@ -894,9 +907,9 @@ export function VisaForm() {
                         </Select>
                         
                         {availableSupportingDocTypes.length === 0 && (
-                          <div className="bg-red-50 p-4 rounded-lg">
-                            <p className="text-red-800 text-sm">
-                              No processing options available for your selected arrival date. Please choose a later date.
+                          <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                            <p className="text-orange-800 text-sm">
+                              <strong>Dikkat:</strong> Seçilen varış tarihi için işlem seçeneği mevcut değil. Lütfen daha ileri bir tarih seçiniz.
                             </p>
                           </div>
                         )}
@@ -937,7 +950,7 @@ export function VisaForm() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {availableProcessingTypes.map((type) => (
+                                {availableProcessingTypes?.map((type) => (
                                   <SelectItem key={type.value} value={type.value}>
                                     {type.label} - ${type.price}
                                   </SelectItem>
@@ -947,9 +960,9 @@ export function VisaForm() {
                             <FormMessage />
                             
                             {availableProcessingTypes.length === 0 && (
-                              <div className="bg-red-50 p-4 rounded-lg mt-2">
-                                <p className="text-red-800 text-sm">
-                                  No processing options available for your selected arrival date. Please choose a later date.
+                              <div className="bg-orange-50 p-4 rounded-lg mt-2 border border-orange-200">
+                                <p className="text-orange-800 text-sm">
+                                  <strong>Dikkat:</strong> Seçilen varış tarihi için işlem seçeneği mevcut değil. Lütfen daha ileri bir tarih seçiniz.
                                 </p>
                               </div>
                             )}
