@@ -89,7 +89,7 @@ export function CountrySelector({
               ) : countries.length === 0 ? (
                 <SelectItem value="no-data" disabled>No countries available</SelectItem>
               ) : (
-                countries.sort((a, b) => a.name.localeCompare(b.name)).map((country: Country) => (
+                [...countries].sort((a, b) => a.name.localeCompare(b.name)).map((country: Country) => (
                   <SelectItem key={country.code} value={country.code}>
                     <div className="flex items-center space-x-2">
                       <span className="text-lg">
