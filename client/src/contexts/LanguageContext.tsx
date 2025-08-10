@@ -143,6 +143,11 @@ const translations: Record<string, Record<string, string>> = {
     'home.insurance.subtitle': 'Secure your journey with officially approved insurance plans',
     'home.insurance.button': 'Get Travel Insurance for Turkey',
     
+    // Country Selector - Eligibility Messages
+    'country.selector.ineligible.message': 'E-visa requires consulate procedures.',
+    'country.selector.insurance.required': 'However, insurance is mandatory!',
+    'country.selector.redirect.countdown': '⏰ Redirecting to insurance page in {count} seconds...',
+    
     // Application Form
     'app.title': 'E-Visa Application',
     'app.subtitle': 'Complete your Turkey e-visa application in simple steps',
@@ -482,6 +487,11 @@ const translations: Record<string, Record<string, string>> = {
     'home.insurance.subtitle': 'Seyahatinizi resmi onaylı sigorta planları ile güvence altına alın',
     'home.insurance.button': 'Türkiye Seyahat Sigortası Alın',
     
+    // Country Selector - Eligibility Messages
+    'country.selector.ineligible.message': 'E-vize için konsolosluk işlemleri gerekmektedir.',
+    'country.selector.insurance.required': 'Ancak sigorta zorunludur!',
+    'country.selector.redirect.countdown': '⏰ {count} saniye sonra sigorta sayfasına yönlendiriliyorsunuz...',
+    
     // Application Form
     'app.title': 'E-Vize Başvurusu',
     'app.subtitle': 'Türkiye e-vize başvurunuzu basit adımlarla tamamlayın',
@@ -813,6 +823,11 @@ const translations: Record<string, Record<string, string>> = {
     'home.insurance.subtitle': 'Sécurisez votre voyage avec des plans d\'assurance officiellement approuvés',
     'home.insurance.button': 'Obtenir une Assurance Voyage pour la Turquie',
     
+    // Country Selector - Eligibility Messages
+    'country.selector.ineligible.message': 'L\'e-visa nécessite des procédures consulaires.',
+    'country.selector.insurance.required': 'Cependant, l\'assurance est obligatoire!',
+    'country.selector.redirect.countdown': '⏰ Redirection vers la page d\'assurance dans {count} secondes...',
+    
     // Application Form
     'app.title': 'Demande de E-Visa',
     'app.subtitle': 'Complétez votre demande de e-visa pour la Turquie en étapes simples',
@@ -1074,6 +1089,11 @@ const translations: Record<string, Record<string, string>> = {
     'home.insurance.title': 'Reiseversicherung für die Türkei Erhalten',
     'home.insurance.subtitle': 'Sichern Sie Ihre Reise mit offiziell genehmigten Versicherungsplänen',
     'home.insurance.button': 'Reiseversicherung für die Türkei Erhalten',
+    
+    // Country Selector - Eligibility Messages
+    'country.selector.ineligible.message': 'E-Visa erfordert Konsulatsverfahren.',
+    'country.selector.insurance.required': 'Eine Versicherung ist jedoch obligatorisch!',
+    'country.selector.redirect.countdown': '⏰ Weiterleitung zur Versicherungsseite in {count} Sekunden...',
     
     // Application Form
     'app.title': 'E-Visa Antrag',
@@ -1337,6 +1357,11 @@ const translations: Record<string, Record<string, string>> = {
     'home.insurance.subtitle': 'Asegure su viaje con planes de seguro oficialmente aprobados',
     'home.insurance.button': 'Obtener Seguro de Viaje para Turquía',
     
+    // Country Selector - Eligibility Messages
+    'country.selector.ineligible.message': 'El e-visa requiere procedimientos consulares.',
+    'country.selector.insurance.required': '¡Sin embargo, el seguro es obligatorio!',
+    'country.selector.redirect.countdown': '⏰ Redirigiendo a la página de seguros en {count} segundos...',
+    
     // Application Form
     'app.title': 'Solicitud de E-Visa',
     'app.subtitle': 'Complete su solicitud de e-visa para Turquía en pasos simples',
@@ -1598,6 +1623,11 @@ const translations: Record<string, Record<string, string>> = {
     'home.insurance.title': 'الحصول على تأمين السفر لتركيا',
     'home.insurance.subtitle': 'أمن رحلتك مع خطط التأمين المعتمدة رسمياً',
     'home.insurance.button': 'الحصول على تأمين السفر لتركيا',
+    
+    // Country Selector - Eligibility Messages
+    'country.selector.ineligible.message': 'التأشيرة الإلكترونية تتطلب إجراءات قنصلية.',
+    'country.selector.insurance.required': 'ومع ذلك، التأمين إجباري!',
+    'country.selector.redirect.countdown': '⏰ إعادة توجيه إلى صفحة التأمين خلال {count} ثانية...',
     
     // Application Form
     'app.title': 'طلب التأشيرة الإلكترونية',

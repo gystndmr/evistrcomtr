@@ -172,13 +172,13 @@ export function CountrySelector({
         <Alert className="border-red-200 bg-red-50">
           <XCircle className="h-4 w-4 text-red-500" />
           <AlertDescription className="text-red-800">
-            <strong>E-vize için konsolosluk işlemleri gerekmektedir.</strong>
+            <strong>{t('country.selector.ineligible.message')}</strong>
             <br />
-            <strong>Ancak sigorta zorunludur!</strong>
+            <strong>{t('country.selector.insurance.required')}</strong>
             {redirectCountdown && (
               <div className="mt-2 p-2 bg-red-100 rounded border border-red-300">
                 <strong className="text-red-900">
-                  ⏰ {redirectCountdown} saniye sonra sigorta sayfasına yönlendiriliyorsunuz...
+                  {t('country.selector.redirect.countdown').replace('{count}', redirectCountdown.toString())}
                 </strong>
               </div>
             )}
