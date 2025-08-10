@@ -135,6 +135,33 @@ export function CountrySelector({
   const handleDocumentTypeChange = (documentType: string) => {
     onDocumentTypeSelect(documentType);
     setShowEligibilityStatus(!!selectedCountry && !!documentType);
+    
+    // Clear any existing interval first
+    if (intervalId) {
+      clearInterval(intervalId);
+      setIntervalId(null);
+    }
+
+    // Check for redirect when document type is selected 
+    if (selectedCountry && !selectedCountry.isEligible && documentType) {
+      // Start countdown - much faster (2 seconds)
+      setRedirectCountdown(2);
+      const countdownInterval = setInterval(() => {
+        setRedirectCountdown(prev => {
+          if (prev === null || prev <= 1) {
+            clearInterval(countdownInterval);
+            setIntervalId(null);
+            // Force redirect
+            window.location.href = `/insurance?country=${encodeURIComponent(selectedCountry.name)}`;
+            return null;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      setIntervalId(countdownInterval);
+    } else {
+      setRedirectCountdown(null);
+    }
   };
 
   const renderEligibilityStatus = () => {
