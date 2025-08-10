@@ -55,10 +55,16 @@ export class DatabaseStorage implements IStorage {
   async getCountries(): Promise<Country[]> {
     try {
       const results = await db.select().from(countries);
-      // Filter out duplicates based on country code
-      const uniqueCountries = results.filter((country, index, array) => 
-        array.findIndex(c => c.code === country.code) === index
-      );
+      // Filter out duplicates based on country name (keep the one with longer code)
+      const uniqueCountries = results.filter((country, index, array) => {
+        const duplicates = array.filter(c => c.name === country.name);
+        if (duplicates.length === 1) return true;
+        // If there are duplicates, keep the one with the longer code (e.g., USA over US)
+        const longestCode = duplicates.reduce((prev, current) => 
+          current.code.length > prev.code.length ? current : prev
+        );
+        return country.id === longestCode.id;
+      });
       return uniqueCountries;
     } catch (error) {
       console.error('Database error in getCountries:', error);
