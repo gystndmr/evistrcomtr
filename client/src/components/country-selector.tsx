@@ -216,9 +216,6 @@ export function CountrySelector({
               ) : (
                 [...countries]
                   .sort((a, b) => a.name.localeCompare(b.name))
-                  .filter((country, index, array) => 
-                    array.findIndex(c => c.code === country.code) === index
-                  )
                   .map((country: Country) => (
                     <SelectItem key={`${country.code}-${country.id}`} value={country.code}>
                       <div className="flex items-center space-x-2">

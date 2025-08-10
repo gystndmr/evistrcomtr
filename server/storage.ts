@@ -54,7 +54,12 @@ export interface IStorage {
 export class DatabaseStorage implements IStorage {
   async getCountries(): Promise<Country[]> {
     try {
-      return await db.select().from(countries);
+      const results = await db.select().from(countries);
+      // Filter out duplicates based on country code
+      const uniqueCountries = results.filter((country, index, array) => 
+        array.findIndex(c => c.code === country.code) === index
+      );
+      return uniqueCountries;
     } catch (error) {
       console.error('Database error in getCountries:', error);
       return [];
