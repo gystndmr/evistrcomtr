@@ -83,31 +83,50 @@ export function CountrySelector({
 }: CountrySelectorProps) {
   const [showEligibilityStatus, setShowEligibilityStatus] = useState(false);
   const [redirectCountdown, setRedirectCountdown] = useState<number | null>(null);
+  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const { t } = useLanguage();
 
   const { data: countries = [], isLoading } = useQuery<Country[]>({
     queryKey: ["/api/countries"],
   });
 
+  // Cleanup interval on unmount
+  useEffect(() => {
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, [intervalId]);
+
   const handleCountryChange = (countryCode: string) => {
     const country = countries.find((c: Country) => c.code === countryCode);
     onCountrySelect(country || null);
     setShowEligibilityStatus(!!country && !!selectedDocumentType);
     
+    // Clear any existing interval first
+    if (intervalId) {
+      clearInterval(intervalId);
+      setIntervalId(null);
+    }
+
     // Automatically redirect to insurance page if country is not eligible for e-visa
     if (country && !country.isEligible && selectedDocumentType) {
-      // Start countdown
-      setRedirectCountdown(5);
+      // Start countdown - much faster (2 seconds)
+      setRedirectCountdown(2);
       const countdownInterval = setInterval(() => {
         setRedirectCountdown(prev => {
           if (prev === null || prev <= 1) {
             clearInterval(countdownInterval);
+            setIntervalId(null);
+            // Force redirect
             window.location.href = `/insurance?country=${encodeURIComponent(country.name)}`;
             return null;
           }
           return prev - 1;
         });
       }, 1000);
+      setIntervalId(countdownInterval);
     } else {
       setRedirectCountdown(null);
     }
@@ -126,19 +145,11 @@ export function CountrySelector({
         <Alert className="border-red-200 bg-red-50">
           <XCircle className="h-4 w-4 text-red-500" />
           <AlertDescription className="text-red-800">
-            <strong>🚨 SİGORTA ZORUNLU!</strong>
+            <strong>E-vize için konsolosluk işlemleri gerekmektedir.</strong>
             <br />
-            Bu ülkeden Türkiye'ye giriş için seyahat sigortası yaptırmanız zorunludur. E-vize gerekmiyor ancak sigorta olmadan seyahatinizi gerçekleştiremezsiniz.
-            <br />
-            <span className="text-sm font-medium mt-2 block">
-              🔸 Türkiye'ye giriş için zorunlu sigorta gereksinimi
-              <br />
-              🔸 Havaalanında sigortasız kabul edilmeyebilirsiniz
-              <br />
-              🔸 Hemen sigorta yaptırın ve güvenli seyahat edin
-            </span>
+            <strong>Ancak sigorta zorunludur!</strong>
             {redirectCountdown && (
-              <div className="mt-3 p-2 bg-red-100 rounded border border-red-300">
+              <div className="mt-2 p-2 bg-red-100 rounded border border-red-300">
                 <strong className="text-red-900">
                   ⏰ {redirectCountdown} saniye sonra sigorta sayfasına yönlendiriliyorsunuz...
                 </strong>
