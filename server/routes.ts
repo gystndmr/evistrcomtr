@@ -113,7 +113,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get insurance products
+  // Get insurance products (both URLs for compatibility)
+  app.get("/api/insurance-products", async (req, res) => {
+    try {
+      const products = await storage.getInsuranceProducts();
+      res.json(products);
+    } catch (error) {
+      console.error("Error fetching insurance products:", error);
+      res.status(500).json({ message: "Failed to fetch insurance products" });
+    }
+  });
+  
   app.get("/api/insurance/products", async (req, res) => {
     try {
       const products = await storage.getInsuranceProducts();
