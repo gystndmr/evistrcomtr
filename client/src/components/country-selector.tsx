@@ -214,16 +214,21 @@ export function CountrySelector({
               ) : countries.length === 0 ? (
                 <SelectItem value="no-data" disabled>No countries available</SelectItem>
               ) : (
-                [...countries].sort((a, b) => a.name.localeCompare(b.name)).map((country: Country) => (
-                  <SelectItem key={country.code} value={country.code}>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-lg">
-                        {getCountryFlag(country.code)}
-                      </span>
-                      <span>{country.name}</span>
-                    </div>
-                  </SelectItem>
-                ))
+                [...countries]
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .filter((country, index, array) => 
+                    array.findIndex(c => c.code === country.code) === index
+                  )
+                  .map((country: Country) => (
+                    <SelectItem key={`${country.code}-${country.id}`} value={country.code}>
+                      <div className="flex items-center space-x-2">
+                        <span className="text-lg">
+                          {getCountryFlag(country.code)}
+                        </span>
+                        <span>{country.name}</span>
+                      </div>
+                    </SelectItem>
+                  ))
               )}
             </SelectContent>
           </Select>
