@@ -20,6 +20,60 @@ import newTurkeyLogo from "@assets/ChatGPT Image 18 Tem 2025 01_37_34_1752880645
 import diverseTravelersBg from "@assets/ChatGPT Image 23 Tem 2025 15_14_53_1753272924608.png";
 import { useLanguage } from "@/contexts/LanguageContext";
 
+// Country flag mapping function
+const getCountryFlag = (countryCode: string): string => {
+  const flags: { [key: string]: string } = {
+    // Original countries
+    'AFG': '🇦🇫', 'DZA': '🇩🇿', 'ATG': '🇦🇬', 'ARM': '🇦🇲', 'AUS': '🇦🇺', 
+    'BHS': '🇧🇸', 'BGD': '🇧🇩', 'BRB': '🇧🇧', 'BMU': '🇧🇲', 'BTN': '🇧🇹',
+    'KHM': '🇰🇭', 'CPV': '🇨🇻', 'CHN': '🇨🇳', 'HRV': '🇭🇷', 'DMA': '🇩🇲',
+    'DOM': '🇩🇴', 'TLS': '🇹🇱', 'EGY': '🇪🇬', 'GNQ': '🇬🇶', 'EST': '🇪🇪',
+    'FJI': '🇫🇯', 'GRD': '🇬🇩', 'HTI': '🇭🇹', 'HKG': '🇭🇰', 'IND': '🇮🇳',
+    'IRQ': '🇮🇶', 'JAM': '🇯🇲', 'LVA': '🇱🇻', 'LBY': '🇱🇾', 'LTU': '🇱🇹',
+    'MDV': '🇲🇻', 'MUS': '🇲🇺', 'MEX': '🇲🇽', 'NAM': '🇳🇦', 'NPL': '🇳🇵',
+    'PAK': '🇵🇰', 'PSE': '🇵🇸', 'PHL': '🇵🇭', 'LCA': '🇱🇨', 'VCT': '🇻🇨',
+    'SEN': '🇸🇳', 'SLB': '🇸🇧', 'ZAF': '🇿🇦', 'LKA': '🇱🇰', 'SUR': '🇸🇷',
+    'TWN': '🇹🇼', 'VUT': '🇻🇺', 'VNM': '🇻🇳', 'YEM': '🇾🇪', 'RUS': '🇷🇺',
+    
+    // Major countries
+    'USA': '🇺🇸', 'GBR': '🇬🇧', 'DEU': '🇩🇪', 'FRA': '🇫🇷', 'JPN': '🇯🇵',
+    'CAN': '🇨🇦', 'ITA': '🇮🇹', 'ESP': '🇪🇸', 'NLD': '🇳🇱', 'BRA': '🇧🇷',
+    'NGA': '🇳🇬', 'IRN': '🇮🇷', 'SYR': '🇸🇾', 
+    
+    // New countries added
+    'TUR': '🇹🇷', 'ARG': '🇦🇷', 'CHE': '🇨🇭', 'AUT': '🇦🇹', 'BEL': '🇧🇪',
+    'DNK': '🇩🇰', 'FIN': '🇫🇮', 'NOR': '🇳🇴', 'SWE': '🇸🇪', 'PRT': '🇵🇹',
+    'GRC': '🇬🇷', 'POL': '🇵🇱', 'CZE': '🇨🇿', 'HUN': '🇭🇺', 'SVK': '🇸🇰',
+    'SVN': '🇸🇮', 'ROU': '🇷🇴', 'BGR': '🇧🇬', 'LUX': '🇱🇺', 'IRL': '🇮🇪',
+    'ISL': '🇮🇸', 'MLT': '🇲🇹', 'CYP': '🇨🇾', 'KOR': '🇰🇷', 'PRK': '🇰🇵',
+    'MNG': '🇲🇳', 'KAZ': '🇰🇿', 'KGZ': '🇰🇬', 'TJK': '🇹🇯', 'TKM': '🇹🇲',
+    'UZB': '🇺🇿', 'AZE': '🇦🇿', 'GEO': '🇬🇪', 'THA': '🇹🇭', 'MYS': '🇲🇾',
+    'SGP': '🇸🇬', 'IDN': '🇮🇩', 'LAO': '🇱🇦', 'MMR': '🇲🇲', 'BRN': '🇧🇳',
+    'SAU': '🇸🇦', 'ARE': '🇦🇪', 'QAT': '🇶🇦', 'BHR': '🇧🇭', 'KWT': '🇰🇼',
+    'OMN': '🇴🇲', 'JOR': '🇯🇴', 'LBN': '🇱🇧', 'ISR': '🇮🇱', 'MAR': '🇲🇦',
+    'TUN': '🇹🇳', 'ETH': '🇪🇹', 'KEN': '🇰🇪', 'UGA': '🇺🇬', 'TZA': '🇹🇿',
+    'ZWE': '🇿🇼', 'ZMB': '🇿🇲', 'BWA': '🇧🇼', 'GHA': '🇬🇭', 'CIV': '🇨🇮',
+    'CMR': '🇨🇲', 'AGO': '🇦🇴', 'MOZ': '🇲🇿', 'MDG': '🇲🇬', 'GTM': '🇬🇹',
+    'BLZ': '🇧🇿', 'HND': '🇭🇳', 'SLV': '🇸🇻', 'NIC': '🇳🇮', 'CRI': '🇨🇷',
+    'PAN': '🇵🇦', 'COL': '🇨🇴', 'VEN': '🇻🇪', 'GUY': '🇬🇾', 'ECU': '🇪🇨',
+    'PER': '🇵🇪', 'BOL': '🇧🇴', 'PRY': '🇵🇾', 'URY': '🇺🇾', 'CHL': '🇨🇱',
+    'NZL': '🇳🇿', 'PNG': '🇵🇬', 'WSM': '🇼🇸', 'TON': '🇹🇴', 'KIR': '🇰🇮',
+    'TUV': '🇹🇻', 'NRU': '🇳🇷', 'PLW': '🇵🇼', 'MHL': '🇲🇭', 'FSM': '🇫🇲',
+    
+    // Balkan and other new countries  
+    'ALB': '🇦🇱', 'MKD': '🇲🇰', 'SRB': '🇷🇸', 'BIH': '🇧🇦', 'MNE': '🇲🇪',
+    'XKX': '🇽🇰', 'CUB': '🇨🇺', 'TTO': '🇹🇹', 'GGY': '🇬🇬', 'JEY': '🇯🇪',
+    'IMN': '🇮🇲', 'DJI': '🇩🇯', 'ERI': '🇪🇷', 'GMB': '🇬🇲', 'GIN': '🇬🇳',
+    'GNB': '🇬🇼', 'LSO': '🇱🇸', 'LBR': '🇱🇷', 'MLI': '🇲🇱', 'MRT': '🇲🇷',
+    'NER': '🇳🇪', 'RWA': '🇷🇼', 'STP': '🇸🇹', 'SLE': '🇸🇱', 'SOM': '🇸🇴',
+    'SSD': '🇸🇸', 'SDN': '🇸🇩', 'SWZ': '🇸🇿', 'TGO': '🇹🇬', 'TCD': '🇹🇩',
+    'CAR': '🇨🇫', 'COD': '🇨🇩', 'COG': '🇨🇬', 'GAB': '🇬🇦', 'BFA': '🇧🇫',
+    'BDI': '🇧🇮', 'COM': '🇰🇲', 'SYC': '🇸🇨', 'MWI': '🇲🇼'
+  };
+  
+  return flags[countryCode] || '🌍';
+};
+
 export default function Insurance() {
   const { t } = useLanguage();
   const [selectedProduct, setSelectedProduct] = useState<InsuranceProduct | null>(null);
@@ -531,10 +585,10 @@ export default function Insurance() {
                           <SelectValue placeholder="Select your nationality" />
                         </SelectTrigger>
                         <SelectContent>
-                          {countries.map((country) => (
-                            <SelectItem key={country.id} value={country.name}>
+                          {countries.sort((a: any, b: any) => a.name.localeCompare(b.name)).map((country: any) => (
+                            <SelectItem key={country.code || country.id} value={country.name}>
                               <div className="flex items-center gap-2">
-                                <span className="text-lg">{country.flag}</span>
+                                <span className="text-lg">{getCountryFlag(country.code)}</span>
                                 <span>{country.name}</span>
                               </div>
                             </SelectItem>
