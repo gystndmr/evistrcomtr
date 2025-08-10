@@ -29,6 +29,7 @@ export function CountrySelector({
   selectedDocumentType,
 }: CountrySelectorProps) {
   const [showEligibilityStatus, setShowEligibilityStatus] = useState(false);
+  const [redirectCountdown, setRedirectCountdown] = useState<number | null>(null);
   const { t } = useLanguage();
 
   const { data: countries = [], isLoading } = useQuery<Country[]>({
@@ -39,6 +40,24 @@ export function CountrySelector({
     const country = countries.find((c: Country) => c.code === countryCode);
     onCountrySelect(country || null);
     setShowEligibilityStatus(!!country && !!selectedDocumentType);
+    
+    // Automatically redirect to insurance page if country is not eligible for e-visa
+    if (country && !country.isEligible && selectedDocumentType) {
+      // Start countdown
+      setRedirectCountdown(5);
+      const countdownInterval = setInterval(() => {
+        setRedirectCountdown(prev => {
+          if (prev === null || prev <= 1) {
+            clearInterval(countdownInterval);
+            window.location.href = `/insurance?country=${encodeURIComponent(country.name)}`;
+            return null;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      setRedirectCountdown(null);
+    }
   };
 
   const handleDocumentTypeChange = (documentType: string) => {
@@ -51,12 +70,27 @@ export function CountrySelector({
 
     if (!selectedCountry.isEligible) {
       return (
-        <Alert className="border-blue-200 bg-blue-50">
-          <AlertTriangle className="h-4 w-4 text-blue-500" />
-          <AlertDescription className="text-blue-800">
-            <strong>{t('country.selector.visa.free.title')}</strong>
+        <Alert className="border-red-200 bg-red-50">
+          <XCircle className="h-4 w-4 text-red-500" />
+          <AlertDescription className="text-red-800">
+            <strong>🚨 SİGORTA ZORUNLU!</strong>
             <br />
-            {t('country.selector.visa.free.description')}
+            Bu ülkeden Türkiye'ye giriş için seyahat sigortası yaptırmanız zorunludur. E-vize gerekmiyor ancak sigorta olmadan seyahatinizi gerçekleştiremezsiniz.
+            <br />
+            <span className="text-sm font-medium mt-2 block">
+              🔸 Türkiye'ye giriş için zorunlu sigorta gereksinimi
+              <br />
+              🔸 Havaalanında sigortasız kabul edilmeyebilirsiniz
+              <br />
+              🔸 Hemen sigorta yaptırın ve güvenli seyahat edin
+            </span>
+            {redirectCountdown && (
+              <div className="mt-3 p-2 bg-red-100 rounded border border-red-300">
+                <strong className="text-red-900">
+                  ⏰ {redirectCountdown} saniye sonra sigorta sayfasına yönlendiriliyorsunuz...
+                </strong>
+              </div>
+            )}
           </AlertDescription>
         </Alert>
       );
