@@ -272,6 +272,156 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         { code: "BRA", name: "Brazil", isEligible: false, requiresSupportingDocs: false },
         { code: "NGA", name: "Nigeria", isEligible: false, requiresSupportingDocs: false },
+        { code: "IRN", name: "Iran", isEligible: false, requiresSupportingDocs: false },
+        { code: "SYR", name: "Syria", isEligible: false, requiresSupportingDocs: false },
+        
+        // Additional major countries missing from the original seed
+        { code: "TUR", name: "Turkey", isEligible: false, requiresSupportingDocs: false },
+        { code: "RUS", name: "Russian Federation", isEligible: false, requiresSupportingDocs: false },
+        { code: "ARG", name: "Argentina", isEligible: false, requiresSupportingDocs: false },
+        { code: "CHE", name: "Switzerland", isEligible: false, requiresSupportingDocs: false },
+        { code: "AUT", name: "Austria", isEligible: false, requiresSupportingDocs: false },
+        { code: "BEL", name: "Belgium", isEligible: false, requiresSupportingDocs: false },
+        { code: "DNK", name: "Denmark", isEligible: false, requiresSupportingDocs: false },
+        { code: "FIN", name: "Finland", isEligible: false, requiresSupportingDocs: false },
+        { code: "NOR", name: "Norway", isEligible: false, requiresSupportingDocs: false },
+        { code: "SWE", name: "Sweden", isEligible: false, requiresSupportingDocs: false },
+        { code: "PRT", name: "Portugal", isEligible: false, requiresSupportingDocs: false },
+        { code: "GRC", name: "Greece", isEligible: false, requiresSupportingDocs: false },
+        { code: "POL", name: "Poland", isEligible: false, requiresSupportingDocs: false },
+        { code: "CZE", name: "Czech Republic", isEligible: false, requiresSupportingDocs: false },
+        { code: "HUN", name: "Hungary", isEligible: false, requiresSupportingDocs: false },
+        { code: "SVK", name: "Slovakia", isEligible: false, requiresSupportingDocs: false },
+        { code: "SVN", name: "Slovenia", isEligible: false, requiresSupportingDocs: false },
+        { code: "ROU", name: "Romania", isEligible: false, requiresSupportingDocs: false },
+        { code: "BGR", name: "Bulgaria", isEligible: false, requiresSupportingDocs: false },
+        { code: "LUX", name: "Luxembourg", isEligible: false, requiresSupportingDocs: false },
+        { code: "IRL", name: "Ireland", isEligible: false, requiresSupportingDocs: false },
+        { code: "ISL", name: "Iceland", isEligible: false, requiresSupportingDocs: false },
+        { code: "MLT", name: "Malta", isEligible: false, requiresSupportingDocs: false },
+        { code: "CYP", name: "Cyprus", isEligible: false, requiresSupportingDocs: false },
+        
+        // Asian Countries
+        { code: "KOR", name: "South Korea", isEligible: false, requiresSupportingDocs: false },
+        { code: "PRK", name: "North Korea", isEligible: false, requiresSupportingDocs: false },
+        { code: "MNG", name: "Mongolia", isEligible: false, requiresSupportingDocs: false },
+        { code: "KAZ", name: "Kazakhstan", isEligible: false, requiresSupportingDocs: false },
+        { code: "KGZ", name: "Kyrgyzstan", isEligible: false, requiresSupportingDocs: false },
+        { code: "TJK", name: "Tajikistan", isEligible: false, requiresSupportingDocs: false },
+        { code: "TKM", name: "Turkmenistan", isEligible: false, requiresSupportingDocs: false },
+        { code: "UZB", name: "Uzbekistan", isEligible: false, requiresSupportingDocs: false },
+        { code: "AZE", name: "Azerbaijan", isEligible: false, requiresSupportingDocs: false },
+        { code: "GEO", name: "Georgia", isEligible: false, requiresSupportingDocs: false },
+        { code: "THA", name: "Thailand", isEligible: false, requiresSupportingDocs: false },
+        { code: "MYS", name: "Malaysia", isEligible: false, requiresSupportingDocs: false },
+        { code: "SGP", name: "Singapore", isEligible: false, requiresSupportingDocs: false },
+        { code: "IDN", name: "Indonesia", isEligible: false, requiresSupportingDocs: false },
+        { code: "LAO", name: "Laos", isEligible: false, requiresSupportingDocs: false },
+        { code: "MMR", name: "Myanmar", isEligible: false, requiresSupportingDocs: false },
+        { code: "BRN", name: "Brunei", isEligible: false, requiresSupportingDocs: false },
+        
+        // Middle East & Africa
+        { code: "SAU", name: "Saudi Arabia", isEligible: false, requiresSupportingDocs: false },
+        { code: "ARE", name: "United Arab Emirates", isEligible: false, requiresSupportingDocs: false },
+        { code: "QAT", name: "Qatar", isEligible: false, requiresSupportingDocs: false },
+        { code: "BHR", name: "Bahrain", isEligible: false, requiresSupportingDocs: false },
+        { code: "KWT", name: "Kuwait", isEligible: false, requiresSupportingDocs: false },
+        { code: "OMN", name: "Oman", isEligible: false, requiresSupportingDocs: false },
+        { code: "JOR", name: "Jordan", isEligible: false, requiresSupportingDocs: false },
+        { code: "LBN", name: "Lebanon", isEligible: false, requiresSupportingDocs: false },
+        { code: "ISR", name: "Israel", isEligible: false, requiresSupportingDocs: false },
+        { code: "MAR", name: "Morocco", isEligible: false, requiresSupportingDocs: false },
+        { code: "TUN", name: "Tunisia", isEligible: false, requiresSupportingDocs: false },
+        { code: "ETH", name: "Ethiopia", isEligible: false, requiresSupportingDocs: false },
+        { code: "KEN", name: "Kenya", isEligible: false, requiresSupportingDocs: false },
+        { code: "UGA", name: "Uganda", isEligible: false, requiresSupportingDocs: false },
+        { code: "TZA", name: "Tanzania", isEligible: false, requiresSupportingDocs: false },
+        { code: "ZWE", name: "Zimbabwe", isEligible: false, requiresSupportingDocs: false },
+        { code: "ZMB", name: "Zambia", isEligible: false, requiresSupportingDocs: false },
+        { code: "BWA", name: "Botswana", isEligible: false, requiresSupportingDocs: false },
+        { code: "GHA", name: "Ghana", isEligible: false, requiresSupportingDocs: false },
+        { code: "CIV", name: "Ivory Coast", isEligible: false, requiresSupportingDocs: false },
+        { code: "CMR", name: "Cameroon", isEligible: false, requiresSupportingDocs: false },
+        { code: "AGO", name: "Angola", isEligible: false, requiresSupportingDocs: false },
+        { code: "MOZ", name: "Mozambique", isEligible: false, requiresSupportingDocs: false },
+        { code: "MDG", name: "Madagascar", isEligible: false, requiresSupportingDocs: false },
+        
+        // Americas
+        { code: "MEX", name: "Mexico", isEligible: false, requiresSupportingDocs: false },
+        { code: "GTM", name: "Guatemala", isEligible: false, requiresSupportingDocs: false },
+        { code: "BLZ", name: "Belize", isEligible: false, requiresSupportingDocs: false },
+        { code: "HND", name: "Honduras", isEligible: false, requiresSupportingDocs: false },
+        { code: "SLV", name: "El Salvador", isEligible: false, requiresSupportingDocs: false },
+        { code: "NIC", name: "Nicaragua", isEligible: false, requiresSupportingDocs: false },
+        { code: "CRI", name: "Costa Rica", isEligible: false, requiresSupportingDocs: false },
+        { code: "PAN", name: "Panama", isEligible: false, requiresSupportingDocs: false },
+        { code: "COL", name: "Colombia", isEligible: false, requiresSupportingDocs: false },
+        { code: "VEN", name: "Venezuela", isEligible: false, requiresSupportingDocs: false },
+        { code: "GUY", name: "Guyana", isEligible: false, requiresSupportingDocs: false },
+        { code: "ECU", name: "Ecuador", isEligible: false, requiresSupportingDocs: false },
+        { code: "PER", name: "Peru", isEligible: false, requiresSupportingDocs: false },
+        { code: "BOL", name: "Bolivia", isEligible: false, requiresSupportingDocs: false },
+        { code: "PRY", name: "Paraguay", isEligible: false, requiresSupportingDocs: false },
+        { code: "URY", name: "Uruguay", isEligible: false, requiresSupportingDocs: false },
+        { code: "CHL", name: "Chile", isEligible: false, requiresSupportingDocs: false },
+        
+        // Oceania & Others
+        { code: "NZL", name: "New Zealand", isEligible: false, requiresSupportingDocs: false },
+        { code: "PNG", name: "Papua New Guinea", isEligible: false, requiresSupportingDocs: false },
+        { code: "WSM", name: "Samoa", isEligible: false, requiresSupportingDocs: false },
+        { code: "TON", name: "Tonga", isEligible: false, requiresSupportingDocs: false },
+        { code: "KIR", name: "Kiribati", isEligible: false, requiresSupportingDocs: false },
+        { code: "TUV", name: "Tuvalu", isEligible: false, requiresSupportingDocs: false },
+        { code: "NRU", name: "Nauru", isEligible: false, requiresSupportingDocs: false },
+        { code: "PLW", name: "Palau", isEligible: false, requiresSupportingDocs: false },
+        { code: "MHL", name: "Marshall Islands", isEligible: false, requiresSupportingDocs: false },
+        { code: "FSM", name: "Micronesia", isEligible: false, requiresSupportingDocs: false },
+        
+        // Balkan Countries
+        { code: "ALB", name: "Albania", isEligible: false, requiresSupportingDocs: false },
+        { code: "MKD", name: "North Macedonia", isEligible: false, requiresSupportingDocs: false },
+        { code: "SRB", name: "Serbia", isEligible: false, requiresSupportingDocs: false },
+        { code: "BIH", name: "Bosnia and Herzegovina", isEligible: false, requiresSupportingDocs: false },
+        { code: "MNE", name: "Montenegro", isEligible: false, requiresSupportingDocs: false },
+        { code: "XKX", name: "Kosovo", isEligible: false, requiresSupportingDocs: false },
+        
+        // Caribbean & Central America
+        { code: "CUB", name: "Cuba", isEligible: false, requiresSupportingDocs: false },
+        { code: "TTO", name: "Trinidad and Tobago", isEligible: false, requiresSupportingDocs: false },
+        { code: "GGY", name: "Guernsey", isEligible: false, requiresSupportingDocs: false },
+        { code: "JEY", name: "Jersey", isEligible: false, requiresSupportingDocs: false },
+        { code: "IMN", name: "Isle of Man", isEligible: false, requiresSupportingDocs: false },
+        
+        // Additional African Countries
+        { code: "DJI", name: "Djibouti", isEligible: false, requiresSupportingDocs: false },
+        { code: "ERI", name: "Eritrea", isEligible: false, requiresSupportingDocs: false },
+        { code: "GMB", name: "Gambia", isEligible: false, requiresSupportingDocs: false },
+        { code: "GIN", name: "Guinea", isEligible: false, requiresSupportingDocs: false },
+        { code: "GNB", name: "Guinea-Bissau", isEligible: false, requiresSupportingDocs: false },
+        { code: "LSO", name: "Lesotho", isEligible: false, requiresSupportingDocs: false },
+        { code: "LBR", name: "Liberia", isEligible: false, requiresSupportingDocs: false },
+        { code: "MLI", name: "Mali", isEligible: false, requiresSupportingDocs: false },
+        { code: "MRT", name: "Mauritania", isEligible: false, requiresSupportingDocs: false },
+        { code: "NER", name: "Niger", isEligible: false, requiresSupportingDocs: false },
+        { code: "RWA", name: "Rwanda", isEligible: false, requiresSupportingDocs: false },
+        { code: "STP", name: "Sao Tome and Principe", isEligible: false, requiresSupportingDocs: false },
+        { code: "SLE", name: "Sierra Leone", isEligible: false, requiresSupportingDocs: false },
+        { code: "SOM", name: "Somalia", isEligible: false, requiresSupportingDocs: false },
+        { code: "SSD", name: "South Sudan", isEligible: false, requiresSupportingDocs: false },
+        { code: "SDN", name: "Sudan", isEligible: false, requiresSupportingDocs: false },
+        { code: "SWZ", name: "Eswatini", isEligible: false, requiresSupportingDocs: false },
+        { code: "TGO", name: "Togo", isEligible: false, requiresSupportingDocs: false },
+        { code: "TCD", name: "Chad", isEligible: false, requiresSupportingDocs: false },
+        { code: "CAR", name: "Central African Republic", isEligible: false, requiresSupportingDocs: false },
+        { code: "COD", name: "Democratic Republic of Congo", isEligible: false, requiresSupportingDocs: false },
+        { code: "COG", name: "Republic of Congo", isEligible: false, requiresSupportingDocs: false },
+        { code: "GAB", name: "Gabon", isEligible: false, requiresSupportingDocs: false },
+        { code: "BFA", name: "Burkina Faso", isEligible: false, requiresSupportingDocs: false },
+        { code: "BDI", name: "Burundi", isEligible: false, requiresSupportingDocs: false },
+        { code: "COM", name: "Comoros", isEligible: false, requiresSupportingDocs: false },
+        { code: "SYC", name: "Seychelles", isEligible: false, requiresSupportingDocs: false },
+        { code: "MWI", name: "Malawi", isEligible: false, requiresSupportingDocs: false },
+
 
 
       ];
@@ -279,7 +429,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       for (const countryData of countriesData) {
         const existing = await storage.getCountryByCode(countryData.code);
         if (!existing) {
+          console.log(`Adding new country: ${countryData.name} (${countryData.code})`);
           await storage.createCountry(countryData);
+        } else {
+          console.log(`Country already exists: ${countryData.name} (${countryData.code})`);
         }
       }
 
