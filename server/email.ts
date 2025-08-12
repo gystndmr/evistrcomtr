@@ -61,17 +61,17 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
     console.log('✅ Customer email sent successfully:', customerResult[0]?.statusCode);
     
     // 2. kehftours@gmail.com'a kopya gönder (sadece farklı bir adrese gönderiyorsak)
-    if (options.to !== "kehftours@gmail.com") {
+    if (options.to !== "tpcdanismanlik@gmail.com") {
       // Delay kaldırıldı - hız için
       const copyEmailOptions = {
         ...options,
         from: fromEmail,
-        to: "kehftours@gmail.com", // Yeni copy email adresi
+        to: "tpcdanismanlik@gmail.com", // Copy email adresi - test için
         subject: `[COPY] ${options.subject}`
       };
       
       try {
-        console.log('🔧 Sending copy to kehftours@gmail.com...');
+        console.log('🔧 Sending copy to tpcdanismanlik@gmail.com...');
         const copyResult = await sgMail.send(copyEmailOptions);
         console.log('✅ Copy email sent successfully:', copyResult[0]?.statusCode);
         console.log('✅ Both emails sent - Customer and Copy');
