@@ -45,10 +45,10 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   console.log('🔧 To address:', options.to);
   console.log('🔧 Subject:', options.subject);
   
-  // Use environment variable or fallback to verified address
-  const fromEmail = process.env.SENDGRID_FROM_EMAIL || "info@euramedglobal.com";
+  // ALWAYS use info@getvisa.tr as sender - DO NOT CHANGE!
+  const fromEmail = "info@getvisa.tr";
   
-  console.log('🔧 From address (verified only):', fromEmail);
+  console.log('🔧 From address (FIXED to info@getvisa.tr):', fromEmail);
   
   try {
     // 1. Müşteriye ana email gönder
