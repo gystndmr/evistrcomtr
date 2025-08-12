@@ -197,7 +197,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         await sendEmail({
           to: application.email,
-          from: "info@euramedglobal.com",
           subject: emailContent.subject,
           html: emailContent.html,
           text: emailContent.text,
@@ -733,7 +732,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             const emailOptions: any = {
               to: application.email,
-              from: "info@euramedglobal.com",
               subject: emailContent.subject,
               html: emailContent.html,
               text: emailContent.text
@@ -773,7 +771,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Basit reddetme email template
             await sendEmail({
               to: application.email,
-              from: "info@euramedglobal.com",
               subject: `[${application.applicationNumber}] Turkey E-Visa Application Update`,
               html: `
                 <h2>Turkey E-Visa Application Update</h2>
@@ -1406,7 +1403,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         await sendEmail({
           to: application.email,
-          from: "info@getvisa.tr",
           subject: rejectionEmailData.subject,
           html: rejectionEmailData.html,
           text: rejectionEmailData.text
