@@ -57,6 +57,8 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 - **Chat API**: Added missing backend endpoints for chat functionality in routes.ts and storage.ts
 - **Admin Data Loading**: Fixed API endpoints to return proper JSON instead of HTML for admin panel data visualization
 - **Field Mapping**: Corrected `eligibleForEvisa` field mapping in countries API for proper frontend integration
+- **Email System Update**: Completely replaced all info@getvisa.tr addresses with info@euramedglobal.com across all client and server files
+- **Corporate Branding**: Added EURAMED LTD company information to all email templates (visa applications, insurance applications, approval/rejection emails) with proper footer branding and contact information
 
 ## External Dependencies
 

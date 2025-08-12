@@ -278,6 +278,15 @@ export function generateVisaReceivedEmail(
                 If you have any questions, please visit our website or contact our support team. We're here to help you throughout the application process.
               </p>
             </div>
+            
+            <!-- Footer -->
+            <div style="background: #374151; color: #9ca3af; padding: 20px; text-align: center; font-size: 12px; margin-top: 30px;">
+              <p style="margin: 0;">© 2025 EURAMED LTD - Turkey Electronic Visa Services</p>
+              <p style="margin: 5px 0 0 0;">Licensed by Republic of Turkey Ministry of Foreign Affairs</p>
+              <p style="margin: 10px 0 0 0; font-size: 11px;">
+                EURAMED LTD | Contact: info@euramedglobal.com | Website: getvisa.tr
+              </p>
+            </div>
           </div>
         </body>
       </html>
@@ -313,6 +322,11 @@ CHECK STATUS: https://getvisa.tr/status?ref=${applicationNumber}
 
 Best regards,
 Turkey E-Visa Services Team
+
+---
+EURAMED LTD - Turkey Electronic Visa Services
+Contact: info@euramedglobal.com | Website: getvisa.tr
+Licensed by Republic of Turkey Ministry of Foreign Affairs
     `
   };
 }
@@ -445,8 +459,11 @@ export function generateVisaApprovalEmail(
           
           <!-- Footer -->
           <div style="background: #374151; color: #9ca3af; padding: 20px; text-align: center; font-size: 12px;">
-            <p style="margin: 0;">© 2025 GetVisa - Turkey Electronic Visa System</p>
+            <p style="margin: 0;">© 2025 EURAMED LTD - Turkey Electronic Visa Services</p>
             <p style="margin: 5px 0 0 0;">Licensed by Republic of Turkey Ministry of Foreign Affairs</p>
+            <p style="margin: 10px 0 0 0; font-size: 11px;">
+              EURAMED LTD | Contact: info@euramedglobal.com | Website: getvisa.tr
+            </p>
           </div>
         </div>
       </body>
@@ -485,6 +502,11 @@ Contact: info@euramedglobal.com
 Website: getvisa.tr
 
 Have a wonderful trip to Turkey!
+
+---
+EURAMED LTD - Turkey Electronic Visa Services
+Contact: info@euramedglobal.com | Website: getvisa.tr
+Licensed by Republic of Turkey Ministry of Foreign Affairs
 
 This is an automated email. Please do not reply to this message.
     `
@@ -671,6 +693,15 @@ export function generateInsuranceApprovalEmail(
                 📱 24/7 Customer Service Available
               </p>
             </div>
+            
+            <!-- Footer -->
+            <div style="background: #374151; color: #9ca3af; padding: 20px; text-align: center; font-size: 12px; margin-top: 30px;">
+              <p style="margin: 0;">© 2025 EURAMED LTD - Turkey Travel Insurance Services</p>
+              <p style="margin: 5px 0 0 0;">Licensed by Republic of Turkey Ministry of Foreign Affairs</p>
+              <p style="margin: 10px 0 0 0; font-size: 11px;">
+                EURAMED LTD | Contact: info@euramedglobal.com | Website: getvisa.tr
+              </p>
+            </div>
           </div>
         </body>
       </html>
@@ -689,6 +720,11 @@ Issue Date: ${new Date().toLocaleDateString('en-US')}
 Download your policy at: https://getvisa.tr/status?ref=${applicationNumber}
 
 This email was sent automatically. For questions, contact us at info@euramedglobal.com
+
+---
+EURAMED LTD - Turkey Travel Insurance Services
+Contact: info@euramedglobal.com | Website: getvisa.tr
+Licensed by Republic of Turkey Ministry of Foreign Affairs
     `
   };
 }

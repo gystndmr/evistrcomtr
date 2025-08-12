@@ -157,7 +157,10 @@ export function generateInsuranceReceivedEmail(
                   This email was sent automatically. Please do not reply to this email.
                 </p>
                 <p style="margin: 0; font-size: 12px; opacity: 0.7;">
-                  © 2025 Turkey Travel Insurance System. All rights reserved.
+                  © 2025 EURAMED LTD - Turkey Travel Insurance Services. All rights reserved.
+                </p>
+                <p style="margin: 5px 0 0 0; font-size: 11px; opacity: 0.7;">
+                  EURAMED LTD | Contact: info@euramedglobal.com | Website: getvisa.tr
                 </p>
               </div>
             </div>
@@ -198,7 +201,11 @@ Email: info@euramedglobal.com
 Website: https://getvisa.tr
 
 This email was sent automatically. Please do not reply to this email.
-© 2025 Turkey Travel Insurance System. All rights reserved.
+
+---
+EURAMED LTD - Turkey Travel Insurance Services
+Contact: info@euramedglobal.com | Website: getvisa.tr
+© 2025 EURAMED LTD. All rights reserved.
     `
   };
 }
