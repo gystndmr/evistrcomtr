@@ -1266,6 +1266,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Chat API routes
+  app.get("/api/chat/messages", async (req, res) => {
+    try {
+      const messages = await storage.getAllChatMessages();
+      res.json(messages);
+    } catch (error) {
+      console.error("Error fetching chat messages:", error);
+      res.status(500).json({ message: "Failed to fetch chat messages" });
+    }
+  });
+
+  app.post("/api/chat/reply", async (req, res) => {
+    try {
+      const { sessionId, message } = req.body;
+      
+      if (!sessionId || !message) {
+        return res.status(400).json({ message: "Missing sessionId or message" });
+      }
+
+      const chatMessage = await storage.createChatMessage({
+        sessionId,
+        message,
+        sender: 'admin',
+        timestamp: new Date(),
+        isRead: true,
+        customerName: null,
+        customerEmail: null
+      });
+
+      res.json(chatMessage);
+    } catch (error) {
+      console.error("Error sending chat reply:", error);
+      res.status(500).json({ message: "Failed to send chat reply" });
+    }
+  });
+
+  app.patch("/api/chat/mark-read/:sessionId", async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      await storage.markChatMessagesRead(sessionId);
+      res.json({ message: "Messages marked as read" });
+    } catch (error) {
+      console.error("Error marking messages as read:", error);
+      res.status(500).json({ message: "Failed to mark messages as read" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

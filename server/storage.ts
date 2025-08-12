@@ -46,6 +46,7 @@ export interface IStorage {
   
   // Chat operations
   createChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
+  getAllChatMessages(): Promise<ChatMessage[]>;
   getChatMessages(): Promise<ChatMessage[]>;
   getChatMessagesBySession(sessionId: string): Promise<ChatMessage[]>;
   markChatMessagesRead(sessionId: string): Promise<void>;
@@ -237,6 +238,15 @@ export class DatabaseStorage implements IStorage {
     };
     const [created] = await db.insert(chatMessages).values(chatData).returning();
     return created;
+  }
+
+  async getAllChatMessages(): Promise<ChatMessage[]> {
+    try {
+      return db.select().from(chatMessages).orderBy(desc(chatMessages.timestamp));
+    } catch (error) {
+      console.error('Database error in getAllChatMessages:', error);
+      return [];
+    }
   }
 
   async getChatMessages(): Promise<ChatMessage[]> {
