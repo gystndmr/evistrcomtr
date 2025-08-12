@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertApplicationSchema, insertInsuranceApplicationSchema } from "@shared/schema";
 import { z } from "zod";
-import { sendEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail, generateVisaApprovalEmail } from "./email";
+import { sendEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail, generateVisaApprovalEmail, generateVisaRejectionEmail } from "./email";
 import { gPayService } from "./payment-simple";
 
 function generateApplicationNumber(): string {
@@ -1333,6 +1333,169 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error marking messages as read:", error);
       res.status(500).json({ message: "Failed to mark messages as read" });
+    }
+  });
+
+  // Admin panel email routes
+  app.post("/api/admin/applications/:id/approve", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { message } = req.body;
+
+      // Get application details
+      const application = await storage.getApplication(Number(id));
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+
+      // Update application status
+      await storage.updateApplicationStatus(Number(id), 'approved');
+
+      // Send approval email
+      try {
+        const approvalEmailData = generateVisaApprovalEmail(
+          application.firstName,
+          application.lastName,
+          application.applicationNumber
+        );
+
+        await sendEmail({
+          to: application.email,
+          from: "info@euramedglobal.com",
+          subject: approvalEmailData.subject,
+          html: approvalEmailData.html,
+          text: approvalEmailData.text
+        });
+
+        console.log(`✅ Approval email sent to ${application.email} for application ${application.applicationNumber}`);
+      } catch (emailError) {
+        console.error("❌ Email error:", emailError);
+      }
+
+      res.json({ 
+        message: "Application approved and email sent",
+        applicationNumber: application.applicationNumber
+      });
+    } catch (error) {
+      console.error("Error approving application:", error);
+      res.status(500).json({ message: "Failed to approve application" });
+    }
+  });
+
+  app.post("/api/admin/applications/:id/reject", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { message } = req.body;
+
+      // Get application details
+      const application = await storage.getApplication(Number(id));
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+
+      // Update application status
+      await storage.updateApplicationStatus(Number(id), 'rejected');
+
+      // Send rejection email
+      try {
+        const rejectionEmailData = generateVisaRejectionEmail(
+          application.firstName,
+          application.lastName,
+          application.applicationNumber,
+          message || "Your application did not meet the requirements."
+        );
+
+        await sendEmail({
+          to: application.email,
+          from: "info@euramedglobal.com",
+          subject: rejectionEmailData.subject,
+          html: rejectionEmailData.html,
+          text: rejectionEmailData.text
+        });
+
+        console.log(`✅ Rejection email sent to ${application.email} for application ${application.applicationNumber}`);
+      } catch (emailError) {
+        console.error("❌ Email error:", emailError);
+      }
+
+      res.json({ 
+        message: "Application rejected and email sent",
+        applicationNumber: application.applicationNumber
+      });
+    } catch (error) {
+      console.error("Error rejecting application:", error);
+      res.status(500).json({ message: "Failed to reject application" });
+    }
+  });
+
+  // Test email endpoint
+  app.post("/api/send-test-email", async (req, res) => {
+    try {
+      const { to, firstName, lastName, applicationNumber, emailType } = req.body;
+
+      if (!to || !firstName || !lastName || !applicationNumber || !emailType) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      let emailData;
+      
+      if (emailType === 'visa_received') {
+        // Mock application data for testing
+        const mockApplicationData = {
+          passportNumber: "A12345678",
+          dateOfBirth: "1990-01-01",
+          countryOfOrigin: "United States",
+          arrivalDate: "2025-09-01",
+          processingType: "standard",
+          totalAmount: "119.00",
+          supportingDocumentType: "residence",
+          supportingDocumentCountry: "DEU",
+          supportingDocumentNumber: "123456789",
+          supportingDocumentStartDate: "2023-01-01",
+          supportingDocumentEndDate: "2025-12-31"
+        };
+
+        emailData = generateVisaReceivedEmail(
+          firstName,
+          lastName,
+          applicationNumber,
+          mockApplicationData
+        );
+      } else if (emailType === 'visa_approval') {
+        emailData = generateVisaApprovalEmail(
+          firstName,
+          lastName,
+          applicationNumber
+        );
+      } else if (emailType === 'visa_rejection') {
+        emailData = generateVisaRejectionEmail(
+          firstName,
+          lastName,
+          applicationNumber,
+          "Test rejection message from EURAMED LTD system"
+        );
+      } else {
+        return res.status(400).json({ message: "Invalid email type" });
+      }
+
+      await sendEmail({
+        to: to,
+        from: "info@euramedglobal.com",
+        subject: emailData.subject,
+        html: emailData.html,
+        text: emailData.text
+      });
+
+      res.json({ 
+        message: `${emailType} email sent successfully to ${to}`,
+        subject: emailData.subject
+      });
+    } catch (error: any) {
+      console.error("Error sending test email:", error);
+      res.status(500).json({ 
+        message: "Failed to send test email",
+        error: error.message
+      });
     }
   });
 

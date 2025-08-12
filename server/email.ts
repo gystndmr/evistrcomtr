@@ -331,6 +331,136 @@ Licensed by Republic of Turkey Ministry of Foreign Affairs
   };
 }
 
+export function generateVisaRejectionEmail(
+  firstName: string,
+  lastName: string,
+  applicationNumber: string,
+  rejectionReason: string = "Your application did not meet the requirements."
+): { subject: string; html: string; text: string } {
+  
+  const turkeyFlagSvg = `
+    <svg width="32" height="24" viewBox="0 0 32 24" style="margin: 0 auto;">
+      <rect width="32" height="24" fill="#E30A17"/>
+      <g fill="#FFFFFF">
+        <circle cx="10" cy="12" r="4"/>
+        <circle cx="11.5" cy="12" r="3.2" fill="#E30A17"/>
+        <path d="M18 8 L20 10 L22 8 L21 11 L24 12 L21 13 L22 16 L20 14 L18 16 L19 13 L16 12 L19 11 Z"/>
+      </g>
+    </svg>
+  `;
+
+  return {
+    subject: `[${applicationNumber}] Turkey E-Visa Application - Status Update`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>E-Visa Application Status</title>
+      </head>
+      <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 0;">
+          <!-- Header -->
+          <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
+            ${turkeyFlagSvg}
+            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY E VISA</h1>
+            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
+            <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">getvisa.tr</p>
+          </div>
+          
+          <!-- Content -->
+          <div style="padding: 40px 30px;">
+            <h2 style="color: #1a1a1a; margin-bottom: 20px; font-size: 22px;">Dear ${firstName} ${lastName},</h2>
+            
+            <div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); padding: 25px; border-radius: 10px; margin: 20px 0; border: 1px solid #f87171;">
+              <p style="color: #991b1b; line-height: 1.7; margin: 0; font-size: 16px; text-align: center;">
+                <strong>We regret to inform you that your Turkey Electronic Visa application has been reviewed and unfortunately cannot be approved at this time.</strong>
+              </p>
+            </div>
+            
+            <!-- Application Summary -->
+            <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 20px; border-radius: 10px; margin: 25px 0; text-align: center;">
+              <h3 style="margin: 0 0 10px 0; font-size: 20px; font-weight: bold;">📋 APPLICATION REFERENCE</h3>
+              <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-top: 15px;">
+                <p style="margin: 0; font-size: 18px; font-weight: bold; letter-spacing: 2px;">${applicationNumber}</p>
+                <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Status: REJECTED</p>
+              </div>
+            </div>
+            
+            <!-- Rejection Reason -->
+            <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; margin: 25px 0; border-radius: 4px;">
+              <h4 style="margin: 0 0 10px 0; color: #92400e; font-size: 16px;">📝 Reason for Rejection:</h4>
+              <p style="margin: 0; color: #92400e; font-size: 14px; line-height: 1.6;">
+                ${rejectionReason}
+              </p>
+            </div>
+            
+            <div style="background-color: #f0f9ff; padding: 20px; border-radius: 6px; margin: 25px 0;">
+              <h4 style="margin: 0 0 10px 0; color: #1e40af; font-size: 16px;">📞 Next Steps:</h4>
+              <p style="margin: 0; color: #1e40af; font-size: 14px; line-height: 1.6;">
+                If you believe this decision was made in error, or if you would like to reapply with additional documentation, please contact our support team. We're here to help you with your Turkey visa application process.
+              </p>
+            </div>
+            
+            <div style="background-color: #f1f5f9; padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #cbd5e1;">
+              <h4 style="margin: 0 0 10px 0; color: #475569; font-size: 16px;">💬 Customer Service:</h4>
+              <p style="margin: 0; color: #64748b; font-size: 14px; line-height: 1.6;">
+                📧 Email: info@euramedglobal.com<br>
+                🌐 Website: https://getvisa.tr<br>
+                📱 24/7 Customer Service Available
+              </p>
+            </div>
+            
+            <!-- Footer -->
+            <div style="background: #374151; color: #9ca3af; padding: 20px; text-align: center; font-size: 12px; margin-top: 30px;">
+              <p style="margin: 0;">© 2025 EURAMED LTD - Turkey Electronic Visa Services</p>
+              <p style="margin: 5px 0 0 0;">Licensed by Republic of Turkey Ministry of Foreign Affairs</p>
+              <p style="margin: 10px 0 0 0; font-size: 11px;">
+                EURAMED LTD | Contact: info@euramedglobal.com | Website: getvisa.tr
+              </p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `,
+    text: `
+TURKEY E-VISA APPLICATION SYSTEM
+
+Dear ${firstName} ${lastName},
+
+We regret to inform you that your Turkey Electronic Visa application has been reviewed and unfortunately cannot be approved at this time.
+
+APPLICATION DETAILS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Application Reference No: ${applicationNumber}
+Applicant: ${firstName} ${lastName}
+Status: REJECTED
+Review Date: ${new Date().toLocaleDateString('en-US')} ${new Date().toLocaleTimeString('en-US')}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+REASON FOR REJECTION:
+${rejectionReason}
+
+NEXT STEPS:
+If you believe this decision was made in error, or if you would like to reapply with additional documentation, please contact our support team.
+
+CUSTOMER SERVICE:
+Email: info@euramedglobal.com
+Website: https://getvisa.tr
+24/7 Customer Service Available
+
+Best regards,
+Turkey E-Visa Services Team
+
+---
+EURAMED LTD - Turkey Electronic Visa Services
+Contact: info@euramedglobal.com | Website: getvisa.tr
+Licensed by Republic of Turkey Ministry of Foreign Affairs
+    `
+  };
+}
+
 
 export function generateVisaApprovalEmail(
   firstName: string,
