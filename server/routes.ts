@@ -1308,6 +1308,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const chatMessage = await storage.createChatMessage({
+        id: `msg_${Date.now()}_${Math.random().toString(36).substring(2)}`,
         sessionId,
         message,
         sender: 'admin',
