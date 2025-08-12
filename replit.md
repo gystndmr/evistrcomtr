@@ -59,7 +59,7 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 - **Field Mapping**: Corrected `eligibleForEvisa` field mapping in countries API for proper frontend integration
 - **Email System Update**: ✅ COMPLETED - Email system fully operational with info@getvisa.tr sender (status 202)
 - **Corporate Branding**: ✅ COMPLETED - EURAMED LTD footer information added, removed government licensing claims
-- **Email Testing**: All email types working (visa received, approval, rejection) with copy system to kehftours@gmail.com
+- **Email Testing**: All email types working (visa received, approval, rejection) with copy system to tcpdanismanlikk@gmail.com
 
 ## External Dependencies
 
