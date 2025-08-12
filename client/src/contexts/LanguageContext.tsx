@@ -235,7 +235,7 @@ const translations: Record<string, Record<string, string>> = {
     'faq.q6.question': 'Is travel insurance required for Turkey e-visa?',
     'faq.q6.answer': 'Travel insurance is not mandatory for e-visa applications, but it is highly recommended. We offer comprehensive travel insurance plans starting from $114 for 7 days coverage.',
     'faq.q7.question': 'What should I do if my e-visa application is rejected?',
-    'faq.q7.answer': 'If your application is rejected, you will receive a detailed explanation. You may reapply with corrected information or contact our support team at info@getvisa.tr for assistance.',
+    'faq.q7.answer': 'If your application is rejected, you will receive a detailed explanation. You may reapply with corrected information or contact our support team at info@euramedglobal.com for assistance.',
     'faq.q8.question': 'Can I use my e-visa for multiple entries to Turkey?',
     'faq.q8.answer': 'Yes, Turkey e-visas are valid for multiple entries within their validity period. You can enter and exit Turkey multiple times as long as your e-visa remains valid.',
 
@@ -579,7 +579,7 @@ const translations: Record<string, Record<string, string>> = {
     'faq.q6.question': 'Türkiye e-vize için seyahat sigortası gerekli mi?',
     'faq.q6.answer': 'Seyahat sigortası e-vize başvuruları için zorunlu değildir, ancak şiddetle tavsiye edilir. 7 günlük kapsama için 114$\'dan başlayan kapsamlı seyahat sigortası planları sunuyoruz.',
     'faq.q7.question': 'E-vize başvurum reddedilirse ne yapmalıyım?',
-    'faq.q7.answer': 'Başvurunuz reddedilirse, ayrıntılı bir açıklama alacaksınız. Düzeltilmiş bilgilerle yeniden başvurabilir veya yardım için info@getvisa.tr adresinden destek ekibimizle iletişime geçebilirsiniz.',
+    'faq.q7.answer': 'Başvurunuz reddedilirse, ayrıntılı bir açıklama alacaksınız. Düzeltilmiş bilgilerle yeniden başvurabilir veya yardım için info@euramedglobal.com adresinden destek ekibimizle iletişime geçebilirsiniz.',
     'faq.q8.question': 'E-vizemi Türkiye\'ye çoklu giriş için kullanabilir miyim?',
     'faq.q8.answer': 'Evet, Türkiye e-vizeleri geçerlilik süreleri boyunca çoklu giriş için geçerlidir. E-vizeniz geçerli kaldığı sürece Türkiye\'ye birden fazla kez giriş ve çıkış yapabilirsinız.',
 
@@ -927,7 +927,7 @@ const translations: Record<string, Record<string, string>> = {
     'faq.q6.question': 'L\'assurance voyage est-elle requise pour l\'e-visa de Turquie?',
     'faq.q6.answer': 'L\'assurance voyage n\'est pas obligatoire pour les demandes d\'e-visa, mais elle est fortement recommandée. Nous proposons des plans d\'assurance voyage complets à partir de 114$ pour une couverture de 7 jours.',
     'faq.q7.question': 'Que dois-je faire si ma demande d\'e-visa est rejetée?',
-    'faq.q7.answer': 'Si votre demande est rejetée, vous recevrez une explication détaillée. Vous pouvez redemander avec des informations corrigées ou contacter notre équipe de support à info@getvisa.tr pour assistance.',
+    'faq.q7.answer': 'Si votre demande est rejetée, vous recevrez une explication détaillée. Vous pouvez redemander avec des informations corrigées ou contacter notre équipe de support à info@euramedglobal.com pour assistance.',
     'faq.q8.question': 'Puis-je utiliser mon e-visa pour des entrées multiples en Turquie?',
     'faq.q8.answer': 'Oui, les e-visas de Turquie sont valides pour des entrées multiples dans leur période de validité. Vous pouvez entrer et sortir de Turquie plusieurs fois tant que votre e-visa reste valide.',
 
@@ -1194,7 +1194,7 @@ const translations: Record<string, Record<string, string>> = {
     'faq.q6.question': 'Ist eine Reiseversicherung für das Türkei e-Visa erforderlich?',
     'faq.q6.answer': 'Eine Reiseversicherung ist für e-Visa Anträge nicht obligatorisch, wird aber dringend empfohlen. Wir bieten umfassende Reiseversicherungspläne ab 114$ für 7 Tage Deckung.',
     'faq.q7.question': 'Was soll ich tun, wenn mein e-Visa Antrag abgelehnt wird?',
-    'faq.q7.answer': 'Wenn Ihr Antrag abgelehnt wird, erhalten Sie eine detaillierte Erklärung. Sie können mit korrigierten Informationen erneut beantragen oder unser Support-Team unter info@getvisa.tr für Hilfe kontaktieren.',
+    'faq.q7.answer': 'Wenn Ihr Antrag abgelehnt wird, erhalten Sie eine detaillierte Erklärung. Sie können mit korrigierten Informationen erneut beantragen oder unser Support-Team unter info@euramedglobal.com für Hilfe kontaktieren.',
     'faq.q8.question': 'Kann ich mein e-Visa für mehrfache Einreisen in die Türkei verwenden?',
     'faq.q8.answer': 'Ja, Türkei e-Visas sind für mehrfache Einreisen innerhalb ihrer Gültigkeitsdauer gültig. Sie können die Türkei mehrmals ein- und ausreisen, solange Ihr e-Visa gültig bleibt.',
 
@@ -1461,7 +1461,7 @@ const translations: Record<string, Record<string, string>> = {
     'faq.q6.question': '¿Se requiere seguro de viaje para el e-visa de Turquía?',
     'faq.q6.answer': 'El seguro de viaje no es obligatorio para solicitudes de e-visa, pero es altamente recomendado. Ofrecemos planes de seguro de viaje integrales desde $114 para cobertura de 7 días.',
     'faq.q7.question': '¿Qué debo hacer si mi solicitud de e-visa es rechazada?',
-    'faq.q7.answer': 'Si su solicitud es rechazada, recibirá una explicación detallada. Puede volver a solicitar con información corregida o contactar a nuestro equipo de soporte en info@getvisa.tr para asistencia.',
+    'faq.q7.answer': 'Si su solicitud es rechazada, recibirá una explicación detallada. Puede volver a solicitar con información corregida o contactar a nuestro equipo de soporte en info@euramedglobal.com para asistencia.',
     'faq.q8.question': '¿Puedo usar mi e-visa para múltiples entradas a Turquía?',
     'faq.q8.answer': 'Sí, los e-visas de Turquía son válidos para múltiples entradas dentro de su período de validez. Puede entrar y salir de Turquía múltiples veces mientras su e-visa permanezca válido.',
 
@@ -1728,7 +1728,7 @@ const translations: Record<string, Record<string, string>> = {
     'faq.q6.question': 'هل التأمين على السفر مطلوب للتأشيرة الإلكترونية التركية؟',
     'faq.q6.answer': 'التأمين على السفر ليس إلزامياً لطلبات التأشيرة الإلكترونية، لكنه موصى به بشدة. نحن نقدم خطط تأمين السفر الشاملة بدءاً من 114$ لتغطية 7 أيام.',
     'faq.q7.question': 'ماذا يجب أن أفعل إذا تم رفض طلب التأشيرة الإلكترونية؟',
-    'faq.q7.answer': 'إذا تم رفض طلبك، ستتلقى شرحاً مفصلاً. يمكنك إعادة التقديم بمعلومات مُصححة أو الاتصال بفريق الدعم لدينا على info@getvisa.tr للمساعدة.',
+    'faq.q7.answer': 'إذا تم رفض طلبك، ستتلقى شرحاً مفصلاً. يمكنك إعادة التقديم بمعلومات مُصححة أو الاتصال بفريق الدعم لدينا على info@euramedglobal.com للمساعدة.',
     'faq.q8.question': 'هل يمكنني استخدام التأشيرة الإلكترونية لدخولات متعددة إلى تركيا؟',
     'faq.q8.answer': 'نعم، التأشيرات الإلكترونية التركية صالحة لدخولات متعددة خلال فترة صلاحيتها. يمكنك دخول ومغادرة تركيا عدة مرات طالما بقيت تأشيرتك الإلكترونية صالحة.',
 

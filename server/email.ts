@@ -46,7 +46,7 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   console.log('🔧 Subject:', options.subject);
   
   // Use environment variable or fallback to verified address
-  const fromEmail = process.env.SENDGRID_FROM_EMAIL || "info@getvisa.tr";
+  const fromEmail = process.env.SENDGRID_FROM_EMAIL || "info@euramedglobal.com";
   
   console.log('🔧 From address (verified only):', fromEmail);
   
@@ -432,7 +432,7 @@ export function generateVisaApprovalEmail(
             <div style="background: #f1f5f9; padding: 20px; border-radius: 6px; margin: 30px 0; text-align: center;">
               <p style="margin: 0; color: #64748b; font-size: 14px; line-height: 1.5;">
                 <strong>Need assistance?</strong><br>
-                Contact us at <a href="mailto:info@getvisa.tr" style="color: #DC2626;">info@getvisa.tr</a><br>
+                Contact us at <a href="mailto:info@euramedglobal.com" style="color: #DC2626;">info@euramedglobal.com</a><br>
                 Visit: <a href="https://getvisa.tr" style="color: #DC2626;">getvisa.tr</a>
               </p>
             </div>
@@ -481,7 +481,7 @@ Travel Instructions:
 Download your e-visa: https://getvisa.tr/status?ref=${applicationNumber}
 Check status: https://getvisa.tr/status?ref=${applicationNumber}
 
-Contact: info@getvisa.tr
+Contact: info@euramedglobal.com
 Website: getvisa.tr
 
 Have a wonderful trip to Turkey!
@@ -666,7 +666,7 @@ export function generateInsuranceApprovalEmail(
               <h4 style="margin: 0 0 10px 0; color: #1e40af; font-size: 16px;">💬 Customer Support:</h4>
               <p style="margin: 0; color: #1e40af; font-size: 14px; line-height: 1.6;">
                 If you have any questions about your insurance policy or need assistance:<br>
-                📧 Email: info@getvisa.tr<br>
+                📧 Email: info@euramedglobal.com<br>
                 🌐 Website: https://getvisa.tr<br>
                 📱 24/7 Customer Service Available
               </p>
@@ -688,7 +688,7 @@ Issue Date: ${new Date().toLocaleDateString('en-US')}
 
 Download your policy at: https://getvisa.tr/status?ref=${applicationNumber}
 
-This email was sent automatically. For questions, contact us at info@getvisa.tr
+This email was sent automatically. For questions, contact us at info@euramedglobal.com
     `
   };
 }
