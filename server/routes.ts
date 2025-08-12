@@ -98,6 +98,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all applications for admin panel
+  app.get("/api/applications", async (req, res) => {
+    try {
+      const applications = await storage.getApplications();
+      res.json(applications);
+    } catch (error: any) {
+      console.error("Error fetching applications:", error);
+      res.status(500).json({ message: "Failed to fetch applications" });
+    }
+  });
+
   // Get application by number
   app.get("/api/applications/:applicationNumber", async (req, res) => {
     try {
@@ -131,6 +142,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching insurance products:", error);
       res.status(500).json({ message: "Failed to fetch insurance products" });
+    }
+  });
+
+  // Get all insurance applications for admin panel
+  app.get("/api/insurance-applications", async (req, res) => {
+    try {
+      const applications = await storage.getInsuranceApplications();
+      res.json(applications);
+    } catch (error: any) {
+      console.error("Error fetching insurance applications:", error);
+      res.status(500).json({ message: "Failed to fetch insurance applications" });
     }
   });
 

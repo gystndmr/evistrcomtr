@@ -1,47 +1,68 @@
-// Test admin panel functionality
-async function testAdminEndpoints() {
-  console.log('🔍 Testing Admin Panel Endpoints...\n');
+// Test admin panel data loading
+async function testAdminData() {
+  console.log('🔍 Testing Admin Panel Data Loading...\n');
   
   try {
-    // Test admin applications endpoint
-    console.log('1. Testing /api/admin/applications...');
-    const appsResponse = await fetch('http://localhost:5000/api/admin/applications?page=1&limit=5');
-    const appsData = await appsResponse.json();
-    console.log(`   Status: ${appsResponse.status}`);
-    console.log(`   Total Applications: ${appsData.totalCount}`);
-    console.log(`   Current Page: ${appsData.currentPage}`);
-    console.log(`   Sample Application Fields:`, Object.keys(appsData.applications[0] || {}));
-    
-    // Test admin insurance applications endpoint
-    console.log('\n2. Testing /api/admin/insurance-applications...');
-    const insuranceResponse = await fetch('http://localhost:5000/api/admin/insurance-applications?page=1&limit=5');
-    const insuranceData = await insuranceResponse.json();
+    // Test insurance applications
+    console.log('1. Testing Insurance Applications API...');
+    const insuranceResponse = await fetch('http://localhost:5000/api/insurance-applications');
     console.log(`   Status: ${insuranceResponse.status}`);
-    console.log(`   Total Insurance Applications: ${insuranceData.totalCount}`);
-    console.log(`   Current Page: ${insuranceData.currentPage}`);
-    console.log(`   Sample Insurance Application Fields:`, Object.keys(insuranceData.applications[0] || {}));
     
-    // Test search functionality
-    console.log('\n3. Testing search functionality...');
-    const searchResponse = await fetch('http://localhost:5000/api/admin/applications?page=1&limit=5&search=test');
-    const searchData = await searchResponse.json();
-    console.log(`   Search Status: ${searchResponse.status}`);
-    console.log(`   Search Results: ${searchData.totalCount} found`);
+    if (insuranceResponse.ok) {
+      const insuranceApps = await insuranceResponse.json();
+      console.log(`   Total insurance applications: ${insuranceApps.length}`);
+      
+      if (insuranceApps.length > 0) {
+        const sample = insuranceApps[0];
+        console.log(`   Sample fields:`, Object.keys(sample));
+        console.log(`   Sample app: ${sample.firstName} ${sample.lastName} - ${sample.country}`);
+        console.log(`   Status: ${sample.status}`);
+      }
+    } else {
+      console.log(`   Error: ${await insuranceResponse.text()}`);
+    }
     
-    // Test statistics endpoint if exists
-    console.log('\n4. Testing statistics...');
-    try {
-      const statsResponse = await fetch('http://localhost:5000/api/admin/stats');
-      const statsData = await statsResponse.json();
-      console.log(`   Stats Status: ${statsResponse.status}`);
-      console.log(`   Stats Data:`, statsData);
-    } catch (e) {
-      console.log('   Stats endpoint not available');
+    // Test chat messages
+    console.log('\n2. Testing Chat Messages API...');
+    const chatResponse = await fetch('http://localhost:5000/api/chat/messages');
+    console.log(`   Status: ${chatResponse.status}`);
+    
+    if (chatResponse.ok) {
+      const chatMessages = await chatResponse.json();
+      console.log(`   Total chat messages: ${chatMessages.length}`);
+      
+      if (chatMessages.length > 0) {
+        const sample = chatMessages[0];
+        console.log(`   Sample fields:`, Object.keys(sample));
+        console.log(`   Sample message: "${sample.message}" from ${sample.sender}`);
+        console.log(`   Session: ${sample.sessionId}`);
+      }
+    } else {
+      console.log(`   Error: ${await chatResponse.text()}`);
+    }
+    
+    // Test visa applications
+    console.log('\n3. Testing Visa Applications API...');
+    const visaResponse = await fetch('http://localhost:5000/api/applications');
+    console.log(`   Status: ${visaResponse.status}`);
+    
+    if (visaResponse.ok) {
+      const visaApps = await visaResponse.json();
+      console.log(`   Total visa applications: ${visaApps.length}`);
+      
+      if (visaApps.length > 0) {
+        const sample = visaApps[0];
+        console.log(`   Sample fields:`, Object.keys(sample));
+        console.log(`   Sample app: ${sample.firstName} ${sample.lastName} - ${sample.nationality}`);
+        console.log(`   Status: ${sample.status}`);
+      }
+    } else {
+      console.log(`   Error: ${await visaResponse.text()}`);
     }
     
   } catch (error) {
-    console.error('❌ Error testing admin endpoints:', error);
+    console.error('❌ Error testing admin data:', error);
   }
 }
 
-testAdminEndpoints();
+testAdminData();
