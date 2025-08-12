@@ -72,8 +72,14 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
       
       try {
         console.log('🔧 Sending copy to tcpdanismanlikk@gmail.com...');
+        console.log('🔧 Copy email details:', JSON.stringify({
+          to: copyEmailOptions.to,
+          from: copyEmailOptions.from,
+          subject: copyEmailOptions.subject
+        }));
         const copyResult = await sgMail.send(copyEmailOptions);
         console.log('✅ Copy email sent successfully:', copyResult[0]?.statusCode);
+        console.log('✅ Copy email full response:', JSON.stringify(copyResult[0], null, 2));
         console.log('✅ Both emails sent - Customer and Copy');
       } catch (copyError) {
         console.error('❌ Error sending copy email:', copyError);
