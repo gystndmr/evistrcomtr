@@ -615,11 +615,15 @@ export default function Insurance() {
                             const year = parts[0]; const month = parts[1];
                             const newDate = `${year}-${month}-${day.padStart(2, '0')}`;
                             
-                            // Only validate if ALL parts are properly selected (day is being selected now, so we need month and year to be non-defaults)
-                            const hasValidYear = year && year !== 'undefined' && year !== '' && parseInt(year) >= new Date().getFullYear();
-                            const hasValidMonth = month && month !== 'undefined' && month !== '' && month !== '01';
+                            // Set the date first
+                            handleInputChange("travelDate", newDate);
                             
-                            if (hasValidYear && hasValidMonth && day) {
+                            // Then validate if we have meaningful parts (not all defaults)
+                            const hasRealYear = year && year !== 'undefined' && year !== '' && parseInt(year) > 2020;
+                            const hasRealMonth = month && month !== 'undefined' && month !== '' && month !== '01';
+                            const hasRealDay = day && day !== 'undefined' && day !== '' && day !== '01';
+                            
+                            if (hasRealYear && hasRealMonth && hasRealDay) {
                               const selectedDate = new Date(newDate);
                               const today = new Date();
                               today.setHours(0, 0, 0, 0);
@@ -630,11 +634,8 @@ export default function Insurance() {
                                   description: "Travel date must be today or in the future!",
                                   variant: "destructive",
                                 });
-                                return;
                               }
                             }
-                            
-                            handleInputChange("travelDate", newDate);
                           }}
                         >
                           <SelectTrigger>
@@ -654,11 +655,15 @@ export default function Insurance() {
                             const year = parts[0]; const day = parts[2];
                             const newDate = `${year}-${month.padStart(2, '0')}-${day}`;
                             
-                            // Validate when month is selected - need valid year and day (not default)
-                            const hasValidYear = year && year !== 'undefined' && year !== '' && parseInt(year) >= new Date().getFullYear();
-                            const hasValidDay = day && day !== 'undefined' && day !== '' && day !== '01';
+                            // Set the date first
+                            handleInputChange("travelDate", newDate);
                             
-                            if (hasValidYear && hasValidDay && month) {
+                            // Then validate if we have meaningful parts
+                            const hasRealYear = year && year !== 'undefined' && year !== '' && parseInt(year) > 2020;
+                            const hasRealMonth = month && month !== 'undefined' && month !== '' && month !== '01';
+                            const hasRealDay = day && day !== 'undefined' && day !== '' && day !== '01';
+                            
+                            if (hasRealYear && hasRealMonth && hasRealDay) {
                               const selectedDate = new Date(newDate);
                               const today = new Date();
                               today.setHours(0, 0, 0, 0);
@@ -669,11 +674,8 @@ export default function Insurance() {
                                   description: "Travel date must be today or in the future!",
                                   variant: "destructive",
                                 });
-                                return;
                               }
                             }
-                            
-                            handleInputChange("travelDate", newDate);
                           }}
                         >
                           <SelectTrigger>
@@ -706,11 +708,15 @@ export default function Insurance() {
                             const month = parts[1]; const day = parts[2];
                             const newDate = `${year}-${month}-${day}`;
                             
-                            // Validate when year is selected - need valid month and day (not defaults)
-                            const hasValidMonth = month && month !== 'undefined' && month !== '' && month !== '01';
-                            const hasValidDay = day && day !== 'undefined' && day !== '' && day !== '01';
+                            // Set the date first
+                            handleInputChange("travelDate", newDate);
                             
-                            if (hasValidMonth && hasValidDay && year) {
+                            // Then validate if we have meaningful parts
+                            const hasRealYear = year && year !== 'undefined' && year !== '' && parseInt(year) > 2020;
+                            const hasRealMonth = month && month !== 'undefined' && month !== '' && month !== '01';
+                            const hasRealDay = day && day !== 'undefined' && day !== '' && day !== '01';
+                            
+                            if (hasRealYear && hasRealMonth && hasRealDay) {
                               const selectedDate = new Date(newDate);
                               const today = new Date();
                               today.setHours(0, 0, 0, 0);
@@ -721,11 +727,8 @@ export default function Insurance() {
                                   description: "Travel date must be today or in the future!",
                                   variant: "destructive",
                                 });
-                                return;
                               }
                             }
-                            
-                            handleInputChange("travelDate", newDate);
                           }}
                         >
                           <SelectTrigger>
