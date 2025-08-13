@@ -33,6 +33,65 @@ export default function ChatAdmin() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Load existing chat messages on admin panel load
+    const loadChatMessages = async () => {
+      try {
+        const response = await fetch('/api/chat/messages');
+        if (response.ok) {
+          const messages = await response.json();
+          console.log('📨 Loaded chat messages:', messages.length);
+          
+          // Group messages by session
+          const sessionGroups = new Map<string, ActiveChat>();
+          
+          messages.forEach((msg: any) => {
+            const sessionId = msg.sessionId;
+            
+            if (!sessionGroups.has(sessionId)) {
+              sessionGroups.set(sessionId, {
+                sessionId,
+                customerName: msg.customerName || 'Anonymous',
+                customerEmail: msg.customerEmail || 'No email',
+                lastMessage: new Date(msg.timestamp),
+                unreadCount: 0,
+                messages: []
+              });
+            }
+            
+            const chat = sessionGroups.get(sessionId)!;
+            
+            // Convert sender types: 'admin' -> 'agent', keep 'user' as 'user'
+            const normalizedSender = (msg.sender === 'admin' || msg.sender === 'agent') ? 'agent' : 'user';
+            
+            chat.messages.push({
+              id: msg.id,
+              text: msg.message,
+              sender: normalizedSender,
+              timestamp: new Date(msg.timestamp),
+              sessionId: msg.sessionId
+            });
+            
+            // Update last message timestamp
+            if (new Date(msg.timestamp) > chat.lastMessage) {
+              chat.lastMessage = new Date(msg.timestamp);
+            }
+          });
+          
+          // Sort messages within each chat by timestamp
+          sessionGroups.forEach(chat => {
+            chat.messages.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+          });
+          
+          setActiveChats(sessionGroups);
+          console.log('✅ Loaded', sessionGroups.size, 'chat sessions');
+        }
+      } catch (error) {
+        console.error('❌ Error loading chat messages:', error);
+      }
+    };
+    
+    loadChatMessages();
+
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const wsUrl = `${protocol}//${window.location.host}/ws?admin=true`;
     const websocket = new WebSocket(wsUrl);
@@ -46,7 +105,10 @@ export default function ChatAdmin() {
       const { type, data } = JSON.parse(event.data);
       
       if (type === 'customer_message') {
-        const message: ChatMessage = data;
+        const message: ChatMessage = {
+          ...data,
+          sender: 'user' // Customer messages are always 'user'
+        };
         
         setActiveChats(prev => {
           const newChats = new Map(prev);
@@ -55,8 +117,8 @@ export default function ChatAdmin() {
           if (!chat) {
             chat = {
               sessionId: message.sessionId,
-              customerName: message.customerName,
-              customerEmail: message.customerEmail,
+              customerName: message.customerName || 'Anonymous',
+              customerEmail: message.customerEmail || 'No email',
               lastMessage: new Date(message.timestamp),
               unreadCount: 0,
               messages: []
