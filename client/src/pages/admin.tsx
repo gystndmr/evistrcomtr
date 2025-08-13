@@ -1062,23 +1062,88 @@ export default function Admin() {
                                         
                                         {/* Parent ID Photos Display for Under 18 */}
                                         {selectedInsuranceApp.parentIdPhotos && selectedInsuranceApp.parentIdPhotos.length > 0 ? (
-                                          <div className="space-y-2">
+                                          <div className="space-y-3">
                                             <div><strong>Ebeveyn Kimlik Fotoğrafları:</strong> (18 yaş altı)</div>
-                                            <div className="grid grid-cols-2 gap-2">
-                                              {selectedInsuranceApp.parentIdPhotos.map((photo: string, index: number) => (
-                                                <div key={index} className="border rounded-lg p-2">
-                                                  <img 
-                                                    src={photo} 
-                                                    alt={`Ebeveyn Kimlik ${index + 1}`}
-                                                    className="w-full h-32 object-cover rounded cursor-pointer hover:opacity-80"
-                                                    onClick={() => window.open(photo, '_blank')}
-                                                  />
-                                                  <p className="text-xs text-gray-600 mt-1 text-center">
-                                                    Ebeveyn Kimlik {index + 1}
-                                                  </p>
+                                            
+                                            {/* Group photos by type if available */}
+                                            {(() => {
+                                              const motherPhotos = selectedInsuranceApp.parentIdPhotos.filter((photo: any) => 
+                                                typeof photo === 'object' && photo.type === 'mother'
+                                              );
+                                              const fatherPhotos = selectedInsuranceApp.parentIdPhotos.filter((photo: any) => 
+                                                typeof photo === 'object' && photo.type === 'father'
+                                              );
+                                              const generalPhotos = selectedInsuranceApp.parentIdPhotos.filter((photo: any) => 
+                                                typeof photo === 'string' || (typeof photo === 'object' && photo.type === 'parent')
+                                              );
+
+                                              return (
+                                                <div className="space-y-4">
+                                                  {/* Mother's Photos */}
+                                                  {motherPhotos.length > 0 && (
+                                                    <div className="border border-pink-200 bg-pink-50 rounded-lg p-3">
+                                                      <div className="text-sm font-semibold text-pink-800 mb-2">👩 Anne Kimlik Fotoğrafları</div>
+                                                      <div className="grid grid-cols-2 gap-2">
+                                                        {motherPhotos.map((photo: any, index: number) => (
+                                                          <div key={`mother-${index}`} className="border rounded-lg p-2 bg-white">
+                                                            <img 
+                                                              src={photo.data} 
+                                                              alt={`Anne Kimlik ${index + 1}`}
+                                                              className="w-full h-24 object-cover rounded cursor-pointer hover:opacity-80"
+                                                              onClick={() => window.open(photo.data, '_blank')}
+                                                            />
+                                                            <p className="text-xs text-gray-600 mt-1 text-center">Anne Kimlik {index + 1}</p>
+                                                          </div>
+                                                        ))}
+                                                      </div>
+                                                    </div>
+                                                  )}
+
+                                                  {/* Father's Photos */}
+                                                  {fatherPhotos.length > 0 && (
+                                                    <div className="border border-blue-200 bg-blue-50 rounded-lg p-3">
+                                                      <div className="text-sm font-semibold text-blue-800 mb-2">👨 Baba Kimlik Fotoğrafları</div>
+                                                      <div className="grid grid-cols-2 gap-2">
+                                                        {fatherPhotos.map((photo: any, index: number) => (
+                                                          <div key={`father-${index}`} className="border rounded-lg p-2 bg-white">
+                                                            <img 
+                                                              src={photo.data} 
+                                                              alt={`Baba Kimlik ${index + 1}`}
+                                                              className="w-full h-24 object-cover rounded cursor-pointer hover:opacity-80"
+                                                              onClick={() => window.open(photo.data, '_blank')}
+                                                            />
+                                                            <p className="text-xs text-gray-600 mt-1 text-center">Baba Kimlik {index + 1}</p>
+                                                          </div>
+                                                        ))}
+                                                      </div>
+                                                    </div>
+                                                  )}
+
+                                                  {/* General Parent Photos (backward compatibility) */}
+                                                  {generalPhotos.length > 0 && (
+                                                    <div className="border border-gray-200 bg-gray-50 rounded-lg p-3">
+                                                      <div className="text-sm font-semibold text-gray-800 mb-2">📄 Ebeveyn Kimlik Fotoğrafları</div>
+                                                      <div className="grid grid-cols-2 gap-2">
+                                                        {generalPhotos.map((photo: any, index: number) => {
+                                                          const photoSrc = typeof photo === 'string' ? photo : photo.data;
+                                                          return (
+                                                            <div key={`general-${index}`} className="border rounded-lg p-2 bg-white">
+                                                              <img 
+                                                                src={photoSrc} 
+                                                                alt={`Ebeveyn Kimlik ${index + 1}`}
+                                                                className="w-full h-24 object-cover rounded cursor-pointer hover:opacity-80"
+                                                                onClick={() => window.open(photoSrc, '_blank')}
+                                                              />
+                                                              <p className="text-xs text-gray-600 mt-1 text-center">Ebeveyn Kimlik {index + 1}</p>
+                                                            </div>
+                                                          );
+                                                        })}
+                                                      </div>
+                                                    </div>
+                                                  )}
                                                 </div>
-                                              ))}
-                                            </div>
+                                              );
+                                            })()}
                                           </div>
                                         ) : (
                                           // Check if user is under 18 but no parent photos

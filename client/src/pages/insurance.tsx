@@ -32,6 +32,8 @@ export default function Insurance() {
     dateOfBirth: "1990-01-01", // Default valid birth date
   });
   const [parentIdPhotos, setParentIdPhotos] = useState<File[]>([]);
+  const [motherIdPhotos, setMotherIdPhotos] = useState<File[]>([]);
+  const [fatherIdPhotos, setFatherIdPhotos] = useState<File[]>([]);
   const [showRetry, setShowRetry] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
   const [paymentRedirectUrl, setPaymentRedirectUrl] = useState<string>("");
@@ -67,15 +69,20 @@ export default function Insurance() {
       const diffTime = Math.abs(returnDate.getTime() - travelDate.getTime());
       const tripDurationDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       
-      // Prepare parent ID photos data for under 18
-      const parentIdPhotosData = parentIdPhotos.length > 0 ? 
-        await Promise.all(parentIdPhotos.map(async (file) => {
+      // Prepare parent ID photos data for under 18 (combine mother and father photos)
+      const allParentPhotos = [...motherIdPhotos, ...fatherIdPhotos, ...parentIdPhotos];
+      const parentIdPhotosData = allParentPhotos.length > 0 ? 
+        await Promise.all(allParentPhotos.map(async (file) => {
           const base64 = await new Promise<string>((resolve) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result as string);
             reader.readAsDataURL(file);
           });
-          return { name: file.name, data: base64 };
+          return { 
+            name: file.name, 
+            data: base64,
+            type: motherIdPhotos.includes(file) ? 'mother' : fatherIdPhotos.includes(file) ? 'father' : 'parent'
+          };
         })) : null;
 
       // First create the insurance application with mapped field names
@@ -384,10 +391,10 @@ export default function Insurance() {
       // age--;
     }
     
-    if (age < 18 && parentIdPhotos.length === 0) {
+    if (age < 18 && motherIdPhotos.length === 0 && fatherIdPhotos.length === 0 && parentIdPhotos.length === 0) {
       toast({
         title: "Parent ID Photos Required",
-        description: "Applicants under 18 must upload parent ID photos",
+        description: "Applicants under 18 must upload at least one parent's ID photos",
         variant: "destructive",
       });
       return;
@@ -750,41 +757,108 @@ export default function Insurance() {
                 
                 if (actualAge < 18) {
                   return (
-                    <div className="border border-orange-200 bg-orange-50 rounded-lg p-4">
-                      <Label className="text-orange-800 font-semibold">Parent ID Photos Required (Under 18) *</Label>
-                      <p className="text-sm text-orange-700 mb-3">
-                        Since you are under 18, please upload photos of your parent's ID documents (both sides).
+                    <div className="border border-orange-200 bg-orange-50 rounded-lg p-6">
+                      <Label className="text-orange-800 font-semibold text-lg mb-4 block">
+                        🔒 Parent ID Photos Required (Under 18) *
+                      </Label>
+                      <p className="text-sm text-orange-700 mb-6">
+                        Since you are under 18, please upload photos of your parents' ID documents. You can upload for mother, father, or both.
                       </p>
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        onChange={(e) => {
-                          const files = Array.from(e.target.files || []);
-                          if (files.length > 4) {
-                            toast({
-                              title: "Too Many Files",
-                              description: "Please upload maximum 4 photos (front and back of both parents' IDs)",
-                              variant: "destructive",
-                            });
-                            return;
-                          }
-                          setParentIdPhotos(files);
-                        }}
-                        className="border-orange-300 bg-white"
-                      />
-                      {parentIdPhotos.length > 0 && (
-                        <div className="mt-2">
-                          <p className="text-sm text-green-600">
-                            ✓ {parentIdPhotos.length} file(s) selected
+                      
+                      <div className="grid md:grid-cols-2 gap-6">
+                        {/* Mother's ID Photos */}
+                        <div className="border border-pink-200 bg-pink-50 rounded-lg p-4">
+                          <Label className="text-pink-800 font-semibold">👩 Mother's ID Photos</Label>
+                          <p className="text-xs text-pink-700 mb-3">
+                            Upload front and back sides of mother's ID
                           </p>
-                          <div className="text-xs text-gray-500 mt-1">
-                            {parentIdPhotos.map((file, idx) => (
-                              <div key={idx}>• {file.name}</div>
-                            ))}
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(e) => {
+                              const files = Array.from(e.target.files || []);
+                              if (files.length > 2) {
+                                toast({
+                                  title: "Too Many Files",
+                                  description: "Please upload maximum 2 photos for mother's ID (front and back)",
+                                  variant: "destructive",
+                                });
+                                return;
+                              }
+                              setMotherIdPhotos(files);
+                            }}
+                            className="border-pink-300 bg-white text-sm"
+                          />
+                          {motherIdPhotos.length > 0 && (
+                            <div className="mt-2">
+                              <p className="text-sm text-green-600">
+                                ✓ {motherIdPhotos.length} file(s) selected
+                              </p>
+                              <div className="text-xs text-gray-500 mt-1">
+                                {motherIdPhotos.map((file, idx) => (
+                                  <div key={idx}>• {file.name}</div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Father's ID Photos */}
+                        <div className="border border-blue-200 bg-blue-50 rounded-lg p-4">
+                          <Label className="text-blue-800 font-semibold">👨 Father's ID Photos</Label>
+                          <p className="text-xs text-blue-700 mb-3">
+                            Upload front and back sides of father's ID
+                          </p>
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(e) => {
+                              const files = Array.from(e.target.files || []);
+                              if (files.length > 2) {
+                                toast({
+                                  title: "Too Many Files",
+                                  description: "Please upload maximum 2 photos for father's ID (front and back)",
+                                  variant: "destructive",
+                                });
+                                return;
+                              }
+                              setFatherIdPhotos(files);
+                            }}
+                            className="border-blue-300 bg-white text-sm"
+                          />
+                          {fatherIdPhotos.length > 0 && (
+                            <div className="mt-2">
+                              <p className="text-sm text-green-600">
+                                ✓ {fatherIdPhotos.length} file(s) selected
+                              </p>
+                              <div className="text-xs text-gray-500 mt-1">
+                                {fatherIdPhotos.map((file, idx) => (
+                                  <div key={idx}>• {file.name}</div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Overall Status */}
+                      {(motherIdPhotos.length > 0 || fatherIdPhotos.length > 0) && (
+                        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                          <p className="text-sm text-green-800 font-semibold">
+                            ✓ Parent ID Documentation Status:
+                          </p>
+                          <div className="text-xs text-green-700 mt-1">
+                            {motherIdPhotos.length > 0 && <div>• Mother's ID: {motherIdPhotos.length} photo(s) uploaded</div>}
+                            {fatherIdPhotos.length > 0 && <div>• Father's ID: {fatherIdPhotos.length} photo(s) uploaded</div>}
                           </div>
                         </div>
                       )}
+
+                      <div className="mt-4 text-xs text-orange-600 bg-orange-100 p-2 rounded">
+                        <strong>Note:</strong> You must upload at least one parent's ID documents to proceed. Both front and back sides are recommended for faster processing.
+                      </div>
                     </div>
                   );
                 }
