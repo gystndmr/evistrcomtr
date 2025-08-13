@@ -193,7 +193,7 @@ export function SupportingDocumentCheck({
               <AlertDescription className="text-red-800">
                 <strong>⚠️ MANDATORY REQUIREMENT:</strong> According to Law No. 6458 on Foreigners, you are required to have valid health insurance for the entire duration of your stay in Turkey.
                 <br /><br />
-                You must apply through the Turkish consulate and obtain mandatory travel insurance.
+                For e-visa application, you must contact the Turkish consulate in your country. However, travel insurance remains mandatory regardless of your visa application method.
                 <div className="mt-3">
                   <button 
                     onClick={() => {
