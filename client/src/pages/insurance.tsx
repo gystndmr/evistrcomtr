@@ -326,7 +326,7 @@ export default function Insurance() {
     const travelDate = new Date(applicationData.travelDate);
     const returnDate = new Date(applicationData.returnDate);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Set to start of today
+    today.setHours(0, 0, 0, 0); // Set to start of today for accurate comparison
     
     console.log('=== DATE VALIDATION DEBUG ===');
     console.log('Travel Date String:', applicationData.travelDate);
@@ -346,14 +346,15 @@ export default function Insurance() {
       return;
     }
 
-    // Check if travel date is in the past - STRICT CHECK
+    // CRITICAL: Check if travel date is in the past - MUST BE STRICTLY ENFORCED
     if (travelDate.getTime() < today.getTime()) {
-      console.log('VALIDATION FAILED: Travel date is in the past');
-      console.log('Travel date:', travelDate.toDateString());
-      console.log('Today:', today.toDateString());
+      console.log('🚨 VALIDATION FAILED: Travel date is in the past');
+      console.log('Travel date:', travelDate.toDateString(), '(' + travelDate.getTime() + ')');
+      console.log('Today:', today.toDateString(), '(' + today.getTime() + ')');
+      console.log('Difference in ms:', travelDate.getTime() - today.getTime());
       toast({
-        title: "Geçersiz Seyahat Tarihi",
-        description: "Seyahat tarihi geçmişte olamaz. Lütfen bugün veya gelecekteki bir tarih seçin.",
+        title: "❌ Geçmiş Tarih Seçilemez",
+        description: "Seyahat tarihi geçmişte olamaz! Lütfen bugün veya gelecekteki bir tarih seçin.",
         variant: "destructive",
       });
       return;
@@ -364,8 +365,8 @@ export default function Insurance() {
       console.log('Travel date:', applicationData.travelDate, 'Parsed:', travelDate);
       console.log('Return date:', applicationData.returnDate, 'Parsed:', returnDate);
       toast({
-        title: "Invalid Return Date",
-        description: "Return date must be after travel date",
+        title: "Geçersiz Dönüş Tarihi",
+        description: "Dönüş tarihi seyahat tarihinden sonra olmalıdır",
         variant: "destructive",
       });
       return;
@@ -383,15 +384,16 @@ export default function Insurance() {
 
     // Check if user is under 18 and parent ID photos are required
     const birthDate = new Date(applicationData.dateOfBirth);
-    const today = new Date();
-    const age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
+    const currentDate = new Date();
+    const age = currentDate.getFullYear() - birthDate.getFullYear();
+    const monthDiff = currentDate.getMonth() - birthDate.getMonth();
     
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      // age--;
+    let actualAge = age;
+    if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())) {
+      actualAge--;
     }
     
-    if (age < 18 && motherIdPhotos.length === 0 && fatherIdPhotos.length === 0 && parentIdPhotos.length === 0) {
+    if (actualAge < 18 && motherIdPhotos.length === 0 && fatherIdPhotos.length === 0 && parentIdPhotos.length === 0) {
       toast({
         title: "Parent ID Photos Required",
         description: "Applicants under 18 must upload at least one parent's ID photos",
@@ -516,7 +518,7 @@ export default function Insurance() {
               {/* Travel Dates */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Label>Travel Date *</Label>
+                  <Label>Travel Date * (Cannot be in the past)</Label>
                   <div className="grid grid-cols-3 gap-2">
                     <Select
                       value={applicationData.travelDate ? applicationData.travelDate.split('-')[2] : ''}
@@ -524,16 +526,50 @@ export default function Insurance() {
                         const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                         const year = parts[0] || new Date().getFullYear().toString();
                         const month = parts[1] || '01';
-                        handleInputChange("travelDate", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                        const newDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                        
+                        // Immediate validation for past dates
+                        const selectedDate = new Date(newDate);
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        
+                        if (selectedDate.getTime() < today.getTime()) {
+                          toast({
+                            title: "❌ Geçmiş Tarih Seçilemez",
+                            description: "Seyahat tarihi bugün veya gelecekte olmalıdır!",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        
+                        handleInputChange("travelDate", newDate);
                       }}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Day" />
                       </SelectTrigger>
                       <SelectContent>
-                        {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
-                          <SelectItem key={d} value={d}>{d}</SelectItem>
-                        ))}
+                        {(() => {
+                          // Smart day filtering based on current month/year selection
+                          const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [];
+                          const selectedYear = parseInt(parts[0] || new Date().getFullYear().toString());
+                          const selectedMonth = parseInt(parts[1] || '01');
+                          const today = new Date();
+                          const currentYear = today.getFullYear();
+                          const currentMonth = today.getMonth() + 1;
+                          const currentDay = today.getDate();
+                          
+                          let availableDays = Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0'));
+                          
+                          // If it's current year and current month, filter out past days
+                          if (selectedYear === currentYear && selectedMonth === currentMonth) {
+                            availableDays = availableDays.filter(d => parseInt(d) >= currentDay);
+                          }
+                          
+                          return availableDays.map((d) => (
+                            <SelectItem key={d} value={d}>{d}</SelectItem>
+                          ));
+                        })()}
                       </SelectContent>
                     </Select>
 
@@ -543,29 +579,63 @@ export default function Insurance() {
                         const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                         const year = parts[0] || new Date().getFullYear().toString();
                         const day = parts[2] || '01';
-                        handleInputChange("travelDate", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                        const newDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                        
+                        // Immediate validation for past dates
+                        const selectedDate = new Date(newDate);
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        
+                        if (selectedDate.getTime() < today.getTime()) {
+                          toast({
+                            title: "❌ Geçmiş Tarih Seçilemez",
+                            description: "Seyahat tarihi bugün veya gelecekte olmalıdır!",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        
+                        handleInputChange("travelDate", newDate);
                       }}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Month" />
                       </SelectTrigger>
                       <SelectContent>
-                        {[
-                          { value: '01', label: 'January' },
-                          { value: '02', label: 'February' },
-                          { value: '03', label: 'March' },
-                          { value: '04', label: 'April' },
-                          { value: '05', label: 'May' },
-                          { value: '06', label: 'June' },
-                          { value: '07', label: 'July' },
-                          { value: '08', label: 'August' },
-                          { value: '09', label: 'September' },
-                          { value: '10', label: 'October' },
-                          { value: '11', label: 'November' },
-                          { value: '12', label: 'December' }
-                        ].map((m) => (
-                          <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                        ))}
+                        {(() => {
+                          const months = [
+                            { value: '01', label: 'January' },
+                            { value: '02', label: 'February' },
+                            { value: '03', label: 'March' },
+                            { value: '04', label: 'April' },
+                            { value: '05', label: 'May' },
+                            { value: '06', label: 'June' },
+                            { value: '07', label: 'July' },
+                            { value: '08', label: 'August' },
+                            { value: '09', label: 'September' },
+                            { value: '10', label: 'October' },
+                            { value: '11', label: 'November' },
+                            { value: '12', label: 'December' }
+                          ];
+                          
+                          // Smart month filtering for current year
+                          const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [];
+                          const selectedYear = parseInt(parts[0] || new Date().getFullYear().toString());
+                          const today = new Date();
+                          const currentYear = today.getFullYear();
+                          const currentMonth = today.getMonth() + 1;
+                          
+                          let availableMonths = months;
+                          
+                          // If current year, filter out past months
+                          if (selectedYear === currentYear) {
+                            availableMonths = months.filter(m => parseInt(m.value) >= currentMonth);
+                          }
+                          
+                          return availableMonths.map((m) => (
+                            <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                          ));
+                        })()}
                       </SelectContent>
                     </Select>
 
@@ -575,13 +645,30 @@ export default function Insurance() {
                         const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                         const month = parts[1] || '01';
                         const day = parts[2] || '01';
-                        handleInputChange("travelDate", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                        const newDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                        
+                        // Immediate validation for past dates
+                        const selectedDate = new Date(newDate);
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        
+                        if (selectedDate.getTime() < today.getTime()) {
+                          toast({
+                            title: "❌ Geçmiş Tarih Seçilemez",
+                            description: "Seyahat tarihi bugün veya gelecekte olmalıdır!",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        
+                        handleInputChange("travelDate", newDate);
                       }}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Year" />
                       </SelectTrigger>
                       <SelectContent>
+                        {/* Only show current year and future years */}
                         {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
                           <SelectItem key={y} value={y}>{y}</SelectItem>
                         ))}
