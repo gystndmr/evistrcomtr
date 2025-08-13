@@ -118,7 +118,7 @@ export default function Insurance() {
       today.setHours(0, 0, 0, 0);
       
       if (travel.getTime() < today.getTime()) {
-        newErrors.travelDate = "Geçmiş tarih seçemezsin";
+        newErrors.travelDate = "Travel date cannot be in the past";
       }
     }
     
@@ -127,7 +127,7 @@ export default function Insurance() {
       const returnD = new Date(returnDate);
       
       if (returnD.getTime() <= travel.getTime()) {
-        newErrors.returnDate = "Dönüş tarihi gidiş tarihinden sonra olmalıdır";
+        newErrors.returnDate = "Return date must be after travel date";
       }
     }
     

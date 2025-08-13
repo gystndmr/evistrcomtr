@@ -5,7 +5,7 @@ This is a full-stack web application for processing Turkey e-visa applications, 
 
 ## User Preferences
 Preferred communication style: Simple, everyday language. 
-Primary language: English (native language for the application), with automatic browser language detection and translation support.
+Primary language: English (ALL system messages, error messages, and application text must be in English), with automatic browser language detection and translation support for UI elements only.
 - Professional government-style appearance required
 - Turkish flag and heritage imagery prominently featured
 - Security badges and payment icons for trust
