@@ -628,7 +628,10 @@ export default function Insurance() {
                           let availableMonths = months;
                           
                           // If current year, filter out past months
-                          if (selectedYear === currentYear) {
+                          // If past year, show no months
+                          if (selectedYear < currentYear) {
+                            availableMonths = [];
+                          } else if (selectedYear === currentYear) {
                             availableMonths = months.filter(m => parseInt(m.value) >= currentMonth);
                           }
                           

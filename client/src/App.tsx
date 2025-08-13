@@ -9,7 +9,7 @@ import { CookieConsent } from "@/components/cookie-consent";
 
 import Home from "@/pages/home";
 import Application from "@/pages/application";
-import Insurance from "@/pages/insurance-simple";
+import Insurance from "@/pages/insurance";
 import Status from "@/pages/status";
 import Admin from "@/pages/admin";
 import PaymentSuccess from "@/pages/payment-success";
