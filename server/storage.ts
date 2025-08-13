@@ -83,10 +83,11 @@ export class DatabaseStorage implements IStorage {
       const uniqueCountries = Array.from(uniqueCountriesMap.values());
       console.log(`🔍 Unique countries after filtering: ${uniqueCountries.length}`);
       
-      // Optimized mapping with destructuring
-      const formattedCountries = uniqueCountries.map(({ isEligible, ...country }) => ({
+      // Ensure proper mapping for both frontend compatibility and performance
+      const formattedCountries = uniqueCountries.map(country => ({
         ...country,
-        eligibleForEvisa: Boolean(isEligible)
+        isEligible: Boolean(country.isEligible), // Keep original field for compatibility
+        eligibleForEvisa: Boolean(country.isEligible) // Also provide alternative naming
       })) as any[];
       
       return formattedCountries;
