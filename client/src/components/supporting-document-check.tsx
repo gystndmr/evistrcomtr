@@ -42,8 +42,7 @@ export function SupportingDocumentCheck({
       if (onProcessingTypeChange) {
         onProcessingTypeChange("");
       }
-      // Ultra-fast redirect to insurance for "No" selection - no toast delay
-      window.location.href = '/insurance';
+      // No automatic redirect - let user choose manually via Get Insurance button
       return;
     }
     // Immediate call for better UX - no delay needed
