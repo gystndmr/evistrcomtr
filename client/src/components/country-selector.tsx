@@ -144,7 +144,7 @@ export function CountrySelector({
                 onClick={() => window.location.href = `/insurance?country=${encodeURIComponent(selectedCountry.name)}`}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium text-sm"
               >
-                Check Travel Insurance Options
+                Get Insurance
               </button>
             </div>
           </AlertDescription>
