@@ -557,29 +557,36 @@ export default function Admin() {
                           <TableCell>{app.supportingDocumentEndDate ? formatDate(app.supportingDocumentEndDate) : 'N/A'}</TableCell>
                           <TableCell>${app.totalAmount}</TableCell>
                           <TableCell>
-                            {app.paymentStatus === "completed" ? (
-                              <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-1">
+                              {/* Payment Status Badge */}
+                              {app.paymentStatus === "completed" ? (
                                 <Badge variant="default" className="bg-green-500">✓ Ödemesi Tamam</Badge>
-                                {app.arrivalDate && (() => {
-                                  const today = new Date();
-                                  const arrivalDate = new Date(app.arrivalDate);
-                                  const diffTime = arrivalDate.getTime() - today.getTime();
-                                  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                                  
-                                  if (diffDays <= 0) {
-                                    return <span className="text-xs text-red-600 font-medium">🚨 Seyahat tarihi geçti!</span>;
-                                  } else if (diffDays <= 7) {
-                                    return <span className="text-xs text-orange-600 font-medium">⚠️ {diffDays} gün kaldı!</span>;
-                                  } else if (diffDays <= 30) {
-                                    return <span className="text-xs text-blue-600">{diffDays} gün kaldı</span>;
-                                  } else {
-                                    return <span className="text-xs text-green-600">{diffDays} gün</span>;
-                                  }
-                                })()}
-                              </div>
-                            ) : (
-                              getPaymentStatusBadge(app.paymentStatus)
-                            )}
+                              ) : app.paymentStatus === "processing" ? (
+                                <Badge variant="secondary" className="bg-yellow-500">⏳ İşlemde</Badge>
+                              ) : app.paymentStatus === "failed" ? (
+                                <Badge variant="destructive">✗ Başarısız</Badge>
+                              ) : (
+                                <Badge variant="outline" className="bg-gray-100">⏸️ Beklemede</Badge>
+                              )}
+                              
+                              {/* Arrival Date Countdown - Show for ALL applications */}
+                              {app.arrivalDate && (() => {
+                                const today = new Date();
+                                const arrivalDate = new Date(app.arrivalDate);
+                                const diffTime = arrivalDate.getTime() - today.getTime();
+                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                
+                                if (diffDays <= 0) {
+                                  return <span className="text-xs text-red-600 font-medium">🚨 Seyahat tarihi geçti!</span>;
+                                } else if (diffDays <= 7) {
+                                  return <span className="text-xs text-orange-600 font-medium">⚠️ {diffDays} gün kaldı!</span>;
+                                } else if (diffDays <= 30) {
+                                  return <span className="text-xs text-blue-600">{diffDays} gün kaldı</span>;
+                                } else {
+                                  return <span className="text-xs text-green-600">{diffDays} gün</span>;
+                                }
+                              })()}
+                            </div>
                           </TableCell>
                           <TableCell>{getStatusBadge(app.status)}</TableCell>
                           <TableCell>{formatDate(app.createdAt!)}</TableCell>
@@ -988,29 +995,36 @@ export default function Admin() {
                           <TableCell>{app.productId}</TableCell>
                           <TableCell>${app.totalAmount}</TableCell>
                           <TableCell>
-                            {app.paymentStatus === "completed" ? (
-                              <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-1">
+                              {/* Payment Status Badge */}
+                              {app.paymentStatus === "completed" ? (
                                 <Badge variant="default" className="bg-green-500">✓ Ödemesi Tamam</Badge>
-                                {app.travelDate && (() => {
-                                  const today = new Date();
-                                  const travelDate = new Date(app.travelDate);
-                                  const diffTime = travelDate.getTime() - today.getTime();
-                                  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                                  
-                                  if (diffDays <= 0) {
-                                    return <span className="text-xs text-red-600 font-medium">🚨 Seyahat tarihi geçti!</span>;
-                                  } else if (diffDays <= 7) {
-                                    return <span className="text-xs text-orange-600 font-medium">⚠️ {diffDays} gün kaldı!</span>;
-                                  } else if (diffDays <= 30) {
-                                    return <span className="text-xs text-blue-600">{diffDays} gün kaldı</span>;
-                                  } else {
-                                    return <span className="text-xs text-green-600">{diffDays} gün</span>;
-                                  }
-                                })()}
-                              </div>
-                            ) : (
-                              getPaymentStatusBadge(app.paymentStatus)
-                            )}
+                              ) : app.paymentStatus === "processing" ? (
+                                <Badge variant="secondary" className="bg-yellow-500">⏳ İşlemde</Badge>
+                              ) : app.paymentStatus === "failed" ? (
+                                <Badge variant="destructive">✗ Başarısız</Badge>
+                              ) : (
+                                <Badge variant="outline" className="bg-gray-100">⏸️ Beklemede</Badge>
+                              )}
+                              
+                              {/* Travel Date Countdown - Show for ALL applications */}
+                              {app.travelDate && (() => {
+                                const today = new Date();
+                                const travelDate = new Date(app.travelDate);
+                                const diffTime = travelDate.getTime() - today.getTime();
+                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                
+                                if (diffDays <= 0) {
+                                  return <span className="text-xs text-red-600 font-medium">🚨 Seyahat tarihi geçti!</span>;
+                                } else if (diffDays <= 7) {
+                                  return <span className="text-xs text-orange-600 font-medium">⚠️ {diffDays} gün kaldı!</span>;
+                                } else if (diffDays <= 30) {
+                                  return <span className="text-xs text-blue-600">{diffDays} gün kaldı</span>;
+                                } else {
+                                  return <span className="text-xs text-green-600">{diffDays} gün</span>;
+                                }
+                              })()}
+                            </div>
                           </TableCell>
                           <TableCell>{getStatusBadge(app.status)}</TableCell>
                           <TableCell>{formatDate(app.createdAt!)}</TableCell>
