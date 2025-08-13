@@ -191,9 +191,9 @@ export function SupportingDocumentCheck({
             <Alert className="border-red-200 bg-red-50">
               <AlertTriangle className="h-4 w-4 text-red-600" />
               <AlertDescription className="text-red-800">
-                <strong>⚠️ MANDATORY REQUIREMENT:</strong> According to Turkish law, <strong>travel insurance is REQUIRED</strong> for all visitors to Turkey, regardless of visa application method.
-                <br />
-                You must apply through the consulate and obtain mandatory insurance.
+                <strong>⚠️ MANDATORY REQUIREMENT:</strong> According to Law No. 6458 on Foreigners, you are required to have valid health insurance for the entire duration of your stay in Turkey.
+                <br /><br />
+                You must apply through the Turkish consulate and obtain mandatory travel insurance.
                 <div className="mt-3">
                   <button 
                     onClick={() => {
