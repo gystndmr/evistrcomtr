@@ -615,8 +615,11 @@ export default function Insurance() {
                             const year = parts[0]; const month = parts[1];
                             const newDate = `${year}-${month}-${day.padStart(2, '0')}`;
                             
-                            // Only validate if we have all parts and they're not default values
-                            if (year && month && day && year !== 'undefined' && month !== 'undefined' && day !== 'undefined') {
+                            // Only validate if ALL parts are properly selected (day is being selected now, so we need month and year to be non-defaults)
+                            const hasValidYear = year && year !== 'undefined' && year !== '' && parseInt(year) >= new Date().getFullYear();
+                            const hasValidMonth = month && month !== 'undefined' && month !== '' && month !== '01';
+                            
+                            if (hasValidYear && hasValidMonth && day) {
                               const selectedDate = new Date(newDate);
                               const today = new Date();
                               today.setHours(0, 0, 0, 0);
@@ -651,8 +654,11 @@ export default function Insurance() {
                             const year = parts[0]; const day = parts[2];
                             const newDate = `${year}-${month.padStart(2, '0')}-${day}`;
                             
-                            // Only validate if we have all parts and they're not default values
-                            if (year && month && day && year !== 'undefined' && month !== 'undefined' && day !== 'undefined') {
+                            // Validate when month is selected - need valid year and day (not default)
+                            const hasValidYear = year && year !== 'undefined' && year !== '' && parseInt(year) >= new Date().getFullYear();
+                            const hasValidDay = day && day !== 'undefined' && day !== '' && day !== '01';
+                            
+                            if (hasValidYear && hasValidDay && month) {
                               const selectedDate = new Date(newDate);
                               const today = new Date();
                               today.setHours(0, 0, 0, 0);
@@ -700,8 +706,11 @@ export default function Insurance() {
                             const month = parts[1]; const day = parts[2];
                             const newDate = `${year}-${month}-${day}`;
                             
-                            // Only validate if we have all parts and they're not default values
-                            if (year && month && day && year !== 'undefined' && month !== 'undefined' && day !== 'undefined') {
+                            // Validate when year is selected - need valid month and day (not defaults)
+                            const hasValidMonth = month && month !== 'undefined' && month !== '' && month !== '01';
+                            const hasValidDay = day && day !== 'undefined' && day !== '' && day !== '01';
+                            
+                            if (hasValidMonth && hasValidDay && year) {
                               const selectedDate = new Date(newDate);
                               const today = new Date();
                               today.setHours(0, 0, 0, 0);
