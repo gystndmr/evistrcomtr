@@ -1179,10 +1179,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // GPay callback handler
   app.post("/api/payment/callback", async (req, res) => {
     try {
+      console.log("🔔 GPay callback received:", req.body);
       const { payload } = req.body;
       
       if (!payload) {
-        console.log("GPay callback: Missing payload");
+        console.log("❌ GPay callback: Missing payload");
         return res.status(400).json({ message: "Missing payload" });
       }
 
@@ -1190,11 +1191,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const paymentData = gPayService.parseCallback(payload);
       
       if (!paymentData) {
-        console.log("GPay callback: Invalid payload format");
+        console.log("❌ GPay callback: Invalid payload format");
         return res.status(400).json({ message: "Invalid payload format" });
       }
 
-      console.log("GPay callback received:", paymentData);
+      console.log("✅ GPay callback parsed:", paymentData);
       
       // Verify signature if present
       if (paymentData.signature) {
