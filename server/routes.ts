@@ -1295,6 +1295,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create chat message from customer
+  app.post("/api/chat/messages", async (req, res) => {
+    try {
+      const { sessionId, message, customerName, customerEmail } = req.body;
+      
+      if (!sessionId || !message) {
+        return res.status(400).json({ message: "Missing sessionId or message" });
+      }
+
+      const chatMessage = await storage.createChatMessage({
+        id: `msg_${Date.now()}_${Math.random().toString(36).substring(2)}`,
+        sessionId,
+        message,
+        sender: 'user',
+        timestamp: new Date(),
+        isRead: false,
+        customerName: customerName || null,
+        customerEmail: customerEmail || null
+      });
+
+      console.log(`💬 New customer message from session ${sessionId}: ${message}`);
+      res.json(chatMessage);
+    } catch (error) {
+      console.error("Error creating chat message:", error);
+      res.status(500).json({ message: "Failed to create chat message" });
+    }
+  });
+
   app.post("/api/chat/reply", async (req, res) => {
     try {
       const { sessionId, message } = req.body;

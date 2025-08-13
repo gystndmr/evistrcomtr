@@ -167,7 +167,7 @@ export function LiveChat() {
 
     // Send message to backend and store in database for admin panel
     const messageToSend = inputText;
-    fetch('/api/chat/message', {
+    fetch('/api/chat/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -180,12 +180,12 @@ export function LiveChat() {
       })
     }).then(response => {
       if (response.ok) {
-        console.log('Chat mesajı backend\'e gönderildi:', messageToSend);
+        console.log('💬 Chat mesajı backend\'e gönderildi:', messageToSend);
       } else {
-        console.error('Chat mesajı gönderilemedi:', response.status);
+        console.error('❌ Chat mesajı gönderilemedi:', response.status);
       }
     }).catch(error => {
-      console.error('Chat API hatası:', error);
+      console.error('❌ Chat API hatası:', error);
     });
 
     // Auto-reply after 2 seconds (only if no admin is online)

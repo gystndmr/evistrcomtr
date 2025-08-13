@@ -26,8 +26,8 @@ export default function Insurance() {
     lastName: "",
     email: "",
     phone: "",
-    travelDate: "2025-01-01", // Default valid date
-    returnDate: "2025-01-02", // Default valid date after travel date
+    travelDate: "", // Empty to force user selection
+    returnDate: "", // Empty to force user selection
     destination: "Turkey",
     dateOfBirth: "1990-01-01", // Default valid birth date
   });
@@ -318,11 +318,23 @@ export default function Insurance() {
     // Date validation - return date must be after travel date
     const travelDate = new Date(applicationData.travelDate);
     const returnDate = new Date(applicationData.returnDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set to start of today
     
     if (isNaN(travelDate.getTime()) || isNaN(returnDate.getTime())) {
       toast({
         title: "Invalid Date Format",
         description: "Please check your date selections",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check if travel date is in the past
+    if (travelDate < today) {
+      toast({
+        title: "Invalid Travel Date",
+        description: "Travel date cannot be in the past",
         variant: "destructive",
       });
       return;
@@ -333,7 +345,7 @@ export default function Insurance() {
       console.log('Travel date:', applicationData.travelDate, 'Parsed:', travelDate);
       console.log('Return date:', applicationData.returnDate, 'Parsed:', returnDate);
       toast({
-        title: "Invalid Date Range",
+        title: "Invalid Return Date",
         description: "Return date must be after travel date",
         variant: "destructive",
       });
@@ -709,6 +721,63 @@ export default function Insurance() {
                   </Select>
                 </div>
               </div>
+
+              {/* Parent ID Photos for under 18 */}
+              {(() => {
+                if (!applicationData.dateOfBirth) return null;
+                
+                const birthDate = new Date(applicationData.dateOfBirth);
+                const today = new Date();
+                const age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+                
+                let actualAge = age;
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                  actualAge--;
+                }
+                
+                if (actualAge < 18) {
+                  return (
+                    <div className="border border-orange-200 bg-orange-50 rounded-lg p-4">
+                      <Label className="text-orange-800 font-semibold">Parent ID Photos Required (Under 18) *</Label>
+                      <p className="text-sm text-orange-700 mb-3">
+                        Since you are under 18, please upload photos of your parent's ID documents (both sides).
+                      </p>
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files || []);
+                          if (files.length > 4) {
+                            toast({
+                              title: "Too Many Files",
+                              description: "Please upload maximum 4 photos (front and back of both parents' IDs)",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
+                          setParentIdPhotos(files);
+                        }}
+                        className="border-orange-300 bg-white"
+                      />
+                      {parentIdPhotos.length > 0 && (
+                        <div className="mt-2">
+                          <p className="text-sm text-green-600">
+                            ✓ {parentIdPhotos.length} file(s) selected
+                          </p>
+                          <div className="text-xs text-gray-500 mt-1">
+                            {parentIdPhotos.map((file, idx) => (
+                              <div key={idx}>• {file.name}</div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+                return null;
+              })()}
 
               {/* Payment Summary */}
               {selectedProduct && (
