@@ -559,7 +559,7 @@ export default function Admin() {
                           <TableCell>
                             <div className="flex flex-col gap-1">
                               {/* Payment Status Badge */}
-                              {app.paymentStatus === "completed" ? (
+                              {app.paymentStatus === "completed" || app.paymentStatus === "succeeded" ? (
                                 <Badge variant="default" className="bg-green-500">✓ Ödemesi Tamam</Badge>
                               ) : app.paymentStatus === "processing" ? (
                                 <Badge variant="secondary" className="bg-yellow-500">⏳ İşlemde</Badge>
@@ -997,7 +997,7 @@ export default function Admin() {
                           <TableCell>
                             <div className="flex flex-col gap-1">
                               {/* Payment Status Badge */}
-                              {app.paymentStatus === "completed" ? (
+                              {app.paymentStatus === "completed" || app.paymentStatus === "succeeded" ? (
                                 <Badge variant="default" className="bg-green-500">✓ Ödemesi Tamam</Badge>
                               ) : app.paymentStatus === "processing" ? (
                                 <Badge variant="secondary" className="bg-yellow-500">⏳ İşlemde</Badge>
