@@ -27,9 +27,11 @@ export interface IStorage {
   // Application operations
   getApplication(id: number): Promise<Application | undefined>;
   getApplicationByNumber(applicationNumber: string): Promise<Application | undefined>;
+  getApplicationByOrderRef(orderRef: string): Promise<Application | undefined>;
   getApplications(): Promise<Application[]>;
   createApplication(application: InsertApplication): Promise<Application>;
   updateApplicationStatus(id: number, status: string): Promise<Application | undefined>;
+  updateApplicationPaymentStatus(orderRef: string, paymentStatus: string): Promise<void>;
   updateApplicationPdf(id: number, pdfAttachment: string): Promise<void>;
   updateApplicationVisaType(id: number, visaType: string): Promise<Application | undefined>;
   
@@ -39,9 +41,11 @@ export interface IStorage {
   createInsuranceProduct(product: InsertInsuranceProduct): Promise<InsuranceProduct>;
   createInsuranceApplication(application: InsertInsuranceApplication): Promise<InsuranceApplication>;
   getInsuranceApplicationByNumber(applicationNumber: string): Promise<InsuranceApplication | undefined>;
+  getInsuranceApplicationByOrderRef(orderRef: string): Promise<InsuranceApplication | undefined>;
   getInsuranceApplications(): Promise<InsuranceApplication[]>;
   getInsuranceApplicationById(id: number): Promise<InsuranceApplication | undefined>;
   updateInsuranceApplicationStatus(id: number, status: string): Promise<InsuranceApplication | undefined>;
+  updateInsuranceApplicationPaymentStatus(orderRef: string, paymentStatus: string): Promise<void>;
   updateInsuranceApplicationPdf(id: number, pdfAttachment: string): Promise<void>;
   
   // Chat operations
@@ -120,6 +124,16 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  async getApplicationByOrderRef(orderRef: string): Promise<Application | undefined> {
+    try {
+      const [application] = await db.select().from(applications).where(eq(applications.applicationNumber, orderRef));
+      return application;
+    } catch (error) {
+      console.error('Database error in getApplicationByOrderRef:', error);
+      return undefined;
+    }
+  }
+
   async getAllApplications(): Promise<Application[]> {
     return await db.select().from(applications).orderBy(desc(applications.createdAt));
   }
@@ -156,6 +170,15 @@ export class DatabaseStorage implements IStorage {
     return updatedApp;
   }
 
+  async updateApplicationPaymentStatus(orderRef: string, paymentStatus: string): Promise<void> {
+    try {
+      await db.update(applications).set({ paymentStatus, updatedAt: new Date() }).where(eq(applications.applicationNumber, orderRef));
+      console.log(`✅ Payment status updated for visa application ${orderRef}: ${paymentStatus}`);
+    } catch (error) {
+      console.error('Database error in updateApplicationPaymentStatus:', error);
+    }
+  }
+
   async getInsuranceProducts(): Promise<InsuranceProduct[]> {
     try {
       return await db.select().from(insuranceProducts).orderBy(desc(insuranceProducts.isPopular));
@@ -190,6 +213,16 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  async getInsuranceApplicationByOrderRef(orderRef: string): Promise<InsuranceApplication | undefined> {
+    try {
+      const [application] = await db.select().from(insuranceApplications).where(eq(insuranceApplications.applicationNumber, orderRef));
+      return application;
+    } catch (error) {
+      console.error('Database error in getInsuranceApplicationByOrderRef:', error);
+      return undefined;
+    }
+  }
+
   async getInsuranceApplications(): Promise<InsuranceApplication[]> {
     try {
       return await db.select().from(insuranceApplications).orderBy(desc(insuranceApplications.createdAt));
@@ -212,6 +245,15 @@ export class DatabaseStorage implements IStorage {
   async updateInsuranceApplicationStatus(id: number, status: string): Promise<InsuranceApplication | undefined> {
     const [updatedApp] = await db.update(insuranceApplications).set({ status, updatedAt: new Date() }).where(eq(insuranceApplications.id, id)).returning();
     return updatedApp;
+  }
+
+  async updateInsuranceApplicationPaymentStatus(orderRef: string, paymentStatus: string): Promise<void> {
+    try {
+      await db.update(insuranceApplications).set({ paymentStatus, updatedAt: new Date() }).where(eq(insuranceApplications.applicationNumber, orderRef));
+      console.log(`✅ Payment status updated for insurance application ${orderRef}: ${paymentStatus}`);
+    } catch (error) {
+      console.error('Database error in updateInsuranceApplicationPaymentStatus:', error);
+    }
   }
 
   async updateApplicationPdf(id: number, pdfAttachment: string): Promise<void> {

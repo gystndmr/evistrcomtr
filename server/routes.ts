@@ -1210,12 +1210,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update application status based on payment result
       if (status === 'completed' || status === 'successful' || status === 'approved') {
         console.log(`✅ Payment successful for order ${orderRef}: ${transactionId}`);
-        // TODO: Update application status to payment completed
-        // await storage.updateApplicationPaymentStatus(orderRef, 'completed', amount);
+        
+        // Try to find visa application first
+        const visaApplication = await storage.getApplicationByOrderRef(orderRef);
+        if (visaApplication) {
+          await storage.updateApplicationPaymentStatus(orderRef, 'succeeded');
+          console.log(`✅ Visa application payment status updated to succeeded: ${orderRef}`);
+        } else {
+          // Try insurance application
+          const insuranceApplication = await storage.getInsuranceApplicationByOrderRef(orderRef);
+          if (insuranceApplication) {
+            await storage.updateInsuranceApplicationPaymentStatus(orderRef, 'succeeded');
+            console.log(`✅ Insurance application payment status updated to succeeded: ${orderRef}`);
+          } else {
+            console.log(`⚠️ No application found for order reference: ${orderRef}`);
+          }
+        }
+        
       } else if (status === 'failed' || status === 'error' || status === 'declined') {
         console.log(`❌ Payment failed for order ${orderRef}: ${transactionId}`);
-        // TODO: Update application status to payment failed
-        // await storage.updateApplicationPaymentStatus(orderRef, 'failed', amount);
+        
+        // Try to find visa application first
+        const visaApplication = await storage.getApplicationByOrderRef(orderRef);
+        if (visaApplication) {
+          await storage.updateApplicationPaymentStatus(orderRef, 'failed');
+          console.log(`❌ Visa application payment status updated to failed: ${orderRef}`);
+        } else {
+          // Try insurance application
+          const insuranceApplication = await storage.getInsuranceApplicationByOrderRef(orderRef);
+          if (insuranceApplication) {
+            await storage.updateInsuranceApplicationPaymentStatus(orderRef, 'failed');
+            console.log(`❌ Insurance application payment status updated to failed: ${orderRef}`);
+          } else {
+            console.log(`⚠️ No application found for order reference: ${orderRef}`);
+          }
+        }
       }
       
       res.json({ message: "OK" });
