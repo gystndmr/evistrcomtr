@@ -405,8 +405,9 @@ export function VisaForm() {
         return;
       }
       if (hasSupportingDocument === false) {
-        // Redirect to insurance page when no supporting document
-        window.location.href = `/insurance?country=${encodeURIComponent(selectedCountry.name)}`;
+        // Redirect to insurance page immediately when no supporting document
+        const country = selectedCountry?.name || '';
+        window.location.href = `/insurance?country=${encodeURIComponent(country)}`;
         return;
       }
       if (hasSupportingDocument === true) {

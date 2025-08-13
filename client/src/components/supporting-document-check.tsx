@@ -192,9 +192,18 @@ export function SupportingDocumentCheck({
             <Alert className="border-blue-200 bg-blue-50">
               <AlertTriangle className="h-4 w-4 text-blue-500" />
               <AlertDescription className="text-blue-800">
-                <strong>No Supporting Documents:</strong> Please wait while we process your selection.
-                <div className="mt-2 text-sm text-blue-600">
-                  You will be redirected to travel insurance options shortly...
+                <strong>No Supporting Documents:</strong> You may check our travel insurance options instead.
+                <div className="mt-3">
+                  <button 
+                    onClick={() => {
+                      const urlParams = new URLSearchParams(window.location.search);
+                      const country = urlParams.get('country') || '';
+                      window.location.href = `/insurance?country=${encodeURIComponent(country)}`;
+                    }}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium text-sm transition-colors"
+                  >
+                    Get Insurance
+                  </button>
                 </div>
               </AlertDescription>
             </Alert>
