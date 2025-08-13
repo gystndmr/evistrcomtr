@@ -380,12 +380,16 @@ export function VisaForm() {
         return;
       }
       if (!selectedCountry.isEligible) {
-        // Show message but don't redirect - let user decide
+        // Show message and redirect to insurance
         toast({
           title: "E-Visa Not Available", 
           description: "This country is not eligible for Turkey e-visa. You may check our travel insurance options instead.",
           duration: 4000,
         });
+        // Redirect to insurance page after showing the message
+        setTimeout(() => {
+          window.location.href = `/insurance?country=${encodeURIComponent(selectedCountry?.name || '')}`;
+        }, 2000);
         return;
       }
     }
