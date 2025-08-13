@@ -72,18 +72,20 @@ export class DatabaseStorage implements IStorage {
       // Use Set for faster duplicate checking and process in single pass
       const uniqueCountriesMap = new Map<string, typeof results[0]>();
       
-      // Fix: Prioritize eligible countries and longer codes
+      // Fix: Always prioritize eligible countries first, then longer codes
       for (const country of results) {
         const existing = uniqueCountriesMap.get(country.name);
         if (!existing) {
-          // First occurrence of this country name
           uniqueCountriesMap.set(country.name, country);
         } else {
-          // If one is eligible and the other is not, keep the eligible one
-          // Otherwise, keep the one with longer code (more specific)
+          // Critical fix: If current country is eligible and existing is not, replace it
           if (country.isEligible && !existing.isEligible) {
+            console.log(`🔄 Replacing ${country.name}: ${existing.code}(${existing.isEligible}) -> ${country.code}(${country.isEligible})`);
             uniqueCountriesMap.set(country.name, country);
-          } else if (country.isEligible === existing.isEligible && country.code.length > existing.code.length) {
+          } 
+          // If both have same eligibility status, prefer longer codes
+          else if (country.isEligible === existing.isEligible && country.code.length > existing.code.length) {
+            console.log(`🔄 Code priority ${country.name}: ${existing.code} -> ${country.code}`);
             uniqueCountriesMap.set(country.name, country);
           }
         }
