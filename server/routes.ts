@@ -1119,6 +1119,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Always use production domain for GPay callbacks - required for GPay registration
       const baseUrl = 'https://getvisa.tr';
+      console.log("🔧 GPay payment creation for:", finalOrderRef);
       
       // Get real customer IP - check multiple headers for proxy environments
       const getCustomerIp = () => {
@@ -1176,10 +1177,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // GPay callback handler
+  // GPay callback handler - enhanced with detailed logging
   app.post("/api/payment/callback", async (req, res) => {
     try {
-      console.log("🔔 GPay callback received:", req.body);
+      console.log("🔔 GPay callback received:", JSON.stringify(req.body, null, 2));
+      console.log("🔔 GPay callback headers:", JSON.stringify(req.headers, null, 2));
       const { payload } = req.body;
       
       if (!payload) {
@@ -1228,6 +1230,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
         
+        // Send success response to GPay
+        res.status(200).json({ 
+          message: "Payment callback processed successfully",
+          status: "success",
+          orderRef: orderRef
+        });
+        
       } else if (status === 'failed' || status === 'error' || status === 'declined') {
         console.log(`❌ Payment failed for order ${orderRef}: ${transactionId}`);
         
@@ -1253,6 +1262,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("GPay callback error:", error);
       res.status(500).json({ message: "Callback processing error" });
+    }
+  });
+
+  // Test callback endpoint - manual testing of callback functionality
+  app.post("/api/payment/test-callback", async (req, res) => {
+    try {
+      console.log("🧪 Manual callback test:", req.body);
+      const { orderRef, status = 'completed', transactionId = 'TEST123' } = req.body;
+      
+      if (!orderRef) {
+        return res.status(400).json({ message: "orderRef required" });
+      }
+
+      console.log(`🧪 Testing callback for order ${orderRef} with status ${status}`);
+      
+      // Update application status based on test data
+      if (status === 'completed' || status === 'successful' || status === 'approved') {
+        // Try to find visa application first
+        const visaApplication = await storage.getApplicationByOrderRef(orderRef);
+        if (visaApplication) {
+          await storage.updateApplicationPaymentStatus(orderRef, 'succeeded');
+          console.log(`✅ TEST: Visa application payment updated to succeeded: ${orderRef}`);
+          res.json({ success: true, message: `Visa application ${orderRef} updated to succeeded` });
+        } else {
+          // Try insurance application
+          const insuranceApplication = await storage.getInsuranceApplicationByOrderRef(orderRef);
+          if (insuranceApplication) {
+            await storage.updateInsuranceApplicationPaymentStatus(orderRef, 'succeeded');
+            console.log(`✅ TEST: Insurance application payment updated to succeeded: ${orderRef}`);
+            res.json({ success: true, message: `Insurance application ${orderRef} updated to succeeded` });
+          } else {
+            console.log(`⚠️ TEST: No application found for order: ${orderRef}`);
+            res.json({ success: false, message: `No application found for order: ${orderRef}` });
+          }
+        }
+      } else {
+        res.json({ success: false, message: `Test status ${status} not processed` });
+      }
+      
+    } catch (error) {
+      console.error("Test callback error:", error);
+      res.status(500).json({ message: "Test callback error" });
     }
   });
 
