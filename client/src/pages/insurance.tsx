@@ -332,9 +332,12 @@ export default function Insurance() {
 
     // Check if travel date is in the past
     if (travelDate < today) {
+      console.log('VALIDATION FAILED: Travel date is in the past');
+      console.log('Travel date:', travelDate.toDateString());
+      console.log('Today:', today.toDateString());
       toast({
-        title: "Invalid Travel Date",
-        description: "Travel date cannot be in the past",
+        title: "Geçersiz Seyahat Tarihi",
+        description: "Seyahat tarihi geçmişte olamaz. Lütfen bugün veya gelecekteki bir tarih seçin.",
         variant: "destructive",
       });
       return;
