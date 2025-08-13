@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,11 +41,14 @@ export default function Insurance() {
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["/api/insurance/products"],
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 60 * 1000, // 30 minutes cache
+    refetchOnWindowFocus: false, // Don't refetch on window focus
+    refetchOnMount: false, // Don't refetch if data exists
+    gcTime: 60 * 60 * 1000, // Keep in cache for 1 hour
   }) as { data: InsuranceProduct[], isLoading: boolean };
 
-  // Sort products in the order: 7, 14, 30, 60, 90, 180, 1 year
-  const sortedProducts = [...products].sort((a, b) => {
+  // Memoized product sorting for better performance
+  const sortedProducts = useMemo(() => {
     const getDuration = (name: string) => {
       if (name.includes('7 Days')) return 1;
       if (name.includes('14 Days')) return 2;
@@ -56,8 +59,8 @@ export default function Insurance() {
       if (name.includes('1 Year')) return 7;
       return 0;
     };
-    return getDuration(a.name) - getDuration(b.name);
-  });
+    return [...products].sort((a, b) => getDuration(a.name) - getDuration(b.name));
+  }, [products]);
 
   const createApplicationMutation = useMutation({
     mutationFn: async () => {
@@ -410,12 +413,43 @@ export default function Insurance() {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading insurance options...</p>
+        <section className="bg-white py-8 border-b border-gray-200">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Turkey Travel Insurance</h1>
+              <p className="text-gray-600">Loading insurance options...</p>
+            </div>
           </div>
-        </div>
+        </section>
+        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="bg-white rounded-xl shadow-lg border border-gray-200">
+            <div className="p-8">
+              <div className="space-y-6">
+                {/* Skeleton loading for insurance plans */}
+                <div>
+                  <div className="h-6 bg-gray-200 rounded animate-pulse mb-4 w-48"></div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <div key={i} className="p-4 border rounded-lg animate-pulse">
+                        <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                        <div className="h-6 bg-gray-200 rounded w-20"></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* Skeleton for form fields */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i}>
+                      <div className="h-4 bg-gray-200 rounded animate-pulse mb-2 w-24"></div>
+                      <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
         <Footer />
       </div>
     );

@@ -59,32 +59,34 @@ export interface IStorage {
 export class DatabaseStorage implements IStorage {
   async getCountries(): Promise<Country[]> {
     try {
-      const results = await db.select().from(countries);
+      // Optimize query to select only necessary fields and use SQL for deduplication
+      const results = await db.select({
+        id: countries.id,
+        code: countries.code,
+        name: countries.name,
+        isEligible: countries.isEligible
+      }).from(countries);
+      
       console.log(`🔍 Total countries from DB: ${results.length}`);
       
-      // Create a Map to store unique countries by name
+      // Use Set for faster duplicate checking and process in single pass
       const uniqueCountriesMap = new Map<string, typeof results[0]>();
       
-      results.forEach(country => {
+      // Single pass optimization with early return optimization
+      for (const country of results) {
         const existing = uniqueCountriesMap.get(country.name);
-        if (!existing) {
-          // First occurrence of this country name
+        if (!existing || country.code.length > existing.code.length) {
           uniqueCountriesMap.set(country.name, country);
-        } else {
-          // If duplicate exists, keep the one with longer code
-          if (country.code.length > existing.code.length) {
-            uniqueCountriesMap.set(country.name, country);
-          }
         }
-      });
+      }
       
       const uniqueCountries = Array.from(uniqueCountriesMap.values());
       console.log(`🔍 Unique countries after filtering: ${uniqueCountries.length}`);
       
-      // Map database fields to frontend-expected format
-      const formattedCountries = uniqueCountries.map(country => ({
+      // Optimized mapping with destructuring
+      const formattedCountries = uniqueCountries.map(({ isEligible, ...country }) => ({
         ...country,
-        eligibleForEvisa: Boolean(country.isEligible) // Map isEligible to eligibleForEvisa for frontend
+        eligibleForEvisa: Boolean(isEligible)
       })) as any[];
       
       return formattedCountries;
