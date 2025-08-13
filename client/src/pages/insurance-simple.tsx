@@ -606,14 +606,30 @@ export default function Insurance() {
                     </div>
                     
                     <div>
-                      <Label>Travel Date *</Label>
+                      <Label>Travel Date * (Cannot be in the past)</Label>
                       <div className="grid grid-cols-3 gap-2">
                         <Select
                           value={applicationData.travelDate ? applicationData.travelDate.split('-')[2] : ''}
                           onValueChange={(day) => {
                             const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                             const year = parts[0]; const month = parts[1];
-                            handleInputChange("travelDate", `${year}-${month}-${day.padStart(2, '0')}`);
+                            const newDate = `${year}-${month}-${day.padStart(2, '0')}`;
+                            
+                            // Immediate validation for past dates
+                            const selectedDate = new Date(newDate);
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            
+                            if (selectedDate.getTime() < today.getTime()) {
+                              toast({
+                                title: "❌ Past Date Not Allowed",
+                                description: "Travel date must be today or in the future!",
+                                variant: "destructive",
+                              });
+                              return;
+                            }
+                            
+                            handleInputChange("travelDate", newDate);
                           }}
                         >
                           <SelectTrigger>
@@ -631,7 +647,23 @@ export default function Insurance() {
                           onValueChange={(month) => {
                             const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                             const year = parts[0]; const day = parts[2];
-                            handleInputChange("travelDate", `${year}-${month.padStart(2, '0')}-${day}`);
+                            const newDate = `${year}-${month.padStart(2, '0')}-${day}`;
+                            
+                            // Immediate validation for past dates
+                            const selectedDate = new Date(newDate);
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            
+                            if (selectedDate.getTime() < today.getTime()) {
+                              toast({
+                                title: "❌ Past Date Not Allowed",
+                                description: "Travel date must be today or in the future!",
+                                variant: "destructive",
+                              });
+                              return;
+                            }
+                            
+                            handleInputChange("travelDate", newDate);
                           }}
                         >
                           <SelectTrigger>
@@ -662,7 +694,23 @@ export default function Insurance() {
                           onValueChange={(year) => {
                             const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                             const month = parts[1]; const day = parts[2];
-                            handleInputChange("travelDate", `${year}-${month}-${day}`);
+                            const newDate = `${year}-${month}-${day}`;
+                            
+                            // Immediate validation for past dates
+                            const selectedDate = new Date(newDate);
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            
+                            if (selectedDate.getTime() < today.getTime()) {
+                              toast({
+                                title: "❌ Past Date Not Allowed",
+                                description: "Travel date must be today or in the future!",
+                                variant: "destructive",
+                              });
+                              return;
+                            }
+                            
+                            handleInputChange("travelDate", newDate);
                           }}
                         >
                           <SelectTrigger>
