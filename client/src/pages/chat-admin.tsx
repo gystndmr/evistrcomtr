@@ -89,32 +89,54 @@ export default function ChatAdmin() {
     }
   }, [selectedChat, activeChats]);
 
-  const handleSendMessage = () => {
-    if (!inputText.trim() || !selectedChat || !ws) return;
+  const handleSendMessage = async () => {
+    if (!inputText.trim() || !selectedChat) return;
 
-    const message: ChatMessage = {
-      id: Date.now().toString(),
-      text: inputText,
-      sender: 'agent',
-      timestamp: new Date(),
-      sessionId: selectedChat
-    };
-
-    ws.send(JSON.stringify(message));
-
-    // Add to local state
-    setActiveChats(prev => {
-      const newChats = new Map(prev);
-      const chat = newChats.get(selectedChat);
-      if (chat) {
-        chat.messages.push(message);
-        chat.lastMessage = new Date();
-        newChats.set(selectedChat, chat);
-      }
-      return newChats;
-    });
-
+    const messageText = inputText;
     setInputText('');
+
+    // Send message via HTTP API (this saves to database for customer to see)
+    try {
+      const response = await fetch('/api/chat/reply', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sessionId: selectedChat,
+          message: messageText,
+        })
+      });
+
+      if (response.ok) {
+        const savedMessage = await response.json();
+        console.log('✅ Admin reply sent to database:', savedMessage);
+        
+        // Add to local state for immediate UI update
+        const message: ChatMessage = {
+          id: savedMessage.id,
+          text: messageText,
+          sender: 'agent',
+          timestamp: new Date(savedMessage.timestamp),
+          sessionId: selectedChat
+        };
+
+        setActiveChats(prev => {
+          const newChats = new Map(prev);
+          const chat = newChats.get(selectedChat);
+          if (chat) {
+            chat.messages.push(message);
+            chat.lastMessage = new Date(savedMessage.timestamp);
+            newChats.set(selectedChat, chat);
+          }
+          return newChats;
+        });
+      } else {
+        console.error('❌ Failed to send admin reply:', response.status);
+      }
+    } catch (error) {
+      console.error('❌ Error sending admin reply:', error);
+    }
   };
 
   const selectChat = (sessionId: string) => {
@@ -272,7 +294,7 @@ export default function ChatAdmin() {
                     />
                     <Button
                       onClick={handleSendMessage}
-                      disabled={!inputText.trim() || !ws}
+                      disabled={!inputText.trim()}
                       className="bg-blue-600 hover:bg-blue-700"
                     >
                       <Send className="h-4 w-4" />

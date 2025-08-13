@@ -111,7 +111,7 @@ export function LiveChat() {
         
         // Filter messages for this session and get admin replies
         const sessionMessages = allMessages.filter((msg: any) => 
-          msg.sessionId === sessionId && msg.sender === 'agent'
+          msg.sessionId === sessionId && msg.sender === 'admin'
         );
         
         // Add new admin replies to local messages
