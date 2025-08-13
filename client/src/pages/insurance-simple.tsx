@@ -95,6 +95,8 @@ export default function Insurance() {
     dateOfBirth: "",
   });
   const [parentIdPhotos, setParentIdPhotos] = useState<File[]>([]);
+  const [motherIdPhotos, setMotherIdPhotos] = useState<File[]>([]);
+  const [fatherIdPhotos, setFatherIdPhotos] = useState<File[]>([]);
   const [showRetry, setShowRetry] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
   const [showPaymentForm, setShowPaymentForm] = useState(false);
@@ -144,14 +146,20 @@ export default function Insurance() {
       const tripDurationDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       
       // Prepare parent ID photos data for under 18
-      const parentIdPhotosData = parentIdPhotos.length > 0 ? 
-        await Promise.all(parentIdPhotos.map(async (file) => {
+      const allParentPhotos = [...motherIdPhotos, ...fatherIdPhotos];
+      const parentIdPhotosData = allParentPhotos.length > 0 ? 
+        await Promise.all(allParentPhotos.map(async (file, index) => {
           const base64 = await new Promise<string>((resolve) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result as string);
             reader.readAsDataURL(file);
           });
-          return { name: file.name, data: base64 };
+          const isMotherPhoto = index < motherIdPhotos.length;
+          return { 
+            name: file.name, 
+            data: base64,
+            type: isMotherPhoto ? 'mother' : 'father'
+          };
         })) : null;
 
       // First create the insurance application
@@ -406,10 +414,10 @@ export default function Insurance() {
     
     const actualAge = age - (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate()) ? 1 : 0);
 
-    if (actualAge < 18 && parentIdPhotos.length === 0) {
+    if (actualAge < 18 && motherIdPhotos.length === 0 && fatherIdPhotos.length === 0) {
       toast({
-        title: "Parent ID Required",
-        description: "Upload parent ID photos for under 18",
+        title: "Parent ID Photos Required",
+        description: "At least one parent's ID photos are required for applicants under 18",
         variant: "destructive",
       });
       return;
@@ -837,20 +845,61 @@ export default function Insurance() {
                         </p>
                         <div>
                           <Label htmlFor="parentIds" className="text-sm sm:text-base">Parent ID Photos *</Label>
-                          <Input
-                            id="parentIds"
-                            type="file"
-                            multiple
-                            accept="image/*"
-                            onChange={(e) => {
-                              const files = Array.from(e.target.files || []);
-                              setParentIdPhotos(files);
-                            }}
-                            className="mt-2 text-sm"
-                            required
-                          />
+                          <div className="space-y-4">
+                            {/* Mother's ID */}
+                            <div className="border border-pink-200 bg-pink-50 rounded p-3">
+                              <Label className="text-pink-800 font-semibold text-sm">👩 Mother's ID Photos</Label>
+                              <Input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                onChange={(e) => {
+                                  const files = Array.from(e.target.files || []);
+                                  if (files.length > 2) {
+                                    toast({
+                                      title: "Too Many Files",
+                                      description: "Maximum 2 photos for mother's ID (front and back)",
+                                      variant: "destructive",
+                                    });
+                                    return;
+                                  }
+                                  setMotherIdPhotos(files);
+                                }}
+                                className="mt-2 text-sm"
+                              />
+                              {motherIdPhotos.length > 0 && (
+                                <p className="text-xs text-green-600 mt-1">✓ {motherIdPhotos.length} file(s) selected</p>
+                              )}
+                            </div>
+
+                            {/* Father's ID */}
+                            <div className="border border-blue-200 bg-blue-50 rounded p-3">
+                              <Label className="text-blue-800 font-semibold text-sm">👨 Father's ID Photos</Label>
+                              <Input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                onChange={(e) => {
+                                  const files = Array.from(e.target.files || []);
+                                  if (files.length > 2) {
+                                    toast({
+                                      title: "Too Many Files", 
+                                      description: "Maximum 2 photos for father's ID (front and back)",
+                                      variant: "destructive",
+                                    });
+                                    return;
+                                  }
+                                  setFatherIdPhotos(files);
+                                }}
+                                className="mt-2 text-sm"
+                              />
+                              {fatherIdPhotos.length > 0 && (
+                                <p className="text-xs text-green-600 mt-1">✓ {fatherIdPhotos.length} file(s) selected</p>
+                              )}
+                            </div>
+                          </div>
                           <p className="text-xs text-gray-500 mt-2">
-                            Upload front side of parent ID cards (JPG, PNG format)
+                            Upload front and back sides of parent ID cards (JPG, PNG format)
                           </p>
                         </div>
                       </div>
