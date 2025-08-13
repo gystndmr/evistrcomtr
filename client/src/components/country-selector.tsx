@@ -110,26 +110,8 @@ export function CountrySelector({
       setIntervalId(null);
     }
 
-    // Automatically redirect to insurance page if country is not eligible for e-visa
-    if (country && !country.isEligible && selectedDocumentType) {
-      // Start countdown - much faster (2 seconds)
-      setRedirectCountdown(2);
-      const countdownInterval = setInterval(() => {
-        setRedirectCountdown(prev => {
-          if (prev === null || prev <= 1) {
-            clearInterval(countdownInterval);
-            setIntervalId(null);
-            // Force redirect
-            window.location.href = `/insurance?country=${encodeURIComponent(country.name)}`;
-            return null;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-      setIntervalId(countdownInterval);
-    } else {
-      setRedirectCountdown(null);
-    }
+    // Show eligibility status but don't redirect automatically
+    setRedirectCountdown(null);
   };
 
   const handleDocumentTypeChange = (documentType: string) => {
@@ -142,26 +124,8 @@ export function CountrySelector({
       setIntervalId(null);
     }
 
-    // Check for redirect when document type is selected 
-    if (selectedCountry && !selectedCountry.isEligible && documentType) {
-      // Start countdown - much faster (2 seconds)
-      setRedirectCountdown(2);
-      const countdownInterval = setInterval(() => {
-        setRedirectCountdown(prev => {
-          if (prev === null || prev <= 1) {
-            clearInterval(countdownInterval);
-            setIntervalId(null);
-            // Force redirect
-            window.location.href = `/insurance?country=${encodeURIComponent(selectedCountry.name)}`;
-            return null;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-      setIntervalId(countdownInterval);
-    } else {
-      setRedirectCountdown(null);
-    }
+    // Show eligibility status but don't redirect automatically
+    setRedirectCountdown(null);
   };
 
   const renderEligibilityStatus = () => {
@@ -175,13 +139,14 @@ export function CountrySelector({
             <strong>{t('country.selector.ineligible.message')}</strong>
             <br />
             <strong>{t('country.selector.insurance.required')}</strong>
-            {redirectCountdown && (
-              <div className="mt-2 p-2 bg-red-100 rounded border border-red-300">
-                <strong className="text-red-900">
-                  {t('country.selector.redirect.countdown').replace('{count}', redirectCountdown.toString())}
-                </strong>
-              </div>
-            )}
+            <div className="mt-3">
+              <button 
+                onClick={() => window.location.href = `/insurance?country=${encodeURIComponent(selectedCountry.name)}`}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium text-sm"
+              >
+                Check Travel Insurance Options
+              </button>
+            </div>
           </AlertDescription>
         </Alert>
       );

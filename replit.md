@@ -53,7 +53,12 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 - **Site Mode Switching**: Supports quick switching between the e-visa application site and a consulting/advertising site.
 - **Date Input**: Uses manual dropdowns for date selections for improved user control.
 
-### Recent Fixes (August 12, 2025)
+### Recent Fixes (August 13, 2025)
+- **Payment Status Updates**: ✅ COMPLETED - Real-time payment status updates now working with GloDiPay callbacks
+- **Database Methods**: Added `getApplicationByOrderRef()` and `updateApplicationPaymentStatus()` methods for both visa and insurance
+- **Callback Handler**: Enhanced `/api/payment/callback` endpoint to automatically update payment status from "pending" to "succeeded"
+- **Auto-Redirect Removal**: ✅ COMPLETED - Removed automatic redirects to insurance page; users now manually choose their service
+- **User Choice Enhancement**: Added navigation buttons on both visa and insurance pages for easy switching between services
 - **Country Database**: Resolved duplicate entries through Map-based backend filtering, prioritizing longer country codes (USA > US, GBR > UK)
 - **Chat API**: Added missing backend endpoints for chat functionality in routes.ts and storage.ts
 - **Admin Data Loading**: Fixed API endpoints to return proper JSON instead of HTML for admin panel data visualization

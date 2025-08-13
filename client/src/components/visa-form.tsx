@@ -380,8 +380,12 @@ export function VisaForm() {
         return;
       }
       if (!selectedCountry.isEligible) {
-        // Redirect to insurance for non-eligible countries with country information
-        window.location.href = `/insurance?country=${encodeURIComponent(selectedCountry.name)}`;
+        // Show message but don't redirect - let user decide
+        toast({
+          title: "E-Visa Not Available", 
+          description: "This country is not eligible for Turkey e-visa. You may check our travel insurance options instead.",
+          duration: 4000,
+        });
         return;
       }
     }
@@ -397,18 +401,13 @@ export function VisaForm() {
         return;
       }
       if (hasSupportingDocument === false) {
-        // Add country parameter if available for insurance tracking
-        const countryParam = selectedCountry ? `?country=${encodeURIComponent(selectedCountry.name)}` : '';
-        
-        // Immediate redirect for better UX
+        // Show message but don't redirect automatically - let user choose
         toast({
           title: "No Supporting Documents Required",
-          description: "Redirecting to travel insurance options...",
-          duration: 500,
+          description: "You may proceed with your visa application or check our travel insurance options.",
+          duration: 3000,
         });
-        // Immediate redirect - no delay
-        window.location.href = `/insurance${countryParam}`;
-        return;
+        // Continue to next step instead of redirecting
       }
       if (hasSupportingDocument === true) {
         // Check if supporting document details are valid
