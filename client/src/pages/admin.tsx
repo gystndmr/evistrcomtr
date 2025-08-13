@@ -1090,7 +1090,20 @@ export default function Admin() {
                                                               src={photo.data} 
                                                               alt={`Anne Kimlik ${index + 1}`}
                                                               className="w-full h-24 object-cover rounded cursor-pointer hover:opacity-80"
-                                                              onClick={() => window.open(photo.data, '_blank')}
+                                                              onClick={() => {
+                                                                const newWindow = window.open();
+                                                                if (newWindow) {
+                                                                  newWindow.document.write(`
+                                                                    <html>
+                                                                      <head><title>Anne Kimlik ${index + 1}</title></head>
+                                                                      <body style="margin:0;padding:20px;background:#f0f0f0;display:flex;justify-content:center;align-items:center;min-height:100vh;">
+                                                                        <img src="${photo.data}" style="max-width:100%;max-height:100%;object-fit:contain;" alt="Anne Kimlik ${index + 1}"/>
+                                                                      </body>
+                                                                    </html>
+                                                                  `);
+                                                                  newWindow.document.close();
+                                                                }
+                                                              }}
                                                             />
                                                             <p className="text-xs text-gray-600 mt-1 text-center">Anne Kimlik {index + 1}</p>
                                                           </div>
@@ -1110,7 +1123,20 @@ export default function Admin() {
                                                               src={photo.data} 
                                                               alt={`Baba Kimlik ${index + 1}`}
                                                               className="w-full h-24 object-cover rounded cursor-pointer hover:opacity-80"
-                                                              onClick={() => window.open(photo.data, '_blank')}
+                                                              onClick={() => {
+                                                                const newWindow = window.open();
+                                                                if (newWindow) {
+                                                                  newWindow.document.write(`
+                                                                    <html>
+                                                                      <head><title>Baba Kimlik ${index + 1}</title></head>
+                                                                      <body style="margin:0;padding:20px;background:#f0f0f0;display:flex;justify-content:center;align-items:center;min-height:100vh;">
+                                                                        <img src="${photo.data}" style="max-width:100%;max-height:100%;object-fit:contain;" alt="Baba Kimlik ${index + 1}"/>
+                                                                      </body>
+                                                                    </html>
+                                                                  `);
+                                                                  newWindow.document.close();
+                                                                }
+                                                              }}
                                                             />
                                                             <p className="text-xs text-gray-600 mt-1 text-center">Baba Kimlik {index + 1}</p>
                                                           </div>
@@ -1132,7 +1158,20 @@ export default function Admin() {
                                                                 src={photoSrc} 
                                                                 alt={`Ebeveyn Kimlik ${index + 1}`}
                                                                 className="w-full h-24 object-cover rounded cursor-pointer hover:opacity-80"
-                                                                onClick={() => window.open(photoSrc, '_blank')}
+                                                                onClick={() => {
+                                                                  const newWindow = window.open();
+                                                                  if (newWindow) {
+                                                                    newWindow.document.write(`
+                                                                      <html>
+                                                                        <head><title>Ebeveyn Kimlik ${index + 1}</title></head>
+                                                                        <body style="margin:0;padding:20px;background:#f0f0f0;display:flex;justify-content:center;align-items:center;min-height:100vh;">
+                                                                          <img src="${photoSrc}" style="max-width:100%;max-height:100%;object-fit:contain;" alt="Ebeveyn Kimlik ${index + 1}"/>
+                                                                        </body>
+                                                                      </html>
+                                                                    `);
+                                                                    newWindow.document.close();
+                                                                  }
+                                                                }}
                                                               />
                                                               <p className="text-xs text-gray-600 mt-1 text-center">Ebeveyn Kimlik {index + 1}</p>
                                                             </div>
