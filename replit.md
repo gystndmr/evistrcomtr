@@ -4,7 +4,8 @@
 This is a full-stack web application for processing Turkey e-visa applications, providing a platform for users to apply for e-visas, check application status, and purchase travel insurance. It aims to be a comprehensive, production-ready system featuring email notifications, GPay payment integration, and robust admin panel management. The business vision is to offer a seamless and trustworthy e-visa application experience for Turkey.
 
 ## User Preferences
-Preferred communication style: Simple, everyday language in Turkish.
+Preferred communication style: Simple, everyday language. 
+Primary language: English (native language for the application), with automatic browser language detection and translation support.
 - Professional government-style appearance required
 - Turkish flag and heritage imagery prominently featured
 - Security badges and payment icons for trust

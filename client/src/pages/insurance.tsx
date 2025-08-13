@@ -339,8 +339,8 @@ export default function Insurance() {
     if (isNaN(travelDate.getTime()) || isNaN(returnDate.getTime())) {
       console.log('VALIDATION FAILED: Invalid date parsing');
       toast({
-        title: "Geçersiz Tarih Formatı",
-        description: "Lütfen tarih seçimlerinizi kontrol edin",
+        title: "Invalid Date Format",
+        description: "Please check your date selections",
         variant: "destructive",
       });
       return;
@@ -353,8 +353,8 @@ export default function Insurance() {
       console.log('Today:', today.toDateString(), '(' + today.getTime() + ')');
       console.log('Difference in ms:', travelDate.getTime() - today.getTime());
       toast({
-        title: "❌ Geçmiş Tarih Seçilemez",
-        description: "Seyahat tarihi geçmişte olamaz! Lütfen bugün veya gelecekteki bir tarih seçin.",
+        title: "❌ Past Date Not Allowed",
+        description: "Travel date cannot be in the past! Please select today or a future date.",
         variant: "destructive",
       });
       return;
@@ -365,8 +365,8 @@ export default function Insurance() {
       console.log('Travel date:', applicationData.travelDate, 'Parsed:', travelDate);
       console.log('Return date:', applicationData.returnDate, 'Parsed:', returnDate);
       toast({
-        title: "Geçersiz Dönüş Tarihi",
-        description: "Dönüş tarihi seyahat tarihinden sonra olmalıdır",
+        title: "Invalid Return Date",
+        description: "Return date must be after travel date",
         variant: "destructive",
       });
       return;
@@ -535,8 +535,8 @@ export default function Insurance() {
                         
                         if (selectedDate.getTime() < today.getTime()) {
                           toast({
-                            title: "❌ Geçmiş Tarih Seçilemez",
-                            description: "Seyahat tarihi bugün veya gelecekte olmalıdır!",
+                            title: "❌ Past Date Not Allowed",
+                            description: "Travel date must be today or in the future!",
                             variant: "destructive",
                           });
                           return;
@@ -588,8 +588,8 @@ export default function Insurance() {
                         
                         if (selectedDate.getTime() < today.getTime()) {
                           toast({
-                            title: "❌ Geçmiş Tarih Seçilemez",
-                            description: "Seyahat tarihi bugün veya gelecekte olmalıdır!",
+                            title: "❌ Past Date Not Allowed",
+                            description: "Travel date must be today or in the future!",
                             variant: "destructive",
                           });
                           return;
@@ -654,8 +654,8 @@ export default function Insurance() {
                         
                         if (selectedDate.getTime() < today.getTime()) {
                           toast({
-                            title: "❌ Geçmiş Tarih Seçilemez",
-                            description: "Seyahat tarihi bugün veya gelecekte olmalıdır!",
+                            title: "❌ Past Date Not Allowed",
+                            description: "Travel date must be today or in the future!",
                             variant: "destructive",
                           });
                           return;
