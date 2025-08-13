@@ -59,49 +59,28 @@ export interface IStorage {
 export class DatabaseStorage implements IStorage {
   async getCountries(): Promise<Country[]> {
     try {
-      // Optimize query to select only necessary fields and use SQL for deduplication
-      const results = await db.select({
-        id: countries.id,
-        code: countries.code,
-        name: countries.name,
-        isEligible: countries.isEligible
-      }).from(countries);
+      const results = await db.select().from(countries);
       
-      console.log(`🔍 Total countries from DB: ${results.length}`);
+      // Handle duplicates by preferring eligible countries and longer country codes
+      const uniqueCountriesMap = new Map<string, Country>();
       
-      // Use Set for faster duplicate checking and process in single pass
-      const uniqueCountriesMap = new Map<string, typeof results[0]>();
-      
-      // Fix: Always prioritize eligible countries first, then longer codes
       for (const country of results) {
         const existing = uniqueCountriesMap.get(country.name);
         if (!existing) {
           uniqueCountriesMap.set(country.name, country);
         } else {
-          // Critical fix: If current country is eligible and existing is not, replace it
+          // If current is eligible and existing is not, replace
           if (country.isEligible && !existing.isEligible) {
-            console.log(`🔄 Replacing ${country.name}: ${existing.code}(${existing.isEligible}) -> ${country.code}(${country.isEligible})`);
             uniqueCountriesMap.set(country.name, country);
-          } 
-          // If both have same eligibility status, prefer longer codes
+          }
+          // If both have same eligibility, prefer longer code (more specific)
           else if (country.isEligible === existing.isEligible && country.code.length > existing.code.length) {
-            console.log(`🔄 Code priority ${country.name}: ${existing.code} -> ${country.code}`);
             uniqueCountriesMap.set(country.name, country);
           }
         }
       }
       
-      const uniqueCountries = Array.from(uniqueCountriesMap.values());
-      console.log(`🔍 Unique countries after filtering: ${uniqueCountries.length}`);
-      
-      // Ensure proper mapping for both frontend compatibility and performance
-      const formattedCountries = uniqueCountries.map(country => ({
-        ...country,
-        isEligible: Boolean(country.isEligible), // Keep original field for compatibility
-        eligibleForEvisa: Boolean(country.isEligible) // Also provide alternative naming
-      })) as any[];
-      
-      return formattedCountries;
+      return Array.from(uniqueCountriesMap.values());
     } catch (error) {
       console.error('Database error in getCountries:', error);
       return [];
