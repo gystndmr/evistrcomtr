@@ -401,13 +401,9 @@ export function VisaForm() {
         return;
       }
       if (hasSupportingDocument === false) {
-        // Show message but don't redirect automatically - let user choose
-        toast({
-          title: "No Supporting Documents Required",
-          description: "You may proceed with your visa application or check our travel insurance options.",
-          duration: 3000,
-        });
-        // Continue to next step instead of redirecting
+        // Redirect to insurance page when no supporting document
+        window.location.href = `/insurance?country=${encodeURIComponent(selectedCountry.name)}`;
+        return;
       }
       if (hasSupportingDocument === true) {
         // Check if supporting document details are valid
