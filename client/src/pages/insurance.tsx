@@ -321,17 +321,26 @@ export default function Insurance() {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Set to start of today
     
+    console.log('=== DATE VALIDATION DEBUG ===');
+    console.log('Travel Date String:', applicationData.travelDate);
+    console.log('Travel Date Object:', travelDate);
+    console.log('Today:', today);
+    console.log('travelDate < today:', travelDate < today);
+    console.log('travelDate.getTime():', travelDate.getTime());
+    console.log('today.getTime():', today.getTime());
+    
     if (isNaN(travelDate.getTime()) || isNaN(returnDate.getTime())) {
+      console.log('VALIDATION FAILED: Invalid date parsing');
       toast({
-        title: "Invalid Date Format",
-        description: "Please check your date selections",
+        title: "Geçersiz Tarih Formatı",
+        description: "Lütfen tarih seçimlerinizi kontrol edin",
         variant: "destructive",
       });
       return;
     }
 
-    // Check if travel date is in the past
-    if (travelDate < today) {
+    // Check if travel date is in the past - STRICT CHECK
+    if (travelDate.getTime() < today.getTime()) {
       console.log('VALIDATION FAILED: Travel date is in the past');
       console.log('Travel date:', travelDate.toDateString());
       console.log('Today:', today.toDateString());

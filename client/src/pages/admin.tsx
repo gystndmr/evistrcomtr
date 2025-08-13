@@ -1045,9 +1045,49 @@ export default function Admin() {
                                         <div><strong>Ülke:</strong> {(selectedInsuranceApp as any).countryOfOrigin || 'N/A'}</div>
                                         <div><strong>Doğum Tarihi:</strong> {selectedInsuranceApp.dateOfBirth || 'N/A'}</div>
                                         <div><strong>Hedef:</strong> {selectedInsuranceApp.destination}</div>
-                                        {selectedInsuranceApp.parentIdPhotos ? (
-                                          <div><strong>Ebeveyn Kimlik:</strong> 18 yaş altı - kimlik fotoğrafları mevcut</div>
-                                        ) : null}
+                                        
+                                        {/* Parent ID Photos Display for Under 18 */}
+                                        {selectedInsuranceApp.parentIdPhotos && selectedInsuranceApp.parentIdPhotos.length > 0 ? (
+                                          <div className="space-y-2">
+                                            <div><strong>Ebeveyn Kimlik Fotoğrafları:</strong> (18 yaş altı)</div>
+                                            <div className="grid grid-cols-2 gap-2">
+                                              {selectedInsuranceApp.parentIdPhotos.map((photo: string, index: number) => (
+                                                <div key={index} className="border rounded-lg p-2">
+                                                  <img 
+                                                    src={photo} 
+                                                    alt={`Ebeveyn Kimlik ${index + 1}`}
+                                                    className="w-full h-32 object-cover rounded cursor-pointer hover:opacity-80"
+                                                    onClick={() => window.open(photo, '_blank')}
+                                                  />
+                                                  <p className="text-xs text-gray-600 mt-1 text-center">
+                                                    Ebeveyn Kimlik {index + 1}
+                                                  </p>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          </div>
+                                        ) : (
+                                          // Check if user is under 18 but no parent photos
+                                          (() => {
+                                            if (selectedInsuranceApp.dateOfBirth) {
+                                              const birthDate = new Date(selectedInsuranceApp.dateOfBirth);
+                                              const today = new Date();
+                                              const age = today.getFullYear() - birthDate.getFullYear();
+                                              const monthDiff = today.getMonth() - birthDate.getMonth();
+                                              
+                                              const actualAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate()) ? age - 1 : age;
+                                              
+                                              if (actualAge < 18) {
+                                                return (
+                                                  <div className="text-red-600">
+                                                    <strong>⚠️ Eksik:</strong> 18 yaş altı - Ebeveyn kimlik fotoğrafları gerekli ama yüklenmemiş!
+                                                  </div>
+                                                );
+                                              }
+                                            }
+                                            return null;
+                                          })()
+                                        )}
                                       </div>
                                       <div className="space-y-3">
                                         <h4 className="font-semibold text-blue-900">Seyahat Bilgileri</h4>
