@@ -77,6 +77,10 @@ const getCountryFlag = (countryCode: string): string => {
 export default function Insurance() {
   const { t } = useLanguage();
   const [selectedProduct, setSelectedProduct] = useState<InsuranceProduct | null>(null);
+  const [dateErrors, setDateErrors] = useState({
+    travelDate: "",
+    returnDate: ""
+  });
   
   // Get country from URL parameters
   const urlParams = new URLSearchParams(window.location.search);
@@ -103,6 +107,46 @@ export default function Insurance() {
   const [paymentData, setPaymentData] = useState<any>(null);
   const [paymentRedirectUrl, setPaymentRedirectUrl] = useState<string>("");
   const { toast } = useToast();
+
+  // Date validation function
+  const validateDates = (travelDate: string, returnDate: string) => {
+    const newErrors = { travelDate: "", returnDate: "" };
+    
+    if (travelDate) {
+      const travel = new Date(travelDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      if (travel.getTime() < today.getTime()) {
+        newErrors.travelDate = "Geçmiş tarih seçemezsin";
+      }
+    }
+    
+    if (travelDate && returnDate) {
+      const travel = new Date(travelDate);
+      const returnD = new Date(returnDate);
+      
+      if (returnD.getTime() <= travel.getTime()) {
+        newErrors.returnDate = "Dönüş tarihi gidiş tarihinden sonra olmalıdır";
+      }
+    }
+    
+    setDateErrors(newErrors);
+  };
+
+  // Handle input changes
+  const handleInputChange = (key: string, value: string) => {
+    const newData = { ...applicationData, [key]: value };
+    setApplicationData(newData);
+    
+    // Validate dates whenever travel or return date changes
+    if (key === 'travelDate' || key === 'returnDate') {
+      validateDates(
+        key === 'travelDate' ? value : newData.travelDate,
+        key === 'returnDate' ? value : newData.returnDate
+      );
+    }
+  };
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["/api/insurance/products"],
@@ -280,13 +324,6 @@ export default function Insurance() {
       });
     },
   });
-
-  const handleInputChange = (field: string, value: string) => {
-    setApplicationData(prev => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -614,27 +651,12 @@ export default function Insurance() {
                             const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                             const year = parts[0]; const month = parts[1];
                             const newDate = `${year}-${month}-${day.padStart(2, '0')}`;
+                            setApplicationData(prev => ({ ...prev, travelDate: newDate }));
                             
-                            // Set the date first
-                            handleInputChange("travelDate", newDate);
-                            
-                            // Then validate if we have meaningful parts (not all defaults)
-                            const hasRealYear = year && year !== 'undefined' && year !== '' && parseInt(year) > 2020;
-                            const hasRealMonth = month && month !== 'undefined' && month !== '' && month !== '01';
-                            const hasRealDay = day && day !== 'undefined' && day !== '' && day !== '01';
-                            
-                            if (hasRealYear && hasRealMonth && hasRealDay) {
-                              const selectedDate = new Date(newDate);
-                              const today = new Date();
-                              today.setHours(0, 0, 0, 0);
-                              
-                              if (selectedDate.getTime() < today.getTime()) {
-                                toast({
-                                  title: "❌ Past Date Not Allowed",
-                                  description: "Travel date must be today or in the future!",
-                                  variant: "destructive",
-                                });
-                              }
+                            // Validate dates
+                            const hasRealParts = year && year !== 'undefined' && month && month !== 'undefined' && day && day !== 'undefined';
+                            if (hasRealParts) {
+                              validateDates(newDate, applicationData.returnDate);
                             }
                           }}
                         >
@@ -654,27 +676,12 @@ export default function Insurance() {
                             const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                             const year = parts[0]; const day = parts[2];
                             const newDate = `${year}-${month.padStart(2, '0')}-${day}`;
+                            setApplicationData(prev => ({ ...prev, travelDate: newDate }));
                             
-                            // Set the date first
-                            handleInputChange("travelDate", newDate);
-                            
-                            // Then validate if we have meaningful parts
-                            const hasRealYear = year && year !== 'undefined' && year !== '' && parseInt(year) > 2020;
-                            const hasRealMonth = month && month !== 'undefined' && month !== '' && month !== '01';
-                            const hasRealDay = day && day !== 'undefined' && day !== '' && day !== '01';
-                            
-                            if (hasRealYear && hasRealMonth && hasRealDay) {
-                              const selectedDate = new Date(newDate);
-                              const today = new Date();
-                              today.setHours(0, 0, 0, 0);
-                              
-                              if (selectedDate.getTime() < today.getTime()) {
-                                toast({
-                                  title: "❌ Past Date Not Allowed",
-                                  description: "Travel date must be today or in the future!",
-                                  variant: "destructive",
-                                });
-                              }
+                            // Validate dates
+                            const hasRealParts = year && year !== 'undefined' && month && month !== 'undefined' && day && day !== 'undefined';
+                            if (hasRealParts) {
+                              validateDates(newDate, applicationData.returnDate);
                             }
                           }}
                         >
@@ -707,27 +714,12 @@ export default function Insurance() {
                             const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                             const month = parts[1]; const day = parts[2];
                             const newDate = `${year}-${month}-${day}`;
+                            setApplicationData(prev => ({ ...prev, travelDate: newDate }));
                             
-                            // Set the date first
-                            handleInputChange("travelDate", newDate);
-                            
-                            // Then validate if we have meaningful parts
-                            const hasRealYear = year && year !== 'undefined' && year !== '' && parseInt(year) > 2020;
-                            const hasRealMonth = month && month !== 'undefined' && month !== '' && month !== '01';
-                            const hasRealDay = day && day !== 'undefined' && day !== '' && day !== '01';
-                            
-                            if (hasRealYear && hasRealMonth && hasRealDay) {
-                              const selectedDate = new Date(newDate);
-                              const today = new Date();
-                              today.setHours(0, 0, 0, 0);
-                              
-                              if (selectedDate.getTime() < today.getTime()) {
-                                toast({
-                                  title: "❌ Past Date Not Allowed",
-                                  description: "Travel date must be today or in the future!",
-                                  variant: "destructive",
-                                });
-                              }
+                            // Validate dates
+                            const hasRealParts = year && year !== 'undefined' && month && month !== 'undefined' && day && day !== 'undefined';
+                            if (hasRealParts) {
+                              validateDates(newDate, applicationData.returnDate);
                             }
                           }}
                         >
@@ -741,6 +733,9 @@ export default function Insurance() {
                           </SelectContent>
                         </Select>
                       </div>
+                      {dateErrors.travelDate && (
+                        <p className="text-red-500 text-sm mt-1">{dateErrors.travelDate}</p>
+                      )}
                     </div>
                     
                     <div>
@@ -751,7 +746,14 @@ export default function Insurance() {
                           onValueChange={(day) => {
                             const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                             const year = parts[0]; const month = parts[1];
-                            handleInputChange("returnDate", `${year}-${month}-${day.padStart(2, '0')}`);
+                            const newDate = `${year}-${month}-${day.padStart(2, '0')}`;
+                            setApplicationData(prev => ({ ...prev, returnDate: newDate }));
+                            
+                            // Validate dates
+                            const hasRealParts = year && year !== 'undefined' && month && month !== 'undefined' && day && day !== 'undefined';
+                            if (hasRealParts) {
+                              validateDates(applicationData.travelDate, newDate);
+                            }
                           }}
                         >
                           <SelectTrigger>
@@ -769,7 +771,14 @@ export default function Insurance() {
                           onValueChange={(month) => {
                             const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                             const year = parts[0]; const day = parts[2];
-                            handleInputChange("returnDate", `${year}-${month.padStart(2, '0')}-${day}`);
+                            const newDate = `${year}-${month.padStart(2, '0')}-${day}`;
+                            setApplicationData(prev => ({ ...prev, returnDate: newDate }));
+                            
+                            // Validate dates
+                            const hasRealParts = year && year !== 'undefined' && month && month !== 'undefined' && day && day !== 'undefined';
+                            if (hasRealParts) {
+                              validateDates(applicationData.travelDate, newDate);
+                            }
                           }}
                         >
                           <SelectTrigger>
@@ -800,7 +809,14 @@ export default function Insurance() {
                           onValueChange={(year) => {
                             const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                             const month = parts[1]; const day = parts[2];
-                            handleInputChange("returnDate", `${year}-${month}-${day}`);
+                            const newDate = `${year}-${month}-${day}`;
+                            setApplicationData(prev => ({ ...prev, returnDate: newDate }));
+                            
+                            // Validate dates
+                            const hasRealParts = year && year !== 'undefined' && month && month !== 'undefined' && day && day !== 'undefined';
+                            if (hasRealParts) {
+                              validateDates(applicationData.travelDate, newDate);
+                            }
                           }}
                         >
                           <SelectTrigger>
@@ -813,6 +829,9 @@ export default function Insurance() {
                           </SelectContent>
                         </Select>
                       </div>
+                      {dateErrors.returnDate && (
+                        <p className="text-red-500 text-sm mt-1">{dateErrors.returnDate}</p>
+                      )}
                     </div>
 
                     <div>
