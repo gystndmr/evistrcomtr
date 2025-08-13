@@ -61,22 +61,13 @@ export class DatabaseStorage implements IStorage {
     try {
       const results = await db.select().from(countries);
       
-      // Handle duplicates by preferring eligible countries and longer country codes
+      // Remove duplicates by keeping only the longer country code for each country name
       const uniqueCountriesMap = new Map<string, Country>();
       
       for (const country of results) {
         const existing = uniqueCountriesMap.get(country.name);
-        if (!existing) {
+        if (!existing || country.code.length > existing.code.length) {
           uniqueCountriesMap.set(country.name, country);
-        } else {
-          // If current is eligible and existing is not, replace
-          if (country.isEligible && !existing.isEligible) {
-            uniqueCountriesMap.set(country.name, country);
-          }
-          // If both have same eligibility, prefer longer code (more specific)
-          else if (country.isEligible === existing.isEligible && country.code.length > existing.code.length) {
-            uniqueCountriesMap.set(country.name, country);
-          }
         }
       }
       
