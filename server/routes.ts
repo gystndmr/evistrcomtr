@@ -20,10 +20,28 @@ function generateOrderReference(): string {
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Get all countries
+  // Cache for countries data - expires after 1 hour
+  let countriesCache: any = null;
+  let countriesCacheTime = 0;
+  const CACHE_DURATION = 60 * 60 * 1000; // 1 hour
+
+  // Get all countries with caching
   app.get("/api/countries", async (req, res) => {
     try {
+      // Check if cache is valid
+      const now = Date.now();
+      if (countriesCache && (now - countriesCacheTime) < CACHE_DURATION) {
+        res.setHeader('Cache-Control', 'public, max-age=3600'); // 1 hour browser cache
+        return res.json(countriesCache);
+      }
+
       const countries = await storage.getCountries();
+      
+      // Update cache
+      countriesCache = countries;
+      countriesCacheTime = now;
+      
+      res.setHeader('Cache-Control', 'public, max-age=3600'); // 1 hour browser cache
       res.json(countries);
     } catch (error) {
       console.error("Error fetching countries:", error);
@@ -133,10 +151,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to fetch insurance products" });
     }
   });
-  
+  // Cache for insurance products - expires after 30 minutes
+  let productsCache: any = null;
+  let productsCacheTime = 0;
+  const PRODUCTS_CACHE_DURATION = 30 * 60 * 1000; // 30 minutes
+
   app.get("/api/insurance/products", async (req, res) => {
     try {
+      // Check if cache is valid
+      const now = Date.now();
+      if (productsCache && (now - productsCacheTime) < PRODUCTS_CACHE_DURATION) {
+        res.setHeader('Cache-Control', 'public, max-age=1800'); // 30 minutes browser cache
+        return res.json(productsCache);
+      }
+
       const products = await storage.getInsuranceProducts();
+      
+      // Update cache
+      productsCache = products;
+      productsCacheTime = now;
+      
+      res.setHeader('Cache-Control', 'public, max-age=1800'); // 30 minutes browser cache
       res.json(products);
     } catch (error) {
       console.error("Error fetching insurance products:", error);
