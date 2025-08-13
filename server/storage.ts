@@ -59,35 +59,32 @@ export interface IStorage {
 export class DatabaseStorage implements IStorage {
   async getCountries(): Promise<Country[]> {
     try {
-      // Optimize query to select only necessary fields and use SQL for deduplication
-      const results = await db.select({
-        id: countries.id,
-        code: countries.code,
-        name: countries.name,
-        isEligible: countries.isEligible
-      }).from(countries);
-      
+      const results = await db.select().from(countries);
       console.log(`🔍 Total countries from DB: ${results.length}`);
       
-      // Use Set for faster duplicate checking and process in single pass
+      // Create a Map to store unique countries by name
       const uniqueCountriesMap = new Map<string, typeof results[0]>();
       
-      // Single pass optimization with early return optimization
-      for (const country of results) {
+      results.forEach(country => {
         const existing = uniqueCountriesMap.get(country.name);
-        if (!existing || country.code.length > existing.code.length) {
+        if (!existing) {
+          // First occurrence of this country name
           uniqueCountriesMap.set(country.name, country);
+        } else {
+          // If duplicate exists, keep the one with longer code
+          if (country.code.length > existing.code.length) {
+            uniqueCountriesMap.set(country.name, country);
+          }
         }
-      }
+      });
       
       const uniqueCountries = Array.from(uniqueCountriesMap.values());
       console.log(`🔍 Unique countries after filtering: ${uniqueCountries.length}`);
       
-      // Ensure proper mapping for both frontend compatibility and performance
+      // Map database fields to frontend-expected format
       const formattedCountries = uniqueCountries.map(country => ({
         ...country,
-        isEligible: Boolean(country.isEligible), // Keep original field for compatibility
-        eligibleForEvisa: Boolean(country.isEligible) // Also provide alternative naming
+        eligibleForEvisa: Boolean(country.isEligible) // Map isEligible to eligibleForEvisa for frontend
       })) as any[];
       
       return formattedCountries;
