@@ -54,9 +54,11 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 - **Date Input**: Uses manual dropdowns for date selections for improved user control.
 
 ### Recent Fixes (August 13, 2025)
-- **Payment Status Updates**: ✅ COMPLETED - Real-time payment status updates now working with GloDiPay callbacks
+- **Payment Status Updates**: ⚠️ PARTIAL - Callback system works in development but production API endpoints broken
 - **Database Methods**: Added `getApplicationByOrderRef()` and `updateApplicationPaymentStatus()` methods for both visa and insurance
-- **Callback Handler**: Enhanced `/api/payment/callback` endpoint to automatically update payment status from "pending" to "succeeded"
+- **Callback Handler**: Enhanced `/api/payment/callback` endpoint with detailed logging and test endpoint
+- **Production Issue Found**: getvisa.tr/api/payment/callback returns HTML instead of JSON - needs deployment
+- **Test Callback**: Added `/api/payment/test-callback` endpoint for manual testing - working correctly
 - **Auto-Redirect Removal**: ✅ COMPLETED - Removed automatic redirects to insurance page; users now manually choose their service
 - **User Choice Enhancement**: Added navigation buttons on both visa and insurance pages for easy switching between services
 - **Country Database**: Resolved duplicate entries through Map-based backend filtering, prioritizing longer country codes (USA > US, GBR > UK)
