@@ -54,20 +54,17 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 - **Date Input**: Uses manual dropdowns for date selections for improved user control.
 
 ### Recent Fixes (August 13, 2025)
+- **E-Visa Eligibility System**: ✅ FIXED - Completely restructured country eligibility based on official Turkey e-visa list
+- **Country Database Update**: Set 185 countries as eligible, 155 as non-eligible (EU/Schengen/visa-exempt excluded)
+- **Duplicate Country Records**: Fixed Map-based filtering to prioritize eligible entries over non-eligible duplicates
+- **API Response Format**: Ensured `isEligible` field correctly maps from database to frontend components
 - **Payment Status Updates**: ⚠️ PARTIAL - Callback system works in development but production API endpoints broken
-- **Database Methods**: Added `getApplicationByOrderRef()` and `updateApplicationPaymentStatus()` methods for both visa and insurance
-- **Callback Handler**: Enhanced `/api/payment/callback` endpoint with detailed logging and test endpoint
-- **Production Issue Found**: getvisa.tr/api/payment/callback returns HTML instead of JSON - needs deployment
-- **Test Callback**: Added `/api/payment/test-callback` endpoint for manual testing - working correctly
 - **Auto-Redirect Removal**: ✅ COMPLETED - Removed automatic redirects to insurance page; users now manually choose their service
 - **User Choice Enhancement**: Added navigation buttons on both visa and insurance pages for easy switching between services
-- **Country Database**: Resolved duplicate entries through Map-based backend filtering, prioritizing longer country codes (USA > US, GBR > UK)
 - **Chat API**: Added missing backend endpoints for chat functionality in routes.ts and storage.ts
 - **Admin Data Loading**: Fixed API endpoints to return proper JSON instead of HTML for admin panel data visualization
-- **Field Mapping**: Corrected `eligibleForEvisa` field mapping in countries API for proper frontend integration
 - **Email System Update**: ✅ COMPLETED - Email system fully operational with info@getvisa.tr sender (status 202)
 - **Corporate Branding**: ✅ COMPLETED - EURAMED LTD footer information added, removed government licensing claims
-- **Email Testing**: All email types working (visa received, approval, rejection) with copy system to tcpdanismanlikk@gmail.com
 
 ## External Dependencies
 
