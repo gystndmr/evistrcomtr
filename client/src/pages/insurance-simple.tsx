@@ -615,18 +615,20 @@ export default function Insurance() {
                             const year = parts[0]; const month = parts[1];
                             const newDate = `${year}-${month}-${day.padStart(2, '0')}`;
                             
-                            // Immediate validation for past dates
-                            const selectedDate = new Date(newDate);
-                            const today = new Date();
-                            today.setHours(0, 0, 0, 0);
-                            
-                            if (selectedDate.getTime() < today.getTime()) {
-                              toast({
-                                title: "❌ Past Date Not Allowed",
-                                description: "Travel date must be today or in the future!",
-                                variant: "destructive",
-                              });
-                              return;
+                            // Only validate if we have all parts and they're not default values
+                            if (year && month && day && year !== 'undefined' && month !== 'undefined' && day !== 'undefined') {
+                              const selectedDate = new Date(newDate);
+                              const today = new Date();
+                              today.setHours(0, 0, 0, 0);
+                              
+                              if (selectedDate.getTime() < today.getTime()) {
+                                toast({
+                                  title: "❌ Past Date Not Allowed",
+                                  description: "Travel date must be today or in the future!",
+                                  variant: "destructive",
+                                });
+                                return;
+                              }
                             }
                             
                             handleInputChange("travelDate", newDate);
@@ -649,18 +651,20 @@ export default function Insurance() {
                             const year = parts[0]; const day = parts[2];
                             const newDate = `${year}-${month.padStart(2, '0')}-${day}`;
                             
-                            // Immediate validation for past dates
-                            const selectedDate = new Date(newDate);
-                            const today = new Date();
-                            today.setHours(0, 0, 0, 0);
-                            
-                            if (selectedDate.getTime() < today.getTime()) {
-                              toast({
-                                title: "❌ Past Date Not Allowed",
-                                description: "Travel date must be today or in the future!",
-                                variant: "destructive",
-                              });
-                              return;
+                            // Only validate if we have all parts and they're not default values
+                            if (year && month && day && year !== 'undefined' && month !== 'undefined' && day !== 'undefined') {
+                              const selectedDate = new Date(newDate);
+                              const today = new Date();
+                              today.setHours(0, 0, 0, 0);
+                              
+                              if (selectedDate.getTime() < today.getTime()) {
+                                toast({
+                                  title: "❌ Past Date Not Allowed",
+                                  description: "Travel date must be today or in the future!",
+                                  variant: "destructive",
+                                });
+                                return;
+                              }
                             }
                             
                             handleInputChange("travelDate", newDate);
@@ -696,18 +700,20 @@ export default function Insurance() {
                             const month = parts[1]; const day = parts[2];
                             const newDate = `${year}-${month}-${day}`;
                             
-                            // Immediate validation for past dates
-                            const selectedDate = new Date(newDate);
-                            const today = new Date();
-                            today.setHours(0, 0, 0, 0);
-                            
-                            if (selectedDate.getTime() < today.getTime()) {
-                              toast({
-                                title: "❌ Past Date Not Allowed",
-                                description: "Travel date must be today or in the future!",
-                                variant: "destructive",
-                              });
-                              return;
+                            // Only validate if we have all parts and they're not default values
+                            if (year && month && day && year !== 'undefined' && month !== 'undefined' && day !== 'undefined') {
+                              const selectedDate = new Date(newDate);
+                              const today = new Date();
+                              today.setHours(0, 0, 0, 0);
+                              
+                              if (selectedDate.getTime() < today.getTime()) {
+                                toast({
+                                  title: "❌ Past Date Not Allowed",
+                                  description: "Travel date must be today or in the future!",
+                                  variant: "destructive",
+                                });
+                                return;
+                              }
                             }
                             
                             handleInputChange("travelDate", newDate);
