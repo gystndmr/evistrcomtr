@@ -524,19 +524,6 @@ export default function Insurance() {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-red-600/10" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            {/* Navigation Options */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <button 
-                onClick={() => window.location.href = '/application'}
-                className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-medium text-lg shadow-lg transition-all duration-200"
-              >
-                🇹🇷 Apply for Turkey E-Visa
-              </button>
-              <div className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium text-lg shadow-lg">
-                🛡️ Get Travel Insurance (Current Page)
-              </div>
-            </div>
-            
             {/* Transparent styled boxes for header text */}
             <div className="inline-block mb-4">
               <div className="bg-black/70 text-white px-8 py-4 text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">

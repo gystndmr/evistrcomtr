@@ -121,24 +121,15 @@ export default function Home() {
             
 
 
-            {/* Main Service Options */}
-            <div className="flex flex-col sm:flex-row gap-6 justify-center mb-8">
+            {/* Transparent Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <Link href="/application">
                 <div className="bg-red-600/80 hover:bg-red-600/90 text-white px-12 py-4 text-xl font-semibold transition-all duration-200 cursor-pointer">
-                  🇹🇷 {t('home.buttons.apply')}
+                  {t('home.buttons.apply')}
                 </div>
               </Link>
-              <Link href="/insurance">
-                <div className="bg-blue-600/80 hover:bg-blue-600/90 text-white px-12 py-4 text-xl font-semibold transition-all duration-200 cursor-pointer">
-                  🛡️ Get Travel Insurance
-                </div>
-              </Link>
-            </div>
-            
-            {/* Secondary Action */}
-            <div className="flex justify-center">
               <Link href="/status">
-                <div className="bg-gray-600/70 hover:bg-gray-600/80 text-white px-8 py-3 text-lg font-medium transition-all duration-200 cursor-pointer">
+                <div className="bg-blue-600/80 hover:bg-blue-600/90 text-white px-12 py-4 text-xl font-semibold transition-all duration-200 cursor-pointer">
                   {t('home.buttons.check')}
                 </div>
               </Link>
