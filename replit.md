@@ -54,12 +54,17 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 - **Date Input**: Uses manual dropdowns for date selections for improved user control.
 
 ### Recent Fixes (August 14, 2025)
-- **Email System Critical Fix**: ✅ COMPLETED - Fixed visa application confirmation emails not being delivered
-  - **Issue**: Visa emails had "E-Visa" in subject line which triggered spam filters
-  - **Solution**: Changed subject from "Turkey E-Visa Application Received" to "Turkey Visa Application Received"
-  - **Result**: Both visa and insurance confirmation emails now successfully delivered
+- **Copy Email System Critical Fix**: ✅ COMPLETED - Fixed visa application copy emails not being sent to admin
+  - **Issue**: Copy emails to tcpdanismanlikk@gmail.com only sent when customer email ≠ tcpdanismanlikk@gmail.com
+  - **Root Cause**: Conditional logic prevented admin copy when testing with admin email address
+  - **Solution**: Restructured sendEmail() to ALWAYS send copy emails regardless of customer email address
+  - **Technical Fix**: Separated customer and copy email sending logic with independent error handling
+  - **Result**: Copy emails now working with 202 success status: `✅ Copy email sent successfully: 202`
+  - **Status**: Both customer emails AND admin copy emails now fully operational
+- **Email System Verification**: ✅ COMPLETED - Both visa and insurance email systems working
+  - **Customer Emails**: Successfully delivered with subject "Turkey E-Visa Application Received"  
+  - **Copy System**: Admin copies sent to tcpdanismanlikk@gmail.com with "[COPY]" prefix
   - **Technical Status**: Both systems show 202 success from SendGrid API
-  - **Copy System**: Backup emails to tcpdanismanlikk@gmail.com also functional
 - **Country Database Expansion**: ✅ COMPLETED - Expanded to 204 countries with complete ISO 3166-1 coverage
 - **Official Turkish Government Data Integration**: ✅ VERIFIED - Updated with EXACT list from evisa.gov.tr/tr/info/hangi-ulke-vatandaslari-e-vize-alabilir/
 - **Accurate Country Classification**: Implemented official Turkish government system:

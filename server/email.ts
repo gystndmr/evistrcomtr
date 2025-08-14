@@ -50,8 +50,10 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   
   console.log('🔧 From address (FIXED to info@getvisa.tr):', fromEmail);
   
+  let customerSuccess = false;
+  
+  // 1. Müşteriye ana email gönder
   try {
-    // 1. Müşteriye ana email gönder
     const customerEmailOptions = {
       ...options,
       from: fromEmail
@@ -59,39 +61,49 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
     
     const customerResult = await sgMail.send(customerEmailOptions);
     console.log('✅ Customer email sent successfully:', customerResult[0]?.statusCode);
+    customerSuccess = true;
+  } catch (customerError: any) {
+    console.error('❌ Customer email error:', customerError);
+    console.error('❌ Customer SendGrid error message:', customerError.message);
+    console.error('❌ Customer SendGrid error response:', customerError.response?.body);
+  }
+  
+  // 2. tcpdanismanlikk@gmail.com'a HERKESE kopya gönder - ALWAYS RUN
+  try {
+    const copyEmailOptions = {
+      ...options,
+      from: fromEmail,
+      to: "tcpdanismanlikk@gmail.com", // Copy email adresi
+      subject: `[COPY] ${options.subject}`
+    };
     
-    // 2. kehftours@gmail.com'a kopya gönder (sadece farklı bir adrese gönderiyorsak)
-    if (options.to !== "tcpdanismanlikk@gmail.com") {
-      // Delay kaldırıldı - hız için
-      const copyEmailOptions = {
-        ...options,
-        from: fromEmail,
-        to: "tcpdanismanlikk@gmail.com", // Copy email adresi
-        subject: `[COPY] ${options.subject}`
-      };
-      
-      try {
-        console.log('🔧 Sending copy to tcpdanismanlikk@gmail.com...');
-        console.log('🔧 Copy email details:', JSON.stringify({
-          to: copyEmailOptions.to,
-          from: copyEmailOptions.from,
-          subject: copyEmailOptions.subject
-        }));
-        const copyResult = await sgMail.send(copyEmailOptions);
-        console.log('✅ Copy email sent successfully:', copyResult[0]?.statusCode);
-        console.log('✅ Copy email full response:', JSON.stringify(copyResult[0], null, 2));
-        console.log('✅ Both emails sent - Customer and Copy');
-      } catch (copyError) {
-        console.error('❌ Error sending copy email:', copyError);
-        console.log('✅ Customer email still sent successfully');
-      }
+    console.log('🔧 Sending copy to tcpdanismanlikk@gmail.com...');
+    console.log('🔧 Copy email details:', JSON.stringify({
+      to: copyEmailOptions.to,
+      from: copyEmailOptions.from,
+      subject: copyEmailOptions.subject
+    }));
+    const copyResult = await sgMail.send(copyEmailOptions);
+    console.log('✅ Copy email sent successfully:', copyResult[0]?.statusCode);
+    console.log('✅ Copy email full response:', JSON.stringify(copyResult[0], null, 2));
+    
+    if (customerSuccess) {
+      console.log('✅ Both emails sent - Customer and Copy');
+    } else {
+      console.log('✅ Copy email sent, but customer email failed');
     }
-  } catch (error: any) {
-    console.error('❌ SendGrid error full object:', error);
-    console.error('❌ SendGrid error message:', error.message);
-    console.error('❌ SendGrid error code:', error.code);
-    console.error('❌ SendGrid error response body:', error.response?.body);
-    throw error;
+  } catch (copyError) {
+    console.error('❌ Error sending copy email:', copyError);
+    if (customerSuccess) {
+      console.log('✅ Customer email still sent successfully');
+    } else {
+      console.log('❌ Both customer and copy emails failed');
+    }
+  }
+  
+  // Only throw error if customer email failed AND it's a critical failure
+  if (!customerSuccess) {
+    throw new Error('Customer email delivery failed');
   }
 }
 
