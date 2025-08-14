@@ -61,7 +61,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         supportingDocumentEndDate: req.body.supportingDocumentEndDate ? new Date(req.body.supportingDocumentEndDate) : undefined,
       };
 
-      const validatedData = insertApplicationSchema.parse(bodyWithDates);
+      // Calculate totalAmount based on processing type before validation
+      const processingTypes = {
+        'standard': '25.00',
+        'fast': '75.00', 
+        'express': '175.00',
+        'urgent': '295.00',
+        'slow': '50.00',
+        'urgent_24': '280.00',
+        'urgent_12': '330.00',
+        'urgent_4': '410.00',
+        'urgent_1': '645.00'
+      };
+      
+      const totalAmount = processingTypes[req.body.processingType as keyof typeof processingTypes] || '60.00';
+      
+      const validatedData = insertApplicationSchema.parse({
+        ...bodyWithDates,
+        totalAmount
+      });
 
       const application = await storage.createApplication(validatedData);
       
@@ -1143,8 +1161,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description // Support both orderDescription and description
       } = req.body;
       
-      // Use orderRef or orderId (support both) - if none provided, generate one
-      const finalOrderRef = orderRef || orderId || generateOrderReference();
+      // Use orderRef or orderId (support both) - if none provided, generate unique one with timestamp
+      const finalOrderRef = orderRef || orderId || `ORDER_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const finalDescription = orderDescription || description;
 
       // Always use production domain for GPay callbacks - required for GPay registration

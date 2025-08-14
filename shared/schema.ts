@@ -124,7 +124,10 @@ export const insuranceApplicationsRelations = relations(insuranceApplications, (
 
 // Zod schemas
 export const insertCountrySchema = createInsertSchema(countries);
-export const insertApplicationSchema = createInsertSchema(applications);
+export const insertApplicationSchema = createInsertSchema(applications).extend({
+  // Make totalAmount optional since it's calculated on the backend based on processing type
+  totalAmount: z.string().optional(),
+});
 export const insertInsuranceProductSchema = createInsertSchema(insuranceProducts);
 export const insertInsuranceApplicationSchema = createInsertSchema(insuranceApplications).omit({ 
   id: true, 
