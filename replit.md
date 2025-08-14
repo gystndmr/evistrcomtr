@@ -53,7 +53,14 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 - **Site Mode Switching**: Supports quick switching between the e-visa application site and a consulting/advertising site.
 - **Date Input**: Uses manual dropdowns for date selections for improved user control.
 
-### Recent Fixes (August 13, 2025)
+### Recent Fixes (August 14, 2025)
+- **Country Eligibility System**: ✅ FIXED - Resolved field mapping issue between backend (`isEligible`) and frontend
+- **Backend Field Mapping**: Corrected storage.ts to use consistent `isEligible` field instead of `eligibleForEvisa`
+- **Database Verification**: Confirmed Afghanistan and other countries have correct eligibility data (AFG: eligible, DEU: not eligible)
+- **API Response**: Verified Afghanistan returns `"isEligible":true` in API response
+- **Supporting Document Warning**: Enhanced warning message for non-supporting document cases with mandatory insurance emphasis
+
+### Previous Fixes (August 13, 2025)
 - **Payment Status Updates**: ⚠️ PARTIAL - Callback system works in development but production API endpoints broken
 - **Database Methods**: Added `getApplicationByOrderRef()` and `updateApplicationPaymentStatus()` methods for both visa and insurance
 - **Callback Handler**: Enhanced `/api/payment/callback` endpoint with detailed logging and test endpoint
