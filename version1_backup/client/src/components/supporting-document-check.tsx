@@ -12,12 +12,16 @@ interface SupportingDocumentCheckProps {
   onHasSupportingDocument: (hasDocument: boolean) => void;
   onDocumentDetailsChange: (details: any) => void;
   onValidationChange: (isValid: boolean) => void;
+  onSupportingDocTypeChange: (docType: string) => void;
+  onProcessingTypeChange?: (processingType: string) => void;
 }
 
 export function SupportingDocumentCheck({ 
   onHasSupportingDocument, 
   onDocumentDetailsChange,
-  onValidationChange
+  onValidationChange,
+  onSupportingDocTypeChange,
+  onProcessingTypeChange
 }: SupportingDocumentCheckProps) {
   const { toast } = useToast();
   const [hasDocument, setHasDocument] = useState<boolean | null>(null);
@@ -35,8 +39,10 @@ export function SupportingDocumentCheck({
     onHasSupportingDocument(value);
     if (!value) {
       setProcessingType("");
-      // Ultra-fast redirect to insurance for "No" selection - no toast delay
-      window.location.href = '/insurance';
+      if (onProcessingTypeChange) {
+        onProcessingTypeChange("");
+      }
+      // No automatic redirect - let user choose manually via Get Insurance button
       return;
     }
     // Immediate call for better UX - no delay needed
@@ -45,6 +51,7 @@ export function SupportingDocumentCheck({
 
   const handleDocumentTypeChange = (type: string) => {
     setDocumentType(type);
+    onSupportingDocTypeChange(type); // Pass supporting document type to parent
     // Reset fields when document type changes
     setVisaCountry("");
     setResidenceCountry("");
@@ -92,9 +99,13 @@ export function SupportingDocumentCheck({
       documentNumber,
       startDate,
       endDate: isUnlimited ? "unlimited" : endDate,
+      processingType,
     };
     onDocumentDetailsChange(details);
     onValidationChange(validateFields());
+    if (onProcessingTypeChange && processingType) {
+      onProcessingTypeChange(processingType);
+    }
   };
 
   // Auto-update details when any field changes
@@ -177,12 +188,21 @@ export function SupportingDocumentCheck({
           </div>
 
           {hasDocument === false && (
-            <Alert className="border-blue-200 bg-blue-50">
-              <AlertTriangle className="h-4 w-4 text-blue-500" />
-              <AlertDescription className="text-blue-800">
-                <strong>No Supporting Documents:</strong> Please wait while we process your selection.
-                <div className="mt-2 text-sm text-blue-600">
-                  You will be redirected to travel insurance options shortly...
+            <Alert className="border-red-200 bg-red-50">
+              <AlertTriangle className="h-4 w-4 text-red-600" />
+              <AlertDescription className="text-red-800">
+                Without supporting documents, you must apply through the consulate, but entry to Turkey is STRICTLY PROHIBITED without mandatory travel insurance as required by Turkish Law No. 6458 - border officials will deny entry to any visitor lacking proper insurance coverage.
+                <div className="mt-4">
+                  <button 
+                    onClick={() => {
+                      const urlParams = new URLSearchParams(window.location.search);
+                      const country = urlParams.get('country') || '';
+                      window.location.href = `/insurance?country=${encodeURIComponent(country)}`;
+                    }}
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-medium text-sm transition-colors"
+                  >
+                    GET MANDATORY INSURANCE
+                  </button>
                 </div>
               </AlertDescription>
             </Alert>

@@ -66,7 +66,7 @@ export const COUNTRIES: CountryInfo[] = [
   { code: "ESP", name: "Spain", flag: "🇪🇸", isEligible: true, requiresSupportingDocs: false },
   { code: "NLD", name: "Netherlands", flag: "🇳🇱", isEligible: true, requiresSupportingDocs: false },
   { code: "BRA", name: "Brazil", flag: "🇧🇷", isEligible: true, requiresSupportingDocs: false },
-  { code: "IRN", name: "Iran", flag: "🇮🇷", isEligible: true, requiresSupportingDocs: true, supportedDocumentTypes: ["hotel", "flight", "financial"] },
+
   { code: "KWT", name: "Kuwait", flag: "🇰🇼", isEligible: true, requiresSupportingDocs: false },
   { code: "OMN", name: "Oman", flag: "🇴🇲", isEligible: true, requiresSupportingDocs: false },
   { code: "QAT", name: "Qatar", flag: "🇶🇦", isEligible: true, requiresSupportingDocs: false },
@@ -102,10 +102,10 @@ export const COUNTRIES: CountryInfo[] = [
   { code: "ECU", name: "Ecuador", flag: "🇪🇨", isEligible: true, requiresSupportingDocs: false },
   { code: "BOL", name: "Bolivia", flag: "🇧🇴", isEligible: true, requiresSupportingDocs: false },
   { code: "PRY", name: "Paraguay", flag: "🇵🇾", isEligible: true, requiresSupportingDocs: false },
-  { code: "VEN", name: "Venezuela", flag: "🇻🇪", isEligible: true, requiresSupportingDocs: true, supportedDocumentTypes: ["hotel", "flight", "financial"] },
+
   { code: "NZL", name: "New Zealand", flag: "🇳🇿", isEligible: true, requiresSupportingDocs: false },
   { code: "UKR", name: "Ukraine", flag: "🇺🇦", isEligible: true, requiresSupportingDocs: true, supportedDocumentTypes: ["hotel", "flight", "financial"] },
-  { code: "BLR", name: "Belarus", flag: "🇧🇾", isEligible: true, requiresSupportingDocs: true, supportedDocumentTypes: ["hotel", "flight", "financial"] },
+
   { code: "KAZ", name: "Kazakhstan", flag: "🇰🇿", isEligible: true, requiresSupportingDocs: false },
   { code: "UZB", name: "Uzbekistan", flag: "🇺🇿", isEligible: true, requiresSupportingDocs: false },
   { code: "TKM", name: "Turkmenistan", flag: "🇹🇲", isEligible: true, requiresSupportingDocs: true, supportedDocumentTypes: ["hotel", "flight", "financial"] },
@@ -141,9 +141,9 @@ export const COUNTRIES: CountryInfo[] = [
   { code: "DEU", name: "Germany", flag: "🇩🇪", isEligible: false, requiresSupportingDocs: false },
   { code: "FRA", name: "France", flag: "🇫🇷", isEligible: false, requiresSupportingDocs: false },
   { code: "JPN", name: "Japan", flag: "🇯🇵", isEligible: false, requiresSupportingDocs: false },
-  { code: "RUS", name: "Russian Federation", flag: "🇷🇺", isEligible: false, requiresSupportingDocs: false },
+
   { code: "NGA", name: "Nigeria", flag: "🇳🇬", isEligible: false, requiresSupportingDocs: false },
-  { code: "SYR", name: "Syria", flag: "🇸🇾", isEligible: false, requiresSupportingDocs: false },
+
 ];
 
 export const DOCUMENT_TYPES = [

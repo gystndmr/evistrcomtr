@@ -28,7 +28,7 @@ export default function Status() {
   }, []);
 
   const { data: application, isLoading, error } = useQuery({
-    queryKey: [searchType === "visa" ? "/api/applications" : "/api/insurance/applications", applicationNumber],
+    queryKey: [searchType === "visa" ? `/api/applications/${applicationNumber}` : `/api/insurance/applications/${applicationNumber}`],
     enabled: shouldFetch && applicationNumber.length > 0,
   }) as { data: any, isLoading: boolean, error: any };
 
@@ -83,15 +83,15 @@ export default function Status() {
   const getStatusMessage = (status: string) => {
     switch (status.toLowerCase()) {
       case "approved":
-        return t('status.message.approved');
+        return "Başvurunuz onaylandı. Belgenizi indirebilirsiniz.";
       case "pending":
-        return t('status.message.pending');
+        return "Başvurunuz inceleniyor. Onay sürecinde lütfen bekleyiniz.";
       case "rejected":
-        return t('status.message.rejected');
+        return "Başvurunuz reddedildi. Detaylar için destek ile iletişime geçin.";
       case "processing":
-        return t('status.message.processing');
+        return "Başvurunuz işleme alındı. Onay sürecinde lütfen bekleyiniz.";
       default:
-        return t('status.message.default');
+        return "Başvuru durumu güncelleniyor.";
     }
   };
 
@@ -259,15 +259,18 @@ export default function Status() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-medium text-green-800">
-                          {searchType === "visa" ? t('status.evisa.ready') : t('status.insurance.ready')}
+                          {searchType === "visa" ? "E-Vize Hazır" : "Sigorta Poliçesi Hazır"}
                         </p>
                         <p className="text-sm text-green-600">
-                          {searchType === "visa" ? t('status.evisa.download.ready') : t('status.insurance.download.ready')}
+                          {searchType === "visa" ? "E-vize belgenizi indirebilirsiniz" : "Sigorta poliçenizi indirebilirsiniz"}
                         </p>
                       </div>
-                      <Button className="bg-green-600 hover:bg-green-700">
+                      <Button 
+                        className="bg-green-600 hover:bg-green-700"
+                        onClick={() => window.open(`/api/download/${searchType}/${applicationNumber}`, '_blank')}
+                      >
                         <Download className="w-4 h-4 mr-2" />
-                        {t('status.download')}
+                        Belgeyi İndir
                       </Button>
                     </div>
                   </div>

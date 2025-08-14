@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+import path from "path";
 import { ChatManager } from "./websocket";
 
 const app = express();
@@ -11,15 +11,6 @@ app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
-  
-  // Debug API requests
-  if (path.startsWith("/api")) {
-    console.log(`🔍 API REQUEST: ${req.method} ${path}`);
-    if (req.method === "POST") {
-      console.log(`🔍 Headers:`, req.headers);
-      console.log(`🔍 Body preview:`, JSON.stringify(req.body).substring(0, 100));
-    }
-  }
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
   const originalResJson = res.json;
@@ -40,7 +31,7 @@ app.use((req, res, next) => {
         logLine = logLine.slice(0, 79) + "…";
       }
 
-      log(logLine);
+      console.log(logLine);
     }
   });
 
@@ -58,27 +49,24 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
-  }
+  // Serve static files from dist/public
+  const distPath = path.resolve(import.meta.dirname, "..", "dist", "public");
+  app.use(express.static(distPath));
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
+  // Catch-all handler for SPA routing
+  app.use("*", (_req, res) => {
+    res.sendFile(path.resolve(distPath, "index.html"));
+  });
+
   const port = 5000;
   server.listen({
     port,
     host: "0.0.0.0",
     reusePort: true,
   }, () => {
-    log(`serving on port ${port}`);
+    console.log(`Production server running on port ${port}`);
   });
 
-  // Initialize WebSocket chat system (disabled for debugging)
-  // new ChatManager(server);
+  // Initialize WebSocket chat system
+  new ChatManager(server);
 })();

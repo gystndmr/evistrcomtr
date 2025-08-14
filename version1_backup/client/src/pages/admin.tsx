@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -10,12 +10,13 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Shield, Users, CreditCard, FileText, Eye, Search, Download, CheckCircle, XCircle, Info, Upload } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import type { Application, InsuranceApplication } from "@shared/schema";
+import ChatAdminPanel from "../components/chat-admin-panel";
 
 interface AdminStats {
   totalApplications: number;
@@ -30,6 +31,9 @@ export default function Admin() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
   const [selectedInsuranceApp, setSelectedInsuranceApp] = useState<InsuranceApplication | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [insuranceCurrentPage, setInsuranceCurrentPage] = useState(1);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [pdfFile, setPdfFile] = useState<string>("");
   const [pdfDialogOpen, setPdfDialogOpen] = useState(false);
   const [currentAppId, setCurrentAppId] = useState<number | null>(null);
@@ -38,14 +42,90 @@ export default function Admin() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: applications = [] } = useQuery<Application[]>({
-    queryKey: ["/api/admin/applications"],
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Reset page when search changes
+  useEffect(() => {
+    setCurrentPage(1);
+    setInsuranceCurrentPage(1);
+  }, [debouncedSearchTerm]);
+
+  interface PaginatedResponse<T> {
+    applications: T[];
+    totalCount: number;
+    currentPage: number;
+    totalPages: number;
+    hasMore: boolean;
+  }
+
+  const { data: applicationsData } = useQuery<PaginatedResponse<Application>>({
+    queryKey: ["/api/admin/applications", currentPage, debouncedSearchTerm],
+    queryFn: async () => {
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: "50",
+        search: debouncedSearchTerm
+      });
+      const response = await fetch(`/api/admin/applications?${params}`);
+      return response.json();
+    },
     enabled: isAuthenticated,
   });
 
-  const { data: insuranceApplications = [] } = useQuery<InsuranceApplication[]>({
-    queryKey: ["/api/admin/insurance-applications"],
+  const { data: insuranceApplicationsData, isLoading: insuranceLoading, error: insuranceError } = useQuery<PaginatedResponse<InsuranceApplication>>({
+    queryKey: ["/api/admin/insurance-applications", insuranceCurrentPage, debouncedSearchTerm],
+    queryFn: async () => {
+      console.log('Making insurance applications request with params:', {
+        page: insuranceCurrentPage,
+        limit: 50,
+        search: debouncedSearchTerm,
+        isAuthenticated
+      });
+      
+      const params = new URLSearchParams({
+        page: insuranceCurrentPage.toString(),
+        limit: "50", 
+        search: debouncedSearchTerm
+      });
+      
+      const url = `/api/admin/insurance-applications?${params}`;
+      console.log('Request URL:', url);
+      
+      const response = await fetch(url);
+      console.log('Response status:', response.status, response.statusText);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      console.log('Insurance applications data received:', {
+        applications: data.applications?.length || 0,
+        totalCount: data.totalCount,
+        currentPage: data.currentPage,
+        totalPages: data.totalPages
+      });
+      return data;
+    },
     enabled: isAuthenticated,
+  });
+
+  const applications = applicationsData?.applications || [];
+  const insuranceApplications = insuranceApplicationsData?.applications || [];
+  
+  // Debug log
+  console.log('Insurance applications state:', {
+    isAuthenticated,
+    insuranceLoading,
+    insuranceError,
+    insuranceApplicationsData,
+    insuranceApplications: insuranceApplications.length
   });
 
   const { data: stats } = useQuery<AdminStats>({
@@ -62,19 +142,9 @@ export default function Admin() {
     }
   };
 
-  const filteredApplications = applications.filter(app => 
-    app.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.applicationNumber.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const filteredInsuranceApplications = insuranceApplications.filter(app => 
-    app.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    app.applicationNumber.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // No need for client-side filtering since backend handles it
+  const filteredApplications = applications;
+  const filteredInsuranceApplications = insuranceApplications;
 
   // Helper function to format dates - handle both Date objects and strings
   const formatDate = (date: string | Date | null | undefined) => {
@@ -201,6 +271,31 @@ export default function Admin() {
     },
   });
 
+  const updateVisaTypeMutation = useMutation({
+    mutationFn: async ({ id, visaCountry }: { id: number; visaCountry: string }) => {
+      const response = await apiRequest("POST", `/api/admin/applications/${id}/visa-type`, { visaType: visaCountry });
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/applications"] });
+      toast({
+        title: "Başarılı",
+        description: "Visa türü güncellendi.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Hata",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateVisaType = (id: number, visaCountry: string) => {
+    updateVisaTypeMutation.mutate({ id, visaCountry });
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "pending":
@@ -224,6 +319,56 @@ export default function Admin() {
         return <Badge variant="destructive">Başarısız</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
+    }
+  };
+
+  const getSupportingDocumentTypeDisplay = (docType: string, visaCountry?: string, visaNumber?: string) => {
+    
+    switch (docType) {
+      case "visa":
+        // Spesifik visa ülkesini göster
+        if (visaCountry === "SCHENGEN") return "Schengen Vizesi";
+        if (visaCountry === "USA") return "ABD Vizesi";
+        if (visaCountry === "GBR") return "İngiltere Vizesi";
+        if (visaCountry === "IRL") return "İrlanda Vizesi";
+        // Eski kayıtlar için (visa country bilgisi yok ama visa number var)
+        if (visaNumber && !visaCountry) {
+          return `Visa Mevcut (No: ${visaNumber.substring(0, 6)}...)`;
+        }
+        return "Visa (Tür Belirsiz)";
+      case "residence":
+        // ISO ülke kodlarına göre ikamet ülkesini göster
+        if (visaCountry === "USA") return "Amerika İkamet İzni";
+        if (visaCountry === "GBR") return "İngiltere İkamet İzni";
+        if (visaCountry === "DEU") return "Almanya İkamet İzni";
+        if (visaCountry === "FRA") return "Fransa İkamet İzni";
+        if (visaCountry === "ITA") return "İtalya İkamet İzni";
+        if (visaCountry === "ESP") return "İspanya İkamet İzni";
+        if (visaCountry === "NLD") return "Hollanda İkamet İzni";
+        if (visaCountry === "BEL") return "Belçika İkamet İzni";
+        if (visaCountry === "AUT") return "Avusturya İkamet İzni";
+        if (visaCountry === "CHE") return "İsviçre İkamet İzni";
+        if (visaCountry === "SWE") return "İsveç İkamet İzni";
+        if (visaCountry === "NOR") return "Norveç İkamet İzni";
+        if (visaCountry === "DNK") return "Danimarka İkamet İzni";
+        if (visaCountry === "FIN") return "Finlandiya İkamet İzni";
+        if (visaCountry === "CAN") return "Kanada İkamet İzni";
+        if (visaCountry === "AUS") return "Avustralya İkamet İzni";
+        if (visaCountry === "JPN") return "Japonya İkamet İzni";
+        if (visaCountry === "KOR") return "Güney Kore İkamet İzni";
+        if (visaCountry === "SGP") return "Singapur İkamet İzni";
+        if (visaCountry === "ARE") return "BAE İkamet İzni";
+        // Eski kayıtlar için
+        if (visaNumber && !visaCountry) {
+          return `İkamet İzni Mevcut (No: ${visaNumber.substring(0, 6)}...)`;
+        }
+        return "İkamet İzni (Ülke Belirsiz)";
+      case "passport":
+        return "Pasaport";
+      case "id_card":
+        return "Kimlik Kartı";
+      default:
+        return docType || 'Belirtilmemiş';
     }
   };
 
@@ -344,9 +489,10 @@ export default function Admin() {
 
         {/* Applications Tabs */}
         <Tabs defaultValue="visa" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="visa">Vize Başvuruları ({filteredApplications.length})</TabsTrigger>
-            <TabsTrigger value="insurance">Sigorta Başvuruları ({filteredInsuranceApplications.length})</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="visa">Vize Başvuruları ({applicationsData?.totalCount || 0})</TabsTrigger>
+            <TabsTrigger value="insurance">Sigorta Başvuruları ({insuranceApplicationsData?.totalCount || 0})</TabsTrigger>
+            <TabsTrigger value="chat">Canlı Destek</TabsTrigger>
           </TabsList>
           
           <TabsContent value="visa" className="mt-6">
@@ -375,6 +521,7 @@ export default function Admin() {
                         <TableHead>Varış Tarihi</TableHead>
                         <TableHead>İşlem Türü</TableHead>
                         <TableHead>Belge Türü</TableHead>
+                        <TableHead>Destekleyici Belge</TableHead>
                         <TableHead>Belge No</TableHead>
                         <TableHead>Belge Başlangıç</TableHead>
                         <TableHead>Belge Bitiş</TableHead>
@@ -404,15 +551,260 @@ export default function Admin() {
                           <TableCell>{app.arrivalDate ? formatDate(app.arrivalDate) : 'N/A'}</TableCell>
                           <TableCell>{app.processingType}</TableCell>
                           <TableCell>{app.documentType}</TableCell>
+                          <TableCell>{getSupportingDocumentTypeDisplay((app as any).supportingDocumentType || (app as any).supporting_document_type, (app as any).supportingDocumentCountry || (app as any).supporting_document_country, (app as any).supportingDocumentNumber || (app as any).supporting_document_number)}</TableCell>
                           <TableCell>{app.supportingDocumentNumber || 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentStartDate ? formatDate(app.supportingDocumentStartDate) : 'N/A'}</TableCell>
                           <TableCell>{app.supportingDocumentEndDate ? formatDate(app.supportingDocumentEndDate) : 'N/A'}</TableCell>
                           <TableCell>${app.totalAmount}</TableCell>
-                          <TableCell>{getPaymentStatusBadge(app.paymentStatus)}</TableCell>
+                          <TableCell>
+                            <div className="flex flex-col gap-1">
+                              {/* Payment Status Badge */}
+                              {app.paymentStatus === "completed" || app.paymentStatus === "succeeded" ? (
+                                <Badge variant="default" className="bg-green-500">✓ Ödemesi Tamam</Badge>
+                              ) : app.paymentStatus === "processing" ? (
+                                <Badge variant="secondary" className="bg-yellow-500">⏳ İşlemde</Badge>
+                              ) : app.paymentStatus === "failed" ? (
+                                <Badge variant="destructive">✗ Başarısız</Badge>
+                              ) : (
+                                <Badge variant="outline" className="bg-gray-100">⏸️ Beklemede</Badge>
+                              )}
+                              
+                              {/* Arrival Date Countdown - Show for ALL applications */}
+                              {app.arrivalDate && (() => {
+                                const today = new Date();
+                                const arrivalDate = new Date(app.arrivalDate);
+                                const diffTime = arrivalDate.getTime() - today.getTime();
+                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                
+                                if (diffDays <= 0) {
+                                  return <span className="text-xs text-red-600 font-medium">🚨 Seyahat tarihi geçti!</span>;
+                                } else if (diffDays <= 7) {
+                                  return <span className="text-xs text-orange-600 font-medium">⚠️ {diffDays} gün kaldı!</span>;
+                                } else if (diffDays <= 30) {
+                                  return <span className="text-xs text-blue-600">{diffDays} gün kaldı</span>;
+                                } else {
+                                  return <span className="text-xs text-green-600">{diffDays} gün</span>;
+                                }
+                              })()}
+                            </div>
+                          </TableCell>
                           <TableCell>{getStatusBadge(app.status)}</TableCell>
                           <TableCell>{formatDate(app.createdAt!)}</TableCell>
                           <TableCell>
-                            <div className="flex gap-2">
+                            <div className="flex flex-col gap-2">
+                              {/* Eski visa kayıtları için visa türü güncelleme */}
+                              {(app as any).supportingDocumentType === "visa" && !((app as any).supportingDocumentCountry || (app as any).supporting_document_country) && (app.supportingDocumentNumber || (app as any).supporting_document_number) && (
+                                <div className="flex flex-col gap-1 p-2 bg-blue-50 rounded text-xs">
+                                  <div className="text-blue-600 font-medium">
+                                    📋 Visa Mevcut: {app.supportingDocumentNumber}
+                                  </div>
+                                  <div className="text-gray-600 mb-1">
+                                    {app.countryOfOrigin} → Hangi ülke vizesi?
+                                  </div>
+                                  <div className="flex gap-1 flex-wrap">
+                                    {app.countryOfOrigin === "Pakistan" && (
+                                      <>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => updateVisaType(app.id, "SCHENGEN")}
+                                          className="text-xs px-2 py-1 h-6 bg-green-50 hover:bg-green-100"
+                                          disabled={updateVisaTypeMutation.isPending}
+                                        >
+                                          🇪🇺 Schengen
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => updateVisaType(app.id, "GBR")}
+                                          className="text-xs px-2 py-1 h-6 bg-blue-50 hover:bg-blue-100"
+                                          disabled={updateVisaTypeMutation.isPending}
+                                        >
+                                          🇬🇧 İngiltere
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => updateVisaType(app.id, "USA")}
+                                          className="text-xs px-2 py-1 h-6 bg-red-50 hover:bg-red-100"
+                                          disabled={updateVisaTypeMutation.isPending}
+                                        >
+                                          🇺🇸 ABD
+                                        </Button>
+                                      </>
+                                    )}
+                                    {app.countryOfOrigin === "Egypt" && (
+                                      <>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => updateVisaType(app.id, "SCHENGEN")}
+                                          className="text-xs px-2 py-1 h-6 bg-green-50 hover:bg-green-100"
+                                          disabled={updateVisaTypeMutation.isPending}
+                                        >
+                                          🇪🇺 Schengen
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => updateVisaType(app.id, "GBR")}
+                                          className="text-xs px-2 py-1 h-6 bg-blue-50 hover:bg-blue-100"
+                                          disabled={updateVisaTypeMutation.isPending}
+                                        >
+                                          🇬🇧 İngiltere
+                                        </Button>
+                                      </>
+                                    )}
+                                    {/* Diğer ülkeler için genel seçenekler */}
+                                    {!["Pakistan", "Egypt"].includes(app.countryOfOrigin || "") && (
+                                      <>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => updateVisaType(app.id, "SCHENGEN")}
+                                          className="text-xs px-2 py-1 h-6"
+                                          disabled={updateVisaTypeMutation.isPending}
+                                        >
+                                          🇪🇺 Schengen
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => updateVisaType(app.id, "USA")}
+                                          className="text-xs px-2 py-1 h-6"
+                                          disabled={updateVisaTypeMutation.isPending}
+                                        >
+                                          🇺🇸 ABD
+                                        </Button>
+                                        <Button
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => updateVisaType(app.id, "GBR")}
+                                          className="text-xs px-2 py-1 h-6"
+                                          disabled={updateVisaTypeMutation.isPending}
+                                        >
+                                          🇬🇧 İngiltere
+                                        </Button>
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+                              
+                              {/* Eski residence permit kayıtları için ülke güncelleme */}
+                              {(app as any).supportingDocumentType === "residence" && !((app as any).supportingDocumentCountry || (app as any).supporting_document_country) && (app.supportingDocumentNumber || (app as any).supporting_document_number) && (
+                                <div className="flex flex-col gap-1 p-2 bg-purple-50 rounded text-xs">
+                                  <div className="text-purple-600 font-medium">
+                                    🏠 İkamet İzni: {app.supportingDocumentNumber}
+                                  </div>
+                                  <div className="text-gray-600 mb-1">
+                                    {app.countryOfOrigin} → Hangi ülkenin ikamet izni?
+                                  </div>
+                                  <div className="flex gap-1 flex-wrap">
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "GERMANY")}
+                                      className="text-xs px-2 py-1 h-6 bg-yellow-50 hover:bg-yellow-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇩🇪 Almanya
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "NETHERLANDS")}
+                                      className="text-xs px-2 py-1 h-6 bg-orange-50 hover:bg-orange-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇳🇱 Hollanda
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "FRANCE")}
+                                      className="text-xs px-2 py-1 h-6 bg-blue-50 hover:bg-blue-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇫🇷 Fransa
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "ITALY")}
+                                      className="text-xs px-2 py-1 h-6 bg-green-50 hover:bg-green-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇮🇹 İtalya
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "SPAIN")}
+                                      className="text-xs px-2 py-1 h-6 bg-red-50 hover:bg-red-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇪🇸 İspanya
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "SWEDEN")}
+                                      className="text-xs px-2 py-1 h-6 bg-blue-50 hover:bg-blue-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇸🇪 İsveç
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "AUSTRIA")}
+                                      className="text-xs px-2 py-1 h-6 bg-red-50 hover:bg-red-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇦🇹 Avusturya
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "BELGIUM")}
+                                      className="text-xs px-2 py-1 h-6 bg-yellow-50 hover:bg-yellow-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇧🇪 Belçika
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "DENMARK")}
+                                      className="text-xs px-2 py-1 h-6 bg-red-50 hover:bg-red-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇩🇰 Danimarka
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "NORWAY")}
+                                      className="text-xs px-2 py-1 h-6 bg-blue-50 hover:bg-blue-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇳🇴 Norveç
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => updateVisaType(app.id, "SWITZERLAND")}
+                                      className="text-xs px-2 py-1 h-6 bg-red-50 hover:bg-red-100"
+                                      disabled={updateVisaTypeMutation.isPending}
+                                    >
+                                      🇨🇭 İsviçre
+                                    </Button>
+                                  </div>
+                                </div>
+                              )}
+                              
+                              <div className="flex gap-2">
                               <Dialog>
                                 <DialogTrigger asChild>
                                   <Button
@@ -427,6 +819,9 @@ export default function Admin() {
                                 <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" aria-describedby="visa-application-details">
                                   <DialogHeader>
                                     <DialogTitle>Başvuru Detayları - {app.applicationNumber}</DialogTitle>
+                                    <DialogDescription id="visa-application-details">
+                                      Vize başvurusunun detaylı bilgilerini görüntüleme ve düzenleme paneli
+                                    </DialogDescription>
                                   </DialogHeader>
                                   {selectedApplication && (
                                     <div className="grid md:grid-cols-2 gap-4 py-4">
@@ -450,6 +845,7 @@ export default function Admin() {
                                         <div><strong>Varış Tarihi:</strong> {selectedApplication.arrivalDate ? formatDate(selectedApplication.arrivalDate) : 'N/A'}</div>
                                         <div><strong>İşlem Türü:</strong> {selectedApplication.processingType}</div>
                                         <div><strong>Belge Türü:</strong> {selectedApplication.documentType}</div>
+                                        <div><strong>Destekleyici Belge:</strong> {getSupportingDocumentTypeDisplay((selectedApplication as any).supportingDocumentType || (selectedApplication as any).supporting_document_type, (selectedApplication as any).supportingDocumentCountry || (selectedApplication as any).supporting_document_country, (selectedApplication as any).supportingDocumentNumber || (selectedApplication as any).supporting_document_number)}</div>
                                         <div><strong>Belge No:</strong> {selectedApplication.supportingDocumentNumber || 'N/A'}</div>
                                         <div><strong>Belge Başlangıç:</strong> {selectedApplication.supportingDocumentStartDate ? formatDate(selectedApplication.supportingDocumentStartDate) : 'N/A'}</div>
                                         <div><strong>Belge Bitiş:</strong> {selectedApplication.supportingDocumentEndDate ? formatDate(selectedApplication.supportingDocumentEndDate) : 'N/A'}</div>
@@ -496,6 +892,7 @@ export default function Admin() {
                                   ✗ Reddedildi & E-posta Gönderildi
                                 </div>
                               )}
+                              </div>
                             </div>
                           </TableCell>
                         </TableRow>
@@ -503,6 +900,34 @@ export default function Admin() {
                     </TableBody>
                   </Table>
                 </div>
+                
+                {/* Visa Applications Pagination */}
+                {applicationsData && applicationsData.totalPages > 1 && (
+                  <div className="flex items-center justify-between px-4 py-3 border-t">
+                    <div className="text-sm text-gray-700">
+                      Sayfa {applicationsData.currentPage} / {applicationsData.totalPages} 
+                      (Toplam {applicationsData.totalCount} kayıt)
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                        disabled={currentPage === 1}
+                      >
+                        Önceki
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(Math.min(applicationsData.totalPages, currentPage + 1))}
+                        disabled={currentPage === applicationsData.totalPages}
+                      >
+                        Sonraki
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
@@ -536,7 +961,26 @@ export default function Admin() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredInsuranceApplications.map((app) => (
+                      {insuranceLoading ? (
+                        <TableRow>
+                          <TableCell colSpan={16} className="text-center py-8">
+                            Sigorta başvuruları yükleniyor...
+                          </TableCell>
+                        </TableRow>
+                      ) : insuranceError ? (
+                        <TableRow>
+                          <TableCell colSpan={16} className="text-center py-8 text-red-500">
+                            Hata: {insuranceError.message}
+                          </TableCell>
+                        </TableRow>
+                      ) : filteredInsuranceApplications.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={16} className="text-center py-8">
+                            Hiç sigorta başvurusu bulunamadı. Debug: isAuth={isAuthenticated ? 'true' : 'false'}, hasData={!!insuranceApplicationsData ? 'true' : 'false'}
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        filteredInsuranceApplications.map((app) => (
                         <TableRow key={app.id}>
                           <TableCell className="font-medium">{app.applicationNumber}</TableCell>
                           <TableCell>{app.firstName} {app.lastName}</TableCell>
@@ -550,7 +994,38 @@ export default function Admin() {
                           <TableCell>{app.tripDurationDays || 'N/A'} gün</TableCell>
                           <TableCell>{app.productId}</TableCell>
                           <TableCell>${app.totalAmount}</TableCell>
-                          <TableCell>{getPaymentStatusBadge(app.paymentStatus)}</TableCell>
+                          <TableCell>
+                            <div className="flex flex-col gap-1">
+                              {/* Payment Status Badge */}
+                              {app.paymentStatus === "completed" || app.paymentStatus === "succeeded" ? (
+                                <Badge variant="default" className="bg-green-500">✓ Ödemesi Tamam</Badge>
+                              ) : app.paymentStatus === "processing" ? (
+                                <Badge variant="secondary" className="bg-yellow-500">⏳ İşlemde</Badge>
+                              ) : app.paymentStatus === "failed" ? (
+                                <Badge variant="destructive">✗ Başarısız</Badge>
+                              ) : (
+                                <Badge variant="outline" className="bg-gray-100">⏸️ Beklemede</Badge>
+                              )}
+                              
+                              {/* Travel Date Countdown - Show for ALL applications */}
+                              {app.travelDate && (() => {
+                                const today = new Date();
+                                const travelDate = new Date(app.travelDate);
+                                const diffTime = travelDate.getTime() - today.getTime();
+                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                
+                                if (diffDays <= 0) {
+                                  return <span className="text-xs text-red-600 font-medium">🚨 Seyahat tarihi geçti!</span>;
+                                } else if (diffDays <= 7) {
+                                  return <span className="text-xs text-orange-600 font-medium">⚠️ {diffDays} gün kaldı!</span>;
+                                } else if (diffDays <= 30) {
+                                  return <span className="text-xs text-blue-600">{diffDays} gün kaldı</span>;
+                                } else {
+                                  return <span className="text-xs text-green-600">{diffDays} gün</span>;
+                                }
+                              })()}
+                            </div>
+                          </TableCell>
                           <TableCell>{getStatusBadge(app.status)}</TableCell>
                           <TableCell>{formatDate(app.createdAt!)}</TableCell>
                           <TableCell>
@@ -569,6 +1044,9 @@ export default function Admin() {
                                 <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" aria-describedby="insurance-application-details">
                                   <DialogHeader>
                                     <DialogTitle>Sigorta Başvuru Detayları - {app.applicationNumber}</DialogTitle>
+                                    <DialogDescription id="insurance-application-details">
+                                      Sigorta başvurusunun detaylı bilgilerini görüntüleme ve onaylama paneli
+                                    </DialogDescription>
                                   </DialogHeader>
                                   {selectedInsuranceApp && (
                                     <div className="grid md:grid-cols-2 gap-4 py-4">
@@ -581,8 +1059,152 @@ export default function Admin() {
                                         <div><strong>Ülke:</strong> {(selectedInsuranceApp as any).countryOfOrigin || 'N/A'}</div>
                                         <div><strong>Doğum Tarihi:</strong> {selectedInsuranceApp.dateOfBirth || 'N/A'}</div>
                                         <div><strong>Hedef:</strong> {selectedInsuranceApp.destination}</div>
-                                        {selectedInsuranceApp.parentIdPhotos && (
-                                          <div><strong>Ebeveyn Kimlik:</strong> 18 yaş altı - kimlik fotoğrafları mevcut</div>
+                                        
+                                        {/* Parent ID Photos Display for Under 18 */}
+                                        {selectedInsuranceApp.parentIdPhotos && selectedInsuranceApp.parentIdPhotos.length > 0 ? (
+                                          <div className="space-y-3">
+                                            <div><strong>Ebeveyn Kimlik Fotoğrafları:</strong> (18 yaş altı)</div>
+                                            
+                                            {/* Group photos by type if available */}
+                                            {(() => {
+                                              const motherPhotos = selectedInsuranceApp.parentIdPhotos.filter((photo: any) => 
+                                                typeof photo === 'object' && photo.type === 'mother'
+                                              );
+                                              const fatherPhotos = selectedInsuranceApp.parentIdPhotos.filter((photo: any) => 
+                                                typeof photo === 'object' && photo.type === 'father'
+                                              );
+                                              const generalPhotos = selectedInsuranceApp.parentIdPhotos.filter((photo: any) => 
+                                                typeof photo === 'string' || (typeof photo === 'object' && photo.type === 'parent')
+                                              );
+
+                                              return (
+                                                <div className="space-y-4">
+                                                  {/* Mother's Photos */}
+                                                  {motherPhotos.length > 0 && (
+                                                    <div className="border border-pink-200 bg-pink-50 rounded-lg p-3">
+                                                      <div className="text-sm font-semibold text-pink-800 mb-2">👩 Anne Kimlik Fotoğrafları</div>
+                                                      <div className="grid grid-cols-2 gap-2">
+                                                        {motherPhotos.map((photo: any, index: number) => (
+                                                          <div key={`mother-${index}`} className="border rounded-lg p-2 bg-white">
+                                                            <img 
+                                                              src={photo.data} 
+                                                              alt={`Anne Kimlik ${index + 1}`}
+                                                              className="w-full h-24 object-cover rounded cursor-pointer hover:opacity-80"
+                                                              onClick={() => {
+                                                                const newWindow = window.open();
+                                                                if (newWindow) {
+                                                                  newWindow.document.write(`
+                                                                    <html>
+                                                                      <head><title>Anne Kimlik ${index + 1}</title></head>
+                                                                      <body style="margin:0;padding:20px;background:#f0f0f0;display:flex;justify-content:center;align-items:center;min-height:100vh;">
+                                                                        <img src="${photo.data}" style="max-width:100%;max-height:100%;object-fit:contain;" alt="Anne Kimlik ${index + 1}"/>
+                                                                      </body>
+                                                                    </html>
+                                                                  `);
+                                                                  newWindow.document.close();
+                                                                }
+                                                              }}
+                                                            />
+                                                            <p className="text-xs text-gray-600 mt-1 text-center">Anne Kimlik {index + 1}</p>
+                                                          </div>
+                                                        ))}
+                                                      </div>
+                                                    </div>
+                                                  )}
+
+                                                  {/* Father's Photos */}
+                                                  {fatherPhotos.length > 0 && (
+                                                    <div className="border border-blue-200 bg-blue-50 rounded-lg p-3">
+                                                      <div className="text-sm font-semibold text-blue-800 mb-2">👨 Baba Kimlik Fotoğrafları</div>
+                                                      <div className="grid grid-cols-2 gap-2">
+                                                        {fatherPhotos.map((photo: any, index: number) => (
+                                                          <div key={`father-${index}`} className="border rounded-lg p-2 bg-white">
+                                                            <img 
+                                                              src={photo.data} 
+                                                              alt={`Baba Kimlik ${index + 1}`}
+                                                              className="w-full h-24 object-cover rounded cursor-pointer hover:opacity-80"
+                                                              onClick={() => {
+                                                                const newWindow = window.open();
+                                                                if (newWindow) {
+                                                                  newWindow.document.write(`
+                                                                    <html>
+                                                                      <head><title>Baba Kimlik ${index + 1}</title></head>
+                                                                      <body style="margin:0;padding:20px;background:#f0f0f0;display:flex;justify-content:center;align-items:center;min-height:100vh;">
+                                                                        <img src="${photo.data}" style="max-width:100%;max-height:100%;object-fit:contain;" alt="Baba Kimlik ${index + 1}"/>
+                                                                      </body>
+                                                                    </html>
+                                                                  `);
+                                                                  newWindow.document.close();
+                                                                }
+                                                              }}
+                                                            />
+                                                            <p className="text-xs text-gray-600 mt-1 text-center">Baba Kimlik {index + 1}</p>
+                                                          </div>
+                                                        ))}
+                                                      </div>
+                                                    </div>
+                                                  )}
+
+                                                  {/* General Parent Photos (backward compatibility) */}
+                                                  {generalPhotos.length > 0 && (
+                                                    <div className="border border-gray-200 bg-gray-50 rounded-lg p-3">
+                                                      <div className="text-sm font-semibold text-gray-800 mb-2">📄 Ebeveyn Kimlik Fotoğrafları</div>
+                                                      <div className="grid grid-cols-2 gap-2">
+                                                        {generalPhotos.map((photo: any, index: number) => {
+                                                          const photoSrc = typeof photo === 'string' ? photo : photo.data;
+                                                          return (
+                                                            <div key={`general-${index}`} className="border rounded-lg p-2 bg-white">
+                                                              <img 
+                                                                src={photoSrc} 
+                                                                alt={`Ebeveyn Kimlik ${index + 1}`}
+                                                                className="w-full h-24 object-cover rounded cursor-pointer hover:opacity-80"
+                                                                onClick={() => {
+                                                                  const newWindow = window.open();
+                                                                  if (newWindow) {
+                                                                    newWindow.document.write(`
+                                                                      <html>
+                                                                        <head><title>Ebeveyn Kimlik ${index + 1}</title></head>
+                                                                        <body style="margin:0;padding:20px;background:#f0f0f0;display:flex;justify-content:center;align-items:center;min-height:100vh;">
+                                                                          <img src="${photoSrc}" style="max-width:100%;max-height:100%;object-fit:contain;" alt="Ebeveyn Kimlik ${index + 1}"/>
+                                                                        </body>
+                                                                      </html>
+                                                                    `);
+                                                                    newWindow.document.close();
+                                                                  }
+                                                                }}
+                                                              />
+                                                              <p className="text-xs text-gray-600 mt-1 text-center">Ebeveyn Kimlik {index + 1}</p>
+                                                            </div>
+                                                          );
+                                                        })}
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                                </div>
+                                              );
+                                            })()}
+                                          </div>
+                                        ) : (
+                                          // Check if user is under 18 but no parent photos
+                                          (() => {
+                                            if (selectedInsuranceApp.dateOfBirth) {
+                                              const birthDate = new Date(selectedInsuranceApp.dateOfBirth);
+                                              const today = new Date();
+                                              const age = today.getFullYear() - birthDate.getFullYear();
+                                              const monthDiff = today.getMonth() - birthDate.getMonth();
+                                              
+                                              const actualAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate()) ? age - 1 : age;
+                                              
+                                              if (actualAge < 18) {
+                                                return (
+                                                  <div className="text-red-600">
+                                                    <strong>⚠️ Eksik:</strong> 18 yaş altı - Ebeveyn kimlik fotoğrafları gerekli ama yüklenmemiş!
+                                                  </div>
+                                                );
+                                              }
+                                            }
+                                            return null;
+                                          })()
                                         )}
                                       </div>
                                       <div className="space-y-3">
@@ -637,12 +1259,44 @@ export default function Admin() {
                             </div>
                           </TableCell>
                         </TableRow>
-                      ))}
+                        ))
+                      )}
                     </TableBody>
                   </Table>
                 </div>
+                
+                {/* Insurance Applications Pagination */}
+                {insuranceApplicationsData && insuranceApplicationsData.totalPages > 1 && (
+                  <div className="flex items-center justify-between px-4 py-3 border-t">
+                    <div className="text-sm text-gray-700">
+                      Sayfa {insuranceApplicationsData.currentPage} / {insuranceApplicationsData.totalPages} 
+                      (Toplam {insuranceApplicationsData.totalCount} kayıt)
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setInsuranceCurrentPage(Math.max(1, insuranceCurrentPage - 1))}
+                        disabled={insuranceCurrentPage === 1}
+                      >
+                        Önceki
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setInsuranceCurrentPage(Math.min(insuranceApplicationsData.totalPages, insuranceCurrentPage + 1))}
+                        disabled={insuranceCurrentPage === insuranceApplicationsData.totalPages}
+                      >
+                        Sonraki
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
+          </TabsContent>
+          <TabsContent value="chat" className="mt-6">
+            <ChatAdminPanel />
           </TabsContent>
         </Tabs>
 

@@ -12,6 +12,8 @@ export default function PaymentSuccess() {
   const { toast } = useToast();
   const { t } = useLanguage();
   const [urlParams, setUrlParams] = useState<URLSearchParams | null>(null);
+  const [paymentVerified, setPaymentVerified] = useState<boolean | null>(null);
+  const [applicationData, setApplicationData] = useState<any>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -21,6 +23,28 @@ export default function PaymentSuccess() {
     const transactionId = params.get('transaction');
     const orderId = params.get('order');
     const isTest = params.get('test');
+    
+    // If order ID exists, verify payment status from database
+    if (orderId) {
+      const verifyPayment = async () => {
+        try {
+          const response = await fetch(`/api/applications/${orderId}`);
+          if (response.ok) {
+            const data = await response.json();
+            setApplicationData(data);
+            if (data.paymentStatus === 'succeeded' || data.paymentStatus === 'completed') {
+              setPaymentVerified(true);
+            } else {
+              setPaymentVerified(false);
+            }
+          }
+        } catch (error) {
+          console.error('Payment verification error:', error);
+          setPaymentVerified(false);
+        }
+      };
+      verifyPayment();
+    }
     
     if (paymentStatus === 'success' && transactionId && orderId) {
       toast({
@@ -85,10 +109,13 @@ export default function PaymentSuccess() {
         <CardContent className="text-center space-y-4">
           <Alert>
             <AlertDescription>
-              {isTest 
-                ? t('payment.success.test.description')
-                : t('payment.success.description')
-              }
+              {paymentVerified === true ? (
+                "✅ Your payment has been successfully processed and confirmed in our system."
+              ) : paymentVerified === false ? (
+                "⏳ Your payment is being processed. You will receive email confirmation once approved."
+              ) : (
+                "🔍 Verifying your payment status..."
+              )}
             </AlertDescription>
           </Alert>
           

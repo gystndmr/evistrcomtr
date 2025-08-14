@@ -6,124 +6,267 @@ export default function Refund() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-sm p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">Refund Policy</h1>
-          <p className="text-gray-600 mb-8">Last updated: January 2024</p>
+      <main className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
+        <div className="bg-white rounded-lg shadow-sm p-6 sm:p-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
+            Refund & Cancellation Policy
+          </h1>
+          <p className="text-gray-600 mb-2">EURAMED LTD</p>
+          <p className="text-gray-600 mb-2">Company Number: 16621355</p>
+          <p className="text-gray-600 mb-2">Incorporation Date: August 1st, 2025</p>
+          <p className="text-gray-600 mb-2">Registered Address: 71–75, Shelton Street, Covent Garden, London, WC2H 9JQ</p>
+          <p className="text-gray-600 mb-2">Website: <a href="https://euramedglobal.com/" className="text-blue-600 hover:text-blue-800 underline">www.euramedglobal.com</a></p>
+          <p className="text-gray-600 mb-8">Effective Date: August 1st, 2025</p>
           
-          <div className="space-y-8">
+          <div className="prose max-w-none space-y-8">
+            
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">1. Refund Overview</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">1. Legal Framework and Service Type</h2>
+              
               <p className="text-gray-700 mb-4">
-                getvisa.tr is committed to providing transparent refund policies. This policy outlines the circumstances 
-                under which refunds may be issued and the process for requesting refunds.
+                EURAMED LTD provides e-Visa consultancy as a custom digital service. This means that once 
+                your application has been processed and submitted, the service becomes non-refundable under 
+                applicable consumer rights legislation.
               </p>
-            </section>
-
-            <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">2. Non-Refundable Fees</h2>
-              <p className="text-gray-700 mb-4">The following fees are non-refundable under all circumstances:</p>
-              <ul className="list-disc pl-6 text-gray-700 space-y-2">
-                <li><strong>E-Visa Application Fee ($69):</strong> This fee is paid to Turkish authorities and cannot be refunded</li>
-                <li><strong>Processing Fees:</strong> Service fees for application processing once work has begun</li>
-                <li><strong>Supporting Document Fees:</strong> Fees for document review and verification services</li>
-              </ul>
-            </section>
-
-            <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">3. Refundable Circumstances</h2>
-              <p className="text-gray-700 mb-4">Refunds may be issued in the following limited circumstances:</p>
-              <div className="bg-green-50 rounded-lg p-4 mb-4">
-                <h3 className="font-semibold text-green-900 mb-2">Full Refund Eligible</h3>
-                <ul className="list-disc pl-6 text-green-800 space-y-2">
-                  <li>Duplicate payment made in error</li>
-                  <li>Technical error resulting in overcharge</li>
-                  <li>Application not submitted due to our system failure</li>
-                  <li>Service unavailable for your nationality (determined before processing)</li>
+              <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mb-4">
+                <h3 className="font-semibold text-blue-900 mb-3">Legal Classification</h3>
+                <p className="text-blue-800 mb-3">
+                  This type of service falls under the classification of non-refundable digital content, as outlined in:
+                </p>
+                <ul className="text-blue-800 space-y-2">
+                  <li>• <strong>UK Consumer Contracts Regulation 2013, Article 28(b)</strong></li>
+                  <li>• <strong>EU Consumer Rights Directive (Directive 2011/83/EU)</strong></li>
                 </ul>
               </div>
-              <div className="bg-yellow-50 rounded-lg p-4">
-                <h3 className="font-semibold text-yellow-900 mb-2">Partial Refund Eligible</h3>
-                <ul className="list-disc pl-6 text-yellow-800 space-y-2">
-                  <li>Cancellation within 1 hour of payment (processing fee refundable)</li>
-                  <li>Our failure to meet guaranteed processing times</li>
-                  <li>Significant service error on our part</li>
-                </ul>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">2. Refund Eligibility</h2>
+              
+              <p className="text-gray-700 mb-4">
+                Refunds may be considered under the following limited conditions:
+              </p>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-300 rounded-lg">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-900">
+                        Condition
+                      </th>
+                      <th className="border border-gray-300 px-4 py-3 text-center font-semibold text-gray-900">
+                        Refund Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="border border-gray-300 px-4 py-3 text-gray-700">
+                        Application not submitted yet
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3 text-center">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
+                          ✅ Possible (with up to 20% service fee deducted)
+                        </span>
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="border border-gray-300 px-4 py-3 text-gray-700">
+                        Application submitted but not yet reviewed by authorities
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3 text-center">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-red-100 text-red-800">
+                          ❌ Not refundable
+                        </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="border border-gray-300 px-4 py-3 text-gray-700">
+                        Government rejection or denial
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3 text-center">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-red-100 text-red-800">
+                          ❌ Not refundable
+                        </span>
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="border border-gray-300 px-4 py-3 text-gray-700">
+                        Duplicate payment or technical error
+                      </td>
+                      <td className="border border-gray-300 px-4 py-3 text-center">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
+                          ✅ Full refund upon verification
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div className="bg-amber-50 border border-amber-200 p-4 rounded-lg mt-4">
+                <p className="text-amber-800 text-sm">
+                  <strong>Note:</strong> Refund requests will be evaluated on a case-by-case basis.
+                </p>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">3. How to Request a Refund</h2>
+              
+              <p className="text-gray-700 mb-4">To request a refund, you must:</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="border border-gray-200 bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-900 mb-3">Required Steps</h3>
+                  <ul className="text-gray-700 space-y-2">
+                    <li>• <strong>Contact us within 7 calendar days of payment</strong></li>
+                    <li>• <strong>Provide your full name, email, transaction ID, and reason</strong></li>
+                    <li>• <strong>Email your request to:</strong> info@euramedglobal.com</li>
+                  </ul>
+                </div>
+                <div className="border border-blue-200 bg-blue-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-blue-900 mb-3">Processing Timeline</h3>
+                  <ul className="text-blue-800 space-y-2">
+                    <li>• <strong>Review Period:</strong> 5-7 business days</li>
+                    <li>• <strong>Response Time:</strong> Typically reviewed and responded to within this period</li>
+                    <li>• <strong>Refund Processing:</strong> If approved, processed within 14 business days</li>
+                  </ul>
+                </div>
               </div>
             </section>
 
             <section>
               <h2 className="text-xl font-semibold text-gray-900 mb-4">4. Non-Refundable Circumstances</h2>
-              <p className="text-gray-700 mb-4">Refunds will NOT be issued for:</p>
-              <ul className="list-disc pl-6 text-gray-700 space-y-2">
-                <li>Visa application rejection by Turkish authorities</li>
-                <li>Incomplete or incorrect information provided by applicant</li>
-                <li>Failure to provide required supporting documents</li>
-                <li>Change of travel plans after application submission</li>
-                <li>Delays caused by government processing or policy changes</li>
-                <li>Customer dissatisfaction with processing time (within stated ranges)</li>
-                <li>Applications submitted after our processing has begun</li>
-              </ul>
-            </section>
-
-            <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">5. Refund Process</h2>
-              <p className="text-gray-700 mb-4">To request a refund:</p>
-              <ol className="list-decimal pl-6 text-gray-700 space-y-2">
-                <li>Email us at <strong>info@getvisa.tr</strong> with "Refund Request" in the subject line</li>
-                <li>Include your application reference number and payment details</li>
-                <li>Provide a detailed explanation of why you believe a refund is warranted</li>
-                <li>Our team will review your request within 2-3 business days</li>
-                <li>If approved, refunds will be processed within 5-10 business days</li>
-                <li>Refunds will be issued to the original payment method</li>
-              </ol>
-            </section>
-
-            <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">6. Processing Times</h2>
-              <div className="bg-blue-50 rounded-lg p-4">
-                <p className="text-blue-900 mb-2"><strong>Review Time:</strong> 2-3 business days</p>
-                <p className="text-blue-900 mb-2"><strong>Processing Time:</strong> 5-10 business days (if approved)</p>
-                <p className="text-blue-900"><strong>Bank Processing:</strong> Additional 3-5 business days (varies by bank)</p>
+              
+              <p className="text-gray-700 mb-4">No refund will be issued under the following conditions:</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="border-l-4 border-red-500 pl-4">
+                  <h3 className="font-semibold text-gray-900 mb-2">User-Related Issues</h3>
+                  <ul className="text-gray-700 space-y-1">
+                    <li>• User provides incorrect or false information</li>
+                    <li>• User fails to upload necessary documents on time</li>
+                    <li>• User changes mind after application is submitted</li>
+                    <li>• User fails to respond to follow-up emails for required actions</li>
+                  </ul>
+                </div>
+                <div className="border-l-4 border-orange-500 pl-4">
+                  <h3 className="font-semibold text-gray-900 mb-2">External Factors</h3>
+                  <ul className="text-gray-700 space-y-1">
+                    <li>• Government denies or delays the visa without fault of EURAMED LTD</li>
+                    <li>• Changes in government policies or procedures</li>
+                    <li>• Processing delays due to external factors beyond our control</li>
+                    <li>• Force majeure events affecting service delivery</li>
+                  </ul>
+                </div>
               </div>
             </section>
 
             <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">7. Dispute Resolution</h2>
-              <p className="text-gray-700 mb-4">
-                If you disagree with our refund decision, you may:
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">5. Chargebacks and Disputes</h2>
+              
+              <div className="bg-red-50 border border-red-200 p-6 rounded-lg">
+                <h3 className="font-semibold text-red-900 mb-4">⚠️ Important Warning</h3>
+                <p className="text-red-800 mb-4">
+                  Users who initiate unauthorized chargebacks or payment disputes without first contacting us will be:
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <ul className="text-red-800 space-y-2">
+                    <li>• <strong>Blocked from future use of our services</strong></li>
+                    <li>• <strong>Reported to payment processors and flagged in global fraud monitoring databases</strong></li>
+                  </ul>
+                  <ul className="text-red-800 space-y-2">
+                    <li>• <strong>Legally pursued if the chargeback is deemed fraudulent</strong></li>
+                    <li>• <strong>Subject to recovery of legal costs and damages</strong></li>
+                  </ul>
+                </div>
+                
+                <div className="bg-red-100 border border-red-300 p-3 rounded mt-4">
+                  <p className="text-red-900 text-sm">
+                    <strong>Reference:</strong> Our full Payment & 3D Secure Policy is available at: 
+                    <br />
+                    📄 <a href="https://euramedglobal.com/payment-policy" className="font-mono text-blue-600 hover:text-blue-800 underline">www.euramedglobal.com/payment-policy</a>
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">6. Currency and Payment Method of Refunds</h2>
+              
+              <p className="text-gray-700 mb-4">Approved refunds will:</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="border border-green-200 bg-green-50 p-4 rounded-lg text-center">
+                  <div className="text-2xl mb-2">💳</div>
+                  <h3 className="font-semibold text-green-900 mb-2">Original Payment Method</h3>
+                  <p className="text-green-800 text-sm">
+                    Be returned using the original payment method
+                  </p>
+                </div>
+                <div className="border border-blue-200 bg-blue-50 p-4 rounded-lg text-center">
+                  <div className="text-2xl mb-2">💱</div>
+                  <h3 className="font-semibold text-blue-900 mb-2">Same Currency</h3>
+                  <p className="text-blue-800 text-sm">
+                    Be processed in the same currency used during payment
+                  </p>
+                </div>
+                <div className="border border-purple-200 bg-purple-50 p-4 rounded-lg text-center">
+                  <div className="text-2xl mb-2">⏱️</div>
+                  <h3 className="font-semibold text-purple-900 mb-2">Processing Time</h3>
+                  <p className="text-purple-800 text-sm">
+                    Be issued within 14 business days of approval
+                  </p>
+                </div>
+              </div>
+              <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg mt-4">
+                <h3 className="font-semibold text-yellow-900 mb-2">Additional Charges</h3>
+                <p className="text-yellow-800 text-sm">
+                  Bank transfer charges or currency conversion fees (if any) will be deducted from the refunded amount.
+                </p>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">7. Contact</h2>
+              
+              <p className="text-gray-700 mb-4">For refund-related queries, please reach out to:</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="border border-gray-200 bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-900 mb-3">📧 Email Contact</h3>
+                  <div className="text-gray-700 space-y-2">
+                    <p><strong>Email:</strong> info@euramedglobal.com</p>
+                    <p><strong>Subject Line:</strong> "Refund Request - [Transaction ID]"</p>
+                    <p><strong>Response Time:</strong> 5-7 business days</p>
+                  </div>
+                </div>
+                <div className="border border-gray-200 bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-semibold text-gray-900 mb-3">🌐 Company Information</h3>
+                  <div className="text-gray-700 space-y-2">
+                    <p><strong>Website:</strong> <a href="https://euramedglobal.com/" className="text-blue-600 hover:text-blue-800 underline">www.euramedglobal.com</a></p>
+                    <p><strong>Company:</strong> EURAMED LTD</p>
+                    <p><strong>Registration:</strong> 16621355</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg mt-6">
+                <h3 className="font-semibold text-blue-900 mb-3">🏢 Registered Address</h3>
+                <div className="text-blue-800 space-y-1">
+                  <p><strong>EURAMED LTD</strong></p>
+                  <p>71–75, Shelton Street, Covent Garden</p>
+                  <p>London, WC2H 9JQ</p>
+                  <p>United Kingdom</p>
+                </div>
+              </div>
+            </section>
+            <div className="bg-gray-100 border border-gray-300 p-4 rounded-lg mt-8">
+              <p className="text-sm text-gray-600 text-center">
+                This Refund & Cancellation Policy is effective as of August 1st, 2025, and may be updated 
+                periodically to reflect changes in our business operations, legal requirements, or service offerings. 
+                Customers will be notified of material changes through appropriate channels.
               </p>
-              <ul className="list-disc pl-6 text-gray-700 space-y-2">
-                <li>Request a review by our customer service manager</li>
-                <li>Provide additional documentation to support your claim</li>
-                <li>Contact your credit card company for dispute resolution</li>
-                <li>Seek mediation through consumer protection agencies</li>
-              </ul>
-            </section>
-
-            <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">8. Important Notes</h2>
-              <div className="bg-yellow-50 rounded-lg p-4">
-                <ul className="list-disc pl-6 text-yellow-800 space-y-2">
-                  <li>Refund requests must be made within 30 days of payment</li>
-                  <li>All refunds are subject to our terms and conditions</li>
-                  <li>Processing fees may apply for refund transactions</li>
-                  <li>Refunds do not include bank charges or currency conversion fees</li>
-                  <li>This policy may be updated without prior notice</li>
-                </ul>
-              </div>
-            </section>
-
-            <section>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">9. Contact Information</h2>
-              <p className="text-gray-700 mb-4">For refund requests or questions about this policy:</p>
-              <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-gray-700"><strong>Email:</strong> info@getvisa.tr</p>
-                <p className="text-gray-700"><strong>Subject:</strong> Refund Request - [Your Application Number]</p>
-                <p className="text-gray-700"><strong>Website:</strong> getvisa.tr</p>
-                <p className="text-gray-700"><strong>Response Time:</strong> 2-3 business days</p>
-              </div>
-            </section>
+            </div>
           </div>
         </div>
       </main>

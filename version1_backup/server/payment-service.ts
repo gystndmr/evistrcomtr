@@ -48,6 +48,23 @@ export class GPayService {
     this.config = config;
   }
 
+  // Generate unique order reference for GPay
+  public generateOrderReference(): string {
+    const timestamp = Date.now().toString(36);
+    const random = Math.random().toString(36).substring(2, 15);
+    return `${timestamp}${random}`.toUpperCase();
+  }
+
+  // Get real client IP from headers
+  public getClientIp(req: any): string {
+    return req.headers['x-forwarded-for']?.split(',')[0] ||
+           req.headers['x-real-ip'] ||
+           req.connection?.remoteAddress ||
+           req.socket?.remoteAddress ||
+           req.ip ||
+           '127.0.0.1';
+  }
+
   // Trim recursively like PHP trim
   private trimRecursive(obj: any): any {
     if (typeof obj !== 'object' || obj === null) {
@@ -67,19 +84,19 @@ export class GPayService {
     return result;
   }
 
-  // Generate signature exactly like the provided Node.js example
+  // Generate signature exactly like PHP implementation
   public generateSignature(data: Record<string, any>): string {
     // Clone data to avoid modifying original
     const clonedData = JSON.parse(JSON.stringify(data));
     
-    // Convert all numbers to strings (like in the example)
+    // Convert all numbers to strings
     Object.keys(clonedData).forEach(key => {
       if (typeof clonedData[key] === 'number') {
         clonedData[key] = String(clonedData[key]);
       }
     });
     
-    // Sort keys with localeCompare like in the example
+    // Sort keys alphabetically
     const sortedData: Record<string, any> = {};
     Object.keys(clonedData)
       .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
@@ -87,19 +104,11 @@ export class GPayService {
         sortedData[key] = clonedData[key];
       });
     
-    // Apply recursive trimming like in the example
+    // Apply recursive trimming
     const trimmedData = this.trimRecursive(sortedData);
     
-    // Create JSON and escape forward slashes like in the example
+    // Create JSON and escape forward slashes
     const jsonData = JSON.stringify(trimmedData).replace(/\//g, '\\/');
-    
-    console.log('=== Signature Generation (Node.js Example Style) ===');
-    console.log('Original data:', JSON.stringify(data, null, 2));
-    console.log('After number conversion:', JSON.stringify(clonedData, null, 2));
-    console.log('After sorting:', JSON.stringify(sortedData, null, 2));
-    console.log('After trimming:', JSON.stringify(trimmedData, null, 2));
-    console.log('Final JSON for signing:', jsonData);
-    console.log('=== End Signature Generation ===');
     
     // Sign with private key using md5WithRSAEncryption
     const sign = crypto.createSign('md5WithRSAEncryption');
@@ -109,37 +118,18 @@ export class GPayService {
     return signature;
   }
 
-  // Verify signature for callbacks using same logic as generateSignature
-  public verifySignature(data: Record<string, any>): boolean {
-    const signature = data.signature;
-    if (!signature) {
-      return false;
-    }
-
-    // Use the same signature generation logic
-    const expectedSignature = this.generateSignature(data);
-    
-    return signature === expectedSignature;
-  }
-
-  // Create payment following PHP PaymentConfirmation.php logic
+  // Create payment
   async createPayment(request: PaymentRequest): Promise<PaymentResponse> {
     try {
-      // Add critical fields for API mode like your successful .NET integration
+      // Add critical fields for API mode
       const paymentData = {
         ...request,
         merchantId: this.config.merchantId,
-        connectionMode: "API", // CRITICAL: Force API mode like your .NET project
-        apiVersion: "1.0" // Ensure proper API version
+        connectionMode: "API",
+        apiVersion: "1.0"
       };
 
       // Generate signature
-      console.log('=== JSON Before Signature Generation ===');
-      console.log('Payment Data Object:', JSON.stringify(paymentData, null, 2));
-      console.log('Sorted Keys:', Object.keys(paymentData).sort());
-      console.log('JSON String for Signature:', JSON.stringify(paymentData));
-      console.log('=== End JSON Before Signature ===');
-      
       const signature = this.generateSignature(paymentData);
       
       // Create form data for POST request
@@ -156,12 +146,6 @@ export class GPayService {
       });
       formData.append('signature', signature);
       formDataObj['signature'] = signature;
-      
-      // Debug: Log the form data being sent
-      console.log('=== Sending to GPay ===');
-      console.log('URL:', `${this.config.baseUrl}/v1/checkout`);
-      console.log('Form Data:', formData.toString());
-      console.log('=== End Sending Data ===');
 
       // Make POST request to GPay checkout endpoint
       const response = await fetch(`${this.config.baseUrl}/v1/checkout`, {
@@ -170,7 +154,7 @@ export class GPayService {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: formData.toString(),
-        redirect: 'manual' // Don't follow redirects automatically
+        redirect: 'manual'
       });
 
       if (response.status === 302) {
@@ -181,31 +165,24 @@ export class GPayService {
             success: true,
             paymentUrl: location,
             transactionId: request.orderRef,
-            formData: formDataObj // Include form data for POST submission
+            formData: formDataObj
           };
         }
       }
 
-      // Handle other response types - with connectionMode=API, expect JSON
+      // Handle other response types
       const responseText = await response.text();
-      console.log('=== GPay Response Details ===');
-      console.log('Status:', response.status);
-      console.log('Response:', responseText);
-      console.log('Headers:', Object.fromEntries(response.headers.entries()));
-      console.log('=== End GPay Response ===');
 
       try {
-        // Try to parse JSON response (connectionMode=API should return JSON)
+        // Try to parse JSON response
         const jsonResponse = JSON.parse(responseText);
-        console.log('GPay JSON response:', jsonResponse);
         
-        // GPay API returns {"status":"created","transactionId":"...","paymentLink":"...","message":"Payment Link created successfully"}
         if (jsonResponse.status === 'created' && jsonResponse.paymentLink) {
           return {
             success: true,
             paymentUrl: jsonResponse.paymentLink,
             transactionId: jsonResponse.transactionId || request.orderRef,
-            formData: formDataObj // Include form data for POST submission
+            formData: formDataObj
           };
         } else {
           return {
@@ -214,7 +191,6 @@ export class GPayService {
           };
         }
       } catch (parseError) {
-        // If not JSON, return as text error
         return {
           success: false,
           error: `GPay API returned status ${response.status}: ${responseText}`
@@ -230,10 +206,9 @@ export class GPayService {
     }
   }
 
-  // Parse callback payload following PHP Result.php logic
+  // Parse callback payload
   parseCallback(payload: string): any {
     try {
-      // URL decode -> Base64 decode -> JSON parse
       const urlDecoded = decodeURIComponent(payload);
       const base64Decoded = Buffer.from(urlDecoded, 'base64').toString('utf8');
       const paymentData = JSON.parse(base64Decoded);
@@ -248,7 +223,6 @@ export class GPayService {
 
 // Environment-based configuration
 function getGPayConfig(): GPayConfig {
-  // Force production credentials based on .env file
   const isProduction = process.env.NODE_ENV === 'production' || 
                       process.env.GPAY_MERCHANT_ID === '1100002537';
   

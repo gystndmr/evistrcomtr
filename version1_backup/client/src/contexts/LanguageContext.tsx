@@ -23,13 +23,30 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// ENGLISH AS DEFAULT - No auto language detection
+// AUTO BROWSER LANGUAGE DETECTION
 const detectBrowserLanguage = (): Language => {
-  // ALWAYS return English as default
-  // Users must manually select other languages
-  const englishLang = languages.find(lang => lang.code === 'en')!;
-  console.log('Using English as default language (manual selection required for other languages)');
-  return englishLang;
+  try {
+    const browserLang = navigator.language.toLowerCase();
+    console.log('Browser language detected:', browserLang);
+    
+    // Check for exact matches first (tr-tr, en-us, etc.)
+    let detectedLang = languages.find(lang => 
+      browserLang.startsWith(lang.code.toLowerCase())
+    );
+    
+    // If no match found, default to English
+    if (!detectedLang) {
+      detectedLang = languages.find(lang => lang.code === 'en')!;
+      console.log('No matching language found, defaulting to English');
+    } else {
+      console.log('Auto-detected language:', detectedLang.name);
+    }
+    
+    return detectedLang;
+  } catch (error) {
+    console.error('Error detecting browser language:', error);
+    return languages.find(lang => lang.code === 'en')!;
+  }
 };
 
 interface LanguageProviderProps {
@@ -38,6 +55,8 @@ interface LanguageProviderProps {
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
   const [currentLanguage, setCurrentLanguage] = useState<Language>(() => {
+
+    
     // Try to get from localStorage first, then auto-detect, finally fallback to English
     const savedLanguage = localStorage.getItem('preferred-language');
     if (savedLanguage) {
@@ -124,6 +143,11 @@ const translations: Record<string, Record<string, string>> = {
     'home.insurance.subtitle': 'Secure your journey with officially approved insurance plans',
     'home.insurance.button': 'Get Travel Insurance for Turkey',
     
+    // Country Selector - Eligibility Messages
+    'country.selector.ineligible.message': 'E-visa requires consulate procedures.',
+    'country.selector.insurance.required': 'However, insurance is mandatory!',
+    'country.selector.redirect.countdown': '⏰ Redirecting to insurance page in {count} seconds...',
+    
     // Application Form
     'app.title': 'E-Visa Application',
     'app.subtitle': 'Complete your Turkey e-visa application in simple steps',
@@ -150,6 +174,8 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.government.approved': 'Government Approved Insurance',
     'insurance.available.plans': 'Available Insurance Plans',
     'insurance.total.premium': 'Total Premium',
+    'insurance.header.new': 'New Insurance',
+    'insurance.header.covid19': 'Covid-19',
     
     // Status Page
     'status.title': 'Check Application Status',
@@ -209,7 +235,7 @@ const translations: Record<string, Record<string, string>> = {
     'faq.q6.question': 'Is travel insurance required for Turkey e-visa?',
     'faq.q6.answer': 'Travel insurance is not mandatory for e-visa applications, but it is highly recommended. We offer comprehensive travel insurance plans starting from $114 for 7 days coverage.',
     'faq.q7.question': 'What should I do if my e-visa application is rejected?',
-    'faq.q7.answer': 'If your application is rejected, you will receive a detailed explanation. You may reapply with corrected information or contact our support team at info@getvisa.tr for assistance.',
+    'faq.q7.answer': 'If your application is rejected, you will receive a detailed explanation. You may reapply with corrected information or contact our support team at info@euramedglobal.com for assistance.',
     'faq.q8.question': 'Can I use my e-visa for multiple entries to Turkey?',
     'faq.q8.answer': 'Yes, Turkey e-visas are valid for multiple entries within their validity period. You can enter and exit Turkey multiple times as long as your e-visa remains valid.',
 
@@ -300,6 +326,14 @@ const translations: Record<string, Record<string, string>> = {
     'country.selector.evisa.available.title': 'E-Visa Available',
     'country.selector.evisa.available.description': 'Great! You can apply for an e-visa for Turkey.',
 
+    // Prerequisites
+    'prerequisites.confirm.title': 'Please confirm you meet the following criteria:',
+    'prerequisites.tourism.business': 'I am traveling for tourism or business purposes.',
+    'prerequisites.financial.proof': 'I can prove that I have return tickets, hotel reservations, and at least $50 for each day I stay.',
+    'prerequisites.supporting.documents': 'I have valid supporting documents (Schengen visa or valid residence permit, or visa/residence permit from USA, UK, or Ireland). E-visas are not accepted as supporting documents.',
+    'prerequisites.passport.validity': 'My passport validity period covers the period I will stay in Turkey.',
+    'prerequisites.all.requirements': 'I have carefully read all items and confirm that I meet all requirements.',
+
     // Form Validation
     'form.error.first.name': 'First Name Required',
     'form.error.first.name.desc': 'Please enter your first name',
@@ -380,6 +414,8 @@ const translations: Record<string, Record<string, string>> = {
     'footer.terms': 'Terms & Conditions',
     'footer.privacy': 'Privacy Policy',
     'footer.refund': 'Refund Policy',
+    'footer.security': 'Security Policy',
+    'footer.payment': 'Payment Policy',
     'footer.ssl.secured': 'SSL Secured',
     'footer.encryption': '256-bit Encryption',
     'footer.government.approved': 'Government Approved',
@@ -388,6 +424,24 @@ const translations: Record<string, Record<string, string>> = {
     'footer.copyright': '© 2024 Turkey E-Visa Application Service. All rights reserved.',
     'footer.professional': 'Professional Visa Application Service',
     'footer.reliable': 'Fast, reliable and secure visa processing',
+    
+    // Cookie Consent
+    'cookies.title': 'We use cookies',
+    'cookies.description': 'We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.',
+    'cookies.privacy.policy': 'Privacy Policy',
+    'cookies.manage': 'Manage Preferences',
+    'cookies.accept.all': 'Accept All',
+    'cookies.necessary.only': 'Necessary Only',
+    'cookies.reject.all': 'Reject All',
+    'cookies.preferences': 'Cookie Preferences',
+    'cookies.necessary': 'Necessary Cookies',
+    'cookies.analytics': 'Analytics Cookies',
+    'cookies.marketing': 'Marketing Cookies',
+    'cookies.required': 'Required',
+    'cookies.optional': 'Optional',
+    'cookies.necessary.description': 'Essential for the website to function properly. These cannot be disabled.',
+    'cookies.analytics.description': 'Help us understand how visitors use our website to improve user experience.',
+    'cookies.marketing.description': 'Used to deliver personalized advertisements and track campaign effectiveness.',
   },
   tr: {
     // Header
@@ -401,6 +455,14 @@ const translations: Record<string, Record<string, string>> = {
     'header.site.title': 'Türkiye E-Vize',
     'header.site.subtitle': 'Profesyonel Vize Başvuru Hizmeti',
     
+    // Prerequisites
+    'prerequisites.confirm.title': 'Lütfen aşağıdaki kriterleri karşıladığınızı onaylayın:',
+    'prerequisites.tourism.business': 'Turizm veya ticari görüşme amacıyla seyahat ediyorum.',
+    'prerequisites.financial.proof': 'Dönüş biletimin, otel rezervasyonumun ve kalacağım her gün için en az 50 Dolarımın olduğunu kanıtlayabilirim.',
+    'prerequisites.supporting.documents': 'Geçerli destekleyici belgeye sahibim (Schengen vizesi veya geçerli ikamet izni, ABD, İngiltere ve İrlanda ülkelerinden birinin vizesi veya geçerli ikamet izni). e-Vizeler destekleyici belge olarak kabul edilememektedir.',
+    'prerequisites.passport.validity': 'Pasaportumun geçerlilik süresi Türkiye\'de kalacağım dönemi kapsamaktadır.',
+    'prerequisites.all.requirements': 'Tüm maddeleri dikkatlice okudum ve tamamını sağladığımı kabul ediyorum.',
+
     // Homepage
     'home.hero.title': 'Türkiye E-Vize Başvurusu',
     'home.hero.subtitle': 'Türkiye e-vizenizi dakikalar içinde online olarak alın',
@@ -424,6 +486,11 @@ const translations: Record<string, Record<string, string>> = {
     'home.insurance.title': 'Türkiye için Seyahat Sigortası Alın',
     'home.insurance.subtitle': 'Seyahatinizi resmi onaylı sigorta planları ile güvence altına alın',
     'home.insurance.button': 'Türkiye Seyahat Sigortası Alın',
+    
+    // Country Selector - Eligibility Messages
+    'country.selector.ineligible.message': 'E-vize için konsolosluk işlemleri gerekmektedir.',
+    'country.selector.insurance.required': 'Ancak sigorta zorunludur!',
+    'country.selector.redirect.countdown': '⏰ {count} saniye sonra sigorta sayfasına yönlendiriliyorsunuz...',
     
     // Application Form
     'app.title': 'E-Vize Başvurusu',
@@ -451,6 +518,8 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.government.approved': 'Devlet Onaylı Sigorta',
     'insurance.available.plans': 'Mevcut Sigorta Planları',
     'insurance.total.premium': 'Toplam Prim',
+    'insurance.header.new': 'Yeni Sigorta',
+    'insurance.header.covid19': 'Covid-19',
     
     // Status Page
     'status.title': 'Başvuru Durumu Sorgula',
@@ -510,7 +579,7 @@ const translations: Record<string, Record<string, string>> = {
     'faq.q6.question': 'Türkiye e-vize için seyahat sigortası gerekli mi?',
     'faq.q6.answer': 'Seyahat sigortası e-vize başvuruları için zorunlu değildir, ancak şiddetle tavsiye edilir. 7 günlük kapsama için 114$\'dan başlayan kapsamlı seyahat sigortası planları sunuyoruz.',
     'faq.q7.question': 'E-vize başvurum reddedilirse ne yapmalıyım?',
-    'faq.q7.answer': 'Başvurunuz reddedilirse, ayrıntılı bir açıklama alacaksınız. Düzeltilmiş bilgilerle yeniden başvurabilir veya yardım için info@getvisa.tr adresinden destek ekibimizle iletişime geçebilirsiniz.',
+    'faq.q7.answer': 'Başvurunuz reddedilirse, ayrıntılı bir açıklama alacaksınız. Düzeltilmiş bilgilerle yeniden başvurabilir veya yardım için info@euramedglobal.com adresinden destek ekibimizle iletişime geçebilirsiniz.',
     'faq.q8.question': 'E-vizemi Türkiye\'ye çoklu giriş için kullanabilir miyim?',
     'faq.q8.answer': 'Evet, Türkiye e-vizeleri geçerlilik süreleri boyunca çoklu giriş için geçerlidir. E-vizeniz geçerli kaldığı sürece Türkiye\'ye birden fazla kez giriş ve çıkış yapabilirsinız.',
 
@@ -681,6 +750,8 @@ const translations: Record<string, Record<string, string>> = {
     'footer.terms': 'Şartlar ve Koşullar',
     'footer.privacy': 'Gizlilik Politikası',
     'footer.refund': 'İade Politikası',
+    'footer.security': 'Güvenlik Politikası',
+    'footer.payment': 'Ödeme Politikası',
     'footer.ssl.secured': 'SSL Güvenli',
     'footer.encryption': '256-bit Şifreleme',
     'footer.government.approved': 'Devlet Onaylı',
@@ -689,8 +760,34 @@ const translations: Record<string, Record<string, string>> = {
     'footer.copyright': '© 2024 Türkiye E-Vize Başvuru Hizmeti. Tüm hakları saklıdır.',
     'footer.professional': 'Profesyonel Vize Başvuru Hizmeti',
     'footer.reliable': 'Hızlı, güvenilir ve güvenli vize işleme',
+    
+    // Cookie Consent
+    'cookies.title': 'Çerezleri kullanıyoruz',
+    'cookies.description': 'Tarama deneyiminizi geliştirmek, kişiselleştirilmiş içerik sunmak ve trafiğimizi analiz etmek için çerezleri kullanıyoruz. "Tümünü Kabul Et"e tıklayarak çerez kullanımımızı kabul etmiş olursunuz.',
+    'cookies.privacy.policy': 'Gizlilik Politikası',
+    'cookies.manage': 'Tercihleri Yönet',
+    'cookies.accept.all': 'Tümünü Kabul Et',
+    'cookies.necessary.only': 'Sadece Gerekli',
+    'cookies.reject.all': 'Tümünü Reddet',
+    'cookies.preferences': 'Çerez Tercihleri',
+    'cookies.necessary': 'Gerekli Çerezler',
+    'cookies.analytics': 'Analitik Çerezler',
+    'cookies.marketing': 'Pazarlama Çerezleri',
+    'cookies.required': 'Gerekli',
+    'cookies.optional': 'İsteğe Bağlı',
+    'cookies.necessary.description': 'Web sitesinin düzgün çalışması için gereklidir. Bunlar devre dışı bırakılamaz.',
+    'cookies.analytics.description': 'Kullanıcı deneyimini iyileştirmek için ziyaretçilerin web sitesini nasıl kullandığını anlamamıza yardımcı olur.',
+    'cookies.marketing.description': 'Kişiselleştirilmiş reklamlar sunmak ve kampanya etkinliğini takip etmek için kullanılır.',
   },
   fr: {
+    // Prerequisites
+    'prerequisites.confirm.title': 'Veuillez confirmer que vous répondez aux critères suivants :',
+    'prerequisites.tourism.business': 'Je voyage à des fins touristiques ou d\'affaires.',
+    'prerequisites.financial.proof': 'Je peux prouver que j\'ai des billets de retour, des réservations d\'hôtel et au moins 50 $ pour chaque jour de séjour.',
+    'prerequisites.supporting.documents': 'J\'ai des documents justificatifs valides (visa Schengen ou permis de séjour valide, ou visa/permis de séjour des États-Unis, du Royaume-Uni ou d\'Irlande). Les e-visas ne sont pas acceptés comme documents justificatifs.',
+    'prerequisites.passport.validity': 'La période de validité de mon passeport couvre la période de mon séjour en Turquie.',
+    'prerequisites.all.requirements': 'J\'ai lu attentivement tous les éléments et confirme que je réponds à toutes les exigences.',
+
     // Header
     'header.title': 'RÉPUBLIQUE DE TURQUIE',
     'header.subtitle': 'Ministère de l\'Intérieur',
@@ -726,6 +823,11 @@ const translations: Record<string, Record<string, string>> = {
     'home.insurance.subtitle': 'Sécurisez votre voyage avec des plans d\'assurance officiellement approuvés',
     'home.insurance.button': 'Obtenir une Assurance Voyage pour la Turquie',
     
+    // Country Selector - Eligibility Messages
+    'country.selector.ineligible.message': 'L\'e-visa nécessite des procédures consulaires.',
+    'country.selector.insurance.required': 'Cependant, l\'assurance est obligatoire!',
+    'country.selector.redirect.countdown': '⏰ Redirection vers la page d\'assurance dans {count} secondes...',
+    
     // Application Form
     'app.title': 'Demande de E-Visa',
     'app.subtitle': 'Complétez votre demande de e-visa pour la Turquie en étapes simples',
@@ -752,6 +854,8 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.government.approved': 'Assurance Approuvée par le Gouvernement',
     'insurance.available.plans': 'Plans d\'Assurance Disponibles',
     'insurance.total.premium': 'Prime Totale',
+    'insurance.header.new': 'Nouvelle Assurance',
+    'insurance.header.covid19': 'Covid-19',
     
     // Status Page
     'status.title': 'Vérifier le Statut de la Demande',
@@ -823,7 +927,7 @@ const translations: Record<string, Record<string, string>> = {
     'faq.q6.question': 'L\'assurance voyage est-elle requise pour l\'e-visa de Turquie?',
     'faq.q6.answer': 'L\'assurance voyage n\'est pas obligatoire pour les demandes d\'e-visa, mais elle est fortement recommandée. Nous proposons des plans d\'assurance voyage complets à partir de 114$ pour une couverture de 7 jours.',
     'faq.q7.question': 'Que dois-je faire si ma demande d\'e-visa est rejetée?',
-    'faq.q7.answer': 'Si votre demande est rejetée, vous recevrez une explication détaillée. Vous pouvez redemander avec des informations corrigées ou contacter notre équipe de support à info@getvisa.tr pour assistance.',
+    'faq.q7.answer': 'Si votre demande est rejetée, vous recevrez une explication détaillée. Vous pouvez redemander avec des informations corrigées ou contacter notre équipe de support à info@euramedglobal.com pour assistance.',
     'faq.q8.question': 'Puis-je utiliser mon e-visa pour des entrées multiples en Turquie?',
     'faq.q8.answer': 'Oui, les e-visas de Turquie sont valides pour des entrées multiples dans leur période de validité. Vous pouvez entrer et sortir de Turquie plusieurs fois tant que votre e-visa reste valide.',
 
@@ -913,6 +1017,8 @@ const translations: Record<string, Record<string, string>> = {
     'footer.terms': 'Termes et Conditions',
     'footer.privacy': 'Politique de Confidentialité',
     'footer.refund': 'Politique de Remboursement',
+    'footer.security': 'Politique de Sécurité',
+    'footer.payment': 'Politique de Paiement',
     'footer.ssl.secured': 'SSL Sécurisé',
     'footer.encryption': 'Chiffrement 256-bit',
     'footer.government.approved': 'Approuvé par le Gouvernement',
@@ -921,8 +1027,34 @@ const translations: Record<string, Record<string, string>> = {
     'footer.copyright': '© 2024 Service de Demande E-Visa Turquie. Tous droits réservés.',
     'footer.professional': 'Service Professionnel de Demande de Visa',
     'footer.reliable': 'Traitement de visa rapide, fiable et sécurisé',
+    
+    // Cookie Consent
+    'cookies.title': 'Nous utilisons des cookies',
+    'cookies.description': 'Nous utilisons des cookies pour améliorer votre expérience de navigation, servir du contenu personnalisé et analyser notre trafic. En cliquant sur "Accepter tout", vous consentez à notre utilisation des cookies.',
+    'cookies.privacy.policy': 'Politique de Confidentialité',
+    'cookies.manage': 'Gérer les Préférences',
+    'cookies.accept.all': 'Accepter Tout',
+    'cookies.necessary.only': 'Nécessaires Seulement',
+    'cookies.reject.all': 'Rejeter Tout',
+    'cookies.preferences': 'Préférences de Cookies',
+    'cookies.necessary': 'Cookies Nécessaires',
+    'cookies.analytics': 'Cookies Analytiques',
+    'cookies.marketing': 'Cookies Marketing',
+    'cookies.required': 'Requis',
+    'cookies.optional': 'Optionnel',
+    'cookies.necessary.description': 'Essentiels pour le bon fonctionnement du site web. Ils ne peuvent pas être désactivés.',
+    'cookies.analytics.description': 'Nous aident à comprendre comment les visiteurs utilisent notre site web pour améliorer l\'expérience utilisateur.',
+    'cookies.marketing.description': 'Utilisés pour diffuser des publicités personnalisées et suivre l\'efficacité des campagnes.',
   },
   de: {
+    // Prerequisites
+    'prerequisites.confirm.title': 'Bitte bestätigen Sie, dass Sie die folgenden Kriterien erfüllen:',
+    'prerequisites.tourism.business': 'Ich reise zu touristischen oder geschäftlichen Zwecken.',
+    'prerequisites.financial.proof': 'Ich kann beweisen, dass ich Rückflugtickets, Hotelreservierungen und mindestens 50 $ für jeden Tag meines Aufenthalts habe.',
+    'prerequisites.supporting.documents': 'Ich besitze gültige Belege (Schengen-Visa oder gültige Aufenthaltserlaubnis, oder Visa/Aufenthaltserlaubnis aus den USA, Großbritannien oder Irland). E-Visa werden nicht als Belege akzeptiert.',
+    'prerequisites.passport.validity': 'Die Gültigkeitsdauer meines Passes deckt den Zeitraum meines Aufenthalts in der Türkei ab.',
+    'prerequisites.all.requirements': 'Ich habe alle Punkte sorgfältig gelesen und bestätige, dass ich alle Anforderungen erfülle.',
+
     // Header
     'header.title': 'REPUBLIK TÜRKEI',
     'header.subtitle': 'Innenministerium',
@@ -958,6 +1090,11 @@ const translations: Record<string, Record<string, string>> = {
     'home.insurance.subtitle': 'Sichern Sie Ihre Reise mit offiziell genehmigten Versicherungsplänen',
     'home.insurance.button': 'Reiseversicherung für die Türkei Erhalten',
     
+    // Country Selector - Eligibility Messages
+    'country.selector.ineligible.message': 'E-Visa erfordert Konsulatsverfahren.',
+    'country.selector.insurance.required': 'Eine Versicherung ist jedoch obligatorisch!',
+    'country.selector.redirect.countdown': '⏰ Weiterleitung zur Versicherungsseite in {count} Sekunden...',
+    
     // Application Form
     'app.title': 'E-Visa Antrag',
     'app.subtitle': 'Vervollständigen Sie Ihren Türkei e-Visa Antrag in einfachen Schritten',
@@ -984,6 +1121,8 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.government.approved': 'Regierung Genehmigte Versicherung',
     'insurance.available.plans': 'Verfügbare Versicherung Pläne',
     'insurance.total.premium': 'Gesamtprämie',
+    'insurance.header.new': 'Neue Versicherung',
+    'insurance.header.covid19': 'Covid-19',
     
     // Status Page
     'status.title': 'Antragsstatus Prüfen',
@@ -1055,7 +1194,7 @@ const translations: Record<string, Record<string, string>> = {
     'faq.q6.question': 'Ist eine Reiseversicherung für das Türkei e-Visa erforderlich?',
     'faq.q6.answer': 'Eine Reiseversicherung ist für e-Visa Anträge nicht obligatorisch, wird aber dringend empfohlen. Wir bieten umfassende Reiseversicherungspläne ab 114$ für 7 Tage Deckung.',
     'faq.q7.question': 'Was soll ich tun, wenn mein e-Visa Antrag abgelehnt wird?',
-    'faq.q7.answer': 'Wenn Ihr Antrag abgelehnt wird, erhalten Sie eine detaillierte Erklärung. Sie können mit korrigierten Informationen erneut beantragen oder unser Support-Team unter info@getvisa.tr für Hilfe kontaktieren.',
+    'faq.q7.answer': 'Wenn Ihr Antrag abgelehnt wird, erhalten Sie eine detaillierte Erklärung. Sie können mit korrigierten Informationen erneut beantragen oder unser Support-Team unter info@euramedglobal.com für Hilfe kontaktieren.',
     'faq.q8.question': 'Kann ich mein e-Visa für mehrfache Einreisen in die Türkei verwenden?',
     'faq.q8.answer': 'Ja, Türkei e-Visas sind für mehrfache Einreisen innerhalb ihrer Gültigkeitsdauer gültig. Sie können die Türkei mehrmals ein- und ausreisen, solange Ihr e-Visa gültig bleibt.',
 
@@ -1145,6 +1284,8 @@ const translations: Record<string, Record<string, string>> = {
     'footer.terms': 'Geschäftsbedingungen',
     'footer.privacy': 'Datenschutz',
     'footer.refund': 'Rückerstattung',
+    'footer.security': 'Sicherheitsrichtlinie',
+    'footer.payment': 'Zahlungsrichtlinie',
     'footer.ssl.secured': 'SSL Gesichert',
     'footer.encryption': '256-bit Verschlüsselung',
     'footer.government.approved': 'Regierung Genehmigt',
@@ -1153,8 +1294,34 @@ const translations: Record<string, Record<string, string>> = {
     'footer.copyright': '© 2024 Türkei E-Visa Antrag Service. Alle Rechte vorbehalten.',
     'footer.professional': 'Professioneller Visa Antrag Service',
     'footer.reliable': 'Schnelle, zuverlässige und sichere Visa Bearbeitung',
+    
+    // Cookie Consent
+    'cookies.title': 'Wir verwenden Cookies',
+    'cookies.description': 'Wir verwenden Cookies, um Ihr Surferlebnis zu verbessern, personalisierte Inhalte bereitzustellen und unseren Traffic zu analysieren. Durch Klicken auf "Alle akzeptieren" stimmen Sie unserer Verwendung von Cookies zu.',
+    'cookies.privacy.policy': 'Datenschutzrichtlinie',
+    'cookies.manage': 'Einstellungen Verwalten',
+    'cookies.accept.all': 'Alle Akzeptieren',
+    'cookies.necessary.only': 'Nur Notwendige',
+    'cookies.reject.all': 'Alle Ablehnen',
+    'cookies.preferences': 'Cookie-Einstellungen',
+    'cookies.necessary': 'Notwendige Cookies',
+    'cookies.analytics': 'Analytische Cookies',
+    'cookies.marketing': 'Marketing Cookies',
+    'cookies.required': 'Erforderlich',
+    'cookies.optional': 'Optional',
+    'cookies.necessary.description': 'Wesentlich für das ordnungsgemäße Funktionieren der Website. Diese können nicht deaktiviert werden.',
+    'cookies.analytics.description': 'Helfen uns zu verstehen, wie Besucher unsere Website nutzen, um die Benutzererfahrung zu verbessern.',
+    'cookies.marketing.description': 'Werden verwendet, um personalisierte Werbung zu liefern und die Kampagneneffektivität zu verfolgen.',
   },
   es: {
+    // Prerequisites
+    'prerequisites.confirm.title': 'Por favor confirme que cumple con los siguientes criterios:',
+    'prerequisites.tourism.business': 'Estoy viajando con fines turísticos o de negocios.',
+    'prerequisites.financial.proof': 'Puedo demostrar que tengo boletos de regreso, reservas de hotel y al menos $50 por cada día de estadía.',
+    'prerequisites.supporting.documents': 'Tengo documentos de apoyo válidos (visa Schengen o permiso de residencia válido, o visa/permiso de residencia de EE.UU., Reino Unido o Irlanda). Las e-visas no se aceptan como documentos de apoyo.',
+    'prerequisites.passport.validity': 'El período de validez de mi pasaporte cubre el período de mi estadía en Turquía.',
+    'prerequisites.all.requirements': 'He leído cuidadosamente todos los elementos y confirmo que cumplo con todos los requisitos.',
+
     // Header
     'header.title': 'REPÚBLICA DE TURQUÍA',
     'header.subtitle': 'Ministerio del Interior',
@@ -1190,6 +1357,11 @@ const translations: Record<string, Record<string, string>> = {
     'home.insurance.subtitle': 'Asegure su viaje con planes de seguro oficialmente aprobados',
     'home.insurance.button': 'Obtener Seguro de Viaje para Turquía',
     
+    // Country Selector - Eligibility Messages
+    'country.selector.ineligible.message': 'El e-visa requiere procedimientos consulares.',
+    'country.selector.insurance.required': '¡Sin embargo, el seguro es obligatorio!',
+    'country.selector.redirect.countdown': '⏰ Redirigiendo a la página de seguros en {count} segundos...',
+    
     // Application Form
     'app.title': 'Solicitud de E-Visa',
     'app.subtitle': 'Complete su solicitud de e-visa para Turquía en pasos simples',
@@ -1216,6 +1388,8 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.government.approved': 'Seguro Aprobado por el Gobierno',
     'insurance.available.plans': 'Planes de Seguro Disponibles',
     'insurance.total.premium': 'Prima Total',
+    'insurance.header.new': 'Nuevo Seguro',
+    'insurance.header.covid19': 'Covid-19',
     
     // Status Page
     'status.title': 'Verificar Estado de Solicitud',
@@ -1287,7 +1461,7 @@ const translations: Record<string, Record<string, string>> = {
     'faq.q6.question': '¿Se requiere seguro de viaje para el e-visa de Turquía?',
     'faq.q6.answer': 'El seguro de viaje no es obligatorio para solicitudes de e-visa, pero es altamente recomendado. Ofrecemos planes de seguro de viaje integrales desde $114 para cobertura de 7 días.',
     'faq.q7.question': '¿Qué debo hacer si mi solicitud de e-visa es rechazada?',
-    'faq.q7.answer': 'Si su solicitud es rechazada, recibirá una explicación detallada. Puede volver a solicitar con información corregida o contactar a nuestro equipo de soporte en info@getvisa.tr para asistencia.',
+    'faq.q7.answer': 'Si su solicitud es rechazada, recibirá una explicación detallada. Puede volver a solicitar con información corregida o contactar a nuestro equipo de soporte en info@euramedglobal.com para asistencia.',
     'faq.q8.question': '¿Puedo usar mi e-visa para múltiples entradas a Turquía?',
     'faq.q8.answer': 'Sí, los e-visas de Turquía son válidos para múltiples entradas dentro de su período de validez. Puede entrar y salir de Turquía múltiples veces mientras su e-visa permanezca válido.',
 
@@ -1377,6 +1551,8 @@ const translations: Record<string, Record<string, string>> = {
     'footer.terms': 'Términos y Condiciones',
     'footer.privacy': 'Política de Privacidad',
     'footer.refund': 'Política de Reembolso',
+    'footer.security': 'Política de Seguridad',
+    'footer.payment': 'Política de Pago',
     'footer.ssl.secured': 'SSL Seguro',
     'footer.encryption': 'Cifrado de 256-bit',
     'footer.government.approved': 'Aprobado por el Gobierno',
@@ -1385,8 +1561,34 @@ const translations: Record<string, Record<string, string>> = {
     'footer.copyright': '© 2024 Servicio de Solicitud E-Visa Turquía. Todos los derechos reservados.',
     'footer.professional': 'Servicio Profesional de Solicitud de Visa',
     'footer.reliable': 'Procesamiento de visa rápido, confiable y seguro',
+    
+    // Cookie Consent
+    'cookies.title': 'Usamos cookies',
+    'cookies.description': 'Usamos cookies para mejorar su experiencia de navegación, servir contenido personalizado y analizar nuestro tráfico. Al hacer clic en "Aceptar todo", acepta nuestro uso de cookies.',
+    'cookies.privacy.policy': 'Política de Privacidad',
+    'cookies.manage': 'Gestionar Preferencias',
+    'cookies.accept.all': 'Aceptar Todo',
+    'cookies.necessary.only': 'Solo Necesarias',
+    'cookies.reject.all': 'Rechazar Todo',
+    'cookies.preferences': 'Preferencias de Cookies',
+    'cookies.necessary': 'Cookies Necesarias',
+    'cookies.analytics': 'Cookies Analíticas',
+    'cookies.marketing': 'Cookies de Marketing',
+    'cookies.required': 'Requeridas',
+    'cookies.optional': 'Opcional',
+    'cookies.necessary.description': 'Esenciales para que el sitio web funcione correctamente. Estas no se pueden desactivar.',
+    'cookies.analytics.description': 'Nos ayudan a entender cómo los visitantes usan nuestro sitio web para mejorar la experiencia del usuario.',
+    'cookies.marketing.description': 'Utilizadas para entregar publicidad personalizada y rastrear la efectividad de las campañas.',
   },
   ar: {
+    // Prerequisites
+    'prerequisites.confirm.title': 'يرجى تأكيد أنك تستوفي المعايير التالية:',
+    'prerequisites.tourism.business': 'أسافر لأغراض سياحية أو تجارية.',
+    'prerequisites.financial.proof': 'يمكنني إثبات أن لدي تذاكر عودة وحجوزات فندقية وما لا يقل عن 50 دولاراً لكل يوم إقامة.',
+    'prerequisites.supporting.documents': 'لدي وثائق داعمة صالحة (تأشيرة شنغن أو إقامة صالحة، أو تأشيرة/إقامة من الولايات المتحدة أو المملكة المتحدة أو أيرلندا). التأشيرات الإلكترونية غير مقبولة كوثائق داعمة.',
+    'prerequisites.passport.validity': 'فترة صلاحية جواز سفري تغطي فترة إقامتي في تركيا.',
+    'prerequisites.all.requirements': 'لقد قرأت جميع البنود بعناية وأؤكد أنني أستوفي جميع المتطلبات.',
+
     // Header
     'header.title': 'جمهورية تركيا',
     'header.subtitle': 'وزارة الداخلية',
@@ -1422,6 +1624,11 @@ const translations: Record<string, Record<string, string>> = {
     'home.insurance.subtitle': 'أمن رحلتك مع خطط التأمين المعتمدة رسمياً',
     'home.insurance.button': 'الحصول على تأمين السفر لتركيا',
     
+    // Country Selector - Eligibility Messages
+    'country.selector.ineligible.message': 'التأشيرة الإلكترونية تتطلب إجراءات قنصلية.',
+    'country.selector.insurance.required': 'ومع ذلك، التأمين إجباري!',
+    'country.selector.redirect.countdown': '⏰ إعادة توجيه إلى صفحة التأمين خلال {count} ثانية...',
+    
     // Application Form
     'app.title': 'طلب التأشيرة الإلكترونية',
     'app.subtitle': 'أكمل طلب التأشيرة الإلكترونية لتركيا بخطوات بسيطة',
@@ -1448,6 +1655,8 @@ const translations: Record<string, Record<string, string>> = {
     'insurance.government.approved': 'تأمين معتمد من الحكومة',
     'insurance.available.plans': 'خطط التأمين المتاحة',
     'insurance.total.premium': 'إجمالي القسط',
+    'insurance.header.new': 'تأمين جديد',
+    'insurance.header.covid19': 'Covid-19',
     
     // Status Page
     'status.title': 'التحقق من حالة الطلب',
@@ -1519,7 +1728,7 @@ const translations: Record<string, Record<string, string>> = {
     'faq.q6.question': 'هل التأمين على السفر مطلوب للتأشيرة الإلكترونية التركية؟',
     'faq.q6.answer': 'التأمين على السفر ليس إلزامياً لطلبات التأشيرة الإلكترونية، لكنه موصى به بشدة. نحن نقدم خطط تأمين السفر الشاملة بدءاً من 114$ لتغطية 7 أيام.',
     'faq.q7.question': 'ماذا يجب أن أفعل إذا تم رفض طلب التأشيرة الإلكترونية؟',
-    'faq.q7.answer': 'إذا تم رفض طلبك، ستتلقى شرحاً مفصلاً. يمكنك إعادة التقديم بمعلومات مُصححة أو الاتصال بفريق الدعم لدينا على info@getvisa.tr للمساعدة.',
+    'faq.q7.answer': 'إذا تم رفض طلبك، ستتلقى شرحاً مفصلاً. يمكنك إعادة التقديم بمعلومات مُصححة أو الاتصال بفريق الدعم لدينا على info@euramedglobal.com للمساعدة.',
     'faq.q8.question': 'هل يمكنني استخدام التأشيرة الإلكترونية لدخولات متعددة إلى تركيا؟',
     'faq.q8.answer': 'نعم، التأشيرات الإلكترونية التركية صالحة لدخولات متعددة خلال فترة صلاحيتها. يمكنك دخول ومغادرة تركيا عدة مرات طالما بقيت تأشيرتك الإلكترونية صالحة.',
 
@@ -1609,6 +1818,8 @@ const translations: Record<string, Record<string, string>> = {
     'footer.terms': 'الشروط والأحكام',
     'footer.privacy': 'سياسة الخصوصية',
     'footer.refund': 'سياسة الاسترداد',
+    'footer.security': 'سياسة الأمان',
+    'footer.payment': 'سياسة الدفع',
     'footer.ssl.secured': 'آمن SSL',
     'footer.encryption': 'تشفير 256-بت',
     'footer.government.approved': 'معتمد من الحكومة',
@@ -1617,5 +1828,23 @@ const translations: Record<string, Record<string, string>> = {
     'footer.copyright': '© 2024 خدمة طلب التأشيرة الإلكترونية التركية. جميع الحقوق محفوظة.',
     'footer.professional': 'خدمة طلب التأشيرة المهنية',
     'footer.reliable': 'معالجة التأشيرة سريعة وموثوقة وآمنة',
+    
+    // Cookies (Arabic)
+    'cookies.title': 'نحن نستخدم ملفات تعريف الارتباط',
+    'cookies.description': 'نحن نستخدم ملفات تعريف الارتباط لتحسين تجربة التصفح الخاصة بك وتقديم محتوى مخصص وتحليل حركة المرور لدينا. بالنقر على "قبول الكل"، فإنك توافق على استخدامنا لملفات تعريف الارتباط.',
+    'cookies.privacy.policy': 'سياسة الخصوصية',
+    'cookies.manage': 'إدارة التفضيلات',
+    'cookies.accept.all': 'قبول الكل',
+    'cookies.necessary.only': 'الضرورية فقط',
+    'cookies.reject.all': 'رفض الكل',
+    'cookies.preferences': 'تفضيلات ملفات تعريف الارتباط',
+    'cookies.necessary': 'ملفات تعريف الارتباط الضرورية',
+    'cookies.analytics': 'ملفات تعريف الارتباط التحليلية',
+    'cookies.marketing': 'ملفات تعريف الارتباط التسويقية',
+    'cookies.required': 'مطلوب',
+    'cookies.optional': 'اختياري',
+    'cookies.necessary.description': 'ضرورية لعمل الموقع بشكل صحيح. لا يمكن تعطيلها.',
+    'cookies.analytics.description': 'تساعدنا على فهم كيفية استخدام الزوار لموقعنا لتحسين تجربة المستخدم.',
+    'cookies.marketing.description': 'تُستخدم لتقديم إعلانات مخصصة وتتبع فعالية الحملات.',
   },
 };

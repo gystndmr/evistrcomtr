@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertApplicationSchema, insertInsuranceApplicationSchema } from "@shared/schema";
 import { z } from "zod";
-import { sendEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail, generateVisaApprovalEmail } from "./email";
+import { sendEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail, generateVisaApprovalEmail, generateVisaRejectionEmail } from "./email";
 import { gPayService } from "./payment-simple";
 
 function generateApplicationNumber(): string {
@@ -61,12 +61,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
         supportingDocumentEndDate: req.body.supportingDocumentEndDate ? new Date(req.body.supportingDocumentEndDate) : undefined,
       };
 
-      const validatedData = insertApplicationSchema.parse(bodyWithDates);
+      // Calculate totalAmount based on processing type before validation
+      const processingTypes = {
+        'standard': '25.00',
+        'fast': '75.00', 
+        'express': '175.00',
+        'urgent': '295.00',
+        'slow': '50.00',
+        'urgent_24': '280.00',
+        'urgent_12': '330.00',
+        'urgent_4': '410.00',
+        'urgent_1': '645.00'
+      };
+      
+      const totalAmount = processingTypes[req.body.processingType as keyof typeof processingTypes] || '60.00';
+      
+      const validatedData = insertApplicationSchema.parse({
+        ...bodyWithDates,
+        totalAmount
+      });
 
       const application = await storage.createApplication(validatedData);
       
-      // E-posta gönderimi (vize başvuru alındı)
+      // E-posta gönderimi (vize başvuru alındı) - USING DYNAMIC IMPORT LIKE INSURANCE
       try {
+        console.log('🔧 VISA EMAIL DEBUG - Starting email process...');
+        console.log('🔧 Application data:', {
+          firstName: application.firstName,
+          lastName: application.lastName,
+          email: application.email,
+          applicationNumber: application.applicationNumber
+        });
+        
+        // Dynamic import like insurance system
+        const { generateVisaReceivedEmail } = await import('./email');
         const emailContent = generateVisaReceivedEmail(
           application.firstName, 
           application.lastName, 
@@ -75,17 +103,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
           'en'
         );
         
+        console.log('🔧 Generated email content:', {
+          subject: emailContent.subject,
+          hasHtml: !!emailContent.html,
+          hasText: !!emailContent.text
+        });
+        
         await sendEmail({
           to: application.email,
-          from: "info@visatanzania.org",
+          from: "info@getvisa.tr",
           subject: emailContent.subject,
           html: emailContent.html,
           text: emailContent.text
         });
         
-        console.log(`Visa application received email sent to ${application.email}`);
+        console.log(`✅ Visa application received email sent to ${application.email}`);
       } catch (emailError) {
-        console.error('Failed to send visa application received email:', emailError);
+        console.error('❌ VISA EMAIL ERROR:', emailError);
+        console.error('❌ Email error details:', {
+          message: emailError?.message,
+          stack: emailError?.stack
+        });
       }
       
       res.status(201).json(application);
@@ -95,6 +133,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid application data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to create application" });
+    }
+  });
+
+  // Get all applications for admin panel
+  app.get("/api/applications", async (req, res) => {
+    try {
+      const applications = await storage.getApplications();
+      res.json(applications);
+    } catch (error: any) {
+      console.error("Error fetching applications:", error);
+      res.status(500).json({ message: "Failed to fetch applications" });
     }
   });
 
@@ -113,7 +162,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get insurance products
+  // Get insurance products (both URLs for compatibility)
+  app.get("/api/insurance-products", async (req, res) => {
+    try {
+      const products = await storage.getInsuranceProducts();
+      res.json(products);
+    } catch (error) {
+      console.error("Error fetching insurance products:", error);
+      res.status(500).json({ message: "Failed to fetch insurance products" });
+    }
+  });
+  
   app.get("/api/insurance/products", async (req, res) => {
     try {
       const products = await storage.getInsuranceProducts();
@@ -121,6 +180,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching insurance products:", error);
       res.status(500).json({ message: "Failed to fetch insurance products" });
+    }
+  });
+
+  // Get all insurance applications for admin panel
+  app.get("/api/insurance-applications", async (req, res) => {
+    try {
+      const applications = await storage.getInsuranceApplications();
+      res.json(applications);
+    } catch (error: any) {
+      console.error("Error fetching insurance applications:", error);
+      res.status(500).json({ message: "Failed to fetch insurance applications" });
     }
   });
 
@@ -166,13 +236,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         await sendEmail({
           to: application.email,
-          from: "info@visatanzania.org",
+          from: "info@getvisa.tr",
           subject: emailContent.subject,
           html: emailContent.html,
-          text: emailContent.text
+          text: emailContent.text,
+          attachments: []
         });
         
-        console.log(`Insurance application received email sent to ${application.email}`);
+        console.log(`✅ Insurance application received email sent to ${application.email}`);
       } catch (emailError) {
         console.error('Failed to send insurance application received email:', emailError);
       }
@@ -268,17 +339,170 @@ export async function registerRoutes(app: Express): Promise<Server> {
         { code: "ITA", name: "Italy", isEligible: false, requiresSupportingDocs: false },
         { code: "ESP", name: "Spain", isEligible: false, requiresSupportingDocs: false },
         { code: "NLD", name: "Netherlands", isEligible: false, requiresSupportingDocs: false },
-        { code: "RUS", name: "Russian Federation", isEligible: false, requiresSupportingDocs: false },
+
         { code: "BRA", name: "Brazil", isEligible: false, requiresSupportingDocs: false },
         { code: "NGA", name: "Nigeria", isEligible: false, requiresSupportingDocs: false },
-        { code: "SYR", name: "Syria", isEligible: false, requiresSupportingDocs: false },
         { code: "IRN", name: "Iran", isEligible: false, requiresSupportingDocs: false },
+        { code: "SYR", name: "Syria", isEligible: false, requiresSupportingDocs: false },
+        
+        // Additional major countries missing from the original seed
+        { code: "TUR", name: "Turkey", isEligible: false, requiresSupportingDocs: false },
+        { code: "RUS", name: "Russian Federation", isEligible: false, requiresSupportingDocs: false },
+        { code: "ARG", name: "Argentina", isEligible: false, requiresSupportingDocs: false },
+        { code: "CHE", name: "Switzerland", isEligible: false, requiresSupportingDocs: false },
+        { code: "AUT", name: "Austria", isEligible: false, requiresSupportingDocs: false },
+        { code: "BEL", name: "Belgium", isEligible: false, requiresSupportingDocs: false },
+        { code: "DNK", name: "Denmark", isEligible: false, requiresSupportingDocs: false },
+        { code: "FIN", name: "Finland", isEligible: false, requiresSupportingDocs: false },
+        { code: "NOR", name: "Norway", isEligible: false, requiresSupportingDocs: false },
+        { code: "SWE", name: "Sweden", isEligible: false, requiresSupportingDocs: false },
+        { code: "PRT", name: "Portugal", isEligible: false, requiresSupportingDocs: false },
+        { code: "GRC", name: "Greece", isEligible: false, requiresSupportingDocs: false },
+        { code: "POL", name: "Poland", isEligible: false, requiresSupportingDocs: false },
+        { code: "CZE", name: "Czech Republic", isEligible: false, requiresSupportingDocs: false },
+        { code: "HUN", name: "Hungary", isEligible: false, requiresSupportingDocs: false },
+        { code: "SVK", name: "Slovakia", isEligible: false, requiresSupportingDocs: false },
+        { code: "SVN", name: "Slovenia", isEligible: false, requiresSupportingDocs: false },
+        { code: "ROU", name: "Romania", isEligible: false, requiresSupportingDocs: false },
+        { code: "BGR", name: "Bulgaria", isEligible: false, requiresSupportingDocs: false },
+        { code: "LUX", name: "Luxembourg", isEligible: false, requiresSupportingDocs: false },
+        { code: "IRL", name: "Ireland", isEligible: false, requiresSupportingDocs: false },
+        { code: "ISL", name: "Iceland", isEligible: false, requiresSupportingDocs: false },
+        { code: "MLT", name: "Malta", isEligible: false, requiresSupportingDocs: false },
+        { code: "CYP", name: "Cyprus", isEligible: false, requiresSupportingDocs: false },
+        
+        // Asian Countries
+        { code: "KOR", name: "South Korea", isEligible: false, requiresSupportingDocs: false },
+        { code: "PRK", name: "North Korea", isEligible: false, requiresSupportingDocs: false },
+        { code: "MNG", name: "Mongolia", isEligible: false, requiresSupportingDocs: false },
+        { code: "KAZ", name: "Kazakhstan", isEligible: false, requiresSupportingDocs: false },
+        { code: "KGZ", name: "Kyrgyzstan", isEligible: false, requiresSupportingDocs: false },
+        { code: "TJK", name: "Tajikistan", isEligible: false, requiresSupportingDocs: false },
+        { code: "TKM", name: "Turkmenistan", isEligible: false, requiresSupportingDocs: false },
+        { code: "UZB", name: "Uzbekistan", isEligible: false, requiresSupportingDocs: false },
+        { code: "AZE", name: "Azerbaijan", isEligible: false, requiresSupportingDocs: false },
+        { code: "GEO", name: "Georgia", isEligible: false, requiresSupportingDocs: false },
+        { code: "THA", name: "Thailand", isEligible: false, requiresSupportingDocs: false },
+        { code: "MYS", name: "Malaysia", isEligible: false, requiresSupportingDocs: false },
+        { code: "SGP", name: "Singapore", isEligible: false, requiresSupportingDocs: false },
+        { code: "IDN", name: "Indonesia", isEligible: false, requiresSupportingDocs: false },
+        { code: "LAO", name: "Laos", isEligible: false, requiresSupportingDocs: false },
+        { code: "MMR", name: "Myanmar", isEligible: false, requiresSupportingDocs: false },
+        { code: "BRN", name: "Brunei", isEligible: false, requiresSupportingDocs: false },
+        
+        // Middle East & Africa
+        { code: "SAU", name: "Saudi Arabia", isEligible: false, requiresSupportingDocs: false },
+        { code: "ARE", name: "United Arab Emirates", isEligible: false, requiresSupportingDocs: false },
+        { code: "QAT", name: "Qatar", isEligible: false, requiresSupportingDocs: false },
+        { code: "BHR", name: "Bahrain", isEligible: false, requiresSupportingDocs: false },
+        { code: "KWT", name: "Kuwait", isEligible: false, requiresSupportingDocs: false },
+        { code: "OMN", name: "Oman", isEligible: false, requiresSupportingDocs: false },
+        { code: "JOR", name: "Jordan", isEligible: false, requiresSupportingDocs: false },
+        { code: "LBN", name: "Lebanon", isEligible: false, requiresSupportingDocs: false },
+        { code: "ISR", name: "Israel", isEligible: false, requiresSupportingDocs: false },
+        { code: "MAR", name: "Morocco", isEligible: false, requiresSupportingDocs: false },
+        { code: "TUN", name: "Tunisia", isEligible: false, requiresSupportingDocs: false },
+        { code: "ETH", name: "Ethiopia", isEligible: false, requiresSupportingDocs: false },
+        { code: "KEN", name: "Kenya", isEligible: false, requiresSupportingDocs: false },
+        { code: "UGA", name: "Uganda", isEligible: false, requiresSupportingDocs: false },
+        { code: "TZA", name: "Tanzania", isEligible: false, requiresSupportingDocs: false },
+        { code: "ZWE", name: "Zimbabwe", isEligible: false, requiresSupportingDocs: false },
+        { code: "ZMB", name: "Zambia", isEligible: false, requiresSupportingDocs: false },
+        { code: "BWA", name: "Botswana", isEligible: false, requiresSupportingDocs: false },
+        { code: "GHA", name: "Ghana", isEligible: false, requiresSupportingDocs: false },
+        { code: "CIV", name: "Ivory Coast", isEligible: false, requiresSupportingDocs: false },
+        { code: "CMR", name: "Cameroon", isEligible: false, requiresSupportingDocs: false },
+        { code: "AGO", name: "Angola", isEligible: false, requiresSupportingDocs: false },
+        { code: "MOZ", name: "Mozambique", isEligible: false, requiresSupportingDocs: false },
+        { code: "MDG", name: "Madagascar", isEligible: false, requiresSupportingDocs: false },
+        
+        // Americas
+        { code: "MEX", name: "Mexico", isEligible: false, requiresSupportingDocs: false },
+        { code: "GTM", name: "Guatemala", isEligible: false, requiresSupportingDocs: false },
+        { code: "BLZ", name: "Belize", isEligible: false, requiresSupportingDocs: false },
+        { code: "HND", name: "Honduras", isEligible: false, requiresSupportingDocs: false },
+        { code: "SLV", name: "El Salvador", isEligible: false, requiresSupportingDocs: false },
+        { code: "NIC", name: "Nicaragua", isEligible: false, requiresSupportingDocs: false },
+        { code: "CRI", name: "Costa Rica", isEligible: false, requiresSupportingDocs: false },
+        { code: "PAN", name: "Panama", isEligible: false, requiresSupportingDocs: false },
+        { code: "COL", name: "Colombia", isEligible: false, requiresSupportingDocs: false },
+        { code: "VEN", name: "Venezuela", isEligible: false, requiresSupportingDocs: false },
+        { code: "GUY", name: "Guyana", isEligible: false, requiresSupportingDocs: false },
+        { code: "ECU", name: "Ecuador", isEligible: false, requiresSupportingDocs: false },
+        { code: "PER", name: "Peru", isEligible: false, requiresSupportingDocs: false },
+        { code: "BOL", name: "Bolivia", isEligible: false, requiresSupportingDocs: false },
+        { code: "PRY", name: "Paraguay", isEligible: false, requiresSupportingDocs: false },
+        { code: "URY", name: "Uruguay", isEligible: false, requiresSupportingDocs: false },
+        { code: "CHL", name: "Chile", isEligible: false, requiresSupportingDocs: false },
+        
+        // Oceania & Others
+        { code: "NZL", name: "New Zealand", isEligible: false, requiresSupportingDocs: false },
+        { code: "PNG", name: "Papua New Guinea", isEligible: false, requiresSupportingDocs: false },
+        { code: "WSM", name: "Samoa", isEligible: false, requiresSupportingDocs: false },
+        { code: "TON", name: "Tonga", isEligible: false, requiresSupportingDocs: false },
+        { code: "KIR", name: "Kiribati", isEligible: false, requiresSupportingDocs: false },
+        { code: "TUV", name: "Tuvalu", isEligible: false, requiresSupportingDocs: false },
+        { code: "NRU", name: "Nauru", isEligible: false, requiresSupportingDocs: false },
+        { code: "PLW", name: "Palau", isEligible: false, requiresSupportingDocs: false },
+        { code: "MHL", name: "Marshall Islands", isEligible: false, requiresSupportingDocs: false },
+        { code: "FSM", name: "Micronesia", isEligible: false, requiresSupportingDocs: false },
+        
+        // Balkan Countries
+        { code: "ALB", name: "Albania", isEligible: false, requiresSupportingDocs: false },
+        { code: "MKD", name: "North Macedonia", isEligible: false, requiresSupportingDocs: false },
+        { code: "SRB", name: "Serbia", isEligible: false, requiresSupportingDocs: false },
+        { code: "BIH", name: "Bosnia and Herzegovina", isEligible: false, requiresSupportingDocs: false },
+        { code: "MNE", name: "Montenegro", isEligible: false, requiresSupportingDocs: false },
+        { code: "XKX", name: "Kosovo", isEligible: false, requiresSupportingDocs: false },
+        
+        // Caribbean & Central America
+        { code: "CUB", name: "Cuba", isEligible: false, requiresSupportingDocs: false },
+        { code: "TTO", name: "Trinidad and Tobago", isEligible: false, requiresSupportingDocs: false },
+        { code: "GGY", name: "Guernsey", isEligible: false, requiresSupportingDocs: false },
+        { code: "JEY", name: "Jersey", isEligible: false, requiresSupportingDocs: false },
+        { code: "IMN", name: "Isle of Man", isEligible: false, requiresSupportingDocs: false },
+        
+        // Additional African Countries
+        { code: "DJI", name: "Djibouti", isEligible: false, requiresSupportingDocs: false },
+        { code: "ERI", name: "Eritrea", isEligible: false, requiresSupportingDocs: false },
+        { code: "GMB", name: "Gambia", isEligible: false, requiresSupportingDocs: false },
+        { code: "GIN", name: "Guinea", isEligible: false, requiresSupportingDocs: false },
+        { code: "GNB", name: "Guinea-Bissau", isEligible: false, requiresSupportingDocs: false },
+        { code: "LSO", name: "Lesotho", isEligible: false, requiresSupportingDocs: false },
+        { code: "LBR", name: "Liberia", isEligible: false, requiresSupportingDocs: false },
+        { code: "MLI", name: "Mali", isEligible: false, requiresSupportingDocs: false },
+        { code: "MRT", name: "Mauritania", isEligible: false, requiresSupportingDocs: false },
+        { code: "NER", name: "Niger", isEligible: false, requiresSupportingDocs: false },
+        { code: "RWA", name: "Rwanda", isEligible: false, requiresSupportingDocs: false },
+        { code: "STP", name: "Sao Tome and Principe", isEligible: false, requiresSupportingDocs: false },
+        { code: "SLE", name: "Sierra Leone", isEligible: false, requiresSupportingDocs: false },
+        { code: "SOM", name: "Somalia", isEligible: false, requiresSupportingDocs: false },
+        { code: "SSD", name: "South Sudan", isEligible: false, requiresSupportingDocs: false },
+        { code: "SDN", name: "Sudan", isEligible: false, requiresSupportingDocs: false },
+        { code: "SWZ", name: "Eswatini", isEligible: false, requiresSupportingDocs: false },
+        { code: "TGO", name: "Togo", isEligible: false, requiresSupportingDocs: false },
+        { code: "TCD", name: "Chad", isEligible: false, requiresSupportingDocs: false },
+        { code: "CAR", name: "Central African Republic", isEligible: false, requiresSupportingDocs: false },
+        { code: "COD", name: "Democratic Republic of Congo", isEligible: false, requiresSupportingDocs: false },
+        { code: "COG", name: "Republic of Congo", isEligible: false, requiresSupportingDocs: false },
+        { code: "GAB", name: "Gabon", isEligible: false, requiresSupportingDocs: false },
+        { code: "BFA", name: "Burkina Faso", isEligible: false, requiresSupportingDocs: false },
+        { code: "BDI", name: "Burundi", isEligible: false, requiresSupportingDocs: false },
+        { code: "COM", name: "Comoros", isEligible: false, requiresSupportingDocs: false },
+        { code: "SYC", name: "Seychelles", isEligible: false, requiresSupportingDocs: false },
+        { code: "MWI", name: "Malawi", isEligible: false, requiresSupportingDocs: false },
+
+
+
       ];
 
       for (const countryData of countriesData) {
         const existing = await storage.getCountryByCode(countryData.code);
         if (!existing) {
+          console.log(`Adding new country: ${countryData.name} (${countryData.code})`);
           await storage.createCountry(countryData);
+        } else {
+          console.log(`Country already exists: ${countryData.name} (${countryData.code})`);
         }
       }
 
@@ -397,11 +621,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin routes
+  // Admin routes with pagination
   app.get("/api/admin/applications", async (req, res) => {
     try {
-      const applications = await storage.getApplications();
-      res.json(applications);
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 50;
+      const search = (req.query.search as string) || '';
+      
+      const allApplications = await storage.getApplications();
+      
+      // Ensure both snake_case and camelCase fields for frontend compatibility
+      const normalizedApplications = allApplications.map(app => ({
+        ...app,
+        // Add camelCase versions if they don't exist
+        supportingDocumentType: app.supportingDocumentType || (app as any).supporting_document_type,
+        supportingDocumentCountry: app.supportingDocumentCountry || (app as any).supporting_document_country,
+        supportingDocumentNumber: app.supportingDocumentNumber || (app as any).supporting_document_number,
+        supportingDocumentStartDate: app.supportingDocumentStartDate || (app as any).supporting_document_start_date,
+        supportingDocumentEndDate: app.supportingDocumentEndDate || (app as any).supporting_document_end_date,
+        // Also keep snake_case versions for backward compatibility
+        supporting_document_type: (app as any).supporting_document_type || app.supportingDocumentType,
+        supporting_document_country: (app as any).supporting_document_country || app.supportingDocumentCountry,
+        supporting_document_number: (app as any).supporting_document_number || app.supportingDocumentNumber,
+        supporting_document_start_date: (app as any).supporting_document_start_date || app.supportingDocumentStartDate,
+        supporting_document_end_date: (app as any).supporting_document_end_date || app.supportingDocumentEndDate
+      }));
+      
+      // Filter by search term if provided
+      let filteredApplications = normalizedApplications;
+      if (search) {
+        filteredApplications = normalizedApplications.filter(app => 
+          app.firstName?.toLowerCase().includes(search.toLowerCase()) ||
+          app.lastName?.toLowerCase().includes(search.toLowerCase()) ||
+          app.email?.toLowerCase().includes(search.toLowerCase()) ||
+          app.applicationNumber?.toLowerCase().includes(search.toLowerCase())
+        );
+      }
+      
+      // Pagination
+      const totalCount = filteredApplications.length;
+      const totalPages = Math.ceil(totalCount / limit);
+      const offset = (page - 1) * limit;
+      const applications = filteredApplications.slice(offset, offset + limit);
+      
+      res.json({
+        applications,
+        totalCount,
+        currentPage: page,
+        totalPages,
+        hasMore: page < totalPages
+      });
     } catch (error) {
       console.error("Error fetching applications:", error);
       res.status(500).json({ message: "Failed to fetch applications" });
@@ -410,8 +679,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/admin/insurance-applications", async (req, res) => {
     try {
-      const applications = await storage.getInsuranceApplications();
-      res.json(applications);
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 50;
+      const search = (req.query.search as string) || '';
+      
+      const allApplications = await storage.getInsuranceApplications();
+      
+      // Filter by search term if provided
+      let filteredApplications = allApplications;
+      if (search) {
+        filteredApplications = allApplications.filter(app => 
+          app.firstName?.toLowerCase().includes(search.toLowerCase()) ||
+          app.lastName?.toLowerCase().includes(search.toLowerCase()) ||
+          app.email?.toLowerCase().includes(search.toLowerCase()) ||
+          app.applicationNumber?.toLowerCase().includes(search.toLowerCase())
+        );
+      }
+      
+      // Pagination
+      const totalCount = filteredApplications.length;
+      const totalPages = Math.ceil(totalCount / limit);
+      const offset = (page - 1) * limit;
+      const applications = filteredApplications.slice(offset, offset + limit);
+      
+      res.json({
+        applications,
+        totalCount,
+        currentPage: page,
+        totalPages,
+        hasMore: page < totalPages
+      });
     } catch (error) {
       console.error("Error fetching insurance applications:", error);
       res.status(500).json({ message: "Failed to fetch insurance applications" });
@@ -475,7 +772,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             const emailOptions: any = {
               to: application.email,
-              from: "info@visatanzania.org",
               subject: emailContent.subject,
               html: emailContent.html,
               text: emailContent.text
@@ -483,12 +779,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
             
             // Add PDF attachment if available
             if (finalPdfAttachment) {
-              emailOptions.attachments = [{
-                content: finalPdfAttachment.replace(/^data:application\/pdf;base64,/, ''),
-                filename: `e-visa-${application.applicationNumber}.pdf`,
-                type: 'application/pdf',
-                disposition: 'attachment'
-              }];
+              try {
+                // Clean and validate base64 PDF data
+                let cleanBase64 = finalPdfAttachment.replace(/^data:application\/pdf;base64,/, '');
+                cleanBase64 = cleanBase64.replace(/\s/g, ''); // Remove whitespace
+                
+                // Validate base64 format
+                if (cleanBase64.length > 0 && cleanBase64.length % 4 === 0 && /^[A-Za-z0-9+/]*={0,2}$/.test(cleanBase64)) {
+                  // Test decode
+                  Buffer.from(cleanBase64, 'base64');
+                  
+                  emailOptions.attachments = [{
+                    content: cleanBase64,
+                    filename: `e-visa-${application.applicationNumber}.pdf`,
+                    type: 'application/pdf',
+                    disposition: 'attachment'
+                  }];
+                } else {
+                  console.error('❌ Invalid base64 PDF format for visa attachment');
+                }
+              } catch (base64Error) {
+                console.error('❌ Error processing visa PDF attachment:', base64Error);
+              }
             }
             
             // PDF eklentisi varsa email gönder
@@ -499,7 +811,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Basit reddetme email template
             await sendEmail({
               to: application.email,
-              from: "info@visatanzania.org",
+              from: "info@getvisa.tr",
               subject: `[${application.applicationNumber}] Turkey E-Visa Application Update`,
               html: `
                 <h2>Turkey E-Visa Application Update</h2>
@@ -507,7 +819,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 <p>Your e-visa application ${application.applicationNumber} requires additional review.</p>
                 <p>Best regards,<br>Turkey E-Visa Team</p>
               `,
-              text: `Your Turkey E-Visa application ${application.applicationNumber} requires additional review.`
+              text: `Your Turkey E-Visa application ${application.applicationNumber} requires additional review.`,
+              attachments: []
             });
             
             console.log(`Visa status email sent to ${application.email}`);
@@ -567,7 +880,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           const emailOptions: any = {
             to: application.email,
-            from: "info@visatanzania.org",
+            from: "info@euramedglobal.com",
             subject: emailContent.subject,
             html: emailContent.html,
             text: emailContent.text
@@ -575,15 +888,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           // Add PDF attachment if available
           if (finalPdfAttachment) {
-            emailOptions.attachments = [{
-              content: finalPdfAttachment.replace(/^data:application\/pdf;base64,/, ''),
-              filename: `insurance-policy-${application.applicationNumber}.pdf`,
-              type: 'application/pdf',
-              disposition: 'attachment'
-            }];
+            try {
+              // Clean and validate base64 PDF data
+              let cleanBase64 = finalPdfAttachment.replace(/^data:application\/pdf;base64,/, '');
+              cleanBase64 = cleanBase64.replace(/\s/g, ''); // Remove whitespace
+              
+              // Validate base64 format
+              if (cleanBase64.length > 0 && cleanBase64.length % 4 === 0 && /^[A-Za-z0-9+/]*={0,2}$/.test(cleanBase64)) {
+                // Test decode
+                Buffer.from(cleanBase64, 'base64');
+                
+                emailOptions.attachments = [{
+                  content: cleanBase64,
+                  filename: `insurance-policy-${application.applicationNumber}.pdf`,
+                  type: 'application/pdf',
+                  disposition: 'attachment'
+                }];
+              } else {
+                console.error('❌ Invalid base64 PDF format for insurance attachment');
+              }
+            } catch (base64Error) {
+              console.error('❌ Error processing insurance PDF attachment:', base64Error);
+            }
           }
           
           await sendEmail(emailOptions);
+          console.log(`Insurance approval email sent to ${application.email}`);
+          console.log(`PDF attachment included: ${finalPdfAttachment ? 'Yes' : 'No'}`);
           
           console.log(`Insurance approval email sent to ${application.email}`);
         } catch (emailError) {
@@ -611,10 +942,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           await sendEmail({
             to: application.email,
-            from: "info@visatanzania.org",
+            from: "info@euramedglobal.com",
             subject: rejectionEmailContent.subject,
             html: rejectionEmailContent.html,
-            text: rejectionEmailContent.text
+            text: rejectionEmailContent.text,
+            attachments: []
           });
           
           console.log(`Insurance rejection email sent to ${application.email}`);
@@ -777,10 +1109,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           billingFirstName: testData.billingFirstName,
           billingLastName: testData.billingLastName,
           billingStreet1: testData.billingStreet1,
-          billingStreet2: testData.billingStreet2,
-          billingCity: "Test City",
+          billingCity: testData.billingCity,
           billingCountry: testData.billingCountry,
-          billingEmail: testData.billingEmail,
           customerIp: testData.customerIp, // Mandatory field
           merchantId: testData.merchantId
         });
@@ -792,8 +1122,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } catch (apiError: any) {
         console.error('=== GPay API Error ===');
         console.error('Error details:', apiError);
-        console.error('Error message:', apiError?.message);
-        console.error('Error stack:', apiError?.stack);
+        if (apiError && typeof apiError === 'object') {
+          console.error('Error message:', apiError.message || 'Unknown error');
+          console.error('Error stack:', apiError.stack || 'No stack trace');
+        }
         console.error('=== End GPay API Error ===');
       }
       
@@ -817,7 +1149,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Create payment - following PHP merchant example
+  // Create payment - following PHP merchant example with enhanced billing fields
   app.post("/api/payment/create", async (req, res) => {
     try {
       const { 
@@ -826,44 +1158,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
         amount, 
         currency = "USD", 
         orderDescription, 
-        description, // Support both orderDescription and description
-        customerEmail, 
-        customerName 
+        description // Support both orderDescription and description
       } = req.body;
       
-      // Use orderRef or orderId (support both) - if none provided, generate one
-      const finalOrderRef = orderRef || orderId || generateOrderReference();
+      // Use orderRef or orderId (support both) - if none provided, generate unique one with timestamp
+      const finalOrderRef = orderRef || orderId || `ORDER_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const finalDescription = orderDescription || description;
-      
-      if (!customerEmail || !customerName) {
-        return res.status(400).json({ 
-          success: false, 
-          error: "Missing required fields: customerEmail, customerName" 
-        });
-      }
 
       // Always use production domain for GPay callbacks - required for GPay registration
       const baseUrl = 'https://getvisa.tr';
+      console.log("🔧 GPay payment creation for:", finalOrderRef);
       
+      // Get real customer IP - check multiple headers for proxy environments
+      const getCustomerIp = () => {
+        return req.headers['x-forwarded-for']?.toString().split(',')[0]?.trim() || 
+               req.headers['x-real-ip']?.toString() || 
+               req.connection?.remoteAddress || 
+               req.socket?.remoteAddress ||
+               req.ip || 
+               "85.34.78.112"; // Use a realistic Turkish IP as fallback instead of localhost
+      };
+
+      // Enhanced payment request with required billing fields for GPay
       const paymentRequest = {
-        orderRef: `VIS-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`, // Unique order reference with timestamp
-        amount: amount.toString(), // Use real amount from request
+        orderRef: finalOrderRef, // Use the original order reference without VIS prefix
+        amount: amount, // Keep as number, not string
         currency: "USD", // Fixed currency
-        orderDescription: finalDescription || `E-Visa Application - ${finalOrderRef}`,
+        orderDescription: finalDescription || `Turkey E-Visa Application Payment`,
         cancelUrl: `${baseUrl}/payment/cancel`,
         callbackUrl: `${baseUrl}/api/payment/callback`,
         notificationUrl: `${baseUrl}/api/payment/callback`,
         errorUrl: `${baseUrl}/payment/cancel`,
         paymentMethod: "ALL", // Allow all payment methods
         feeBySeller: 50, // 50% fee by seller
-        billingFirstName: customerName.split(' ')[0] || customerName,
-        billingLastName: customerName.split(' ').slice(1).join(' ') || 'Customer',
-        billingStreet1: "123 Main Street", // Required field from Baris example
-        billingStreet2: "",
-        billingCity: "Test City",
-        billingCountry: "US", // US for USD currency
-        billingEmail: customerEmail,
-        customerIp: (req.ip || req.connection?.remoteAddress || "127.0.0.1"), // Mandatory field
+        
+        // Required billing fields - leave empty so customer can enter their own info
+        billingFirstName: "",
+        billingLastName: "",
+        billingStreet1: "",
+        billingCity: "",
+        billingCountry: "",
+        
+        customerIp: getCustomerIp(), // Use real customer IP
         merchantId: "" // Will be set from environment
       };
 
@@ -894,13 +1230,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // GPay callback handler
+  // GPay callback handler - enhanced with detailed logging
   app.post("/api/payment/callback", async (req, res) => {
     try {
+      console.log("🔔 GPay callback received:", JSON.stringify(req.body, null, 2));
+      console.log("🔔 GPay callback headers:", JSON.stringify(req.headers, null, 2));
       const { payload } = req.body;
       
       if (!payload) {
-        console.log("GPay callback: Missing payload");
+        console.log("❌ GPay callback: Missing payload");
         return res.status(400).json({ message: "Missing payload" });
       }
 
@@ -908,11 +1246,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const paymentData = gPayService.parseCallback(payload);
       
       if (!paymentData) {
-        console.log("GPay callback: Invalid payload format");
+        console.log("❌ GPay callback: Invalid payload format");
         return res.status(400).json({ message: "Invalid payload format" });
       }
 
-      console.log("GPay callback received:", paymentData);
+      console.log("✅ GPay callback parsed:", paymentData);
       
       // Verify signature if present
       if (paymentData.signature) {
@@ -928,12 +1266,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Update application status based on payment result
       if (status === 'completed' || status === 'successful' || status === 'approved') {
         console.log(`✅ Payment successful for order ${orderRef}: ${transactionId}`);
-        // TODO: Update application status to payment completed
-        // await storage.updateApplicationPaymentStatus(orderRef, 'completed', amount);
+        
+        // Try to find visa application first
+        const visaApplication = await storage.getApplicationByOrderRef(orderRef);
+        if (visaApplication) {
+          await storage.updateApplicationPaymentStatus(orderRef, 'succeeded');
+          console.log(`✅ Visa application payment status updated to succeeded: ${orderRef}`);
+        } else {
+          // Try insurance application
+          const insuranceApplication = await storage.getInsuranceApplicationByOrderRef(orderRef);
+          if (insuranceApplication) {
+            await storage.updateInsuranceApplicationPaymentStatus(orderRef, 'succeeded');
+            console.log(`✅ Insurance application payment status updated to succeeded: ${orderRef}`);
+          } else {
+            console.log(`⚠️ No application found for order reference: ${orderRef}`);
+          }
+        }
+        
+        // Send success response to GPay
+        res.status(200).json({ 
+          message: "Payment callback processed successfully",
+          status: "success",
+          orderRef: orderRef
+        });
+        
       } else if (status === 'failed' || status === 'error' || status === 'declined') {
         console.log(`❌ Payment failed for order ${orderRef}: ${transactionId}`);
-        // TODO: Update application status to payment failed
-        // await storage.updateApplicationPaymentStatus(orderRef, 'failed', amount);
+        
+        // Try to find visa application first
+        const visaApplication = await storage.getApplicationByOrderRef(orderRef);
+        if (visaApplication) {
+          await storage.updateApplicationPaymentStatus(orderRef, 'failed');
+          console.log(`❌ Visa application payment status updated to failed: ${orderRef}`);
+        } else {
+          // Try insurance application
+          const insuranceApplication = await storage.getInsuranceApplicationByOrderRef(orderRef);
+          if (insuranceApplication) {
+            await storage.updateInsuranceApplicationPaymentStatus(orderRef, 'failed');
+            console.log(`❌ Insurance application payment status updated to failed: ${orderRef}`);
+          } else {
+            console.log(`⚠️ No application found for order reference: ${orderRef}`);
+          }
+        }
       }
       
       res.json({ message: "OK" });
@@ -941,6 +1315,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("GPay callback error:", error);
       res.status(500).json({ message: "Callback processing error" });
+    }
+  });
+
+  // Test callback endpoint - manual testing of callback functionality
+  app.post("/api/payment/test-callback", async (req, res) => {
+    try {
+      console.log("🧪 Manual callback test:", req.body);
+      const { orderRef, status = 'completed', transactionId = 'TEST123' } = req.body;
+      
+      if (!orderRef) {
+        return res.status(400).json({ message: "orderRef required" });
+      }
+
+      console.log(`🧪 Testing callback for order ${orderRef} with status ${status}`);
+      
+      // Update application status based on test data
+      if (status === 'completed' || status === 'successful' || status === 'approved') {
+        // Try to find visa application first
+        const visaApplication = await storage.getApplicationByOrderRef(orderRef);
+        if (visaApplication) {
+          await storage.updateApplicationPaymentStatus(orderRef, 'succeeded');
+          console.log(`✅ TEST: Visa application payment updated to succeeded: ${orderRef}`);
+          res.json({ success: true, message: `Visa application ${orderRef} updated to succeeded` });
+        } else {
+          // Try insurance application
+          const insuranceApplication = await storage.getInsuranceApplicationByOrderRef(orderRef);
+          if (insuranceApplication) {
+            await storage.updateInsuranceApplicationPaymentStatus(orderRef, 'succeeded');
+            console.log(`✅ TEST: Insurance application payment updated to succeeded: ${orderRef}`);
+            res.json({ success: true, message: `Insurance application ${orderRef} updated to succeeded` });
+          } else {
+            console.log(`⚠️ TEST: No application found for order: ${orderRef}`);
+            res.json({ success: false, message: `No application found for order: ${orderRef}` });
+          }
+        }
+      } else {
+        res.json({ success: false, message: `Test status ${status} not processed` });
+      }
+      
+    } catch (error) {
+      console.error("Test callback error:", error);
+      res.status(500).json({ message: "Test callback error" });
     }
   });
 
@@ -999,6 +1415,245 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Payment cancel callback error:", error);
       res.redirect(`/payment-success?payment=cancelled&message=Payment cancelled`);
+    }
+  });
+
+  // Chat API routes
+  app.get("/api/chat/messages", async (req, res) => {
+    try {
+      const messages = await storage.getAllChatMessages();
+      res.json(messages);
+    } catch (error) {
+      console.error("Error fetching chat messages:", error);
+      res.status(500).json({ message: "Failed to fetch chat messages" });
+    }
+  });
+
+  // Create chat message from customer
+  app.post("/api/chat/messages", async (req, res) => {
+    try {
+      const { sessionId, message, customerName, customerEmail } = req.body;
+      
+      if (!sessionId || !message) {
+        return res.status(400).json({ message: "Missing sessionId or message" });
+      }
+
+      const chatMessage = await storage.createChatMessage({
+        id: `msg_${Date.now()}_${Math.random().toString(36).substring(2)}`,
+        sessionId,
+        message,
+        sender: 'user',
+        timestamp: new Date(),
+        isRead: false,
+        customerName: customerName || null,
+        customerEmail: customerEmail || null
+      });
+
+      console.log(`💬 New customer message from session ${sessionId}: ${message}`);
+      res.json(chatMessage);
+    } catch (error) {
+      console.error("Error creating chat message:", error);
+      res.status(500).json({ message: "Failed to create chat message" });
+    }
+  });
+
+  app.post("/api/chat/reply", async (req, res) => {
+    try {
+      const { sessionId, message } = req.body;
+      
+      if (!sessionId || !message) {
+        return res.status(400).json({ message: "Missing sessionId or message" });
+      }
+
+      const chatMessage = await storage.createChatMessage({
+        id: `msg_${Date.now()}_${Math.random().toString(36).substring(2)}`,
+        sessionId,
+        message,
+        sender: 'admin',
+        timestamp: new Date(),
+        isRead: true,
+        customerName: null,
+        customerEmail: null
+      });
+
+      res.json(chatMessage);
+    } catch (error) {
+      console.error("Error sending chat reply:", error);
+      res.status(500).json({ message: "Failed to send chat reply" });
+    }
+  });
+
+  app.patch("/api/chat/mark-read/:sessionId", async (req, res) => {
+    try {
+      const { sessionId } = req.params;
+      await storage.markChatMessagesRead(sessionId);
+      res.json({ message: "Messages marked as read" });
+    } catch (error) {
+      console.error("Error marking messages as read:", error);
+      res.status(500).json({ message: "Failed to mark messages as read" });
+    }
+  });
+
+  // Admin panel email routes
+  app.post("/api/admin/applications/:id/approve", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { message } = req.body;
+
+      // Get application details
+      const application = await storage.getApplication(Number(id));
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+
+      // Update application status
+      await storage.updateApplicationStatus(Number(id), 'approved');
+
+      // Send approval email
+      try {
+        const approvalEmailData = generateVisaApprovalEmail(
+          application.firstName,
+          application.lastName,
+          application.applicationNumber
+        );
+
+        await sendEmail({
+          to: application.email,
+          from: "info@getvisa.tr",
+          subject: approvalEmailData.subject,
+          html: approvalEmailData.html,
+          text: approvalEmailData.text
+        });
+
+        console.log(`✅ Approval email sent to ${application.email} for application ${application.applicationNumber}`);
+      } catch (emailError) {
+        console.error("❌ Email error:", emailError);
+      }
+
+      res.json({ 
+        message: "Application approved and email sent",
+        applicationNumber: application.applicationNumber
+      });
+    } catch (error) {
+      console.error("Error approving application:", error);
+      res.status(500).json({ message: "Failed to approve application" });
+    }
+  });
+
+  app.post("/api/admin/applications/:id/reject", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { message } = req.body;
+
+      // Get application details
+      const application = await storage.getApplication(Number(id));
+      if (!application) {
+        return res.status(404).json({ message: "Application not found" });
+      }
+
+      // Update application status
+      await storage.updateApplicationStatus(Number(id), 'rejected');
+
+      // Send rejection email
+      try {
+        const rejectionEmailData = generateVisaRejectionEmail(
+          application.firstName,
+          application.lastName,
+          application.applicationNumber,
+          message || "Your application did not meet the requirements."
+        );
+
+        await sendEmail({
+          to: application.email,
+          from: "info@getvisa.tr",
+          subject: rejectionEmailData.subject,
+          html: rejectionEmailData.html,
+          text: rejectionEmailData.text
+        });
+
+        console.log(`✅ Rejection email sent to ${application.email} for application ${application.applicationNumber}`);
+      } catch (emailError) {
+        console.error("❌ Email error:", emailError);
+      }
+
+      res.json({ 
+        message: "Application rejected and email sent",
+        applicationNumber: application.applicationNumber
+      });
+    } catch (error) {
+      console.error("Error rejecting application:", error);
+      res.status(500).json({ message: "Failed to reject application" });
+    }
+  });
+
+  // Test email endpoint
+  app.post("/api/send-test-email", async (req, res) => {
+    try {
+      const { to, firstName, lastName, applicationNumber, emailType } = req.body;
+
+      if (!to || !firstName || !lastName || !applicationNumber || !emailType) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
+      let emailData;
+      
+      if (emailType === 'visa_received') {
+        // Mock application data for testing
+        const mockApplicationData = {
+          passportNumber: "A12345678",
+          dateOfBirth: "1990-01-01",
+          countryOfOrigin: "United States",
+          arrivalDate: "2025-09-01",
+          processingType: "standard",
+          totalAmount: "119.00",
+          supportingDocumentType: "residence",
+          supportingDocumentCountry: "DEU",
+          supportingDocumentNumber: "123456789",
+          supportingDocumentStartDate: "2023-01-01",
+          supportingDocumentEndDate: "2025-12-31"
+        };
+
+        emailData = generateVisaReceivedEmail(
+          firstName,
+          lastName,
+          applicationNumber,
+          mockApplicationData
+        );
+      } else if (emailType === 'visa_approval') {
+        emailData = generateVisaApprovalEmail(
+          firstName,
+          lastName,
+          applicationNumber
+        );
+      } else if (emailType === 'visa_rejection') {
+        emailData = generateVisaRejectionEmail(
+          firstName,
+          lastName,
+          applicationNumber,
+          "Test rejection message from EURAMED LTD system"
+        );
+      } else {
+        return res.status(400).json({ message: "Invalid email type" });
+      }
+
+      await sendEmail({
+        to: to,
+        from: "info@getvisa.tr",
+        subject: emailData.subject,
+        html: emailData.html,
+        text: emailData.text
+      });
+
+      res.json({ 
+        message: `${emailType} email sent successfully to ${to}`,
+        subject: emailData.subject
+      });
+    } catch (error: any) {
+      console.error("Error sending test email:", error);
+      res.status(500).json({ 
+        message: "Failed to send test email",
+        error: error.message
+      });
     }
   });
 

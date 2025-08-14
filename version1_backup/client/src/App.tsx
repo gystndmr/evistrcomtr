@@ -4,6 +4,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { LiveChat } from "@/components/live-chat";
+import { CookieConsent } from "@/components/cookie-consent";
 
 import Home from "@/pages/home";
 import Application from "@/pages/application";
@@ -24,8 +26,10 @@ import KVKK from "@/pages/kvkk";
 import CancellationPolicy from "@/pages/cancellation-policy";
 import Security from "@/pages/security";
 import Refund from "@/pages/refund";
+import PaymentPolicy from "@/pages/payment-policy";
 import MobileTest from "@/pages/mobile-test";
 import NotFound from "@/pages/not-found";
+import ChatAdmin from "@/pages/chat-admin";
 
 function Router() {
   return (
@@ -37,7 +41,9 @@ function Router() {
       <Route path="/status" component={Status} />
       <Route path="/admin" component={Admin} />
       <Route path="/payment-success" component={PaymentSuccess} />
+      <Route path="/payment/success" component={PaymentSuccess} />
       <Route path="/payment-cancel" component={PaymentCancel} />
+      <Route path="/payment/cancel" component={PaymentCancel} />
       <Route path="/payment-troubleshoot" component={PaymentTroubleshoot} />
       <Route path="/mock-gpay-payment" component={MockGPayPayment} />
       <Route path="/debug-payment" component={DebugPayment} />
@@ -50,7 +56,9 @@ function Router() {
       <Route path="/cancellation-policy" component={CancellationPolicy} />
       <Route path="/security" component={Security} />
       <Route path="/refund" component={Refund} />
+      <Route path="/payment-policy" component={PaymentPolicy} />
       <Route path="/mobile-test" component={MobileTest} />
+      <Route path="/chat-admin" component={ChatAdmin} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -63,7 +71,8 @@ function App() {
         <TooltipProvider>
           <Toaster />
           <Router />
-
+          <LiveChat />
+          <CookieConsent />
         </TooltipProvider>
       </LanguageProvider>
     </QueryClientProvider>

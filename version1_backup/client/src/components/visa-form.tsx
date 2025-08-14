@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -46,11 +46,51 @@ const applicationSchema = z.object({
 type ApplicationFormData = z.infer<typeof applicationSchema>;
 
 const processingTypes = [
-  { value: "standard", label: "Standard Processing (5-7 days)", price: 25 },
-  { value: "fast", label: "Fast Processing (1-3 days)", price: 75 },
-  { value: "express", label: "Express Processing (24 hours)", price: 175 },
-  { value: "urgent", label: "Urgent Processing (4 hours)", price: 295 },
+  { value: "standard", label: "Ready in 5-7 days", price: 25, minDays: 7 },
+  { value: "fast", label: "Ready in 1-3 days", price: 75, minDays: 3 },
+  { value: "express", label: "Ready in 24 hours", price: 175, minDays: 1 },
+  { value: "urgent", label: "Ready in 4 hours", price: 295, minDays: 1 },
 ];
+
+// Supporting document processing types with minDays
+const supportingDocProcessingTypes = [
+  { value: "slow", label: "Ready in 7 days", price: 50, minDays: 7 },
+  { value: "standard", label: "Ready in 4 days", price: 115, minDays: 4 },
+  { value: "fast", label: "Ready in 2 days", price: 165, minDays: 2 },
+  { value: "urgent_24", label: "Ready in 24 hours", price: 280, minDays: 1 },
+  { value: "urgent_12", label: "Ready in 12 hours", price: 330, minDays: 1 },
+  { value: "urgent_4", label: "Ready in 4 hours", price: 410, minDays: 1 },
+  { value: "urgent_1", label: "Ready in 1 hour", price: 645, minDays: 1 },
+];
+
+// Helper function to calculate days between two dates
+const calculateDaysDifference = (arrivalDate: string): number => {
+  if (!arrivalDate) return Infinity;
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Reset time to start of day
+  
+  const arrival = new Date(arrivalDate);
+  arrival.setHours(0, 0, 0, 0); // Reset time to start of day
+  
+  const diffTime = arrival.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  return diffDays;
+};
+
+// Helper function to filter processing types based on arrival date
+const getAvailableProcessingTypes = (arrivalDate: string, isSupporting: boolean = false) => {
+  const daysUntilArrival = calculateDaysDifference(arrivalDate);
+  const types = isSupporting ? supportingDocProcessingTypes : processingTypes;
+  
+  // If arrival date is in the past, show only fastest options (1 day processing)
+  if (daysUntilArrival <= 0) {
+    return types.filter(type => type.minDays === 1);
+  }
+  
+  return types.filter(type => type.minDays <= daysUntilArrival);
+};
 
 export function VisaForm() {
   const { t } = useLanguage();
@@ -62,17 +102,21 @@ export function VisaForm() {
   const [showPrerequisites, setShowPrerequisites] = useState(false);
   const [hasSupportingDocument, setHasSupportingDocument] = useState<boolean | null>(null);
   const [supportingDocumentDetails, setSupportingDocumentDetails] = useState<any>(null);
+  const [selectedSupportingDocType, setSelectedSupportingDocType] = useState("");
   const [documentProcessingType, setDocumentProcessingType] = useState("");
   const [isSupportingDocumentValid, setIsSupportingDocumentValid] = useState(false);
+  const [availableProcessingTypes, setAvailableProcessingTypes] = useState(processingTypes);
+  const [availableSupportingDocTypes, setAvailableSupportingDocTypes] = useState(supportingDocProcessingTypes);
   // Removed paymentData state - now using direct redirects
   const [showRetry, setShowRetry] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
   const [paymentRedirectUrl, setPaymentRedirectUrl] = useState<string>("");
   const [prerequisites, setPrerequisites] = useState({
-    ordinaryPassport: false,
-    validPassport: false,
-    enterWithin3Months: false,
-    stayWithin30Days: false,
+    tourismBusiness: false,
+    financialProof: false,
+    supportingDocuments: false,
+    passportValidity: false,
+    allRequirements: false,
   });
   const { toast } = useToast();
 
@@ -100,14 +144,59 @@ export function VisaForm() {
     },
   });
 
+  // Watch arrival date changes and update available processing types
+  const watchedArrivalDate = form.watch("arrivalDate");
+  
+  useEffect(() => {
+    if (watchedArrivalDate) {
+      // Update available processing types based on arrival date
+      const standardTypes = getAvailableProcessingTypes(watchedArrivalDate, false);
+      const supportingTypes = getAvailableProcessingTypes(watchedArrivalDate, true);
+      
+      setAvailableProcessingTypes(standardTypes);
+      setAvailableSupportingDocTypes(supportingTypes);
+      
+      // Reset processing type if current selection is no longer available
+      const currentProcessingType = form.getValues("processingType");
+      if (currentProcessingType && !standardTypes.some(type => type.value === currentProcessingType)) {
+        form.setValue("processingType", standardTypes.length > 0 ? standardTypes[0].value : "");
+        toast({
+          title: "İşlem Türü Güncellendi",
+          description: "Varış tarihinize göre işlem türü otomatik olarak ayarlandı.",
+          duration: 3000,
+        });
+      }
+      
+      // Reset supporting document processing type if no longer available
+      if (documentProcessingType && !supportingTypes.some(type => type.value === documentProcessingType)) {
+        setDocumentProcessingType(supportingTypes.length > 0 ? supportingTypes[0].value : "");
+        toast({
+          title: "İşlem Türü Güncellendi", 
+          description: "Varış tarihinize göre işlem türü otomatik olarak ayarlandı.",
+          duration: 3000,
+        });
+      }
+    } else {
+      // If no arrival date, show all options
+      setAvailableProcessingTypes(processingTypes);
+      setAvailableSupportingDocTypes(supportingDocProcessingTypes);
+    }
+  }, [watchedArrivalDate, form, documentProcessingType, toast]);
+
   const createApplicationMutation = useMutation({
     mutationFn: async (data: ApplicationFormData) => {
-      // First create the application
+      // Ensure we have the correct processing type based on supporting document status
+      const finalProcessingType = hasSupportingDocument === true ? documentProcessingType : data.processingType;
+      
+      // First create the application - ALL DATA IS PRESERVED
       const applicationResponse = await apiRequest("POST", "/api/applications", {
         ...data,
         countryId: selectedCountry?.id,
         countryOfOrigin: selectedCountry?.name,
+        processingType: finalProcessingType, // Use the correct processing type
         totalAmount: calculateTotal().toString(),
+        supportingDocumentType: selectedSupportingDocType || null,
+        supportingDocumentCountry: supportingDocumentDetails?.visaCountry || supportingDocumentDetails?.residenceCountry || null,
         supportingDocumentNumber: data.supportingDocumentNumber || null,
         supportingDocumentStartDate: data.supportingDocumentStartDate || null,
         supportingDocumentEndDate: data.supportingDocumentEndDate || null,
@@ -256,30 +345,18 @@ export function VisaForm() {
   });
 
   const calculateTotal = () => {
-    const baseFee = 69; // E-Visa Application Fee is always $69
-    let additionalFee = 0;
-    
     if (hasSupportingDocument === true && documentProcessingType) {
-      // Document processing fees (includes processing + document fee)
-      const documentProcessingTypes = [
-        { value: "slow", price: 119 },
-        { value: "standard", price: 184 },
-        { value: "fast", price: 234 },
-        { value: "urgent_24", price: 349 },
-        { value: "urgent_12", price: 399 },
-        { value: "urgent_4", price: 479 },
-        { value: "urgent_1", price: 714 }
-      ];
-      
-      const selectedProcessing = documentProcessingTypes.find(p => p.value === documentProcessingType);
-      additionalFee = selectedProcessing?.price || 119;
+      // Find processing fee from dynamic list
+      const processingFee = supportingDocProcessingTypes.find(type => type.value === documentProcessingType)?.price || 0;
+      const documentPdfFee = 69; // Document PDF fee
+      return processingFee + documentPdfFee;
     } else if (hasSupportingDocument === false) {
-      // Standard e-visa processing fees (when no supporting document)
+      // Standard e-visa processing fees (when no supporting document) 
       const selectedProcessingType = form.watch("processingType") || "standard";
-      additionalFee = processingTypes.find(p => p.value === selectedProcessingType)?.price || 25;
+      return processingTypes.find(p => p.value === selectedProcessingType)?.price || 25;
     }
     
-    return baseFee + additionalFee;
+    return 0;
   };
 
   const handleCountrySelect = (country: Country | null) => {
@@ -303,8 +380,16 @@ export function VisaForm() {
         return;
       }
       if (!selectedCountry.isEligible) {
-        // Redirect to insurance for non-eligible countries with country information
-        window.location.href = `/insurance?country=${encodeURIComponent(selectedCountry.name)}`;
+        // Show message and redirect to insurance
+        toast({
+          title: "E-Visa Not Available", 
+          description: "This country is not eligible for Turkey e-visa. You may check our travel insurance options instead.",
+          duration: 4000,
+        });
+        // Redirect to insurance page after showing the message
+        setTimeout(() => {
+          window.location.href = `/insurance?country=${encodeURIComponent(selectedCountry?.name || '')}`;
+        }, 2000);
         return;
       }
     }
@@ -320,17 +405,9 @@ export function VisaForm() {
         return;
       }
       if (hasSupportingDocument === false) {
-        // Add country parameter if available for insurance tracking
-        const countryParam = selectedCountry ? `?country=${encodeURIComponent(selectedCountry.name)}` : '';
-        
-        // Immediate redirect for better UX
-        toast({
-          title: "No Supporting Documents Required",
-          description: "Redirecting to travel insurance options...",
-          duration: 500,
-        });
-        // Immediate redirect - no delay
-        window.location.href = `/insurance${countryParam}`;
+        // Redirect to insurance page immediately when no supporting document
+        const country = selectedCountry?.name || '';
+        window.location.href = `/insurance?country=${encodeURIComponent(country)}`;
         return;
       }
       if (hasSupportingDocument === true) {
@@ -384,10 +461,11 @@ export function VisaForm() {
     
     // Step 4: Prerequisites (only if supporting document exists)
     if (currentStep === 4 && selectedCountry?.isEligible && hasSupportingDocument === true) {
-      const allPrerequisitesMet = prerequisites.ordinaryPassport && 
-                                  prerequisites.validPassport && 
-                                  prerequisites.enterWithin3Months && 
-                                  prerequisites.stayWithin30Days;
+      const allPrerequisitesMet = prerequisites.tourismBusiness && 
+                                  prerequisites.financialProof && 
+                                  prerequisites.supportingDocuments && 
+                                  prerequisites.passportValidity && 
+                                  prerequisites.allRequirements;
                                   
       if (!allPrerequisitesMet) {
         toast({
@@ -718,6 +796,8 @@ export function VisaForm() {
                     onHasSupportingDocument={setHasSupportingDocument}
                     onDocumentDetailsChange={setSupportingDocumentDetails}
                     onValidationChange={setIsSupportingDocumentValid}
+                    onSupportingDocTypeChange={setSelectedSupportingDocType}
+                    onProcessingTypeChange={setDocumentProcessingType}
                   />
                 </div>
               )}
@@ -730,132 +810,203 @@ export function VisaForm() {
                     <FormField
                       control={form.control}
                       name="arrivalDate"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Arrival Date in Turkey *</FormLabel>
-                          <FormControl>
-                            <div className="space-y-2">
-                              <div className="grid grid-cols-3 gap-2">
-                                <Select
-                                  value={field.value ? field.value.split('-')[2] : ''}
-                                  onValueChange={(day) => {
-                                    const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                                    const year = parts[0];
-                                    const month = parts[1];
-                                    field.onChange(`${year}-${month}-${day.padStart(2, '0')}`);
-                                  }}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Day" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
-                                      <SelectItem key={d} value={d}>{d}</SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
+                      render={({ field }) => {
+                        const today = new Date();
+                        const currentYear = today.getFullYear();
+                        const currentMonth = today.getMonth() + 1; // getMonth() returns 0-11
+                        const currentDay = today.getDate();
+                        
+                        // Get currently selected values
+                        const selectedParts = field.value ? field.value.split('-') : [];
+                        const selectedYear = selectedParts[0] ? parseInt(selectedParts[0]) : currentYear;
+                        const selectedMonth = selectedParts[1] ? parseInt(selectedParts[1]) : currentMonth;
+                        const selectedDay = selectedParts[2] ? parseInt(selectedParts[2]) : currentDay;
+                        
+                        // Determine available options based on current date
+                        const getAvailableYears = () => {
+                          return Array.from({ length: 11 }, (_, i) => (currentYear + i).toString());
+                        };
+                        
+                        const getAvailableMonths = () => {
+                          const months = [
+                            { value: '01', label: 'January' },
+                            { value: '02', label: 'February' },
+                            { value: '03', label: 'March' },
+                            { value: '04', label: 'April' },
+                            { value: '05', label: 'May' },
+                            { value: '06', label: 'June' },
+                            { value: '07', label: 'July' },
+                            { value: '08', label: 'August' },
+                            { value: '09', label: 'September' },
+                            { value: '10', label: 'October' },
+                            { value: '11', label: 'November' },
+                            { value: '12', label: 'December' }
+                          ];
+                          
+                          // If current year selected, filter months based on date logic
+                          if (selectedYear === currentYear) {
+                            return months.filter(m => {
+                              const monthNum = parseInt(m.value);
+                              // Future months are always available
+                              if (monthNum > currentMonth) {
+                                return true;
+                              }
+                              // For current month, check if user can select a valid day
+                              if (monthNum === currentMonth) {
+                                // If day is selected and it's valid for current month, show current month
+                                if (selectedParts[2] && selectedDay >= currentDay) {
+                                  return true;
+                                }
+                                // If no day selected yet, show current month
+                                if (!selectedParts[2]) {
+                                  return true;
+                                }
+                                // Day is selected but invalid for current month
+                                return false;
+                              }
+                              // Past months are never available
+                              return false;
+                            });
+                          }
+                          return months;
+                        };
+                        
+                        const getAvailableDays = () => {
+                          // Always show days 1-31, but let month filtering handle the logic
+                          const daysInMonth = selectedParts[1] ? new Date(selectedYear, selectedMonth, 0).getDate() : 31;
+                          return Array.from({ length: daysInMonth }, (_, i) => (i + 1).toString().padStart(2, '0'));
+                        };
+                        
+                        return (
+                          <FormItem>
+                            <FormLabel>Arrival Date in Turkey *</FormLabel>
+                            <FormControl>
+                              <div className="space-y-2">
+                                <div className="grid grid-cols-3 gap-2">
+                                  <Select
+                                    value={field.value ? field.value.split('-')[2] : ''}
+                                    onValueChange={(day) => {
+                                      const parts = field.value ? field.value.split('-') : [currentYear.toString(), currentMonth.toString().padStart(2, '0'), '01'];
+                                      const year = parts[0];
+                                      const month = parts[1];
+                                      field.onChange(`${year}-${month}-${day.padStart(2, '0')}`);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Day" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {getAvailableDays().map((d) => (
+                                        <SelectItem key={d} value={d}>{d}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
 
-                                <Select
-                                  value={field.value ? field.value.split('-')[1] : ''}
-                                  onValueChange={(month) => {
-                                    const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                                    const year = parts[0];
-                                    const day = parts[2];
-                                    field.onChange(`${year}-${month.padStart(2, '0')}-${day}`);
-                                  }}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Month" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {[
-                                      { value: '01', label: 'January' },
-                                      { value: '02', label: 'February' },
-                                      { value: '03', label: 'March' },
-                                      { value: '04', label: 'April' },
-                                      { value: '05', label: 'May' },
-                                      { value: '06', label: 'June' },
-                                      { value: '07', label: 'July' },
-                                      { value: '08', label: 'August' },
-                                      { value: '09', label: 'September' },
-                                      { value: '10', label: 'October' },
-                                      { value: '11', label: 'November' },
-                                      { value: '12', label: 'December' }
-                                    ].map((m) => (
-                                      <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
+                                  <Select
+                                    value={field.value ? field.value.split('-')[1] : ''}
+                                    onValueChange={(month) => {
+                                      const parts = field.value ? field.value.split('-') : [currentYear.toString(), '01', '01'];
+                                      const year = parts[0];
+                                      const day = parts[2];
+                                      
+                                      // Update the form value
+                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day}`);
+                                      
+                                      // If selected day is not available in new month, reset to first available day
+                                      const daysInNewMonth = new Date(parseInt(year), parseInt(month), 0).getDate();
+                                      const dayInt = parseInt(day);
+                                      if (dayInt > daysInNewMonth) {
+                                        const firstAvailableDay = (parseInt(year) === currentYear && parseInt(month) === currentMonth) ? currentDay : 1;
+                                        field.onChange(`${year}-${month.padStart(2, '0')}-${firstAvailableDay.toString().padStart(2, '0')}`);
+                                      }
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Month" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {getAvailableMonths().map((m) => (
+                                        <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
 
-                                <Select
-                                  value={field.value ? field.value.split('-')[0] : ''}
-                                  onValueChange={(year) => {
-                                    const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                                    const month = parts[1];
-                                    const day = parts[2];
-                                    field.onChange(`${year}-${month}-${day}`);
-                                  }}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Year" />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
-                                      <SelectItem key={y} value={y}>{y}</SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
+                                  <Select
+                                    value={field.value ? field.value.split('-')[0] : ''}
+                                    onValueChange={(year) => {
+                                      const parts = field.value ? field.value.split('-') : [currentYear.toString(), currentMonth.toString().padStart(2, '0'), '01'];
+                                      const month = parts[1];
+                                      const day = parts[2];
+                                      
+                                      // If switching to current year and month is not available, reset to current month
+                                      if (parseInt(year) === currentYear && parseInt(month) < currentMonth) {
+                                        field.onChange(`${year}-${currentMonth.toString().padStart(2, '0')}-${currentDay.toString().padStart(2, '0')}`);
+                                      } else {
+                                        field.onChange(`${year}-${month}-${day}`);
+                                      }
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Year" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {getAvailableYears().map((y) => (
+                                        <SelectItem key={y} value={y}>{y}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  📅 Bugünden önce tarih seçilemez
+                                </div>
                               </div>
-                            </div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        );
+                      }}
                     />
                     
                     {/* Processing Type for supporting document applications */}
                     {hasSupportingDocument === true && (
                       <div className="space-y-4">
                         <Label htmlFor="processingType">Processing Type *</Label>
-                        <Select onValueChange={setDocumentProcessingType}>
+                        <Select value={documentProcessingType} onValueChange={setDocumentProcessingType}>
                           <SelectTrigger>
                             <SelectValue placeholder="Select processing type" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="slow">Slow Processing (7 days) - $50</SelectItem>
-                            <SelectItem value="standard">Standard Processing (4 days) - $115</SelectItem>
-                            <SelectItem value="fast">Fast Processing (2 days) - $165</SelectItem>
-                            <SelectItem value="urgent_24">Urgent Processing (24 hours) - $280</SelectItem>
-                            <SelectItem value="urgent_12">Urgent Processing (12 hours) - $330</SelectItem>
-                            <SelectItem value="urgent_4">Urgent Processing (4 hours) - $410</SelectItem>
-                            <SelectItem value="urgent_1">Urgent Processing (1 hour) - $645</SelectItem>
+                            {availableSupportingDocTypes.map((type) => (
+                              <SelectItem key={type.value} value={type.value}>
+                                {type.label} - ${type.price}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
+                        
+                        {availableSupportingDocTypes.length === 0 && (
+                          <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                            <p className="text-orange-800 text-sm">
+                              <strong>Dikkat:</strong> Seçilen varış tarihi için işlem seçeneği mevcut değil. Lütfen daha ileri bir tarih seçiniz.
+                            </p>
+                          </div>
+                        )}
                         
                         {documentProcessingType && (
                           <div className="bg-blue-50 p-4 rounded-lg">
                             <h4 className="font-medium text-blue-900 mb-2">Processing Fee Summary:</h4>
                             <div className="text-sm text-blue-800">
-                              <p>• Selected: {documentProcessingType}</p>
-                              <p>• Processing Fee: ${
-                                documentProcessingType === "slow" ? 50 :
-                                documentProcessingType === "standard" ? 115 :
-                                documentProcessingType === "fast" ? 165 :
-                                documentProcessingType === "urgent_24" ? 280 :
-                                documentProcessingType === "urgent_12" ? 330 :
-                                documentProcessingType === "urgent_4" ? 410 :
-                                documentProcessingType === "urgent_1" ? 645 : 0
-                              }</p>
-                              <p>• Document PDF Fee: $69</p>
-                              <p className="font-bold">• Total Additional Cost: ${(
-                                documentProcessingType === "slow" ? 50 :
-                                documentProcessingType === "standard" ? 115 :
-                                documentProcessingType === "fast" ? 165 :
-                                documentProcessingType === "urgent_24" ? 280 :
-                                documentProcessingType === "urgent_12" ? 330 :
-                                documentProcessingType === "urgent_4" ? 410 :
-                                documentProcessingType === "urgent_1" ? 645 : 0
-                              ) + 69}</p>
+                              {(() => {
+                                const selectedType = supportingDocProcessingTypes.find(type => type.value === documentProcessingType);
+                                return (
+                                  <>
+                                    <p>• Selected: {selectedType?.label || documentProcessingType}</p>
+                                    <p>• Processing Fee: ${selectedType?.price || 0}</p>
+                                    <p>• Document PDF Fee: $69</p>
+                                    <p className="font-bold text-lg">• Total Amount: ${calculateTotal()}</p>
+                                  </>
+                                );
+                              })()}
                             </div>
                           </div>
                         )}
@@ -870,14 +1021,14 @@ export function VisaForm() {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Processing Type *</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl>
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select processing type" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {processingTypes.map((type) => (
+                                {availableProcessingTypes?.map((type) => (
                                   <SelectItem key={type.value} value={type.value}>
                                     {type.label} - ${type.price}
                                   </SelectItem>
@@ -885,6 +1036,14 @@ export function VisaForm() {
                               </SelectContent>
                             </Select>
                             <FormMessage />
+                            
+                            {availableProcessingTypes.length === 0 && (
+                              <div className="bg-orange-50 p-4 rounded-lg mt-2 border border-orange-200">
+                                <p className="text-orange-800 text-sm">
+                                  <strong>Dikkat:</strong> Seçilen varış tarihi için işlem seçeneği mevcut değil. Lütfen daha ileri bir tarih seçiniz.
+                                </p>
+                              </div>
+                            )}
                           </FormItem>
                         )}
                       />
@@ -899,43 +1058,52 @@ export function VisaForm() {
                   <h3 className="text-lg font-semibold mb-4">{t("app.step4.prerequisites.title")}</h3>
                   <div className="space-y-4">
                     <div className="bg-blue-50 p-4 rounded-lg">
-                      <h4 className="font-medium text-blue-900 mb-2">Please confirm you meet the following criteria:</h4>
-                      <div className="space-y-2">
-                        <label className="flex items-center">
+                      <h4 className="font-medium text-blue-900 mb-2">{t("prerequisites.confirm.title")}</h4>
+                      <div className="space-y-3">
+                        <label className="flex items-start">
                           <input 
                             type="checkbox" 
-                            className="mr-2" 
-                            checked={prerequisites.ordinaryPassport}
-                            onChange={(e) => setPrerequisites({...prerequisites, ordinaryPassport: e.target.checked})}
+                            className="mr-3 mt-1" 
+                            checked={prerequisites.tourismBusiness}
+                            onChange={(e) => setPrerequisites({...prerequisites, tourismBusiness: e.target.checked})}
                           />
-                          <span className="text-sm text-blue-800">You have an ordinary passport (not diplomatic or service passport)</span>
+                          <span className="text-sm text-blue-800">{t("prerequisites.tourism.business")}</span>
                         </label>
-                        <label className="flex items-center">
+                        <label className="flex items-start">
                           <input 
                             type="checkbox" 
-                            className="mr-2" 
-                            checked={prerequisites.validPassport}
-                            onChange={(e) => setPrerequisites({...prerequisites, validPassport: e.target.checked})}
+                            className="mr-3 mt-1" 
+                            checked={prerequisites.financialProof}
+                            onChange={(e) => setPrerequisites({...prerequisites, financialProof: e.target.checked})}
                           />
-                          <span className="text-sm text-blue-800">Your passport is valid for at least 6 months</span>
+                          <span className="text-sm text-blue-800">{t("prerequisites.financial.proof")}</span>
                         </label>
-                        <label className="flex items-center">
+                        <label className="flex items-start">
                           <input 
                             type="checkbox" 
-                            className="mr-2" 
-                            checked={prerequisites.enterWithin3Months}
-                            onChange={(e) => setPrerequisites({...prerequisites, enterWithin3Months: e.target.checked})}
+                            className="mr-3 mt-1" 
+                            checked={prerequisites.supportingDocuments}
+                            onChange={(e) => setPrerequisites({...prerequisites, supportingDocuments: e.target.checked})}
                           />
-                          <span className="text-sm text-blue-800">You will enter Turkey within 3 months of visa issuance</span>
+                          <span className="text-sm text-blue-800">{t("prerequisites.supporting.documents")}</span>
                         </label>
-                        <label className="flex items-center">
+                        <label className="flex items-start">
                           <input 
                             type="checkbox" 
-                            className="mr-2" 
-                            checked={prerequisites.stayWithin30Days}
-                            onChange={(e) => setPrerequisites({...prerequisites, stayWithin30Days: e.target.checked})}
+                            className="mr-3 mt-1" 
+                            checked={prerequisites.passportValidity}
+                            onChange={(e) => setPrerequisites({...prerequisites, passportValidity: e.target.checked})}
                           />
-                          <span className="text-sm text-blue-800">Your stay will not exceed 30 days in a 180-day period</span>
+                          <span className="text-sm text-blue-800">{t("prerequisites.passport.validity")}</span>
+                        </label>
+                        <label className="flex items-start">
+                          <input 
+                            type="checkbox" 
+                            className="mr-3 mt-1" 
+                            checked={prerequisites.allRequirements}
+                            onChange={(e) => setPrerequisites({...prerequisites, allRequirements: e.target.checked})}
+                          />
+                          <span className="text-sm text-blue-800 font-medium">{t("prerequisites.all.requirements")}</span>
                         </label>
                       </div>
                     </div>

@@ -1,50 +1,49 @@
 #!/bin/bash
 
-# Version1 Restore Script
-# This script restores the complete Turkey E-Visa project to Version1 state
-# All functionality preserved: visa applications, insurance, admin panel, emails, GPay integration
+echo "=== VERSION1 GERİ YÜKLEME BAŞLADI ==="
 
-echo "🔄 Restoring Turkey E-Visa Project to Version1..."
+# Mevcut dosyaları backup yap
+mkdir -p temp_backup
+cp -r client temp_backup/ 2>/dev/null
+cp -r server temp_backup/ 2>/dev/null  
+cp -r shared temp_backup/ 2>/dev/null
+cp package.json temp_backup/ 2>/dev/null
+cp tsconfig.json temp_backup/ 2>/dev/null
+cp vite.config.ts temp_backup/ 2>/dev/null
+cp tailwind.config.ts temp_backup/ 2>/dev/null
+cp postcss.config.js temp_backup/ 2>/dev/null
+cp components.json temp_backup/ 2>/dev/null
+cp drizzle.config.ts temp_backup/ 2>/dev/null
+cp replit.md temp_backup/ 2>/dev/null
 
-# Backup current state before restore
-if [ -d "current_backup" ]; then
-    rm -rf current_backup
-fi
-mkdir -p current_backup
-cp -r client current_backup/ 2>/dev/null
-cp -r server current_backup/ 2>/dev/null
-cp -r shared current_backup/ 2>/dev/null
-cp package.json package-lock.json tailwind.config.ts postcss.config.js components.json tsconfig.json vite.config.ts drizzle.config.ts current_backup/ 2>/dev/null
+echo "Mevcut dosyalar yedeklendi..."
 
-echo "📦 Current state backed up to current_backup/"
-
-# Restore Version1
+# Version1'i geri yükle
 if [ -d "version1_backup" ]; then
-    echo "📁 Restoring from version1_backup..."
+    echo "Version1 backup bulundu, geri yükleniyor..."
     
-    # Remove current files
+    # Ana dosyaları geri yükle
     rm -rf client server shared
-    rm -f package.json package-lock.json tailwind.config.ts postcss.config.js components.json tsconfig.json vite.config.ts drizzle.config.ts
+    cp -r version1_backup/client .
+    cp -r version1_backup/server .
+    cp -r version1_backup/shared .
     
-    # Restore Version1 files
-    cp -r version1_backup/* .
+    # Konfigürasyon dosyalarını geri yükle
+    cp version1_backup/package.json .
+    cp version1_backup/tsconfig.json .
+    cp version1_backup/vite.config.ts .
+    cp version1_backup/tailwind.config.ts .
+    cp version1_backup/postcss.config.js .
+    cp version1_backup/components.json .
+    cp version1_backup/drizzle.config.ts .
+    cp version1_backup/replit.md .
     
-    echo "✅ Version1 restored successfully!"
-    echo "🔧 Please run: npm install"
-    echo "🚀 Then run: npm run dev"
-    echo ""
-    echo "📋 Version1 Features Restored:"
-    echo "   - Complete visa application system"
-    echo "   - Travel insurance marketplace" 
-    echo "   - Admin panel (/admin - password: admin123)"
-    echo "   - SendGrid email system with PDF attachments"
-    echo "   - GPay payment integration"
-    echo "   - 6-language support (EN/TR/FR/DE/ES/AR)"
-    echo "   - Professional transparent UI design"
-    echo "   - Full customer data management"
-    echo ""
+    echo "✅ VERSION1 BAŞARIYLA GERİ YÜKLENDI!"
+    echo "🚀 Turkey E-Visa Application System aktif!"
+    
 else
-    echo "❌ Error: version1_backup directory not found!"
-    echo "Cannot restore Version1. Backup may be missing."
+    echo "❌ Version1 backup bulunamadı!"
     exit 1
 fi
+
+echo "=== VERSION1 GERİ YÜKLEME TAMAMLANDI ==="

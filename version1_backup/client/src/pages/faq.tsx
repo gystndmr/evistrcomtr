@@ -89,7 +89,7 @@ export default function FAQ() {
               If you can't find the answer you're looking for, please contact our support team.
             </p>
             <a 
-              href="mailto:info@getvisa.tr" 
+              href="mailto:info@euramedglobal.com" 
               className="inline-block bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
             >
               Contact Support

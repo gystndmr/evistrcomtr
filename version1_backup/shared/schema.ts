@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, decimal, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, decimal, jsonb, varchar } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -40,6 +40,8 @@ export const applications = pgTable("applications", {
   documentType: text("document_type").notNull(),
   processingType: text("processing_type").notNull().default("standard"),
   supportingDocuments: jsonb("supporting_documents"),
+  supportingDocumentType: text("supporting_document_type"), // Seçilen destekleyici belge türü
+  supportingDocumentCountry: text("supporting_document_country"), // Spesifik visa ülkesi (IRL, SCHENGEN, USA, GBR)
   supportingDocumentNumber: text("supporting_document_number"), // Destekleyici belge numarası
   supportingDocumentStartDate: timestamp("supporting_document_start_date"), // Destekleyici belge başlangıç tarihi
   supportingDocumentEndDate: timestamp("supporting_document_end_date"), // Destekleyici belge bitiş tarihi
@@ -86,6 +88,17 @@ export const insuranceApplications = pgTable("insurance_applications", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const chatMessages = pgTable("chat_messages", {
+  id: varchar("id", { length: 255 }).primaryKey(),
+  sessionId: varchar("session_id", { length: 255 }).notNull(),
+  customerName: varchar("customer_name", { length: 255 }),
+  customerEmail: varchar("customer_email", { length: 255 }),
+  message: text("message").notNull(),
+  sender: varchar("sender", { length: 10 }).notNull(), // 'user' or 'agent'
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+  isRead: boolean("is_read").default(false).notNull(),
+});
+
 // Relations
 export const countriesRelations = relations(countries, ({ many }) => ({
   applications: many(applications),
@@ -111,7 +124,10 @@ export const insuranceApplicationsRelations = relations(insuranceApplications, (
 
 // Zod schemas
 export const insertCountrySchema = createInsertSchema(countries);
-export const insertApplicationSchema = createInsertSchema(applications);
+export const insertApplicationSchema = createInsertSchema(applications).extend({
+  // Make totalAmount optional since it's calculated on the backend based on processing type
+  totalAmount: z.string().optional(),
+});
 export const insertInsuranceProductSchema = createInsertSchema(insuranceProducts);
 export const insertInsuranceApplicationSchema = createInsertSchema(insuranceApplications).omit({ 
   id: true, 
@@ -119,6 +135,8 @@ export const insertInsuranceApplicationSchema = createInsertSchema(insuranceAppl
   updatedAt: true,
   pdfAttachment: true
 });
+
+export const insertChatMessageSchema = createInsertSchema(chatMessages);
 
 // Types
 export type Country = typeof countries.$inferSelect;
@@ -129,3 +147,5 @@ export type InsuranceProduct = typeof insuranceProducts.$inferSelect;
 export type InsertInsuranceProduct = z.infer<typeof insertInsuranceProductSchema>;
 export type InsuranceApplication = typeof insuranceApplications.$inferSelect;
 export type InsertInsuranceApplication = z.infer<typeof insertInsuranceApplicationSchema>;
+export type ChatMessage = typeof chatMessages.$inferSelect;
+export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
