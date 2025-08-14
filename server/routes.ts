@@ -1099,8 +1099,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } catch (apiError: any) {
         console.error('=== GPay API Error ===');
         console.error('Error details:', apiError);
-        console.error('Error message:', apiError?.message);
-        console.error('Error stack:', apiError?.stack);
+        if (apiError && typeof apiError === 'object') {
+          console.error('Error message:', apiError.message || 'Unknown error');
+          console.error('Error stack:', apiError.stack || 'No stack trace');
+        }
         console.error('=== End GPay API Error ===');
       }
       
@@ -1154,7 +1156,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                "85.34.78.112"; // Use a realistic Turkish IP as fallback instead of localhost
       };
 
-      // Enhanced payment request with comprehensive billing fields following PHP example
+      // Enhanced payment request with required billing fields for GPay
       const paymentRequest = {
         orderRef: finalOrderRef, // Use the original order reference without VIS prefix
         amount: amount, // Keep as number, not string
@@ -1167,7 +1169,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         paymentMethod: "ALL", // Allow all payment methods
         feeBySeller: 50, // 50% fee by seller
         
-        // No billing fields - GPay will handle all billing requirements internally
+        // Required billing fields - use default values since GPay will collect actual billing info
+        billingFirstName: "Customer",
+        billingLastName: "Name",
+        billingStreet1: "Address",
+        billingCity: "City",
+        billingCountry: "US",
         
         customerIp: getCustomerIp(), // Use real customer IP
         merchantId: "" // Will be set from environment
