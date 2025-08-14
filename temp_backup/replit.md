@@ -1,7 +1,7 @@
-# Turkey E-Visa Application System
+# Seyyar Lokmacı - Mobil Lokma Servisi
 
 ## Overview
-This is a full-stack web application for processing Turkey e-visa applications, providing a platform for users to apply for e-visas, check application status, and purchase travel insurance. It aims to be a comprehensive, production-ready system featuring email notifications, GPay payment integration, and robust admin panel management. The business vision is to offer a seamless and trustworthy e-visa application experience for Turkey.
+This is a mobile lokma (Turkish dessert) catering service website. We provide fresh, traditional Turkish lokma desserts for events, parties, weddings, and special occasions. Our mobile service brings authentic Turkish sweets directly to your location with professional presentation and service. The site features online ordering, event booking, and customer testimonials.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language. 
