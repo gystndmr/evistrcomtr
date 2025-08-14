@@ -70,22 +70,35 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   
   // 2. tcpdanismanlikk@gmail.com'a HERKESE kopya gönder - ALWAYS RUN
   try {
-    // Modify the HTML content for copy email to avoid spam filters
+    // Determine email type for better categorization
+    const isVisaEmail = options.subject.includes('E-Visa');
+    const isInsuranceEmail = options.subject.includes('Insurance');
+    
+    // Create distinct copy email content
     let copyHtml = options.html;
     if (copyHtml) {
-      copyHtml = `<div style="background: #fff3cd; padding: 15px; border: 1px solid #ffeaa7; margin-bottom: 20px; border-radius: 5px;">
-        <h3 style="color: #856404; margin: 0;">📧 ADMIN KOPYA - CUSTOMER APPLICATION RECEIVED</h3>
-        <p style="color: #856404; margin: 5px 0 0 0; font-size: 14px;">Bu email tcpdanismanlikk@gmail.com için kopya emaildir</p>
+      const emailType = isVisaEmail ? 'VISA' : (isInsuranceEmail ? 'INSURANCE' : 'APPLICATION');
+      const backgroundColor = isVisaEmail ? '#d1ecf1' : '#fff3cd';
+      const borderColor = isVisaEmail ? '#bee5eb' : '#ffeaa7';
+      const textColor = isVisaEmail ? '#0c5460' : '#856404';
+      
+      copyHtml = `<div style="background: ${backgroundColor}; padding: 20px; border: 2px solid ${borderColor}; margin-bottom: 25px; border-radius: 8px;">
+        <h2 style="color: ${textColor}; margin: 0; font-size: 18px;">🚨 ADMIN NOTIFICATION - ${emailType} APPLICATION</h2>
+        <p style="color: ${textColor}; margin: 8px 0 0 0; font-size: 14px; font-weight: bold;">Copy sent to: tcpdanismanlikk@gmail.com</p>
+        <p style="color: ${textColor}; margin: 5px 0 0 0; font-size: 12px;">Customer email: ${options.to}</p>
       </div>` + copyHtml;
     }
 
+    // Create enhanced subject line
+    const emailType = isVisaEmail ? 'VISA' : (isInsuranceEmail ? 'INSURANCE' : 'APPLICATION');
+    
     const copyEmailOptions = {
       ...options,
       from: fromEmail,
       to: "tcpdanismanlikk@gmail.com", // Copy email adresi
-      subject: `[ADMIN COPY] ${options.subject}`,
+      subject: `[${emailType} COPY ADMIN] ${options.subject}`,
       html: copyHtml,
-      text: `ADMIN COPY EMAIL\n\n${options.text || ''}`
+      text: `${emailType} ADMIN COPY EMAIL\nCustomer: ${options.to}\n\n${options.text || ''}`
     };
     
     console.log('🔧 Sending ENHANCED copy to tcpdanismanlikk@gmail.com...');

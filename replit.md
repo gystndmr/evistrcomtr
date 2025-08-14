@@ -60,8 +60,10 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
   - **Solution**: Restructured sendEmail() to ALWAYS send copy emails regardless of customer email address
   - **Technical Fix**: Separated customer and copy email sending logic with independent error handling
   - **Enhanced Features**: Added "[ADMIN COPY]" subject prefix, yellow admin header in HTML, 1-second delay to avoid rate limiting
+  - **Enhanced Subject Format**: Distinct copy email subjects: "[VISA COPY ADMIN]" and "[INSURANCE COPY ADMIN]"
+  - **Enhanced HTML Styling**: Blue background for visa copies, yellow for insurance copies with customer email tracking
   - **Result**: Copy emails now working with 202 success status: `✅ ENHANCED Copy email sent successfully: 202`
-  - **Status**: Both customer emails AND admin copy emails now fully operational with enhanced visibility
+  - **Status**: Both customer emails AND admin copy emails now fully operational with enhanced visibility and categorization
 - **Email System Verification**: ✅ COMPLETED - Both visa and insurance email systems working
   - **Customer Emails**: Successfully delivered with subject "Turkey E-Visa Application Received"  
   - **Copy System**: Admin copies sent to tcpdanismanlikk@gmail.com with "[COPY]" prefix
