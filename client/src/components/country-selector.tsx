@@ -133,18 +133,16 @@ export function CountrySelector({
 
     if (!selectedCountry.isEligible) {
       return (
-        <Alert className="border-red-200 bg-red-50">
-          <XCircle className="h-4 w-4 text-red-500" />
-          <AlertDescription className="text-red-800">
-            <strong>{t('country.selector.ineligible.message')}</strong>
-            <br />
-            <strong>{t('country.selector.insurance.required')}</strong>
+        <Alert className="border-orange-200 bg-orange-50">
+          <XCircle className="h-4 w-4 text-orange-600" />
+          <AlertDescription className="text-orange-800">
+            E-visa is not available for your country. You need to apply through the Turkish consulate. However, travel insurance is mandatory under Turkish Law No. 6458 for all Turkey visitors.
             <div className="mt-3">
               <button 
                 onClick={() => window.location.href = `/insurance?country=${encodeURIComponent(selectedCountry.name)}`}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium text-sm"
+                className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded font-medium text-sm"
               >
-                Get Insurance
+                GET INSURANCE
               </button>
             </div>
           </AlertDescription>
