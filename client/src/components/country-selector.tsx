@@ -138,7 +138,7 @@ export function CountrySelector({
           <AlertDescription className="text-red-800">
             <strong>OFFICIAL NOTICE:</strong> Electronic visa applications are not accepted for your nationality. You must apply through the Turkish Diplomatic Mission in your country. 
             <br /><br />
-            <strong>MANDATORY INSURANCE REQUIREMENT:</strong> Pursuant to Turkish Law No. 6458, Article 7, travel insurance coverage is legally required for all foreign nationals entering Turkey, regardless of visa approval or denial status.
+            <strong>MANDATORY INSURANCE REQUIREMENT:</strong> Pursuant to Turkish Law No. 6458, Article 7, travel insurance coverage is legally required for all foreign nationals entering Turkey.
             <div className="mt-3">
               <button 
                 onClick={() => window.location.href = `/insurance?country=${encodeURIComponent(selectedCountry.name)}`}

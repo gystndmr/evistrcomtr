@@ -193,7 +193,7 @@ export function SupportingDocumentCheck({
               <AlertDescription className="text-red-800">
                 <strong>CONSULATE APPLICATION REQUIRED:</strong> Without supporting documentation, you must submit your visa application directly to the Turkish Diplomatic Mission in your jurisdiction.
                 <br /><br />
-                <strong>COMPULSORY INSURANCE NOTICE:</strong> Under Turkish Law No. 6458, Article 7, all foreign nationals are legally obligated to obtain travel insurance prior to entry into Turkey. This requirement remains in effect regardless of visa application outcome or approval status.
+                <strong>COMPULSORY INSURANCE NOTICE:</strong> Under Turkish Law No. 6458, Article 7, all foreign nationals are legally obligated to obtain travel insurance prior to entry into Turkey.
                 <div className="mt-4">
                   <button 
                     onClick={() => {
