@@ -65,7 +65,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const application = await storage.createApplication(validatedData);
       
-      // E-posta gönderimi (vize başvuru alındı)
+      // E-posta gönderimi (vize başvuru alındı) - USING DYNAMIC IMPORT LIKE INSURANCE
       try {
         console.log('🔧 VISA EMAIL DEBUG - Starting email process...');
         console.log('🔧 Application data:', {
@@ -75,6 +75,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           applicationNumber: application.applicationNumber
         });
         
+        // Dynamic import like insurance system
+        const { generateVisaReceivedEmail } = await import('./email');
         const emailContent = generateVisaReceivedEmail(
           application.firstName, 
           application.lastName, 

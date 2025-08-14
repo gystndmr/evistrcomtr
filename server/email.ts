@@ -115,7 +115,7 @@ export function generateVisaReceivedEmail(
   `;
 
   return {
-    subject: `[${applicationNumber}] Turkey E-Visa Application Received`,
+    subject: `[${applicationNumber}] Turkey Visa Application Received`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -129,8 +129,8 @@ export function generateVisaReceivedEmail(
           <!-- Header -->
           <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
             ${turkeyFlagSvg}
-            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY E VISA</h1>
-            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
+            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY VISA</h1>
+            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">VISA APPLICATION SYSTEM</p>
             <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">getvisa.tr</p>
           </div>
           
@@ -140,7 +140,7 @@ export function generateVisaReceivedEmail(
             
             <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 10px; margin: 20px 0; border: 1px solid #dee2e6;">
               <p style="color: #1a1a1a; line-height: 1.7; margin: 0; font-size: 16px; text-align: center;">
-                <strong>Your Turkey Electronic Visa application has been successfully received and recorded.</strong><br>
+                <strong>Your Turkey Visa application has been successfully received and recorded.</strong><br>
                 <span style="color: #666; font-size: 14px;">Your application has been forwarded for evaluation.</span>
               </p>
             </div>
@@ -287,7 +287,7 @@ export function generateVisaReceivedEmail(
             
             <!-- Footer -->
             <div style="background: #374151; color: #9ca3af; padding: 20px; text-align: center; font-size: 12px; margin-top: 30px;">
-              <p style="margin: 0;">© 2025 EURAMED LTD - Turkey Electronic Visa Services</p>
+              <p style="margin: 0;">© 2025 EURAMED LTD - Turkey Visa Services</p>
               
               <p style="margin: 10px 0 0 0; font-size: 11px;">
                 EURAMED LTD | Contact: info@euramedglobal.com | Website: getvisa.tr
@@ -302,7 +302,7 @@ TURKEY E-VISA APPLICATION SYSTEM
 
 Dear ${firstName} ${lastName},
 
-Your Turkey Electronic Visa application has been successfully received and recorded.
+Your Turkey Visa application has been successfully received and recorded.
 
 APPLICATION DETAILS:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -330,7 +330,7 @@ Best regards,
 Turkey E-Visa Services Team
 
 ---
-EURAMED LTD - Turkey Electronic Visa Services
+EURAMED LTD - Turkey Visa Services
 Contact: info@euramedglobal.com | Website: getvisa.tr
 
     `
@@ -370,8 +370,8 @@ export function generateVisaRejectionEmail(
           <!-- Header -->
           <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
             ${turkeyFlagSvg}
-            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY E VISA</h1>
-            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
+            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY VISA</h1>
+            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">VISA APPLICATION SYSTEM</p>
             <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">getvisa.tr</p>
           </div>
           
@@ -381,7 +381,7 @@ export function generateVisaRejectionEmail(
             
             <div style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); padding: 25px; border-radius: 10px; margin: 20px 0; border: 1px solid #f87171;">
               <p style="color: #991b1b; line-height: 1.7; margin: 0; font-size: 16px; text-align: center;">
-                <strong>We regret to inform you that your Turkey Electronic Visa application has been reviewed and unfortunately cannot be approved at this time.</strong>
+                <strong>We regret to inform you that your Turkey Visa application has been reviewed and unfortunately cannot be approved at this time.</strong>
               </p>
             </div>
             
@@ -420,7 +420,7 @@ export function generateVisaRejectionEmail(
             
             <!-- Footer -->
             <div style="background: #374151; color: #9ca3af; padding: 20px; text-align: center; font-size: 12px; margin-top: 30px;">
-              <p style="margin: 0;">© 2025 EURAMED LTD - Turkey Electronic Visa Services</p>
+              <p style="margin: 0;">© 2025 EURAMED LTD - Turkey Visa Services</p>
               
               <p style="margin: 10px 0 0 0; font-size: 11px;">
                 EURAMED LTD | Contact: info@euramedglobal.com | Website: getvisa.tr
@@ -435,7 +435,7 @@ TURKEY E-VISA APPLICATION SYSTEM
 
 Dear ${firstName} ${lastName},
 
-We regret to inform you that your Turkey Electronic Visa application has been reviewed and unfortunately cannot be approved at this time.
+We regret to inform you that your Turkey Visa application has been reviewed and unfortunately cannot be approved at this time.
 
 APPLICATION DETAILS:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -460,7 +460,7 @@ Best regards,
 Turkey E-Visa Services Team
 
 ---
-EURAMED LTD - Turkey Electronic Visa Services
+EURAMED LTD - Turkey Visa Services
 Contact: info@euramedglobal.com | Website: getvisa.tr
 
     `
@@ -502,8 +502,8 @@ export function generateVisaApprovalEmail(
           <!-- Header -->
           <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
             ${turkeyFlagSvg}
-            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY E VISA</h1>
-            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
+            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY VISA</h1>
+            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">VISA APPLICATION SYSTEM</p>
             <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">getvisa.tr</p>
           </div>
           
@@ -518,7 +518,7 @@ export function generateVisaApprovalEmail(
             <h2 style="color: #1a1a1a; margin-bottom: 20px; font-size: 22px;">Dear ${firstName} ${lastName},</h2>
             
             <p style="color: #1a1a1a; line-height: 1.7; margin-bottom: 20px; font-size: 16px;">
-              <strong>Congratulations!</strong> Your Turkey Electronic Visa application has been <span style="color: #10B981; font-weight: bold;">APPROVED</span> and is ready for use.
+              <strong>Congratulations!</strong> Your Turkey Visa application has been <span style="color: #10B981; font-weight: bold;">APPROVED</span> and is ready for use.
             </p>
             
             <!-- Application Details -->
@@ -595,7 +595,7 @@ export function generateVisaApprovalEmail(
           
           <!-- Footer -->
           <div style="background: #374151; color: #9ca3af; padding: 20px; text-align: center; font-size: 12px;">
-            <p style="margin: 0;">© 2025 EURAMED LTD - Turkey Electronic Visa Services</p>
+            <p style="margin: 0;">© 2025 EURAMED LTD - Turkey Visa Services</p>
             
             <p style="margin: 10px 0 0 0; font-size: 11px;">
               EURAMED LTD | Contact: info@euramedglobal.com | Website: getvisa.tr
@@ -610,7 +610,7 @@ export function generateVisaApprovalEmail(
 
 Dear ${firstName} ${lastName},
 
-Congratulations! Your Turkey Electronic Visa has been APPROVED.
+Congratulations! Your Turkey Visa has been APPROVED.
 
 Visa Details:
 - Application Number: ${applicationNumber}
@@ -640,7 +640,7 @@ Website: getvisa.tr
 Have a wonderful trip to Turkey!
 
 ---
-EURAMED LTD - Turkey Electronic Visa Services
+EURAMED LTD - Turkey Visa Services
 Contact: info@euramedglobal.com | Website: getvisa.tr
 
 
