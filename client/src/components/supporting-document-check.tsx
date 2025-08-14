@@ -188,10 +188,12 @@ export function SupportingDocumentCheck({
           </div>
 
           {hasDocument === false && (
-            <Alert className="border-orange-200 bg-orange-50">
-              <AlertTriangle className="h-4 w-4 text-orange-600" />
-              <AlertDescription className="text-orange-800">
-                Without supporting documents, you must apply for your visa at the Turkish consulate in your country. However, under Turkish Law No. 6458, travel insurance is mandatory for all visitors to Turkey, regardless of visa approval status.
+            <Alert className="border-red-200 bg-red-50">
+              <AlertTriangle className="h-4 w-4 text-red-600" />
+              <AlertDescription className="text-red-800">
+                <strong>CONSULATE APPLICATION REQUIRED:</strong> Without supporting documentation, you must submit your visa application directly to the Turkish Diplomatic Mission in your jurisdiction.
+                <br /><br />
+                <strong>COMPULSORY INSURANCE NOTICE:</strong> Under Turkish Law No. 6458, Article 7, all foreign nationals are legally obligated to obtain travel insurance prior to entry into Turkey. This requirement remains in effect regardless of visa application outcome or approval status.
                 <div className="mt-4">
                   <button 
                     onClick={() => {
@@ -199,9 +201,9 @@ export function SupportingDocumentCheck({
                       const country = urlParams.get('country') || '';
                       window.location.href = `/insurance?country=${encodeURIComponent(country)}`;
                     }}
-                    className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded font-medium text-sm transition-colors"
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-medium text-sm transition-colors"
                   >
-                    GET INSURANCE
+                    GET MANDATORY INSURANCE
                   </button>
                 </div>
               </AlertDescription>
