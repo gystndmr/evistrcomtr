@@ -53,7 +53,18 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 - **Site Mode Switching**: Supports quick switching between the e-visa application site and a consulting/advertising site.
 - **Date Input**: Uses manual dropdowns for date selections for improved user control.
 
-### Recent Fixes (August 13, 2025)
+### Recent Fixes (August 14, 2025)
+- **Country Eligibility System**: ✅ COMPLETED - Fixed Turkey e-visa country eligibility system
+  - Updated 49 countries to `isEligible: true` based on official Turkey e-visa list
+  - 29 countries require supporting documents (hotel, flight, financial proof)
+  - 20 countries don't require supporting documents 
+  - All other countries set to `isEligible: false` (USA, Germany, UK, etc.)
+  - Frontend now correctly shows "E-Visa Available" for eligible countries
+  - Non-eligible countries show "E-visa requires consulate procedures" with insurance redirect
+- **Database Corrections**: Fixed Afghanistan data inconsistency (was showing as ineligible despite database showing eligible)
+- **Supporting Document Requirements**: Properly configured which countries need supporting documentation vs. visa-free processing
+
+### Previous Fixes (August 13, 2025)
 - **Payment Status Updates**: ⚠️ PARTIAL - Callback system works in development but production API endpoints broken
 - **Database Methods**: Added `getApplicationByOrderRef()` and `updateApplicationPaymentStatus()` methods for both visa and insurance
 - **Callback Handler**: Enhanced `/api/payment/callback` endpoint with detailed logging and test endpoint
