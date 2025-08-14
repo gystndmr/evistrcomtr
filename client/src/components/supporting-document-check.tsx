@@ -188,22 +188,22 @@ export function SupportingDocumentCheck({
           </div>
 
           {hasDocument === false && (
-            <Alert className="border-red-200 bg-red-50">
-              <AlertTriangle className="h-4 w-4 text-red-600" />
-              <AlertDescription className="text-red-800">
-                <strong>⚠️ MANDATORY REQUIREMENT:</strong> According to Law No. 6458 on Foreigners, you are required to have valid health insurance for the entire duration of your stay in Turkey.
+            <Alert className="border-orange-200 bg-orange-50">
+              <AlertTriangle className="h-4 w-4 text-orange-600" />
+              <AlertDescription className="text-orange-800">
+                <strong>IMPORTANT NOTICE:</strong> Without supporting documents, you will need to apply through the Turkish consulate in your country. However, <strong>travel insurance is MANDATORY</strong> for all Turkey visa applications, regardless of the application method.
                 <br /><br />
-                For e-visa application, you must contact the Turkish consulate in your country. However, travel insurance remains mandatory regardless of your visa application method.
-                <div className="mt-3">
+                <em>Even if your visa application is denied, you are still required to have valid travel insurance before traveling to Turkey.</em>
+                <div className="mt-4">
                   <button 
                     onClick={() => {
                       const urlParams = new URLSearchParams(window.location.search);
                       const country = urlParams.get('country') || '';
                       window.location.href = `/insurance?country=${encodeURIComponent(country)}`;
                     }}
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-medium text-sm transition-colors"
+                    className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded font-medium text-sm transition-colors"
                   >
-                    Get Required Insurance
+                    Get Mandatory Insurance
                   </button>
                 </div>
               </AlertDescription>
