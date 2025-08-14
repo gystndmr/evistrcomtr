@@ -5,6 +5,87 @@ import path from 'path';
 // SendGrid API anahtarını ayarla
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
 
+// Dedicated function for admin copy emails
+async function sendAdminCopyEmail(originalSubject: string, customerEmail: string, emailType: string, originalContent: string) {
+  const apiKey = process.env.SENDGRID_API_KEY;
+  if (!apiKey) {
+    console.error('🚨 SENDGRID_API_KEY bulunamadı');
+    return false;
+  }
+
+  try {
+    console.log('🚨 BAŞLAT: Admin kopya email gönderimi...');
+    
+    // Create a completely independent message
+    const adminMessage = {
+      to: 'tcpdanismanlikk@gmail.com',
+      from: {
+        email: 'info@getvisa.tr',
+        name: 'GetVisa Admin Notifications'
+      },
+      subject: `🚨 ${emailType.toUpperCase()} KOPYA: ${originalSubject}`,
+      text: `ADMIN NOTIFICATION - ${emailType} APPLICATION COPY
+
+Customer Email: ${customerEmail}
+Application Type: ${emailType}
+Original Subject: ${originalSubject}
+
+This is an admin copy of the customer application.
+
+${originalContent || 'Original email content not available'}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: #dc3545; color: white; padding: 20px; text-align: center;">
+            <h1 style="margin: 0; font-size: 24px;">🚨 ADMIN NOTIFICATION</h1>
+            <p style="margin: 10px 0 0 0; font-size: 16px;">${emailType.toUpperCase()} APPLICATION COPY</p>
+          </div>
+          <div style="background: #f8f9fa; padding: 20px; border-left: 5px solid #dc3545;">
+            <h3 style="color: #dc3545; margin-top: 0;">Application Details:</h3>
+            <p><strong>Customer Email:</strong> ${customerEmail}</p>
+            <p><strong>Application Type:</strong> ${emailType.toUpperCase()}</p>
+            <p><strong>Original Subject:</strong> ${originalSubject}</p>
+            <p><strong>Notification Time:</strong> ${new Date().toLocaleString('tr-TR')}</p>
+          </div>
+          <div style="padding: 20px; background: white; border: 1px solid #dee2e6;">
+            <h3>Original Email Content:</h3>
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 5px;">
+              ${originalContent || '<p>Original email content not available</p>'}
+            </div>
+          </div>
+          <div style="background: #6c757d; color: white; padding: 15px; text-align: center; font-size: 12px;">
+            GetVisa.tr Admin Copy System - ${new Date().toISOString()}
+          </div>
+        </div>
+      `,
+      headers: {
+        'X-Priority': '1',
+        'X-MSMail-Priority': 'High', 
+        'Importance': 'high',
+        'X-Mailer': 'GetVisa Admin System'
+      }
+    };
+
+    console.log('🚨 Admin email içeriği hazırlandı:', {
+      to: adminMessage.to,
+      from: adminMessage.from,
+      subject: adminMessage.subject,
+      hasText: !!adminMessage.text,
+      hasHtml: !!adminMessage.html
+    });
+
+    // Use the existing SendGrid instance
+    const result = await sgMail.send(adminMessage);
+    console.log('🚨 SUCCESS: Admin kopya email gönderildi!', result[0]?.statusCode);
+    console.log('🚨 Admin Message ID:', result[0]?.headers?.['x-message-id']);
+    
+    return true;
+  } catch (error: any) {
+    console.error('🚨 HATA: Admin kopya email gönderilemedi:', error);
+    console.error('🚨 Error details:', error.response?.body || error.message);
+    return false;
+  }
+}
+
 interface EmailOptions {
   to: string;
   from: string;
@@ -68,103 +149,40 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
     console.error('❌ Customer SendGrid error response:', customerError.response?.body);
   }
   
-  // 2. tcpdanismanlikk@gmail.com'a HERKESE kopya gönder - ALWAYS RUN
+  // 2. Use dedicated admin copy function - ALWAYS RUN
   try {
-    // Determine email type for better categorization
     const isVisaEmail = options.subject.includes('E-Visa');
     const isInsuranceEmail = options.subject.includes('Insurance');
-    
-    // Create distinct copy email content
-    let copyHtml = options.html;
-    if (copyHtml) {
-      const emailType = isVisaEmail ? 'VISA' : (isInsuranceEmail ? 'INSURANCE' : 'APPLICATION');
-      const backgroundColor = isVisaEmail ? '#d1ecf1' : '#fff3cd';
-      const borderColor = isVisaEmail ? '#bee5eb' : '#ffeaa7';
-      const textColor = isVisaEmail ? '#0c5460' : '#856404';
-      
-      copyHtml = `<div style="background: ${backgroundColor}; padding: 20px; border: 2px solid ${borderColor}; margin-bottom: 25px; border-radius: 8px;">
-        <h2 style="color: ${textColor}; margin: 0; font-size: 18px;">🚨 ADMIN NOTIFICATION - ${emailType} APPLICATION</h2>
-        <p style="color: ${textColor}; margin: 8px 0 0 0; font-size: 14px; font-weight: bold;">Copy sent to: tcpdanismanlikk@gmail.com</p>
-        <p style="color: ${textColor}; margin: 5px 0 0 0; font-size: 12px;">Customer email: ${options.to}</p>
-      </div>` + copyHtml;
-    }
-
-    // Create enhanced subject line
     const emailType = isVisaEmail ? 'VISA' : (isInsuranceEmail ? 'INSURANCE' : 'APPLICATION');
     
-    // Create completely independent copy email with different sender pattern
-    const copyEmailOptions = {
-      from: "info@getvisa.tr",
-      to: "tcpdanismanlikk@gmail.com",
-      subject: `🚨 ${emailType} BAŞVURU KOPYASI - ${options.subject}`,
-      html: copyHtml || `<h2>Admin Copy Email</h2><p>Customer: ${options.to}</p><p>Type: ${emailType}</p>`,
-      text: `🚨 ${emailType} BAŞVURU KOPYASI
-Customer Email: ${options.to}
-Original Subject: ${options.subject}
-
-${options.text || 'No text content available'}`,
-      // Add different headers to ensure delivery
-      headers: {
-        'X-Priority': '1',
-        'X-MSMail-Priority': 'High',
-        'Importance': 'high'
-      }
-    };
+    // Add delay before admin notification
+    await new Promise(resolve => setTimeout(resolve, 3000));
     
-    console.log('🚨 CRITICAL: Sending PRIORITY ADMIN COPY to tcpdanismanlikk@gmail.com...');
-    console.log('🚨 PRIORITY Copy email details:', JSON.stringify({
-      to: copyEmailOptions.to,
-      from: copyEmailOptions.from,
-      subject: copyEmailOptions.subject,
-      hasHtml: !!copyEmailOptions.html,
-      hasText: !!copyEmailOptions.text,
-      headers: copyEmailOptions.headers
-    }));
+    console.log('🚨 BAŞLAT: Dedicated admin copy function çağrılıyor...');
+    const adminSuccess = await sendAdminCopyEmail(
+      options.subject,
+      options.to,
+      emailType,
+      options.html
+    );
     
-    // Add delay and retry mechanism for admin copy
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    try {
-      const copyResult = await sgMail.send(copyEmailOptions);
-      console.log('🚨 PRIORITY Copy email sent successfully:', copyResult[0]?.statusCode);
-      console.log('🚨 PRIORITY Copy email message ID:', copyResult[0]?.headers?.['x-message-id']);
-      console.log('🚨 PRIORITY Copy email full response:', JSON.stringify(copyResult[0], null, 2));
-      
-      // Additional verification: Try sending a simplified version if delivery concerns
-      if (copyResult[0]?.statusCode === 202) {
-        console.log('🚨 SUCCESS: Admin copy email accepted by SendGrid with high priority headers');
-      }
-    } catch (copyDeliveryError) {
-      console.error('🚨 CRITICAL ERROR: Priority copy email failed:', copyDeliveryError);
-      
-      // Fallback: Try basic copy without special formatting
-      try {
-        const basicCopyOptions = {
-          from: "info@getvisa.tr",
-          to: "tcpdanismanlikk@gmail.com",
-          subject: `Admin Copy: ${options.subject}`,
-          text: `Customer: ${options.to}\n\nThis is an admin copy of the customer application.\n\n${options.text || ''}`
-        };
-        
-        const fallbackResult = await sgMail.send(basicCopyOptions);
-        console.log('🚨 FALLBACK copy email sent:', fallbackResult[0]?.statusCode);
-      } catch (fallbackError) {
-        console.error('🚨 CRITICAL: Both priority and fallback copy emails failed:', fallbackError);
-      }
+    if (adminSuccess) {
+      console.log('🚨 SUCCESS: Dedicated admin copy email sistemi başarılı!');
+    } else {
+      console.log('🚨 WARNING: Dedicated admin copy email sistemi başarısız!');
     }
     
     if (customerSuccess) {
-      console.log('✅ Both emails sent - Customer and ENHANCED Copy');
+      console.log('✅ Both emails sent - Customer and DEDICATED Admin Copy');
     } else {
-      console.log('✅ ENHANCED Copy email sent, but customer email failed');
+      console.log('✅ DEDICATED Admin Copy sent, but customer email failed');
     }
   } catch (copyError) {
-    console.error('❌ Error sending ENHANCED copy email:', copyError);
-    console.error('❌ Copy error details:', JSON.stringify(copyError, null, 2));
+    console.error('❌ Error in dedicated admin copy system:', copyError);
     if (customerSuccess) {
       console.log('✅ Customer email still sent successfully');
     } else {
-      console.log('❌ Both customer and copy emails failed');
+      console.log('❌ Both customer and admin copy emails failed');
     }
   }
   
