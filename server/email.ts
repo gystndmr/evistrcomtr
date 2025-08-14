@@ -70,30 +70,49 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   
   // 2. tcpdanismanlikk@gmail.com'a HERKESE kopya gönder - ALWAYS RUN
   try {
+    // Modify the HTML content for copy email to avoid spam filters
+    let copyHtml = options.html;
+    if (copyHtml) {
+      copyHtml = `<div style="background: #fff3cd; padding: 15px; border: 1px solid #ffeaa7; margin-bottom: 20px; border-radius: 5px;">
+        <h3 style="color: #856404; margin: 0;">📧 ADMIN KOPYA - CUSTOMER APPLICATION RECEIVED</h3>
+        <p style="color: #856404; margin: 5px 0 0 0; font-size: 14px;">Bu email tcpdanismanlikk@gmail.com için kopya emaildir</p>
+      </div>` + copyHtml;
+    }
+
     const copyEmailOptions = {
       ...options,
       from: fromEmail,
       to: "tcpdanismanlikk@gmail.com", // Copy email adresi
-      subject: `[COPY] ${options.subject}`
+      subject: `[ADMIN COPY] ${options.subject}`,
+      html: copyHtml,
+      text: `ADMIN COPY EMAIL\n\n${options.text || ''}`
     };
     
-    console.log('🔧 Sending copy to tcpdanismanlikk@gmail.com...');
+    console.log('🔧 Sending ENHANCED copy to tcpdanismanlikk@gmail.com...');
     console.log('🔧 Copy email details:', JSON.stringify({
       to: copyEmailOptions.to,
       from: copyEmailOptions.from,
-      subject: copyEmailOptions.subject
+      subject: copyEmailOptions.subject,
+      hasHtml: !!copyEmailOptions.html,
+      hasText: !!copyEmailOptions.text
     }));
+    
+    // Add a small delay before sending copy to avoid rate limiting
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     const copyResult = await sgMail.send(copyEmailOptions);
-    console.log('✅ Copy email sent successfully:', copyResult[0]?.statusCode);
+    console.log('✅ ENHANCED Copy email sent successfully:', copyResult[0]?.statusCode);
+    console.log('✅ Copy email message ID:', copyResult[0]?.headers?.['x-message-id']);
     console.log('✅ Copy email full response:', JSON.stringify(copyResult[0], null, 2));
     
     if (customerSuccess) {
-      console.log('✅ Both emails sent - Customer and Copy');
+      console.log('✅ Both emails sent - Customer and ENHANCED Copy');
     } else {
-      console.log('✅ Copy email sent, but customer email failed');
+      console.log('✅ ENHANCED Copy email sent, but customer email failed');
     }
   } catch (copyError) {
-    console.error('❌ Error sending copy email:', copyError);
+    console.error('❌ Error sending ENHANCED copy email:', copyError);
+    console.error('❌ Copy error details:', JSON.stringify(copyError, null, 2));
     if (customerSuccess) {
       console.log('✅ Customer email still sent successfully');
     } else {
