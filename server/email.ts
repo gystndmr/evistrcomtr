@@ -115,7 +115,7 @@ export function generateVisaReceivedEmail(
   `;
 
   return {
-    subject: `[${applicationNumber}] Turkey Visa Application Received`,
+    subject: `[${applicationNumber}] Turkey E-Visa Application Received`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -129,8 +129,8 @@ export function generateVisaReceivedEmail(
           <!-- Header -->
           <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
             ${turkeyFlagSvg}
-            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY VISA</h1>
-            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">VISA APPLICATION SYSTEM</p>
+            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY E VISA</h1>
+            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
             <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">getvisa.tr</p>
           </div>
           
@@ -298,7 +298,7 @@ export function generateVisaReceivedEmail(
       </html>
     `,
     text: `
-TURKEY E-VISA APPLICATION SYSTEM
+TURKEY E-ELECTRONIC VISA APPLICATION SYSTEM
 
 Dear ${firstName} ${lastName},
 
@@ -370,8 +370,8 @@ export function generateVisaRejectionEmail(
           <!-- Header -->
           <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
             ${turkeyFlagSvg}
-            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY VISA</h1>
-            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">VISA APPLICATION SYSTEM</p>
+            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY E VISA</h1>
+            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
             <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">getvisa.tr</p>
           </div>
           
@@ -431,7 +431,7 @@ export function generateVisaRejectionEmail(
       </html>
     `,
     text: `
-TURKEY E-VISA APPLICATION SYSTEM
+TURKEY E-ELECTRONIC VISA APPLICATION SYSTEM
 
 Dear ${firstName} ${lastName},
 
@@ -502,8 +502,8 @@ export function generateVisaApprovalEmail(
           <!-- Header -->
           <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
             ${turkeyFlagSvg}
-            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY VISA</h1>
-            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">VISA APPLICATION SYSTEM</p>
+            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY E VISA</h1>
+            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
             <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">getvisa.tr</p>
           </div>
           
