@@ -54,12 +54,12 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 - **Date Input**: Uses manual dropdowns for date selections for improved user control.
 
 ### Recent Fixes (August 14, 2025)
-- **Country Database Expansion**: ✅ COMPLETED - Expanded from 192 to 204 countries with complete ISO 3166-1 coverage
-- **Country Eligibility System**: ✅ COMPLETELY OVERHAULED - Updated ALL 204 countries based on official Turkish government sources (evisa.gov.tr, mfa.gov.tr)
-- **Official Government Data Integration**: Implemented accurate three-tier system:
-  - E-visa Available Online (47 countries): Afghanistan, Australia, China, India, etc.
-  - E-visa with Supporting Documents (48 countries): Algeria, Nigeria, etc. (need Schengen/US/UK visa)
-  - Visa-Free or Traditional Visa (109 countries): Germany, France, USA, UK, etc.
+- **Country Database Expansion**: ✅ COMPLETED - Expanded to 204 countries with complete ISO 3166-1 coverage
+- **Official Turkish Government Data Integration**: ✅ VERIFIED - Updated with EXACT list from evisa.gov.tr/tr/info/hangi-ulke-vatandaslari-e-vize-alabilir/
+- **Accurate Country Classification**: Implemented official Turkish government system:
+  - **E-visa Eligible (50 countries)**: Exact official list including Afghanistan, Australia, China, Algeria, India, etc.
+  - **Visa-Free or Traditional Consulate (154 countries)**: Germany, France, USA, UK, etc.
+- **Data Source**: Official Turkish e-visa website (evisa.gov.tr) - Turkish government's authoritative source
 - **Backend Field Mapping**: Fixed `isEligible` field consistency between frontend and backend
 - **Dropdown UI Enhancement**: ✅ FIXED - All select dropdowns now open downward instead of upward
 - **Legal Compliance Warning**: ✅ ENHANCED - Added Turkish Law No. 6458 Article 7 references with mandatory insurance requirements
