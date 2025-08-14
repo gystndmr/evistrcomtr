@@ -101,6 +101,7 @@ export function CountrySelector({
 
   const handleCountryChange = (countryCode: string) => {
     const country = countries.find((c: Country) => c.code === countryCode);
+    console.log("🔍 Selected country:", country?.name, "isEligible:", country?.isEligible);
     onCountrySelect(country || null);
     setShowEligibilityStatus(!!country && !!selectedDocumentType);
     
@@ -130,6 +131,8 @@ export function CountrySelector({
 
   const renderEligibilityStatus = () => {
     if (!selectedCountry || !selectedDocumentType) return null;
+
+    console.log("🔍 Rendering eligibility for:", selectedCountry.name, "isEligible:", selectedCountry.isEligible);
 
     if (!selectedCountry.isEligible) {
       return (
