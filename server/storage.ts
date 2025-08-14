@@ -81,10 +81,10 @@ export class DatabaseStorage implements IStorage {
       const uniqueCountries = Array.from(uniqueCountriesMap.values());
       console.log(`🔍 Unique countries after filtering: ${uniqueCountries.length}`);
       
-      // Map database fields to frontend-expected format
+      // Map database fields to frontend-expected format  
       const formattedCountries = uniqueCountries.map(country => ({
         ...country,
-        eligibleForEvisa: Boolean(country.isEligible) // Map isEligible to eligibleForEvisa for frontend
+        isEligible: Boolean(country.isEligible) // Keep isEligible field name for frontend consistency
       })) as any[];
       
       return formattedCountries;
