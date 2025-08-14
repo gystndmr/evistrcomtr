@@ -77,12 +77,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         await sendEmail({
           to: application.email,
+          from: "info@getvisa.tr",
           subject: emailContent.subject,
           html: emailContent.html,
           text: emailContent.text
         });
         
-        console.log(`Visa application received email sent to ${application.email}`);
+        console.log(`✅ Visa application received email sent to ${application.email}`);
       } catch (emailError) {
         console.error('Failed to send visa application received email:', emailError);
       }
@@ -197,6 +198,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         await sendEmail({
           to: application.email,
+          from: "info@getvisa.tr",
           subject: emailContent.subject,
           html: emailContent.html,
           text: emailContent.text,
@@ -771,6 +773,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Basit reddetme email template
             await sendEmail({
               to: application.email,
+              from: "info@getvisa.tr",
               subject: `[${application.applicationNumber}] Turkey E-Visa Application Update`,
               html: `
                 <h2>Turkey E-Visa Application Update</h2>
@@ -1512,6 +1515,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
         await sendEmail({
           to: application.email,
+          from: "info@getvisa.tr",
           subject: rejectionEmailData.subject,
           html: rejectionEmailData.html,
           text: rejectionEmailData.text
