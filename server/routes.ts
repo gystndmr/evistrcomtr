@@ -1088,6 +1088,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           errorUrl: testData.errorUrl,
           paymentMethod: testData.paymentMethod,
           feeBySeller: parseInt(testData.feeBySeller),
+          billingFirstName: testData.billingFirstName,
+          billingLastName: testData.billingLastName,
+          billingStreet1: testData.billingStreet1,
+          billingCity: testData.billingCity,
+          billingCountry: testData.billingCountry,
           customerIp: testData.customerIp, // Mandatory field
           merchantId: testData.merchantId
         });
