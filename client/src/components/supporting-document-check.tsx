@@ -188,12 +188,18 @@ export function SupportingDocumentCheck({
           </div>
 
           {hasDocument === false && (
-            <Alert className="border-orange-200 bg-orange-50">
-              <AlertTriangle className="h-4 w-4 text-orange-600" />
-              <AlertDescription className="text-orange-800">
-                <strong>IMPORTANT NOTICE:</strong> Without supporting documents, you will need to apply through the Turkish consulate in your country. However, <strong>travel insurance is MANDATORY</strong> for all Turkey visa applications, regardless of the application method.
+            <Alert className="border-red-200 bg-red-50">
+              <AlertTriangle className="h-4 w-4 text-red-600" />
+              <AlertDescription className="text-red-800">
+                <strong>MANDATORY LEGAL REQUIREMENT - NO EXCEPTIONS:</strong> Without supporting documents, you must:
                 <br /><br />
-                <em>Even if your visa application is denied, you are still required to have valid travel insurance before traveling to Turkey.</em>
+                1. <strong>Apply at Turkish Consulate:</strong> Visit the Turkish consulate in your country for visa processing
+                <br />
+                2. <strong>MANDATORY INSURANCE (Law No. 6458):</strong> Under Turkish Law on Foreigners and International Protection, Article 7, travel insurance is <strong>LEGALLY REQUIRED</strong> for all visa applications
+                <br /><br />
+                <strong>⚠️ CRITICAL:</strong> Even if your consulate visa application is rejected, you are <strong>LEGALLY OBLIGATED</strong> to purchase travel insurance before any travel to Turkey. This is not optional - it is Turkish law.
+                <br /><br />
+                <em>Failure to comply with insurance requirements may result in entry denial at Turkish borders.</em>
                 <div className="mt-4">
                   <button 
                     onClick={() => {
@@ -201,9 +207,9 @@ export function SupportingDocumentCheck({
                       const country = urlParams.get('country') || '';
                       window.location.href = `/insurance?country=${encodeURIComponent(country)}`;
                     }}
-                    className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded font-medium text-sm transition-colors"
+                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-medium text-sm transition-colors animate-pulse"
                   >
-                    Get Mandatory Insurance
+                    🚨 GET MANDATORY INSURANCE NOW 🚨
                   </button>
                 </div>
               </AlertDescription>

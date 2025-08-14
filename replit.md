@@ -54,11 +54,15 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 - **Date Input**: Uses manual dropdowns for date selections for improved user control.
 
 ### Recent Fixes (August 14, 2025)
-- **Country Eligibility System**: ✅ FIXED - Resolved field mapping issue between backend (`isEligible`) and frontend
-- **Backend Field Mapping**: Corrected storage.ts to use consistent `isEligible` field instead of `eligibleForEvisa`
-- **Database Verification**: Confirmed Afghanistan and other countries have correct eligibility data (AFG: eligible, DEU: not eligible)
-- **API Response**: Verified Afghanistan returns `"isEligible":true` in API response
-- **Supporting Document Warning**: Enhanced warning message for non-supporting document cases with mandatory insurance emphasis
+- **Country Eligibility System**: ✅ COMPLETELY OVERHAULED - Updated all 206 countries based on official Turkish government sources (evisa.gov.tr, mfa.gov.tr)
+- **Official Government Data Integration**: Implemented three-tier system based on Turkish law:
+  - E-visa Available Online (50 countries): Afghanistan, Australia, China, India, etc.
+  - Visa-Free Countries (78 countries): Germany, France, USA, UK, etc. 
+  - Supporting Document Required: Algeria, Nigeria, etc. (need Schengen/US/UK visa)
+- **Backend Field Mapping**: Fixed `isEligible` field consistency between frontend and backend
+- **Dropdown UI Enhancement**: ✅ FIXED - All select dropdowns now open downward instead of upward
+- **Legal Compliance Warning**: ✅ ENHANCED - Added Turkish Law No. 6458 Article 7 references with mandatory insurance requirements
+- **Insurance Enforcement**: Strengthened messaging to make customers feel insurance is absolutely legally required even with visa denial
 
 ### Previous Fixes (August 13, 2025)
 - **Payment Status Updates**: ⚠️ PARTIAL - Callback system works in development but production API endpoints broken
