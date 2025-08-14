@@ -60,18 +60,34 @@ export class DatabaseStorage implements IStorage {
   async getCountries(): Promise<Country[]> {
     try {
       const results = await db.select().from(countries);
+      console.log(`🔍 Total countries from DB: ${results.length}`);
       
-      // Remove duplicates by keeping only the longer country code for each country name
-      const uniqueCountriesMap = new Map<string, Country>();
+      // Create a Map to store unique countries by name
+      const uniqueCountriesMap = new Map<string, typeof results[0]>();
       
-      for (const country of results) {
+      results.forEach(country => {
         const existing = uniqueCountriesMap.get(country.name);
-        if (!existing || country.code.length > existing.code.length) {
+        if (!existing) {
+          // First occurrence of this country name
           uniqueCountriesMap.set(country.name, country);
+        } else {
+          // If duplicate exists, keep the one with longer code
+          if (country.code.length > existing.code.length) {
+            uniqueCountriesMap.set(country.name, country);
+          }
         }
-      }
+      });
       
-      return Array.from(uniqueCountriesMap.values());
+      const uniqueCountries = Array.from(uniqueCountriesMap.values());
+      console.log(`🔍 Unique countries after filtering: ${uniqueCountries.length}`);
+      
+      // Map database fields to frontend-expected format
+      const formattedCountries = uniqueCountries.map(country => ({
+        ...country,
+        eligibleForEvisa: Boolean(country.isEligible) // Map isEligible to eligibleForEvisa for frontend
+      })) as any[];
+      
+      return formattedCountries;
     } catch (error) {
       console.error('Database error in getCountries:', error);
       return [];
