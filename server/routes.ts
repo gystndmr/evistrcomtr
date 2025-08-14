@@ -1174,12 +1174,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         paymentMethod: "ALL", // Allow all payment methods
         feeBySeller: 50, // 50% fee by seller
         
-        // Required billing fields - use default values since GPay will collect actual billing info
-        billingFirstName: "Customer",
-        billingLastName: "Name",
-        billingStreet1: "Address",
-        billingCity: "City",
-        billingCountry: "US",
+        // Required billing fields - leave empty so customer can enter their own info
+        billingFirstName: "",
+        billingLastName: "",
+        billingStreet1: "",
+        billingCity: "",
+        billingCountry: "",
         
         customerIp: getCustomerIp(), // Use real customer IP
         merchantId: "" // Will be set from environment
