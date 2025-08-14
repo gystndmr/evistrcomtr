@@ -136,7 +136,7 @@ export function CountrySelector({
         <Alert className="border-red-200 bg-red-50">
           <XCircle className="h-4 w-4 text-red-600" />
           <AlertDescription className="text-red-800">
-            For your nationality, visa applications must be processed through the Turkish Diplomatic Mission in your country, however travel insurance remains legally mandatory under Turkish Law No. 6458 for all visitors entering Turkey.
+            Your nationality requires consulate visa processing, but entry to Turkey is STRICTLY PROHIBITED without mandatory travel insurance as required by Turkish Law No. 6458 - border officials will deny entry to any visitor lacking proper insurance coverage.
             <div className="mt-3">
               <button 
                 onClick={() => window.location.href = `/insurance?country=${encodeURIComponent(selectedCountry.name)}`}

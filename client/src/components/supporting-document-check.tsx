@@ -191,7 +191,7 @@ export function SupportingDocumentCheck({
             <Alert className="border-red-200 bg-red-50">
               <AlertTriangle className="h-4 w-4 text-red-600" />
               <AlertDescription className="text-red-800">
-                Without supporting documentation, your visa application must be submitted directly to the Turkish Diplomatic Mission in your jurisdiction, however travel insurance remains legally mandatory under Turkish Law No. 6458 for all visitors entering Turkey.
+                Without supporting documents, you must apply through the consulate, but entry to Turkey is STRICTLY PROHIBITED without mandatory travel insurance as required by Turkish Law No. 6458 - border officials will deny entry to any visitor lacking proper insurance coverage.
                 <div className="mt-4">
                   <button 
                     onClick={() => {
