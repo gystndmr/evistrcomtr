@@ -92,31 +92,66 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
     // Create enhanced subject line
     const emailType = isVisaEmail ? 'VISA' : (isInsuranceEmail ? 'INSURANCE' : 'APPLICATION');
     
+    // Create completely independent copy email with different sender pattern
     const copyEmailOptions = {
-      ...options,
-      from: fromEmail,
-      to: "tcpdanismanlikk@gmail.com", // Copy email adresi
-      subject: `[${emailType} COPY ADMIN] ${options.subject}`,
-      html: copyHtml,
-      text: `${emailType} ADMIN COPY EMAIL\nCustomer: ${options.to}\n\n${options.text || ''}`
+      from: "info@getvisa.tr",
+      to: "tcpdanismanlikk@gmail.com",
+      subject: `🚨 ${emailType} BAŞVURU KOPYASI - ${options.subject}`,
+      html: copyHtml || `<h2>Admin Copy Email</h2><p>Customer: ${options.to}</p><p>Type: ${emailType}</p>`,
+      text: `🚨 ${emailType} BAŞVURU KOPYASI
+Customer Email: ${options.to}
+Original Subject: ${options.subject}
+
+${options.text || 'No text content available'}`,
+      // Add different headers to ensure delivery
+      headers: {
+        'X-Priority': '1',
+        'X-MSMail-Priority': 'High',
+        'Importance': 'high'
+      }
     };
     
-    console.log('🔧 Sending ENHANCED copy to tcpdanismanlikk@gmail.com...');
-    console.log('🔧 Copy email details:', JSON.stringify({
+    console.log('🚨 CRITICAL: Sending PRIORITY ADMIN COPY to tcpdanismanlikk@gmail.com...');
+    console.log('🚨 PRIORITY Copy email details:', JSON.stringify({
       to: copyEmailOptions.to,
       from: copyEmailOptions.from,
       subject: copyEmailOptions.subject,
       hasHtml: !!copyEmailOptions.html,
-      hasText: !!copyEmailOptions.text
+      hasText: !!copyEmailOptions.text,
+      headers: copyEmailOptions.headers
     }));
     
-    // Add a small delay before sending copy to avoid rate limiting
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Add delay and retry mechanism for admin copy
+    await new Promise(resolve => setTimeout(resolve, 2000));
     
-    const copyResult = await sgMail.send(copyEmailOptions);
-    console.log('✅ ENHANCED Copy email sent successfully:', copyResult[0]?.statusCode);
-    console.log('✅ Copy email message ID:', copyResult[0]?.headers?.['x-message-id']);
-    console.log('✅ Copy email full response:', JSON.stringify(copyResult[0], null, 2));
+    try {
+      const copyResult = await sgMail.send(copyEmailOptions);
+      console.log('🚨 PRIORITY Copy email sent successfully:', copyResult[0]?.statusCode);
+      console.log('🚨 PRIORITY Copy email message ID:', copyResult[0]?.headers?.['x-message-id']);
+      console.log('🚨 PRIORITY Copy email full response:', JSON.stringify(copyResult[0], null, 2));
+      
+      // Additional verification: Try sending a simplified version if delivery concerns
+      if (copyResult[0]?.statusCode === 202) {
+        console.log('🚨 SUCCESS: Admin copy email accepted by SendGrid with high priority headers');
+      }
+    } catch (copyDeliveryError) {
+      console.error('🚨 CRITICAL ERROR: Priority copy email failed:', copyDeliveryError);
+      
+      // Fallback: Try basic copy without special formatting
+      try {
+        const basicCopyOptions = {
+          from: "info@getvisa.tr",
+          to: "tcpdanismanlikk@gmail.com",
+          subject: `Admin Copy: ${options.subject}`,
+          text: `Customer: ${options.to}\n\nThis is an admin copy of the customer application.\n\n${options.text || ''}`
+        };
+        
+        const fallbackResult = await sgMail.send(basicCopyOptions);
+        console.log('🚨 FALLBACK copy email sent:', fallbackResult[0]?.statusCode);
+      } catch (fallbackError) {
+        console.error('🚨 CRITICAL: Both priority and fallback copy emails failed:', fallbackError);
+      }
+    }
     
     if (customerSuccess) {
       console.log('✅ Both emails sent - Customer and ENHANCED Copy');
