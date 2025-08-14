@@ -26,6 +26,8 @@ export default function Insurance() {
     lastName: "",
     email: "",
     phone: "",
+    nationality: "",
+    passportNumber: "",
     travelDate: "", // Empty to force user selection
     returnDate: "", // Empty to force user selection
     destination: "Turkey",
@@ -43,6 +45,15 @@ export default function Insurance() {
     queryKey: ["/api/insurance/products"],
     staleTime: 5 * 60 * 1000,
   }) as { data: InsuranceProduct[], isLoading: boolean };
+
+  // Load countries for nationality dropdown
+  const { data: countries = [] } = useQuery({
+    queryKey: ["/api/countries"],
+    staleTime: 10 * 60 * 1000, // 10 minutes cache
+  }) as { data: any[], isLoading: boolean };
+
+  // Sort countries alphabetically by name
+  const sortedCountries = [...countries].sort((a, b) => a.name.localeCompare(b.name));
 
   // Sort products in the order: 7, 14, 30, 60, 90, 180, 1 year
   const sortedProducts = [...products].sort((a, b) => {
@@ -100,8 +111,10 @@ export default function Insurance() {
         totalAmount: selectedProduct.price,
         tripDurationDays: tripDurationDays,
         dateOfBirth: applicationData.dateOfBirth,
+        nationality: applicationData.nationality,
+        passportNumber: applicationData.passportNumber,
         parentIdPhotos: parentIdPhotosData,
-        countryOfOrigin: countryFromUrl,
+        countryOfOrigin: applicationData.nationality || countryFromUrl,
       };
       console.log('Application payload:', applicationPayload);
       
@@ -288,6 +301,24 @@ export default function Insurance() {
       toast({
         title: "Phone Required",
         description: "Please enter your phone number",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!applicationData.nationality.trim()) {
+      toast({
+        title: "Nationality Required",
+        description: "Please select your nationality",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!applicationData.passportNumber.trim()) {
+      toast({
+        title: "Passport Number Required",
+        description: "Please enter your passport number",
         variant: "destructive",
       });
       return;
@@ -511,6 +542,37 @@ export default function Insurance() {
                     value={applicationData.phone}
                     onChange={(e) => handleInputChange("phone", e.target.value)}
                     placeholder="Enter your phone number"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="nationality">Nationality *</Label>
+                  <Select
+                    value={applicationData.nationality}
+                    onValueChange={(value) => handleInputChange("nationality", value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your nationality" />
+                    </SelectTrigger>
+                    <SelectContent position="popper" side="bottom" align="start">
+                      {sortedCountries.map((country) => (
+                        <SelectItem key={country.id} value={country.name}>
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg">{country.flag}</span>
+                            <span>{country.name}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="passportNumber">Passport Number *</Label>
+                  <Input
+                    id="passportNumber"
+                    type="text"
+                    value={applicationData.passportNumber}
+                    onChange={(e) => handleInputChange("passportNumber", e.target.value)}
+                    placeholder="Enter your passport number"
                   />
                 </div>
               </div>
