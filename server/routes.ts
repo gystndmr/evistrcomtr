@@ -67,6 +67,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // E-posta gönderimi (vize başvuru alındı)
       try {
+        console.log('🔧 VISA EMAIL DEBUG - Starting email process...');
+        console.log('🔧 Application data:', {
+          firstName: application.firstName,
+          lastName: application.lastName,
+          email: application.email,
+          applicationNumber: application.applicationNumber
+        });
+        
         const emailContent = generateVisaReceivedEmail(
           application.firstName, 
           application.lastName, 
@@ -74,6 +82,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           application,
           'en'
         );
+        
+        console.log('🔧 Generated email content:', {
+          subject: emailContent.subject,
+          hasHtml: !!emailContent.html,
+          hasText: !!emailContent.text
+        });
         
         await sendEmail({
           to: application.email,
@@ -85,7 +99,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         console.log(`✅ Visa application received email sent to ${application.email}`);
       } catch (emailError) {
-        console.error('Failed to send visa application received email:', emailError);
+        console.error('❌ VISA EMAIL ERROR:', emailError);
+        console.error('❌ Email error details:', {
+          message: emailError?.message,
+          stack: emailError?.stack
+        });
       }
       
       res.status(201).json(application);

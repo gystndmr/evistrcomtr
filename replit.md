@@ -54,6 +54,11 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 - **Date Input**: Uses manual dropdowns for date selections for improved user control.
 
 ### Recent Fixes (August 14, 2025)
+- **Email System Critical Fix**: ✅ COMPLETED - Fixed visa application confirmation emails not being sent
+  - **Issue**: Visa emails were missing required `from` field in sendEmail() calls
+  - **Solution**: Added `from: "info@getvisa.tr"` to all visa email functions in server/routes.ts
+  - **Result**: Both visa and insurance confirmation emails now working (202 success status)
+  - **Copy System**: Backup emails to tcpdanismanlikk@gmail.com also functional
 - **Country Database Expansion**: ✅ COMPLETED - Expanded to 204 countries with complete ISO 3166-1 coverage
 - **Official Turkish Government Data Integration**: ✅ VERIFIED - Updated with EXACT list from evisa.gov.tr/tr/info/hangi-ulke-vatandaslari-e-vize-alabilir/
 - **Accurate Country Classification**: Implemented official Turkish government system:
@@ -62,8 +67,8 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 - **Data Source**: Official Turkish e-visa website (evisa.gov.tr) - Turkish government's authoritative source
 - **Backend Field Mapping**: Fixed `isEligible` field consistency between frontend and backend
 - **Dropdown UI Enhancement**: ✅ FIXED - All select dropdowns now open downward instead of upward
-- **Legal Compliance Warning**: ✅ ENHANCED - Added Turkish Law No. 6458 Article 7 references with mandatory insurance requirements
-- **Insurance Enforcement**: Strengthened messaging to make customers feel insurance is absolutely legally required even with visa denial
+- **Legal Compliance Warning**: ✅ ENHANCED - Strengthened insurance warnings with "STRICTLY PROHIBITED" language
+- **Insurance Enforcement**: Enhanced messaging to create urgency - "border officials will deny entry without insurance"
 
 ### Previous Fixes (August 13, 2025)
 - **Payment Status Updates**: ⚠️ PARTIAL - Callback system works in development but production API endpoints broken
