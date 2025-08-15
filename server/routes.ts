@@ -61,20 +61,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         supportingDocumentEndDate: req.body.supportingDocumentEndDate ? new Date(req.body.supportingDocumentEndDate) : undefined,
       };
 
-      // Calculate totalAmount based on processing type before validation
+      // Calculate totalAmount based on processing type and supporting document status
       const processingTypes = {
-        'standard': '25.00',
-        'fast': '75.00', 
-        'express': '175.00',
-        'urgent': '295.00',
-        'slow': '50.00',
-        'urgent_24': '280.00',
-        'urgent_12': '330.00',
-        'urgent_4': '410.00',
-        'urgent_1': '645.00'
+        'standard': 25.00,
+        'fast': 75.00, 
+        'express': 175.00,
+        'urgent': 295.00,
+        'slow': 50.00,
+        'urgent_24': 280.00,
+        'urgent_12': 330.00,
+        'urgent_4': 410.00,
+        'urgent_1': 645.00
       };
       
-      const totalAmount = processingTypes[req.body.processingType as keyof typeof processingTypes] || '60.00';
+      // Get processing fee
+      const processingFee = processingTypes[req.body.processingType as keyof typeof processingTypes] || 60.00;
+      
+      // Check if this is a supporting document application by checking supportingDocumentType
+      const hasSupportingDocument = req.body.supportingDocumentType && req.body.supportingDocumentType !== null;
+      
+      // Calculate total amount: processing fee + document PDF fee (if supporting document exists)
+      const documentPdfFee = 69.00;
+      const totalAmount = hasSupportingDocument ? 
+        (processingFee + documentPdfFee).toFixed(2) : 
+        processingFee.toFixed(2);
       
       const validatedData = insertApplicationSchema.parse({
         ...bodyWithDates,
@@ -90,7 +100,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           firstName: application.firstName,
           lastName: application.lastName,
           email: application.email,
-          applicationNumber: application.applicationNumber
+          applicationNumber: application.applicationNumber,
+          totalAmount: application.totalAmount,
+          processingType: application.processingType,
+          supportingDocumentType: application.supportingDocumentType
         });
         
         // Dynamic import like insurance system
