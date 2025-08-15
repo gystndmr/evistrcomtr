@@ -53,22 +53,7 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 - **Site Mode Switching**: Supports quick switching between the e-visa application site and a consulting/advertising site.
 - **Date Input**: Uses manual dropdowns for date selections for improved user control.
 
-### Recent Fixes (August 15, 2025)
-- **PAYMENT SYSTEM BREAKTHROUGH**: ✅ COMPLETED - GPay 500 errors FULLY RESOLVED
-  - **Issue**: Private key format causing "DECODER routines::unsupported" errors since noon
-  - **Root Cause**: Private key stored as single line without proper line breaks for Node.js crypto
-  - **Fix**: Implemented proper PEM formatting with 64-character line breaks
-  - **Algorithm Fix**: Corrected to use md5WithRSAEncryption (GPay standard) instead of RSA-SHA256
-  - **Result**: Status 200, Payment links generating successfully, Transaction IDs working
-  - **Customer Impact**: ALL payment flows now operational - customers can complete visa and insurance purchases
-- **CRITICAL SECURITY FIX**: ✅ COMPLETED - Added arrival date validation for supporting documents
-  - **Issue**: System allowed arrival dates outside supporting document validity period
-  - **Fix**: Added validation to ensure arrival date is between supporting document start and end dates
-  - **Impact**: Prevents invalid visa applications with mismatched document periods
-- **EMAIL TOTAL AMOUNT FIX**: ✅ COMPLETED - Fixed email amount calculation for supporting documents
-  - **Issue**: Emails showed incorrect total amount (missing PDF fee for supporting documents)
-  - **Fix**: Updated backend calculation to match frontend (processing fee + $69 PDF fee)
-  - **Result**: Email amounts now match customer payment amounts exactly
+### Recent Fixes (August 14, 2025)
 - **COMPREHENSIVE SITE TESTING & BUG FIXES**: ✅ COMPLETED - All critical issues resolved
   - **VISA FORM FIX**: ✅ COMPLETED - Fixed totalAmount validation error by making field optional and adding backend calculation
   - **PAYMENT ORDERREF FIX**: ✅ COMPLETED - Resolved OrderRef collision with unique timestamp generation 

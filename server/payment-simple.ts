@@ -93,52 +93,19 @@ export class GPayService {
     // Create JSON and escape forward slashes like in the example
     const jsonData = JSON.stringify(trimmedData).replace(/\//g, '\\/');
     
-    console.log('=== FULL SIGNATURE DEBUG ===');
+    console.log('=== Signature Generation (Node.js Example Style) ===');
     console.log('Original data:', JSON.stringify(data, null, 2));
     console.log('After number conversion:', JSON.stringify(clonedData, null, 2));
     console.log('After sorting:', JSON.stringify(sortedData, null, 2));
     console.log('After trimming:', JSON.stringify(trimmedData, null, 2));
     console.log('Final JSON for signing:', jsonData);
-    console.log('Merchant ID from data:', data.merchantId);
-    console.log('Private Key starts with:', this.config.privateKey.substring(0, 50) + '...');
-    console.log('=== End Full Debug ===');
+    console.log('=== End Signature Generation ===');
     
-    // Ensure private key is in correct PEM format with proper line breaks
-    let privateKey = this.config.privateKey;
-    
-    // Clean and reformat the private key properly
-    if (privateKey.includes('-----BEGIN')) {
-      // Extract just the key content between headers, preserving spaces but removing line breaks
-      const keyMatch = privateKey.match(/-----BEGIN[^-]+-----(.*?)-----END[^-]+-----/s);
-      if (keyMatch) {
-        privateKey = keyMatch[1].replace(/\s+/g, '').trim();
-      } else {
-        // Fallback: remove headers and clean
-        privateKey = privateKey
-          .replace(/-----BEGIN[^-]+-----/g, '')
-          .replace(/-----END[^-]+-----/g, '')
-          .replace(/\s+/g, '')
-          .trim();
-      }
-    }
-    
-    // Add proper PKCS#8 headers with line breaks
-    const keyLines = privateKey.match(/.{1,64}/g) || [];
-    const formattedKey = [
-      '-----BEGIN PRIVATE KEY-----',
-      ...keyLines,
-      '-----END PRIVATE KEY-----'
-    ].join('\n');
-    
-    console.log('Private key formatted length:', formattedKey.length);
-    console.log('Private key first/last lines:', formattedKey.split('\n').slice(0,2), '...', formattedKey.split('\n').slice(-2));
-    
-    // Use exact GPay signature method: md5WithRSAEncryption only
+    // Sign with private key using md5WithRSAEncryption
     const sign = crypto.createSign('md5WithRSAEncryption');
     sign.update(jsonData);
-    const signature = sign.sign(formattedKey, 'base64');
-    console.log('Signature created successfully with md5WithRSAEncryption (GPay standard)');
-    console.log('Generated signature:', signature.substring(0, 50) + '...');
+    const signature = sign.sign(this.config.privateKey, 'base64');
+    
     return signature;
   }
 

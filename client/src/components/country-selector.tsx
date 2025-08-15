@@ -86,24 +86,9 @@ export function CountrySelector({
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const { t } = useLanguage();
 
-  const { data: countries = [], isLoading, error } = useQuery<Country[]>({
+  const { data: countries = [], isLoading } = useQuery<Country[]>({
     queryKey: ["/api/countries"],
-    staleTime: 30 * 60 * 1000, // 30 minutes cache for mobile performance
-    gcTime: 60 * 60 * 1000, // 1 hour garbage collection
-    refetchOnWindowFocus: false, // Prevent mobile refetch
-    refetchOnMount: false, // Use cache when available
   });
-
-  // Debug logging for dropdown issues
-  useEffect(() => {
-    console.log("Country Selector Debug:", {
-      isLoading,
-      countriesCount: countries.length,
-      error: error?.message,
-      firstCountry: countries[0],
-      allCountries: countries.slice(0, 3).map(c => c.name)
-    });
-  }, [countries, isLoading, error]);
 
   // Cleanup interval on unmount
   useEffect(() => {
@@ -115,9 +100,7 @@ export function CountrySelector({
   }, [intervalId]);
 
   const handleCountryChange = (countryCode: string) => {
-    console.log("Country selected:", countryCode);
     const country = countries.find((c: Country) => c.code === countryCode);
-    console.log("Found country:", country);
     onCountrySelect(country || null);
     setShowEligibilityStatus(!!country && !!selectedDocumentType);
     
@@ -184,35 +167,11 @@ export function CountrySelector({
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <Label htmlFor="country">Country/Region of Travel Document *</Label>
-          <Select value={selectedCountry?.code || ""} onValueChange={handleCountryChange} onOpenChange={(open) => console.log("Dropdown open state:", open)}>
-            <SelectTrigger 
-              onClick={() => console.log("SelectTrigger clicked, countries available:", countries.length)}
-              className="w-full min-h-[40px] border border-gray-300 relative"
-            >
-              {selectedCountry ? (
-                <div className="flex items-center space-x-2">
-                  <span className="text-lg">{getCountryFlag(selectedCountry.code)}</span>
-                  <span>{selectedCountry.name}</span>
-                </div>
-              ) : (
-                <span className="text-gray-500">Select Country/Region</span>
-              )}
+          <Select onValueChange={handleCountryChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select Country/Region" />
             </SelectTrigger>
-            <SelectContent 
-              position="popper" 
-              side="bottom" 
-              sideOffset={4} 
-              align="start"
-              avoidCollisions={false}
-              className="max-h-60 overflow-y-auto w-full min-w-[300px] bg-white border border-gray-200 shadow-lg" 
-              style={{
-                zIndex: 9999, 
-                minHeight: '200px',
-                top: 'auto !important',
-                bottom: 'auto !important',
-                transform: 'translateY(4px) !important'
-              }}
-            >
+            <SelectContent>
               {isLoading ? (
                 <SelectItem value="loading" disabled>Loading countries...</SelectItem>
               ) : countries.length === 0 ? (
@@ -221,16 +180,12 @@ export function CountrySelector({
                 [...countries]
                   .sort((a, b) => a.name.localeCompare(b.name))
                   .map((country: Country) => (
-                    <SelectItem 
-                      key={`${country.code}-${country.id}`} 
-                      value={country.code}
-                      className="cursor-pointer py-2 px-3"
-                    >
-                      <div className="flex items-center space-x-2 w-full">
+                    <SelectItem key={`${country.code}-${country.id}`} value={country.code}>
+                      <div className="flex items-center space-x-2">
                         <span className="text-lg">
                           {getCountryFlag(country.code)}
                         </span>
-                        <span className="text-sm flex-1">{country.name}</span>
+                        <span>{country.name}</span>
                       </div>
                     </SelectItem>
                   ))
@@ -241,17 +196,11 @@ export function CountrySelector({
 
         <div>
           <Label htmlFor="documentType">Travel Document Type *</Label>
-          <Select value={selectedDocumentType} onValueChange={handleDocumentTypeChange}>
+          <Select onValueChange={handleDocumentTypeChange}>
             <SelectTrigger>
               <SelectValue placeholder="Select Document Type" />
             </SelectTrigger>
-            <SelectContent 
-              position="popper" 
-              side="bottom" 
-              sideOffset={4} 
-              align="start"
-              className="w-full min-w-[var(--radix-select-trigger-width)]"
-            >
+            <SelectContent>
               {documentTypes.map((type) => (
                 <SelectItem key={type.value} value={type.value}>
                   {type.label}

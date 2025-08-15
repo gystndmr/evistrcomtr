@@ -30,36 +30,29 @@ export default function Home() {
     { image: pamukkaleImg }
   ];
 
-  // Preload only first image immediately, others lazy load
+  // Preload all images immediately when component mounts
   useEffect(() => {
-    const preloadFirstImage = async () => {
-      const firstImage = turkishLandmarks[0];
-      if (firstImage) {
-        try {
-          await new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = resolve;
-            img.onerror = reject;
-            img.src = firstImage.image;
-          });
-          setImagesLoaded(true);
-          console.log('First homepage image preloaded successfully');
-          
-          // Lazy load remaining images in background
-          turkishLandmarks.slice(1).forEach((landmark, index) => {
-            setTimeout(() => {
-              const img = new Image();
-              img.src = landmark.image;
-            }, (index + 1) * 1000); // Load every 1 second
-          });
-        } catch (error) {
-          console.error('Error preloading first image:', error);
-          setImagesLoaded(true); // Still show content even if first image fails
-        }
+    const preloadImages = async () => {
+      const imagePromises = turkishLandmarks.map((landmark) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = landmark.image;
+        });
+      });
+
+      try {
+        await Promise.all(imagePromises);
+        setImagesLoaded(true);
+        console.log('All homepage images preloaded successfully');
+      } catch (error) {
+        console.error('Error preloading images:', error);
+        setImagesLoaded(true); // Still show content even if some images fail
       }
     };
 
-    preloadFirstImage();
+    preloadImages();
   }, []);
 
   useEffect(() => {

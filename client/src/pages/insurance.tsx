@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -42,42 +42,33 @@ export default function Insurance() {
   const { toast } = useToast();
 
   const { data: products = [], isLoading } = useQuery({
-    queryKey: ["/api/insurance-products"],
-    staleTime: 30 * 60 * 1000, // 30 minutes cache for better performance
-    gcTime: 60 * 60 * 1000, // 1 hour garbage collection
-    refetchOnWindowFocus: false, // Prevent unnecessary refetch
+    queryKey: ["/api/insurance/products"],
+    staleTime: 5 * 60 * 1000,
   }) as { data: InsuranceProduct[], isLoading: boolean };
 
   // Load countries for nationality dropdown
   const { data: countries = [] } = useQuery({
     queryKey: ["/api/countries"],
-    staleTime: 30 * 60 * 1000, // 30 minutes cache for better performance
-    gcTime: 60 * 60 * 1000, // 1 hour garbage collection
-    refetchOnWindowFocus: false, // Prevent unnecessary refetch
-    refetchOnMount: false, // Use cache when available
+    staleTime: 10 * 60 * 1000, // 10 minutes cache
   }) as { data: any[], isLoading: boolean };
 
-  // Memoize sorted countries for performance
-  const sortedCountries = useMemo(() => {
-    return [...countries].sort((a, b) => a.name.localeCompare(b.name));
-  }, [countries]);
+  // Sort countries alphabetically by name
+  const sortedCountries = [...countries].sort((a, b) => a.name.localeCompare(b.name));
 
-  // Memoize sorted products for performance
-  const sortedProducts = useMemo(() => {
-    return [...products].sort((a, b) => {
-      const getDuration = (name: string) => {
-        if (name.includes('7 Days')) return 1;
-        if (name.includes('14 Days')) return 2;
-        if (name.includes('30 Days')) return 3;
-        if (name.includes('60 Days')) return 4;
-        if (name.includes('90 Days')) return 5;
-        if (name.includes('180 Days')) return 6;
-        if (name.includes('1 Year')) return 7;
-        return 0;
-      };
-      return getDuration(a.name) - getDuration(b.name);
-    });
-  }, [products]);
+  // Sort products in the order: 7, 14, 30, 60, 90, 180, 1 year
+  const sortedProducts = [...products].sort((a, b) => {
+    const getDuration = (name: string) => {
+      if (name.includes('7 Days')) return 1;
+      if (name.includes('14 Days')) return 2;
+      if (name.includes('30 Days')) return 3;
+      if (name.includes('60 Days')) return 4;
+      if (name.includes('90 Days')) return 5;
+      if (name.includes('180 Days')) return 6;
+      if (name.includes('1 Year')) return 7;
+      return 0;
+    };
+    return getDuration(a.name) - getDuration(b.name);
+  });
 
   const createApplicationMutation = useMutation({
     mutationFn: async () => {
@@ -127,7 +118,7 @@ export default function Insurance() {
       };
       console.log('Application payload:', applicationPayload);
       
-      const applicationResponse = await fetch("/api/insurance-applications", {
+      const applicationResponse = await fetch("/api/insurance/applications", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -562,7 +553,7 @@ export default function Insurance() {
                     <SelectTrigger>
                       <SelectValue placeholder="Select your nationality" />
                     </SelectTrigger>
-                    <SelectContent position="popper" side="bottom" sideOffset={4} align="start" avoidCollisions={false}>
+                    <SelectContent position="popper" side="bottom" align="start">
                       {sortedCountries.map((country) => (
                         <SelectItem key={country.id} value={country.name}>
                           <div className="flex items-center gap-2">
@@ -619,7 +610,7 @@ export default function Insurance() {
                       <SelectTrigger>
                         <SelectValue placeholder="Day" />
                       </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" sideOffset={4} align="start" avoidCollisions={false}>
+                      <SelectContent position="popper" side="bottom" align="start">
                         {(() => {
                           // Smart day filtering based on current month/year selection
                           const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [];
@@ -672,7 +663,7 @@ export default function Insurance() {
                       <SelectTrigger>
                         <SelectValue placeholder="Month" />
                       </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" sideOffset={4} align="start" avoidCollisions={false}>
+                      <SelectContent position="popper" side="bottom" align="start">
                         {(() => {
                           const months = [
                             { value: '01', label: 'January' },
@@ -741,7 +732,7 @@ export default function Insurance() {
                       <SelectTrigger>
                         <SelectValue placeholder="Year" />
                       </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" sideOffset={4} align="start" avoidCollisions={false}>
+                      <SelectContent position="popper" side="bottom" align="start">
                         {/* Only show current year and future years */}
                         {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
                           <SelectItem key={y} value={y}>{y}</SelectItem>
@@ -765,7 +756,7 @@ export default function Insurance() {
                       <SelectTrigger>
                         <SelectValue placeholder="Day" />
                       </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" sideOffset={4} align="start" avoidCollisions={false}>
+                      <SelectContent position="popper" side="bottom" align="start">
                         {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
                           <SelectItem key={d} value={d}>{d}</SelectItem>
                         ))}
@@ -784,7 +775,7 @@ export default function Insurance() {
                       <SelectTrigger>
                         <SelectValue placeholder="Month" />
                       </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" sideOffset={4} align="start" avoidCollisions={false}>
+                      <SelectContent position="popper" side="bottom" align="start">
                         {[
                           { value: '01', label: 'January' },
                           { value: '02', label: 'February' },
@@ -816,7 +807,7 @@ export default function Insurance() {
                       <SelectTrigger>
                         <SelectValue placeholder="Year" />
                       </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" sideOffset={4} align="start" avoidCollisions={false}>
+                      <SelectContent position="popper" side="bottom" align="start">
                         {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
                           <SelectItem key={y} value={y}>{y}</SelectItem>
                         ))}
@@ -842,7 +833,7 @@ export default function Insurance() {
                     <SelectTrigger>
                       <SelectValue placeholder="Day" />
                     </SelectTrigger>
-                    <SelectContent position="popper" side="bottom" sideOffset={4} align="start" avoidCollisions={false}>
+                    <SelectContent position="popper" side="bottom" align="start">
                       {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
                         <SelectItem key={d} value={d}>{d}</SelectItem>
                       ))}
@@ -861,7 +852,7 @@ export default function Insurance() {
                     <SelectTrigger>
                       <SelectValue placeholder="Month" />
                     </SelectTrigger>
-                    <SelectContent position="popper" side="bottom" sideOffset={4} align="start" avoidCollisions={false}>
+                    <SelectContent position="popper" side="bottom" align="start">
                       {[
                         { value: '01', label: 'January' },
                         { value: '02', label: 'February' },
@@ -893,7 +884,7 @@ export default function Insurance() {
                     <SelectTrigger>
                       <SelectValue placeholder="Year" />
                     </SelectTrigger>
-                    <SelectContent position="popper" side="bottom" sideOffset={4} align="start" avoidCollisions={false}>
+                    <SelectContent position="popper" side="bottom" align="start">
                       {Array.from({ length: 80 }, (_, i) => (new Date().getFullYear() - i).toString()).map((y) => (
                         <SelectItem key={y} value={y}>{y}</SelectItem>
                       ))}

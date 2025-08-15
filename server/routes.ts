@@ -61,79 +61,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         supportingDocumentEndDate: req.body.supportingDocumentEndDate ? new Date(req.body.supportingDocumentEndDate) : undefined,
       };
 
-      // Calculate totalAmount based on processing type and supporting document status
-      // Supporting document processing types (frontend values)
-      const supportingDocProcessingTypes = {
-        'slow': 50.00,      // Ready in 7 days
-        'standard': 115.00, // Ready in 4 days  
-        'fast': 165.00,     // Ready in 2 days
-        'urgent_24': 280.00, // Ready in 24 hours
-        'urgent_12': 330.00, // Ready in 12 hours
-        'urgent_4': 410.00,  // Ready in 4 hours
-        'urgent_1': 645.00   // Ready in 1 hour
+      // Calculate totalAmount based on processing type before validation
+      const processingTypes = {
+        'standard': '25.00',
+        'fast': '75.00', 
+        'express': '175.00',
+        'urgent': '295.00',
+        'slow': '50.00',
+        'urgent_24': '280.00',
+        'urgent_12': '330.00',
+        'urgent_4': '410.00',
+        'urgent_1': '645.00'
       };
       
-      // Standard processing types (no supporting document)
-      const standardProcessingTypes = {
-        'standard': 25.00,
-        'fast': 75.00, 
-        'express': 175.00,
-        'urgent': 295.00
-      };
-      
-      // Check if this is a supporting document application by checking supportingDocumentType
-      const hasSupportingDocument = req.body.supportingDocumentType && req.body.supportingDocumentType !== null;
-      
-      console.log('🔧 TOTAL AMOUNT DEBUG:', {
-        processingType: req.body.processingType,
-        supportingDocumentType: req.body.supportingDocumentType,
-        hasSupportingDocument: hasSupportingDocument
-      });
-      
-      // Get processing fee from correct type mapping
-      const processingFee = hasSupportingDocument ? 
-        (supportingDocProcessingTypes[req.body.processingType as keyof typeof supportingDocProcessingTypes] || 115.00) :
-        (standardProcessingTypes[req.body.processingType as keyof typeof standardProcessingTypes] || 25.00);
-      
-      console.log('🔧 PROCESSING FEE:', processingFee);
-      
-      // Calculate total amount: processing fee + document PDF fee (if supporting document exists)
-      const documentPdfFee = 69.00;
-      const totalAmount = hasSupportingDocument ? 
-        (processingFee + documentPdfFee).toFixed(2) : 
-        processingFee.toFixed(2);
-        
-      console.log('🔧 FINAL TOTAL AMOUNT:', totalAmount);
-      
-      // CRITICAL SECURITY: Validate arrival date is within supporting document period (backend validation)
-      if (hasSupportingDocument && req.body.arrivalDate && req.body.supportingDocumentStartDate && req.body.supportingDocumentEndDate) {
-        console.log('🚨 SECURITY CHECK: Validating arrival date against supporting document period');
-        console.log('🚨 Raw dates:', {
-          arrivalDate: req.body.arrivalDate,
-          supportingStartDate: req.body.supportingDocumentStartDate, 
-          supportingEndDate: req.body.supportingDocumentEndDate
-        });
-        
-        const arrivalDate = new Date(req.body.arrivalDate);
-        const supportingStartDate = new Date(req.body.supportingDocumentStartDate);
-        const supportingEndDate = new Date(req.body.supportingDocumentEndDate);
-        
-        console.log('🚨 Parsed dates:', {
-          arrivalDate: arrivalDate.toISOString(),
-          supportingStartDate: supportingStartDate.toISOString(),
-          supportingEndDate: supportingEndDate.toISOString()
-        });
-        
-        if (arrivalDate < supportingStartDate || arrivalDate > supportingEndDate) {
-          console.log('🚨 SECURITY VALIDATION FAILED: Arrival date outside supporting document period');
-          return res.status(400).json({ 
-            message: "Invalid application data", 
-            error: "Arrival date must be within the supporting document validity period" 
-          });
-        } else {
-          console.log('🚨 SECURITY VALIDATION PASSED: Arrival date is within supporting document period');
-        }
-      }
+      const totalAmount = processingTypes[req.body.processingType as keyof typeof processingTypes] || '60.00';
       
       const validatedData = insertApplicationSchema.parse({
         ...bodyWithDates,
@@ -149,10 +90,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           firstName: application.firstName,
           lastName: application.lastName,
           email: application.email,
-          applicationNumber: application.applicationNumber,
-          totalAmount: application.totalAmount,
-          processingType: application.processingType,
-          supportingDocumentType: application.supportingDocumentType
+          applicationNumber: application.applicationNumber
         });
         
         // Dynamic import like insurance system
@@ -228,23 +166,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/insurance-products", async (req, res) => {
     try {
       const products = await storage.getInsuranceProducts();
-      
-      // Add title and duration fields for frontend compatibility
-      const productsWithTitleDuration = products.map(product => ({
-        ...product,
-        title: product.name, // Map name to title
-        duration: product.coverage?.Duration || 
-                 (product.name.includes('7') ? '7 days' :
-                  product.name.includes('14') ? '14 days' :
-                  product.name.includes('30') ? '30 days' :
-                  product.name.includes('60') ? '60 days' :
-                  product.name.includes('90') ? '90 days' :
-                  product.name.includes('180') ? '180 days' :
-                  product.name.includes('1 year') ? '1 year' :
-                  'Variable duration')
-      }));
-      
-      res.json(productsWithTitleDuration);
+      res.json(products);
     } catch (error) {
       console.error("Error fetching insurance products:", error);
       res.status(500).json({ message: "Failed to fetch insurance products" });
@@ -254,23 +176,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/insurance/products", async (req, res) => {
     try {
       const products = await storage.getInsuranceProducts();
-      
-      // Add title and duration fields for frontend compatibility
-      const productsWithTitleDuration = products.map(product => ({
-        ...product,
-        title: product.name, // Map name to title
-        duration: product.coverage?.Duration || 
-                 (product.name.includes('7') ? '7 days' :
-                  product.name.includes('14') ? '14 days' :
-                  product.name.includes('30') ? '30 days' :
-                  product.name.includes('60') ? '60 days' :
-                  product.name.includes('90') ? '90 days' :
-                  product.name.includes('180') ? '180 days' :
-                  product.name.includes('1 year') ? '1 year' :
-                  'Variable duration')
-      }));
-      
-      res.json(productsWithTitleDuration);
+      res.json(products);
     } catch (error) {
       console.error("Error fetching insurance products:", error);
       res.status(500).json({ message: "Failed to fetch insurance products" });
@@ -288,75 +194,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create insurance application - Main endpoint for frontend
-  app.post("/api/insurance-applications", async (req, res) => {
-    try {
-      console.log("🔍 API REQUEST: POST /api/insurance-applications");
-      console.log("🔍 Headers:", req.headers);
-      console.log("🔍 Body preview:", JSON.stringify(req.body).substring(0, 100));
-      
-      console.log("=== INSURANCE APPLICATION DEBUG ===");
-      console.log("Raw dateOfBirth:", req.body.dateOfBirth, typeof req.body.dateOfBirth);
-      console.log("Raw totalAmount:", req.body.totalAmount, typeof req.body.totalAmount);
-      
-      // Convert dates and amounts to proper format for schema validation
-      const bodyWithDates = {
-        ...req.body,
-        applicationNumber: generateApplicationNumber(),
-        destination: req.body.destination || "Turkey", // Default destination
-        travelDate: req.body.travelDate ? new Date(req.body.travelDate) : undefined,
-        returnDate: req.body.returnDate ? new Date(req.body.returnDate) : undefined,
-        dateOfBirth: req.body.dateOfBirth, // Keep as string
-        totalAmount: req.body.totalAmount, // Keep original value first
-      };
-      
-      console.log("After processing - dateOfBirth:", bodyWithDates.dateOfBirth, typeof bodyWithDates.dateOfBirth);
-      console.log("After processing - totalAmount:", bodyWithDates.totalAmount, typeof bodyWithDates.totalAmount);
-
-      const validatedData = insertInsuranceApplicationSchema.parse(bodyWithDates);
-
-      const application = await storage.createInsuranceApplication(validatedData);
-      
-      // E-posta gönderimi (sigorta başvuru alındı)
-      try {
-        // Sigorta ürün bilgisini al
-        const product = application.productId ? await storage.getInsuranceProduct(application.productId) : null;
-        const productName = product ? product.name : 'Travel Insurance';
-        
-        const { generateInsuranceReceivedEmail } = await import('./email-insurance');
-        const emailContent = generateInsuranceReceivedEmail(
-          application.firstName, 
-          application.lastName, 
-          application.applicationNumber,
-          productName,
-          application
-        );
-        
-        await sendEmail({
-          to: application.email,
-          from: "info@getvisa.tr",
-          subject: emailContent.subject,
-          html: emailContent.html,
-          text: emailContent.text,
-          attachments: []
-        });
-        
-        console.log(`✅ Insurance application received email sent to ${application.email}`);
-      } catch (emailError) {
-        console.error('Failed to send insurance application received email:', emailError);
-      }
-      
-      res.status(201).json(application);
-    } catch (error) {
-      console.error("Error creating insurance application:", error);
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid application data", errors: error.errors });
-      }
-      res.status(500).json({ message: "Failed to create insurance application" });
-    }
-  });
-
-  // Create insurance application - Alternative endpoint for compatibility
+  // Create insurance application
   app.post("/api/insurance/applications", async (req, res) => {
     try {
       console.log("=== INSURANCE APPLICATION DEBUG ===");
