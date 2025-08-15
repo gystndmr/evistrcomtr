@@ -62,29 +62,48 @@ export async function registerRoutes(app: Express): Promise<Server> {
       };
 
       // Calculate totalAmount based on processing type and supporting document status
-      const processingTypes = {
+      // Supporting document processing types (frontend values)
+      const supportingDocProcessingTypes = {
+        'slow': 50.00,      // Ready in 7 days
+        'standard': 115.00, // Ready in 4 days  
+        'fast': 165.00,     // Ready in 2 days
+        'urgent_24': 280.00, // Ready in 24 hours
+        'urgent_12': 330.00, // Ready in 12 hours
+        'urgent_4': 410.00,  // Ready in 4 hours
+        'urgent_1': 645.00   // Ready in 1 hour
+      };
+      
+      // Standard processing types (no supporting document)
+      const standardProcessingTypes = {
         'standard': 25.00,
         'fast': 75.00, 
         'express': 175.00,
-        'urgent': 295.00,
-        'slow': 50.00,
-        'urgent_24': 280.00,
-        'urgent_12': 330.00,
-        'urgent_4': 410.00,
-        'urgent_1': 645.00
+        'urgent': 295.00
       };
-      
-      // Get processing fee
-      const processingFee = processingTypes[req.body.processingType as keyof typeof processingTypes] || 60.00;
       
       // Check if this is a supporting document application by checking supportingDocumentType
       const hasSupportingDocument = req.body.supportingDocumentType && req.body.supportingDocumentType !== null;
+      
+      console.log('🔧 TOTAL AMOUNT DEBUG:', {
+        processingType: req.body.processingType,
+        supportingDocumentType: req.body.supportingDocumentType,
+        hasSupportingDocument: hasSupportingDocument
+      });
+      
+      // Get processing fee from correct type mapping
+      const processingFee = hasSupportingDocument ? 
+        (supportingDocProcessingTypes[req.body.processingType as keyof typeof supportingDocProcessingTypes] || 115.00) :
+        (standardProcessingTypes[req.body.processingType as keyof typeof standardProcessingTypes] || 25.00);
+      
+      console.log('🔧 PROCESSING FEE:', processingFee);
       
       // Calculate total amount: processing fee + document PDF fee (if supporting document exists)
       const documentPdfFee = 69.00;
       const totalAmount = hasSupportingDocument ? 
         (processingFee + documentPdfFee).toFixed(2) : 
         processingFee.toFixed(2);
+        
+      console.log('🔧 FINAL TOTAL AMOUNT:', totalAmount);
       
       const validatedData = insertApplicationSchema.parse({
         ...bodyWithDates,
