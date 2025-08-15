@@ -185,14 +185,13 @@ export function CountrySelector({
               onClick={() => console.log("SelectTrigger clicked, countries available:", countries.length)}
               className="w-full min-h-[40px] border border-gray-300 relative"
             >
-              <SelectValue placeholder="Select Country/Region" />
-              {selectedCountry && (
-                <div className="absolute inset-0 flex items-center px-3 pointer-events-none">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-lg">{getCountryFlag(selectedCountry.code)}</span>
-                    <span>{selectedCountry.name}</span>
-                  </div>
+              {selectedCountry ? (
+                <div className="flex items-center space-x-2">
+                  <span className="text-lg">{getCountryFlag(selectedCountry.code)}</span>
+                  <span>{selectedCountry.name}</span>
                 </div>
+              ) : (
+                <span className="text-gray-500">Select Country/Region</span>
               )}
             </SelectTrigger>
             <SelectContent 
@@ -221,13 +220,13 @@ export function CountrySelector({
                     <SelectItem 
                       key={`${country.code}-${country.id}`} 
                       value={country.code}
-                      className="cursor-pointer hover:bg-gray-100 py-2 px-3"
+                      className="cursor-pointer hover:bg-gray-100 py-2 px-3 focus:bg-gray-100"
                     >
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 w-full">
                         <span className="text-lg">
                           {getCountryFlag(country.code)}
                         </span>
-                        <span className="text-sm">{country.name}</span>
+                        <span className="text-sm flex-1">{country.name}</span>
                       </div>
                     </SelectItem>
                   ))
