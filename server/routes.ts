@@ -105,6 +105,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
       console.log('🔧 FINAL TOTAL AMOUNT:', totalAmount);
       
+      // CRITICAL SECURITY: Validate arrival date is within supporting document period (backend validation)
+      if (hasSupportingDocument && req.body.arrivalDate && req.body.supportingDocumentStartDate && req.body.supportingDocumentEndDate) {
+        console.log('🚨 SECURITY CHECK: Validating arrival date against supporting document period');
+        console.log('🚨 Raw dates:', {
+          arrivalDate: req.body.arrivalDate,
+          supportingStartDate: req.body.supportingDocumentStartDate, 
+          supportingEndDate: req.body.supportingDocumentEndDate
+        });
+        
+        const arrivalDate = new Date(req.body.arrivalDate);
+        const supportingStartDate = new Date(req.body.supportingDocumentStartDate);
+        const supportingEndDate = new Date(req.body.supportingDocumentEndDate);
+        
+        console.log('🚨 Parsed dates:', {
+          arrivalDate: arrivalDate.toISOString(),
+          supportingStartDate: supportingStartDate.toISOString(),
+          supportingEndDate: supportingEndDate.toISOString()
+        });
+        
+        if (arrivalDate < supportingStartDate || arrivalDate > supportingEndDate) {
+          console.log('🚨 SECURITY VALIDATION FAILED: Arrival date outside supporting document period');
+          return res.status(400).json({ 
+            message: "Invalid application data", 
+            error: "Arrival date must be within the supporting document validity period" 
+          });
+        } else {
+          console.log('🚨 SECURITY VALIDATION PASSED: Arrival date is within supporting document period');
+        }
+      }
+      
       const validatedData = insertApplicationSchema.parse({
         ...bodyWithDates,
         totalAmount

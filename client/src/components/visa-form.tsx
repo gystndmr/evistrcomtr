@@ -665,6 +665,17 @@ export function VisaForm() {
           });
           return;
         }
+        
+        // CRITICAL SECURITY: Validate arrival date is within supporting document period
+        const arrivalDate = new Date(formData.arrivalDate);
+        if (arrivalDate < supportingStartDate || arrivalDate > supportingEndDate) {
+          toast({
+            title: "Invalid Arrival Date",
+            description: "Your arrival date must be within the supporting document validity period. Please check your document dates and arrival date.",
+            variant: "destructive",
+          });
+          return;
+        }
       }
     }
     

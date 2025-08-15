@@ -53,7 +53,15 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 - **Site Mode Switching**: Supports quick switching between the e-visa application site and a consulting/advertising site.
 - **Date Input**: Uses manual dropdowns for date selections for improved user control.
 
-### Recent Fixes (August 14, 2025)
+### Recent Fixes (August 15, 2025)
+- **CRITICAL SECURITY FIX**: ✅ COMPLETED - Added arrival date validation for supporting documents
+  - **Issue**: System allowed arrival dates outside supporting document validity period
+  - **Fix**: Added validation to ensure arrival date is between supporting document start and end dates
+  - **Impact**: Prevents invalid visa applications with mismatched document periods
+- **EMAIL TOTAL AMOUNT FIX**: ✅ COMPLETED - Fixed email amount calculation for supporting documents
+  - **Issue**: Emails showed incorrect total amount (missing PDF fee for supporting documents)
+  - **Fix**: Updated backend calculation to match frontend (processing fee + $69 PDF fee)
+  - **Result**: Email amounts now match customer payment amounts exactly
 - **COMPREHENSIVE SITE TESTING & BUG FIXES**: ✅ COMPLETED - All critical issues resolved
   - **VISA FORM FIX**: ✅ COMPLETED - Fixed totalAmount validation error by making field optional and adding backend calculation
   - **PAYMENT ORDERREF FIX**: ✅ COMPLETED - Resolved OrderRef collision with unique timestamp generation 
