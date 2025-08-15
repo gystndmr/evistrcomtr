@@ -54,6 +54,13 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 - **Date Input**: Uses manual dropdowns for date selections for improved user control.
 
 ### Recent Fixes (August 15, 2025)
+- **PAYMENT SYSTEM BREAKTHROUGH**: ✅ COMPLETED - GPay 500 errors FULLY RESOLVED
+  - **Issue**: Private key format causing "DECODER routines::unsupported" errors since noon
+  - **Root Cause**: Private key stored as single line without proper line breaks for Node.js crypto
+  - **Fix**: Implemented proper PEM formatting with 64-character line breaks
+  - **Algorithm Fix**: Corrected to use md5WithRSAEncryption (GPay standard) instead of RSA-SHA256
+  - **Result**: Status 200, Payment links generating successfully, Transaction IDs working
+  - **Customer Impact**: ALL payment flows now operational - customers can complete visa and insurance purchases
 - **CRITICAL SECURITY FIX**: ✅ COMPLETED - Added arrival date validation for supporting documents
   - **Issue**: System allowed arrival dates outside supporting document validity period
   - **Fix**: Added validation to ensure arrival date is between supporting document start and end dates

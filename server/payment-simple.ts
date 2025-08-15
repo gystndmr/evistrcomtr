@@ -93,13 +93,15 @@ export class GPayService {
     // Create JSON and escape forward slashes like in the example
     const jsonData = JSON.stringify(trimmedData).replace(/\//g, '\\/');
     
-    console.log('=== Signature Generation (Node.js Example Style) ===');
+    console.log('=== FULL SIGNATURE DEBUG ===');
     console.log('Original data:', JSON.stringify(data, null, 2));
     console.log('After number conversion:', JSON.stringify(clonedData, null, 2));
     console.log('After sorting:', JSON.stringify(sortedData, null, 2));
     console.log('After trimming:', JSON.stringify(trimmedData, null, 2));
     console.log('Final JSON for signing:', jsonData);
-    console.log('=== End Signature Generation ===');
+    console.log('Merchant ID from data:', data.merchantId);
+    console.log('Private Key starts with:', this.config.privateKey.substring(0, 50) + '...');
+    console.log('=== End Full Debug ===');
     
     // Ensure private key is in correct PEM format with proper line breaks
     let privateKey = this.config.privateKey;
@@ -131,27 +133,12 @@ export class GPayService {
     console.log('Private key formatted length:', formattedKey.length);
     console.log('Private key first/last lines:', formattedKey.split('\n').slice(0,2), '...', formattedKey.split('\n').slice(-2));
     
-    // Try different signing algorithms as fallback
-    try {
-      const sign = crypto.createSign('RSA-SHA256');
-      sign.update(jsonData);
-      const signature = sign.sign(formattedKey, 'base64');
-      console.log('Signature created successfully with RSA-SHA256');
-      return signature;
-    } catch (sha256Error) {
-      console.log('RSA-SHA256 failed, trying md5WithRSAEncryption:', sha256Error.message);
-      try {
-        const sign = crypto.createSign('md5WithRSAEncryption');
-        sign.update(jsonData);
-        const signature = sign.sign(formattedKey, 'base64');
-        console.log('Signature created successfully with md5WithRSAEncryption');
-        return signature;
-      } catch (md5Error) {
-        console.error('Both signing methods failed:', md5Error.message);
-        throw new Error(`Signature generation failed: ${md5Error.message}`);
-      }
-    }
-    
+    // Use exact GPay signature method: md5WithRSAEncryption only
+    const sign = crypto.createSign('md5WithRSAEncryption');
+    sign.update(jsonData);
+    const signature = sign.sign(formattedKey, 'base64');
+    console.log('Signature created successfully with md5WithRSAEncryption (GPay standard)');
+    console.log('Generated signature:', signature.substring(0, 50) + '...');
     return signature;
   }
 
