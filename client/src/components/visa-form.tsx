@@ -906,7 +906,7 @@ export function VisaForm() {
                                     <SelectTrigger>
                                       <SelectValue placeholder="Day" />
                                     </SelectTrigger>
-                                    <SelectContent side="bottom" sideOffset={4}>
+                                    <SelectContent position="popper" side="bottom" sideOffset={4} align="start">
                                       {getAvailableDays().map((d) => (
                                         <SelectItem key={d} value={d}>{d}</SelectItem>
                                       ))}
@@ -935,7 +935,7 @@ export function VisaForm() {
                                     <SelectTrigger>
                                       <SelectValue placeholder="Month" />
                                     </SelectTrigger>
-                                    <SelectContent side="bottom" sideOffset={4}>
+                                    <SelectContent position="popper" side="bottom" sideOffset={4} align="start">
                                       {getAvailableMonths().map((m) => (
                                         <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
                                       ))}

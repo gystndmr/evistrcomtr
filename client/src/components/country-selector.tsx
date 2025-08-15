@@ -183,7 +183,14 @@ export function CountrySelector({
             <SelectTrigger onClick={() => console.log("SelectTrigger clicked, countries available:", countries.length)}>
               <SelectValue placeholder="Select Country/Region" />
             </SelectTrigger>
-            <SelectContent side="bottom" sideOffset={4} className="max-h-60 overflow-y-auto" style={{zIndex: 9999}}>
+            <SelectContent 
+              position="popper" 
+              side="bottom" 
+              sideOffset={4} 
+              align="start"
+              className="max-h-60 overflow-y-auto w-full min-w-[var(--radix-select-trigger-width)]" 
+              style={{zIndex: 9999}}
+            >
               {isLoading ? (
                 <SelectItem value="loading" disabled>Loading countries...</SelectItem>
               ) : countries.length === 0 ? (
@@ -212,7 +219,13 @@ export function CountrySelector({
             <SelectTrigger>
               <SelectValue placeholder="Select Document Type" />
             </SelectTrigger>
-            <SelectContent side="bottom" sideOffset={4}>
+            <SelectContent 
+              position="popper" 
+              side="bottom" 
+              sideOffset={4} 
+              align="start"
+              className="w-full min-w-[var(--radix-select-trigger-width)]"
+            >
               {documentTypes.map((type) => (
                 <SelectItem key={type.value} value={type.value}>
                   {type.label}
