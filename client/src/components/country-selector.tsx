@@ -88,6 +88,10 @@ export function CountrySelector({
 
   const { data: countries = [], isLoading, error } = useQuery<Country[]>({
     queryKey: ["/api/countries"],
+    staleTime: 30 * 60 * 1000, // 30 minutes cache for mobile performance
+    gcTime: 60 * 60 * 1000, // 1 hour garbage collection
+    refetchOnWindowFocus: false, // Prevent mobile refetch
+    refetchOnMount: false, // Use cache when available
   });
 
   // Debug logging for dropdown issues

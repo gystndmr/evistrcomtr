@@ -42,7 +42,7 @@ export default function Insurance() {
   const { toast } = useToast();
 
   const { data: products = [], isLoading } = useQuery({
-    queryKey: ["/api/insurance/products"],
+    queryKey: ["/api/insurance-products"],
     staleTime: 5 * 60 * 1000,
   }) as { data: InsuranceProduct[], isLoading: boolean };
 
@@ -118,7 +118,7 @@ export default function Insurance() {
       };
       console.log('Application payload:', applicationPayload);
       
-      const applicationResponse = await fetch("/api/insurance/applications", {
+      const applicationResponse = await fetch("/api/insurance-applications", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
