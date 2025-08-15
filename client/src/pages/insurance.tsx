@@ -553,7 +553,7 @@ export default function Insurance() {
                     <SelectTrigger>
                       <SelectValue placeholder="Select your nationality" />
                     </SelectTrigger>
-                    <SelectContent position="popper" side="bottom" align="start">
+                    <SelectContent side="bottom" sideOffset={4}>
                       {sortedCountries.map((country) => (
                         <SelectItem key={country.id} value={country.name}>
                           <div className="flex items-center gap-2">
@@ -610,7 +610,7 @@ export default function Insurance() {
                       <SelectTrigger>
                         <SelectValue placeholder="Day" />
                       </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
+                      <SelectContent side="bottom" sideOffset={4}>
                         {(() => {
                           // Smart day filtering based on current month/year selection
                           const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [];
@@ -663,7 +663,7 @@ export default function Insurance() {
                       <SelectTrigger>
                         <SelectValue placeholder="Month" />
                       </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
+                      <SelectContent side="bottom" sideOffset={4}>
                         {(() => {
                           const months = [
                             { value: '01', label: 'January' },
@@ -732,7 +732,7 @@ export default function Insurance() {
                       <SelectTrigger>
                         <SelectValue placeholder="Year" />
                       </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
+                      <SelectContent side="bottom" sideOffset={4}>
                         {/* Only show current year and future years */}
                         {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
                           <SelectItem key={y} value={y}>{y}</SelectItem>
@@ -756,7 +756,7 @@ export default function Insurance() {
                       <SelectTrigger>
                         <SelectValue placeholder="Day" />
                       </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
+                      <SelectContent side="bottom" sideOffset={4}>
                         {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
                           <SelectItem key={d} value={d}>{d}</SelectItem>
                         ))}
@@ -775,7 +775,7 @@ export default function Insurance() {
                       <SelectTrigger>
                         <SelectValue placeholder="Month" />
                       </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
+                      <SelectContent side="bottom" sideOffset={4}>
                         {[
                           { value: '01', label: 'January' },
                           { value: '02', label: 'February' },
@@ -807,7 +807,7 @@ export default function Insurance() {
                       <SelectTrigger>
                         <SelectValue placeholder="Year" />
                       </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
+                      <SelectContent side="bottom" sideOffset={4}>
                         {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
                           <SelectItem key={y} value={y}>{y}</SelectItem>
                         ))}
@@ -833,7 +833,7 @@ export default function Insurance() {
                     <SelectTrigger>
                       <SelectValue placeholder="Day" />
                     </SelectTrigger>
-                    <SelectContent position="popper" side="bottom" align="start">
+                    <SelectContent side="bottom" sideOffset={4}>
                       {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
                         <SelectItem key={d} value={d}>{d}</SelectItem>
                       ))}
@@ -852,7 +852,7 @@ export default function Insurance() {
                     <SelectTrigger>
                       <SelectValue placeholder="Month" />
                     </SelectTrigger>
-                    <SelectContent position="popper" side="bottom" align="start">
+                    <SelectContent side="bottom" sideOffset={4}>
                       {[
                         { value: '01', label: 'January' },
                         { value: '02', label: 'February' },
@@ -884,7 +884,7 @@ export default function Insurance() {
                     <SelectTrigger>
                       <SelectValue placeholder="Year" />
                     </SelectTrigger>
-                    <SelectContent position="popper" side="bottom" align="start">
+                    <SelectContent side="bottom" sideOffset={4}>
                       {Array.from({ length: 80 }, (_, i) => (new Date().getFullYear() - i).toString()).map((y) => (
                         <SelectItem key={y} value={y}>{y}</SelectItem>
                       ))}

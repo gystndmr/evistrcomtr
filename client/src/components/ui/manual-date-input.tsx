@@ -72,7 +72,7 @@ export function ManualDateInput({
           <SelectTrigger>
             <SelectValue placeholder="Gün" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent side="bottom" sideOffset={4}>
             {days.map((d) => (
               <SelectItem key={d} value={d}>{d}</SelectItem>
             ))}
@@ -86,7 +86,7 @@ export function ManualDateInput({
           <SelectTrigger>
             <SelectValue placeholder="Ay" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent side="bottom" sideOffset={4}>
             {months.map((m) => (
               <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
             ))}
@@ -100,7 +100,7 @@ export function ManualDateInput({
           <SelectTrigger>
             <SelectValue placeholder="Yıl" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent side="bottom" sideOffset={4}>
             {years.map((y) => (
               <SelectItem key={y} value={y}>{y}</SelectItem>
             ))}
