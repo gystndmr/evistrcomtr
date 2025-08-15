@@ -45,7 +45,33 @@ export class GPayService {
   private config: GPayConfig;
 
   constructor(config: GPayConfig) {
-    this.config = config;
+    // Clean and format the private key properly
+    let cleanPrivateKey = config.privateKey;
+    if (cleanPrivateKey.includes('\\n')) {
+      // Replace literal \n with actual newlines
+      cleanPrivateKey = cleanPrivateKey.replace(/\\n/g, '\n');
+    }
+    
+    // Ensure proper PEM format
+    if (!cleanPrivateKey.includes('\n')) {
+      console.log('🔧 Private key needs newline formatting...');
+      // Format the key with proper newlines
+      cleanPrivateKey = cleanPrivateKey
+        .replace('-----BEGIN PRIVATE KEY-----', '-----BEGIN PRIVATE KEY-----\n')
+        .replace('-----END PRIVATE KEY-----', '\n-----END PRIVATE KEY-----')
+        // Add newlines every 64 characters in the body
+        .replace(/(.{64})/g, '$1\n');
+    }
+    
+    this.config = {
+      ...config,
+      privateKey: cleanPrivateKey
+    };
+    
+    console.log('🔑 Private key format check:');
+    console.log('- Contains newlines:', this.config.privateKey.includes('\n'));
+    console.log('- Starts with BEGIN:', this.config.privateKey.startsWith('-----BEGIN'));
+    console.log('- Ends with END:', this.config.privateKey.endsWith('-----'));
   }
 
   // Trim recursively like PHP trim
@@ -101,10 +127,38 @@ export class GPayService {
     console.log('Final JSON for signing:', jsonData);
     console.log('=== End Signature Generation ===');
     
-    // Sign with private key using md5WithRSAEncryption
-    const sign = crypto.createSign('md5WithRSAEncryption');
-    sign.update(jsonData);
-    const signature = sign.sign(this.config.privateKey, 'base64');
+    // Sign with private key - try different algorithms for Node.js compatibility
+    let signature: string;
+    try {
+      // First try the original algorithm for backwards compatibility
+      const sign = crypto.createSign('md5WithRSAEncryption');
+      sign.update(jsonData);
+      signature = sign.sign(this.config.privateKey, 'base64');
+      console.log('✅ Successfully used md5WithRSAEncryption');
+    } catch (error) {
+      console.log('⚠️ md5WithRSAEncryption failed, trying RSA-MD5...');
+      try {
+        // Try alternative MD5 algorithm name
+        const sign = crypto.createSign('RSA-MD5');
+        sign.update(jsonData);
+        signature = sign.sign(this.config.privateKey, 'base64');
+        console.log('✅ Successfully used RSA-MD5');
+      } catch (error2) {
+        console.log('⚠️ RSA-MD5 failed, using sha256 (modern fallback)...');
+        // Fallback to SHA256 - most widely supported
+        try {
+          const sign = crypto.createSign('sha256');
+          sign.update(jsonData);
+          signature = sign.sign(this.config.privateKey, 'base64');
+          console.log('✅ Successfully used sha256');
+        } catch (error3) {
+          console.log('💀 All signature algorithms failed. Private key issue:');
+          console.log('Private key length:', this.config.privateKey.length);
+          console.log('Private key preview:', this.config.privateKey.substring(0, 50) + '...');
+          throw new Error(`All signature algorithms failed. Last error: ${error3}`);
+        }
+      }
+    }
     
     return signature;
   }

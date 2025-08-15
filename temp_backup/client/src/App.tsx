@@ -7,7 +7,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { LiveChat } from "@/components/live-chat";
 import { CookieConsent } from "@/components/cookie-consent";
 
-import LokmaHome from "@/pages/lokma-home";
+import Home from "@/pages/home";
 import Application from "@/pages/application";
 import Insurance from "@/pages/insurance-simple";
 import Status from "@/pages/status";
@@ -34,7 +34,7 @@ import ChatAdmin from "@/pages/chat-admin";
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={LokmaHome} />
+      <Route path="/" component={Home} />
       <Route path="/application" component={Application} />
       <Route path="/apply" component={Application} />
       <Route path="/insurance" component={Insurance} />

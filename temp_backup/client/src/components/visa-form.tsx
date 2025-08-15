@@ -24,7 +24,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 const applicationSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
+  lastName: z.string().min(1, "Last name is required"), 
   email: z.string().email("Invalid email address"),
   phone: z.string().min(1, "Phone number is required"),
   passportNumber: z.string().min(1, "Passport number is required"),
@@ -547,6 +547,7 @@ export function VisaForm() {
         return;
       }
       
+      // Required fields validation
       if (!formData.passportIssueDate) {
         toast({
           title: "Passport Issue Date Required",
@@ -558,7 +559,7 @@ export function VisaForm() {
       
       if (!formData.passportExpiryDate) {
         toast({
-          title: "Passport Expiry Date Required",
+          title: "Passport Expiry Date Required", 
           description: "Please enter your passport expiry date",
           variant: "destructive",
         });
@@ -576,8 +577,8 @@ export function VisaForm() {
       
       if (!formData.motherName?.trim() || formData.motherName.length < 2) {
         toast({
-          title: t('form.error.mother.name'), 
-          description: t('form.error.mother.name.desc'),
+          title: t('form.error.mother.name'),
+          description: t('form.error.mother.name.desc'), 
           variant: "destructive",
         });
         return;
@@ -617,12 +618,13 @@ export function VisaForm() {
       
       if (passportIssueDate >= passportExpiryDate) {
         toast({
-          title: "Invalid Passport Dates",
+          title: "Invalid Passport Dates", 
           description: "Passport issue date must be before expiry date",
           variant: "destructive",
         });
         return;
       }
+
       
       // Supporting document validation (only for users with supporting documents)
       if (hasSupportingDocument === true) {
