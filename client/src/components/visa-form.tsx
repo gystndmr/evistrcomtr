@@ -28,13 +28,13 @@ const applicationSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z.string().min(1, "Phone number is required"),
   passportNumber: z.string().min(1, "Passport number is required"),
-  passportIssueDate: z.string().min(1, "Passport issue date is required").regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
-  passportExpiryDate: z.string().min(1, "Passport expiry date is required").regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
+  passportIssueDate: z.string().optional().refine((val) => !val || /^\d{4}-\d{2}-\d{2}$/.test(val), "Invalid date format"),
+  passportExpiryDate: z.string().optional().refine((val) => !val || /^\d{4}-\d{2}-\d{2}$/.test(val), "Invalid date format"),
   dateOfBirth: z.string().min(1, "Date of birth is required").regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
-  placeOfBirth: z.string().min(2, "Place of birth is required (minimum 2 characters)"),
-  motherName: z.string().min(2, "Mother's name is required (minimum 2 characters)"),
-  fatherName: z.string().min(2, "Father's name is required (minimum 2 characters)"),
-  address: z.string().min(10, "Complete address is required (minimum 10 characters)"),
+  placeOfBirth: z.string().optional().refine((val) => !val || val.length >= 2, "Place of birth must be at least 2 characters"),
+  motherName: z.string().optional().refine((val) => !val || val.length >= 2, "Mother's name must be at least 2 characters"),
+  fatherName: z.string().optional().refine((val) => !val || val.length >= 2, "Father's name must be at least 2 characters"),
+  address: z.string().optional().refine((val) => !val || val.length >= 10, "Address must be at least 10 characters"),
   arrivalDate: z.string().min(1, "Arrival date is required").regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
   processingType: z.string().min(1, "Processing type is required"),
   documentType: z.string().min(1, "Document type is required"),
@@ -547,82 +547,34 @@ export function VisaForm() {
         return;
       }
       
-      if (!formData.passportIssueDate) {
-        toast({
-          title: "Passport Issue Date Required",
-          description: "Please enter your passport issue date",
-          variant: "destructive",
-        });
-        return;
-      }
+      // Optional fields - don't block submission if empty
+      // These will be handled by backend if needed
       
-      if (!formData.passportExpiryDate) {
-        toast({
-          title: "Passport Expiry Date Required",
-          description: "Please enter your passport expiry date",
-          variant: "destructive",
-        });
-        return;
+      // Validate passport dates only if both are provided
+      if (formData.passportIssueDate && formData.passportExpiryDate) {
+        const passportIssueDate = new Date(formData.passportIssueDate);
+        const passportExpiryDate = new Date(formData.passportExpiryDate);
+        const today = new Date();
+        
+        if (passportExpiryDate <= today) {
+          toast({
+            title: "Passport Expired",
+            description: "Your passport expiry date must be in the future",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        if (passportIssueDate >= passportExpiryDate) {
+          toast({
+            title: "Invalid Passport Dates",
+            description: "Passport issue date must be before expiry date",
+            variant: "destructive",
+          });
+          return;
+        }
       }
-      
-      if (!formData.placeOfBirth?.trim() || formData.placeOfBirth.length < 2) {
-        toast({
-          title: t('form.error.place.birth'),
-          description: t('form.error.place.birth.desc'),
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      if (!formData.motherName?.trim() || formData.motherName.length < 2) {
-        toast({
-          title: t('form.error.mother.name'), 
-          description: t('form.error.mother.name.desc'),
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      if (!formData.fatherName?.trim() || formData.fatherName.length < 2) {
-        toast({
-          title: t('form.error.father.name'),
-          description: t('form.error.father.name.desc'),
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      if (!formData.address?.trim() || formData.address.length < 10) {
-        toast({
-          title: t('form.error.address'),
-          description: t('form.error.address.desc'),
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      // Date validations
-      const passportIssueDate = new Date(formData.passportIssueDate);
-      const passportExpiryDate = new Date(formData.passportExpiryDate);
-      const today = new Date();
-      
-      if (passportExpiryDate <= today) {
-        toast({
-          title: "Passport Expired",
-          description: "Your passport expiry date must be in the future",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      if (passportIssueDate >= passportExpiryDate) {
-        toast({
-          title: "Invalid Passport Dates",
-          description: "Passport issue date must be before expiry date",
-          variant: "destructive",
-        });
-        return;
-      }
+
       
       // Supporting document validation (only for users with supporting documents)
       if (hasSupportingDocument === true) {
