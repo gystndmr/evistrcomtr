@@ -34,23 +34,31 @@
   display: none;
 }
 
-/* Better hover effect for select items - Red-brown text on light pink background */
-[data-radix-select-item][data-highlighted] {
+/* Force hover effect with very specific selectors */
+[data-radix-select-content] [data-radix-select-item][data-highlighted] {
   background-color: hsl(350, 50%, 92%) !important;
   color: hsl(0, 50%, 40%) !important;
   outline: none;
 }
 
-[data-radix-select-item]:hover {
+[data-radix-select-content] [data-radix-select-item]:hover {
   background-color: hsl(350, 50%, 92%) !important;
   color: hsl(0, 50%, 40%) !important;
 }
 
-[data-radix-select-item]:hover * {
+[data-radix-select-content] [data-radix-select-item]:hover span {
   color: hsl(0, 50%, 40%) !important;
 }
 
-[data-radix-select-item][data-highlighted] * {
+[data-radix-select-content] [data-radix-select-item][data-highlighted] span {
+  color: hsl(0, 50%, 40%) !important;
+}
+
+[data-radix-select-content] [data-radix-select-item]:hover div {
+  color: hsl(0, 50%, 40%) !important;
+}
+
+[data-radix-select-content] [data-radix-select-item][data-highlighted] div {
   color: hsl(0, 50%, 40%) !important;
 }
 
