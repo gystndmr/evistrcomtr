@@ -86,9 +86,19 @@ export function CountrySelector({
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const { t } = useLanguage();
 
-  const { data: countries = [], isLoading } = useQuery<Country[]>({
+  const { data: countries = [], isLoading, error } = useQuery<Country[]>({
     queryKey: ["/api/countries"],
   });
+
+  // Debug logging for dropdown issues
+  useEffect(() => {
+    console.log("Country Selector Debug:", {
+      isLoading,
+      countriesCount: countries.length,
+      error: error?.message,
+      firstCountry: countries[0]
+    });
+  }, [countries, isLoading, error]);
 
   // Cleanup interval on unmount
   useEffect(() => {
@@ -171,7 +181,7 @@ export function CountrySelector({
             <SelectTrigger>
               <SelectValue placeholder="Select Country/Region" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent position="popper" side="bottom" align="start" className="max-h-60 overflow-y-auto">
               {isLoading ? (
                 <SelectItem value="loading" disabled>Loading countries...</SelectItem>
               ) : countries.length === 0 ? (
@@ -200,7 +210,7 @@ export function CountrySelector({
             <SelectTrigger>
               <SelectValue placeholder="Select Document Type" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent position="popper" side="bottom" align="start">
               {documentTypes.map((type) => (
                 <SelectItem key={type.value} value={type.value}>
                   {type.label}
