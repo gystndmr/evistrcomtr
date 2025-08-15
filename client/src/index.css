@@ -2,6 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Force dropdown to open downward */
+[data-radix-select-content] {
+  transform-origin: top center !important;
+  animation-duration: 200ms !important;
+}
+
+[data-radix-select-content][data-side="bottom"] {
+  transform: translateY(4px) !important;
+}
+
+[data-radix-select-content][data-side="top"] {
+  transform: translateY(4px) !important;
+  /* Force move downward even when positioned as top */
+  top: calc(100% + 4px) !important;
+  bottom: auto !important;
+}
+
+/* Additional override for all select content */
+[data-radix-popper-content-wrapper] [data-radix-select-content] {
+  transform: translateY(4px) !important;
+}
+
 :root {
   --background: hsl(0, 0%, 100%);
   --foreground: hsl(20, 14.3%, 4.1%);

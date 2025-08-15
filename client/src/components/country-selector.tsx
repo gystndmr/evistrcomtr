@@ -192,8 +192,15 @@ export function CountrySelector({
               side="bottom" 
               sideOffset={4} 
               align="start"
+              avoidCollisions={false}
               className="max-h-60 overflow-y-auto w-full min-w-[300px] bg-white border border-gray-200 shadow-lg" 
-              style={{zIndex: 9999, minHeight: '200px'}}
+              style={{
+                zIndex: 9999, 
+                minHeight: '200px',
+                top: 'auto !important',
+                bottom: 'auto !important',
+                transform: 'translateY(4px) !important'
+              }}
             >
               {isLoading ? (
                 <SelectItem value="loading" disabled>Loading countries...</SelectItem>
