@@ -101,10 +101,17 @@ export class GPayService {
     console.log('Final JSON for signing:', jsonData);
     console.log('=== End Signature Generation ===');
     
+    // Ensure private key is in correct PEM format
+    let privateKey = this.config.privateKey;
+    if (!privateKey.includes('-----BEGIN')) {
+      // If key doesn't have PEM headers, add them
+      privateKey = `-----BEGIN PRIVATE KEY-----\n${privateKey}\n-----END PRIVATE KEY-----`;
+    }
+    
     // Sign with private key using md5WithRSAEncryption
     const sign = crypto.createSign('md5WithRSAEncryption');
     sign.update(jsonData);
-    const signature = sign.sign(this.config.privateKey, 'base64');
+    const signature = sign.sign(privateKey, 'base64');
     
     return signature;
   }
