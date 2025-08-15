@@ -220,7 +220,7 @@ export function CountrySelector({
                     <SelectItem 
                       key={`${country.code}-${country.id}`} 
                       value={country.code}
-                      className="cursor-pointer hover:bg-gray-100 py-2 px-3 focus:bg-gray-100"
+                      className="cursor-pointer hover:bg-blue-50 focus:bg-blue-50 py-2 px-3"
                     >
                       <div className="flex items-center space-x-2 w-full">
                         <span className="text-lg">
