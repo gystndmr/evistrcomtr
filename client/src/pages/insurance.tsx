@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,32 +43,41 @@ export default function Insurance() {
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["/api/insurance-products"],
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 60 * 1000, // 30 minutes cache for better performance
+    gcTime: 60 * 60 * 1000, // 1 hour garbage collection
+    refetchOnWindowFocus: false, // Prevent unnecessary refetch
   }) as { data: InsuranceProduct[], isLoading: boolean };
 
   // Load countries for nationality dropdown
   const { data: countries = [] } = useQuery({
     queryKey: ["/api/countries"],
-    staleTime: 10 * 60 * 1000, // 10 minutes cache
+    staleTime: 30 * 60 * 1000, // 30 minutes cache for better performance
+    gcTime: 60 * 60 * 1000, // 1 hour garbage collection
+    refetchOnWindowFocus: false, // Prevent unnecessary refetch
+    refetchOnMount: false, // Use cache when available
   }) as { data: any[], isLoading: boolean };
 
-  // Sort countries alphabetically by name
-  const sortedCountries = [...countries].sort((a, b) => a.name.localeCompare(b.name));
+  // Memoize sorted countries for performance
+  const sortedCountries = useMemo(() => {
+    return [...countries].sort((a, b) => a.name.localeCompare(b.name));
+  }, [countries]);
 
-  // Sort products in the order: 7, 14, 30, 60, 90, 180, 1 year
-  const sortedProducts = [...products].sort((a, b) => {
-    const getDuration = (name: string) => {
-      if (name.includes('7 Days')) return 1;
-      if (name.includes('14 Days')) return 2;
-      if (name.includes('30 Days')) return 3;
-      if (name.includes('60 Days')) return 4;
-      if (name.includes('90 Days')) return 5;
-      if (name.includes('180 Days')) return 6;
-      if (name.includes('1 Year')) return 7;
-      return 0;
-    };
-    return getDuration(a.name) - getDuration(b.name);
-  });
+  // Memoize sorted products for performance
+  const sortedProducts = useMemo(() => {
+    return [...products].sort((a, b) => {
+      const getDuration = (name: string) => {
+        if (name.includes('7 Days')) return 1;
+        if (name.includes('14 Days')) return 2;
+        if (name.includes('30 Days')) return 3;
+        if (name.includes('60 Days')) return 4;
+        if (name.includes('90 Days')) return 5;
+        if (name.includes('180 Days')) return 6;
+        if (name.includes('1 Year')) return 7;
+        return 0;
+      };
+      return getDuration(a.name) - getDuration(b.name);
+    });
+  }, [products]);
 
   const createApplicationMutation = useMutation({
     mutationFn: async () => {
