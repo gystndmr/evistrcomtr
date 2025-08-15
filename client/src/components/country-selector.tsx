@@ -183,16 +183,17 @@ export function CountrySelector({
           <Select value={selectedCountry?.code || ""} onValueChange={handleCountryChange} onOpenChange={(open) => console.log("Dropdown open state:", open)}>
             <SelectTrigger 
               onClick={() => console.log("SelectTrigger clicked, countries available:", countries.length)}
-              className="w-full min-h-[40px] border border-gray-300"
+              className="w-full min-h-[40px] border border-gray-300 relative"
             >
-              <SelectValue placeholder="Select Country/Region">
-                {selectedCountry ? (
+              <SelectValue placeholder="Select Country/Region" />
+              {selectedCountry && (
+                <div className="absolute inset-0 flex items-center px-3 pointer-events-none">
                   <div className="flex items-center space-x-2">
                     <span className="text-lg">{getCountryFlag(selectedCountry.code)}</span>
                     <span>{selectedCountry.name}</span>
                   </div>
-                ) : "Select Country/Region"}
-              </SelectValue>
+                </div>
+              )}
             </SelectTrigger>
             <SelectContent 
               position="popper" 
@@ -239,9 +240,7 @@ export function CountrySelector({
           <Label htmlFor="documentType">Travel Document Type *</Label>
           <Select value={selectedDocumentType} onValueChange={handleDocumentTypeChange}>
             <SelectTrigger>
-              <SelectValue placeholder="Select Document Type">
-                {selectedDocumentType ? documentTypes.find(dt => dt.value === selectedDocumentType)?.label : "Select Document Type"}
-              </SelectValue>
+              <SelectValue placeholder="Select Document Type" />
             </SelectTrigger>
             <SelectContent 
               position="popper" 
