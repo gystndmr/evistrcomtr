@@ -1230,7 +1230,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // GPay callback handler - enhanced with detailed logging
+  // GPay callback handler for GET requests (user redirects)
+  app.get("/api/payment/callback", async (req, res) => {
+    try {
+      const { payload } = req.query;
+      
+      if (!payload || typeof payload !== 'string') {
+        console.log("❌ GPay GET callback: Missing or invalid payload");
+        return res.redirect('/payment-cancel?error=Invalid payment callback');
+      }
+
+      console.log("🔔 GPay GET callback received with payload");
+      
+      // Parse callback payload
+      const paymentData = gPayService.parseCallback(payload);
+      
+      if (!paymentData) {
+        console.log("❌ GPay GET callback: Invalid payload format");
+        return res.redirect('/payment-cancel?error=Invalid payment data');
+      }
+
+      console.log("✅ GPay GET callback parsed:", paymentData);
+      
+      const { status, transactionId, amount, orderRef } = paymentData;
+      
+      // Update application status based on payment result
+      if (status === 'succeeded' || status === 'completed' || status === 'successful' || status === 'approved') {
+        console.log(`✅ Payment successful for order ${orderRef}: ${transactionId}`);
+        
+        // Try to find visa application first
+        const visaApplication = await storage.getApplicationByOrderRef(orderRef);
+        if (visaApplication) {
+          await storage.updateApplicationPaymentStatus(orderRef, 'succeeded');
+          console.log(`✅ Visa application payment status updated to succeeded: ${orderRef}`);
+        } else {
+          // Try insurance application
+          const insuranceApplication = await storage.getInsuranceApplicationByOrderRef(orderRef);
+          if (insuranceApplication) {
+            await storage.updateInsuranceApplicationPaymentStatus(orderRef, 'succeeded');
+            console.log(`✅ Insurance application payment status updated to succeeded: ${orderRef}`);
+          }
+        }
+        
+        // Redirect to success page with transaction details
+        res.redirect(`/payment-success?transactionId=${transactionId}&orderRef=${orderRef}&amount=${amount}`);
+        
+      } else if (status === 'failed' || status === 'error' || status === 'declined') {
+        console.log(`❌ Payment failed for order ${orderRef}: ${transactionId}`);
+        
+        // Update payment status to failed
+        const visaApplication = await storage.getApplicationByOrderRef(orderRef);
+        if (visaApplication) {
+          await storage.updateApplicationPaymentStatus(orderRef, 'failed');
+        } else {
+          const insuranceApplication = await storage.getInsuranceApplicationByOrderRef(orderRef);
+          if (insuranceApplication) {
+            await storage.updateInsuranceApplicationPaymentStatus(orderRef, 'failed');
+          }
+        }
+        
+        res.redirect(`/payment-cancel?error=Payment was declined&orderRef=${orderRef}`);
+        
+      } else {
+        console.log(`⚠️ Unknown payment status for order ${orderRef}: ${status}`);
+        res.redirect(`/payment-cancel?error=Unknown payment status&orderRef=${orderRef}`);
+      }
+      
+    } catch (error) {
+      console.error("GPay GET callback error:", error);
+      res.redirect('/payment-cancel?error=Payment processing error');
+    }
+  });
+
+  // GPay callback handler for POST requests (webhook notifications)
   app.post("/api/payment/callback", async (req, res) => {
     try {
       console.log("🔔 GPay callback received:", JSON.stringify(req.body, null, 2));
