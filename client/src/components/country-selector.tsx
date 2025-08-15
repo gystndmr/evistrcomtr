@@ -110,7 +110,9 @@ export function CountrySelector({
   }, [intervalId]);
 
   const handleCountryChange = (countryCode: string) => {
+    console.log("Country selected:", countryCode);
     const country = countries.find((c: Country) => c.code === countryCode);
+    console.log("Found country:", country);
     onCountrySelect(country || null);
     setShowEligibilityStatus(!!country && !!selectedDocumentType);
     
@@ -177,11 +179,11 @@ export function CountrySelector({
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <Label htmlFor="country">Country/Region of Travel Document *</Label>
-          <Select onValueChange={handleCountryChange}>
-            <SelectTrigger>
+          <Select onValueChange={handleCountryChange} onOpenChange={(open) => console.log("Dropdown open state:", open)}>
+            <SelectTrigger onClick={() => console.log("SelectTrigger clicked, countries available:", countries.length)}>
               <SelectValue placeholder="Select Country/Region" />
             </SelectTrigger>
-            <SelectContent position="popper" side="bottom" align="start" className="max-h-60 overflow-y-auto">
+            <SelectContent position="popper" side="bottom" align="start" className="max-h-60 overflow-y-auto" style={{zIndex: 9999}}>
               {isLoading ? (
                 <SelectItem value="loading" disabled>Loading countries...</SelectItem>
               ) : countries.length === 0 ? (
