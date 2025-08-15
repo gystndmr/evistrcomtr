@@ -101,17 +101,56 @@ export class GPayService {
     console.log('Final JSON for signing:', jsonData);
     console.log('=== End Signature Generation ===');
     
-    // Ensure private key is in correct PEM format
+    // Ensure private key is in correct PEM format with proper line breaks
     let privateKey = this.config.privateKey;
-    if (!privateKey.includes('-----BEGIN')) {
-      // If key doesn't have PEM headers, add them
-      privateKey = `-----BEGIN PRIVATE KEY-----\n${privateKey}\n-----END PRIVATE KEY-----`;
+    
+    // Clean and reformat the private key properly
+    if (privateKey.includes('-----BEGIN')) {
+      // Extract just the key content between headers, preserving spaces but removing line breaks
+      const keyMatch = privateKey.match(/-----BEGIN[^-]+-----(.*?)-----END[^-]+-----/s);
+      if (keyMatch) {
+        privateKey = keyMatch[1].replace(/\s+/g, '').trim();
+      } else {
+        // Fallback: remove headers and clean
+        privateKey = privateKey
+          .replace(/-----BEGIN[^-]+-----/g, '')
+          .replace(/-----END[^-]+-----/g, '')
+          .replace(/\s+/g, '')
+          .trim();
+      }
     }
     
-    // Sign with private key using md5WithRSAEncryption
-    const sign = crypto.createSign('md5WithRSAEncryption');
-    sign.update(jsonData);
-    const signature = sign.sign(privateKey, 'base64');
+    // Add proper PKCS#8 headers with line breaks
+    const keyLines = privateKey.match(/.{1,64}/g) || [];
+    const formattedKey = [
+      '-----BEGIN PRIVATE KEY-----',
+      ...keyLines,
+      '-----END PRIVATE KEY-----'
+    ].join('\n');
+    
+    console.log('Private key formatted length:', formattedKey.length);
+    console.log('Private key first/last lines:', formattedKey.split('\n').slice(0,2), '...', formattedKey.split('\n').slice(-2));
+    
+    // Try different signing algorithms as fallback
+    try {
+      const sign = crypto.createSign('RSA-SHA256');
+      sign.update(jsonData);
+      const signature = sign.sign(formattedKey, 'base64');
+      console.log('Signature created successfully with RSA-SHA256');
+      return signature;
+    } catch (sha256Error) {
+      console.log('RSA-SHA256 failed, trying md5WithRSAEncryption:', sha256Error.message);
+      try {
+        const sign = crypto.createSign('md5WithRSAEncryption');
+        sign.update(jsonData);
+        const signature = sign.sign(formattedKey, 'base64');
+        console.log('Signature created successfully with md5WithRSAEncryption');
+        return signature;
+      } catch (md5Error) {
+        console.error('Both signing methods failed:', md5Error.message);
+        throw new Error(`Signature generation failed: ${md5Error.message}`);
+      }
+    }
     
     return signature;
   }
