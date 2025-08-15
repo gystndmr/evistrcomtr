@@ -96,7 +96,8 @@ export function CountrySelector({
       isLoading,
       countriesCount: countries.length,
       error: error?.message,
-      firstCountry: countries[0]
+      firstCountry: countries[0],
+      allCountries: countries.slice(0, 3).map(c => c.name)
     });
   }, [countries, isLoading, error]);
 
@@ -180,7 +181,10 @@ export function CountrySelector({
         <div>
           <Label htmlFor="country">Country/Region of Travel Document *</Label>
           <Select onValueChange={handleCountryChange} onOpenChange={(open) => console.log("Dropdown open state:", open)}>
-            <SelectTrigger onClick={() => console.log("SelectTrigger clicked, countries available:", countries.length)}>
+            <SelectTrigger 
+              onClick={() => console.log("SelectTrigger clicked, countries available:", countries.length)}
+              className="w-full min-h-[40px] border border-gray-300"
+            >
               <SelectValue placeholder="Select Country/Region" />
             </SelectTrigger>
             <SelectContent 
@@ -188,8 +192,8 @@ export function CountrySelector({
               side="bottom" 
               sideOffset={4} 
               align="start"
-              className="max-h-60 overflow-y-auto w-full min-w-[var(--radix-select-trigger-width)]" 
-              style={{zIndex: 9999}}
+              className="max-h-60 overflow-y-auto w-full min-w-[300px] bg-white border border-gray-200 shadow-lg" 
+              style={{zIndex: 9999, minHeight: '200px'}}
             >
               {isLoading ? (
                 <SelectItem value="loading" disabled>Loading countries...</SelectItem>
@@ -199,12 +203,16 @@ export function CountrySelector({
                 [...countries]
                   .sort((a, b) => a.name.localeCompare(b.name))
                   .map((country: Country) => (
-                    <SelectItem key={`${country.code}-${country.id}`} value={country.code}>
+                    <SelectItem 
+                      key={`${country.code}-${country.id}`} 
+                      value={country.code}
+                      className="cursor-pointer hover:bg-gray-100 py-2 px-3"
+                    >
                       <div className="flex items-center space-x-2">
                         <span className="text-lg">
                           {getCountryFlag(country.code)}
                         </span>
-                        <span>{country.name}</span>
+                        <span className="text-sm">{country.name}</span>
                       </div>
                     </SelectItem>
                   ))
