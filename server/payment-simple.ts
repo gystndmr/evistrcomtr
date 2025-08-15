@@ -101,10 +101,31 @@ export class GPayService {
     console.log('Final JSON for signing:', jsonData);
     console.log('=== End Signature Generation ===');
     
-    // Sign with private key using md5WithRSAEncryption
-    const sign = crypto.createSign('md5WithRSAEncryption');
-    sign.update(jsonData);
-    const signature = sign.sign(this.config.privateKey, 'base64');
+    // Sign with private key - try different algorithms for Node.js compatibility
+    let signature: string;
+    try {
+      // First try the original algorithm for backwards compatibility
+      const sign = crypto.createSign('md5WithRSAEncryption');
+      sign.update(jsonData);
+      signature = sign.sign(this.config.privateKey, 'base64');
+      console.log('✅ Successfully used md5WithRSAEncryption');
+    } catch (error) {
+      console.log('⚠️ md5WithRSAEncryption failed, trying RSA-MD5...');
+      try {
+        // Try alternative MD5 algorithm name
+        const sign = crypto.createSign('RSA-MD5');
+        sign.update(jsonData);
+        signature = sign.sign(this.config.privateKey, 'base64');
+        console.log('✅ Successfully used RSA-MD5');
+      } catch (error2) {
+        console.log('⚠️ RSA-MD5 failed, using sha256 (modern fallback)...');
+        // Fallback to SHA256 - most widely supported
+        const sign = crypto.createSign('sha256');
+        sign.update(jsonData);
+        signature = sign.sign(this.config.privateKey, 'base64');
+        console.log('✅ Successfully used sha256');
+      }
+    }
     
     return signature;
   }
