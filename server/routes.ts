@@ -228,7 +228,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/insurance-products", async (req, res) => {
     try {
       const products = await storage.getInsuranceProducts();
-      res.json(products);
+      
+      // Add title and duration fields for frontend compatibility
+      const productsWithTitleDuration = products.map(product => ({
+        ...product,
+        title: product.name, // Map name to title
+        duration: product.coverage?.Duration || 
+                 (product.name.includes('7') ? '7 days' :
+                  product.name.includes('14') ? '14 days' :
+                  product.name.includes('30') ? '30 days' :
+                  product.name.includes('60') ? '60 days' :
+                  product.name.includes('90') ? '90 days' :
+                  product.name.includes('180') ? '180 days' :
+                  product.name.includes('1 year') ? '1 year' :
+                  'Variable duration')
+      }));
+      
+      res.json(productsWithTitleDuration);
     } catch (error) {
       console.error("Error fetching insurance products:", error);
       res.status(500).json({ message: "Failed to fetch insurance products" });
@@ -238,7 +254,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/insurance/products", async (req, res) => {
     try {
       const products = await storage.getInsuranceProducts();
-      res.json(products);
+      
+      // Add title and duration fields for frontend compatibility
+      const productsWithTitleDuration = products.map(product => ({
+        ...product,
+        title: product.name, // Map name to title
+        duration: product.coverage?.Duration || 
+                 (product.name.includes('7') ? '7 days' :
+                  product.name.includes('14') ? '14 days' :
+                  product.name.includes('30') ? '30 days' :
+                  product.name.includes('60') ? '60 days' :
+                  product.name.includes('90') ? '90 days' :
+                  product.name.includes('180') ? '180 days' :
+                  product.name.includes('1 year') ? '1 year' :
+                  'Variable duration')
+      }));
+      
+      res.json(productsWithTitleDuration);
     } catch (error) {
       console.error("Error fetching insurance products:", error);
       res.status(500).json({ message: "Failed to fetch insurance products" });
@@ -256,7 +288,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create insurance application
+  // Create insurance application - Main endpoint for frontend
+  app.post("/api/insurance-applications", async (req, res) => {
+    try {
+      console.log("🔍 API REQUEST: POST /api/insurance-applications");
+      console.log("🔍 Headers:", req.headers);
+      console.log("🔍 Body preview:", JSON.stringify(req.body).substring(0, 100));
+      
+      console.log("=== INSURANCE APPLICATION DEBUG ===");
+      console.log("Raw dateOfBirth:", req.body.dateOfBirth, typeof req.body.dateOfBirth);
+      console.log("Raw totalAmount:", req.body.totalAmount, typeof req.body.totalAmount);
+      
+      // Convert dates and amounts to proper format for schema validation
+      const bodyWithDates = {
+        ...req.body,
+        applicationNumber: generateApplicationNumber(),
+        destination: req.body.destination || "Turkey", // Default destination
+        travelDate: req.body.travelDate ? new Date(req.body.travelDate) : undefined,
+        returnDate: req.body.returnDate ? new Date(req.body.returnDate) : undefined,
+        dateOfBirth: req.body.dateOfBirth, // Keep as string
+        totalAmount: req.body.totalAmount, // Keep original value first
+      };
+      
+      console.log("After processing - dateOfBirth:", bodyWithDates.dateOfBirth, typeof bodyWithDates.dateOfBirth);
+      console.log("After processing - totalAmount:", bodyWithDates.totalAmount, typeof bodyWithDates.totalAmount);
+
+      const validatedData = insertInsuranceApplicationSchema.parse(bodyWithDates);
+
+      const application = await storage.createInsuranceApplication(validatedData);
+      
+      // E-posta gönderimi (sigorta başvuru alındı)
+      try {
+        // Sigorta ürün bilgisini al
+        const product = application.productId ? await storage.getInsuranceProduct(application.productId) : null;
+        const productName = product ? product.name : 'Travel Insurance';
+        
+        const { generateInsuranceReceivedEmail } = await import('./email-insurance');
+        const emailContent = generateInsuranceReceivedEmail(
+          application.firstName, 
+          application.lastName, 
+          application.applicationNumber,
+          productName,
+          application
+        );
+        
+        await sendEmail({
+          to: application.email,
+          from: "info@getvisa.tr",
+          subject: emailContent.subject,
+          html: emailContent.html,
+          text: emailContent.text,
+          attachments: []
+        });
+        
+        console.log(`✅ Insurance application received email sent to ${application.email}`);
+      } catch (emailError) {
+        console.error('Failed to send insurance application received email:', emailError);
+      }
+      
+      res.status(201).json(application);
+    } catch (error) {
+      console.error("Error creating insurance application:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid application data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create insurance application" });
+    }
+  });
+
+  // Create insurance application - Alternative endpoint for compatibility
   app.post("/api/insurance/applications", async (req, res) => {
     try {
       console.log("=== INSURANCE APPLICATION DEBUG ===");
