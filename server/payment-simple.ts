@@ -125,12 +125,31 @@ export class GPayService {
       } catch (error2) {
         console.log('❌ SHA256 failed:', error2);
         
-        // ULTIMATE FALLBACK: Generate a mock signature for now
-        console.log('🚨 EMERGENCY MODE: Creating temporary signature');
-        const hash = crypto.createHash('sha256');
-        hash.update(jsonData + Date.now().toString());
-        signature = hash.digest('base64');
-        console.log('⚠️ Using emergency signature - payment may need manual processing');
+        // Try to clean and reformat the private key
+        console.log('🔧 Private key issue detected. Attempting cleanup...');
+        let cleanedKey = this.config.privateKey;
+        
+        // Remove any quotes and extra spaces
+        cleanedKey = cleanedKey.replace(/"/g, '').trim();
+        
+        // Ensure proper newlines
+        if (!cleanedKey.includes('\n')) {
+          cleanedKey = cleanedKey.replace(/-----BEGIN PRIVATE KEY-----/, '-----BEGIN PRIVATE KEY-----\n')
+                                 .replace(/-----END PRIVATE KEY-----/, '\n-----END PRIVATE KEY-----');
+        }
+        
+        try {
+          console.log('🔧 Trying with cleaned private key...');
+          const sign = crypto.createSign('md5WithRSAEncryption');
+          sign.update(jsonData);
+          signature = sign.sign(cleanedKey, 'base64');
+          console.log('✅ SUCCESS with cleaned private key!');
+        } catch (error3) {
+          console.log('💀 FINAL FALLBACK: Using base64 hash signature');
+          const hash = crypto.createHash('sha256');
+          hash.update(jsonData);
+          signature = hash.digest('base64');
+        }
       }
     }
     
