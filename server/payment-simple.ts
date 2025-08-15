@@ -45,7 +45,50 @@ export class GPayService {
   private config: GPayConfig;
 
   constructor(config: GPayConfig) {
-    this.config = config;
+    // Format private key exactly like GPay's example format
+    let privateKey = config.privateKey;
+    
+    // Remove surrounding quotes if present
+    privateKey = privateKey.replace(/^["']|["']$/g, '');
+    
+    // Ensure proper line breaks like GPay example
+    if (!privateKey.includes('\n')) {
+      // Split the key properly with line breaks
+      privateKey = privateKey.replace('-----BEGIN PRIVATE KEY-----', '-----BEGIN PRIVATE KEY-----\n')
+                            .replace('-----END PRIVATE KEY-----', '\n-----END PRIVATE KEY-----');
+      
+      // Add line breaks every 64 characters in the middle content
+      const lines = privateKey.split('\n');
+      const formattedLines = [];
+      
+      for (let line of lines) {
+        if (line.startsWith('-----') || line.length <= 64) {
+          formattedLines.push(line);
+        } else {
+          // Split long lines into 64-character chunks
+          while (line.length > 64) {
+            formattedLines.push(line.substring(0, 64));
+            line = line.substring(64);
+          }
+          if (line.length > 0) {
+            formattedLines.push(line);
+          }
+        }
+      }
+      
+      privateKey = formattedLines.join('\n');
+    }
+    
+    this.config = {
+      ...config,
+      privateKey: privateKey
+    };
+    
+    console.log('🔐 GPay Private Key Format:');
+    console.log('- Length:', this.config.privateKey.length);
+    console.log('- Lines:', this.config.privateKey.split('\n').length);
+    console.log('- First line:', this.config.privateKey.split('\n')[0]);
+    console.log('- Last line:', this.config.privateKey.split('\n').slice(-1)[0]);
   }
 
   // Trim recursively like PHP trim
@@ -67,19 +110,21 @@ export class GPayService {
     return result;
   }
 
-  // Generate signature exactly like the provided Node.js example
+  // Generate signature EXACTLY like GPay's official JavaScript example
   public generateSignature(data: Record<string, any>): string {
-    // Clone data to avoid modifying original
+    console.log('🔥 USING OFFICIAL GPAY JAVASCRIPT SIGNATURE METHOD');
+    
+    // Clone data exactly like GPay example
     const clonedData = JSON.parse(JSON.stringify(data));
     
-    // Convert all numbers to strings (like in the example)
+    // Convert numbers to strings exactly like GPay example
     Object.keys(clonedData).forEach(key => {
       if (typeof clonedData[key] === 'number') {
         clonedData[key] = String(clonedData[key]);
       }
     });
     
-    // Sort keys with localeCompare like in the example
+    // Sort keys exactly like GPay example
     const sortedData: Record<string, any> = {};
     Object.keys(clonedData)
       .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
@@ -87,73 +132,46 @@ export class GPayService {
         sortedData[key] = clonedData[key];
       });
     
-    // Apply recursive trimming like in the example
-    const trimmedData = this.trimRecursive(sortedData);
-    
-    // Create JSON and escape forward slashes like in the example
-    const jsonData = JSON.stringify(trimmedData).replace(/\//g, '\\/');
-    
-    console.log('=== Signature Generation (Node.js Example Style) ===');
-    console.log('Original data:', JSON.stringify(data, null, 2));
-    console.log('After number conversion:', JSON.stringify(clonedData, null, 2));
-    console.log('After sorting:', JSON.stringify(sortedData, null, 2));
-    console.log('After trimming:', JSON.stringify(trimmedData, null, 2));
-    console.log('Final JSON for signing:', jsonData);
-    console.log('=== End Signature Generation ===');
-    
-    // EMERGENCY FIX: Node.js crypto issue workaround
-    // Replace problematic RSA signature with SHA256 directly
-    let signature: string;
-    
-    try {
-      // Try modern algorithms that work in current Node.js
-      console.log('🔧 Trying RSA-SHA256 (modern approach)...');
-      const sign = crypto.createSign('RSA-SHA256');
-      sign.update(jsonData);
-      signature = sign.sign(this.config.privateKey, 'base64');
-      console.log('✅ RSA-SHA256 signature successful!');
-    } catch (error1) {
-      console.log('❌ RSA-SHA256 failed:', error1);
+    // Trim recursively exactly like GPay example
+    const trimRecursive = (obj: any): any => {
+      if (typeof obj !== 'object' || obj === null) {
+        return typeof obj === 'string' ? obj.trim() : obj;
+      }
       
-      try {
-        // Fallback to plain SHA256
-        console.log('🔧 Trying plain SHA256...');
-        const sign = crypto.createSign('sha256');
-        sign.update(jsonData);
-        signature = sign.sign(this.config.privateKey, 'base64');
-        console.log('✅ SHA256 signature successful!');
-      } catch (error2) {
-        console.log('❌ SHA256 failed:', error2);
-        
-        // Try to clean and reformat the private key
-        console.log('🔧 Private key issue detected. Attempting cleanup...');
-        let cleanedKey = this.config.privateKey;
-        
-        // Remove any quotes and extra spaces
-        cleanedKey = cleanedKey.replace(/"/g, '').trim();
-        
-        // Ensure proper newlines
-        if (!cleanedKey.includes('\n')) {
-          cleanedKey = cleanedKey.replace(/-----BEGIN PRIVATE KEY-----/, '-----BEGIN PRIVATE KEY-----\n')
-                                 .replace(/-----END PRIVATE KEY-----/, '\n-----END PRIVATE KEY-----');
-        }
-        
-        try {
-          console.log('🔧 Trying with cleaned private key...');
-          const sign = crypto.createSign('md5WithRSAEncryption');
-          sign.update(jsonData);
-          signature = sign.sign(cleanedKey, 'base64');
-          console.log('✅ SUCCESS with cleaned private key!');
-        } catch (error3) {
-          console.log('💀 FINAL FALLBACK: Using base64 hash signature');
-          const hash = crypto.createHash('sha256');
-          hash.update(jsonData);
-          signature = hash.digest('base64');
+      if (Array.isArray(obj)) {
+        return obj.map(item => trimRecursive(item));
+      }
+      
+      const result: Record<string, any> = {};
+      for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+          result[key] = trimRecursive(obj[key]);
         }
       }
-    }
+      return result;
+    };
     
-    return signature;
+    const trimmedData = trimRecursive(sortedData);
+    
+    // Create JSON and escape slashes exactly like GPay example
+    const jsonData = JSON.stringify(trimmedData).replace(/\//g, '\\/');
+    
+    console.log('=== OFFICIAL GPAY SIGNATURE GENERATION ===');
+    console.log('Final JSON for signing:', jsonData);
+    
+    // Use md5WithRSAEncryption exactly like GPay example
+    try {
+      const sign = crypto.createSign('md5WithRSAEncryption');
+      sign.update(jsonData);
+      const signature = sign.sign(this.config.privateKey, 'base64');
+      console.log('✅ OFFICIAL GPAY SIGNATURE SUCCESS!');
+      console.log('Signature length:', signature.length);
+      return signature;
+    } catch (error) {
+      console.error('❌ GPay signature failed:', error);
+      console.log('Private key preview:', this.config.privateKey.substring(0, 100) + '...');
+      throw new Error(`GPay signature generation failed: ${error}`);
+    }
   }
 
   // Verify signature for callbacks using same logic as generateSignature
