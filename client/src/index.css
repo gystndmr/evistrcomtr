@@ -34,24 +34,24 @@
   display: none;
 }
 
-/* Better hover effect for select items - Light red background with red text */
+/* Better hover effect for select items - Exact same as the image */
 [data-radix-select-item][data-highlighted] {
-  background-color: hsl(0, 100%, 95%) !important;
-  color: hsl(0, 70%, 45%) !important;
+  background-color: hsl(350, 100%, 94%) !important;
+  color: hsl(350, 60%, 50%) !important;
   outline: none;
 }
 
 [data-radix-select-item]:hover {
-  background-color: hsl(0, 100%, 95%) !important;
-  color: hsl(0, 70%, 45%) !important;
+  background-color: hsl(350, 100%, 94%) !important;
+  color: hsl(350, 60%, 50%) !important;
 }
 
 [data-radix-select-item]:hover * {
-  color: hsl(0, 70%, 45%) !important;
+  color: hsl(350, 60%, 50%) !important;
 }
 
 [data-radix-select-item][data-highlighted] * {
-  color: hsl(0, 70%, 45%) !important;
+  color: hsl(350, 60%, 50%) !important;
 }
 
 :root {
