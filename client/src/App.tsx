@@ -13,7 +13,7 @@ import Insurance from "@/pages/insurance-simple";
 import Status from "@/pages/status";
 import Admin from "@/pages/admin";
 import PaymentSuccess from "@/pages/payment-success-new";
-import PaymentCancel from "@/pages/payment-cancel";
+import PaymentCancel from "@/pages/payment-cancel-new";
 import PaymentTroubleshoot from "@/pages/payment-troubleshoot";
 import MockGPayPayment from "@/pages/mock-gpay-payment";
 import DebugPayment from "@/pages/debug-payment";

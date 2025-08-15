@@ -1275,8 +1275,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Redirect to success page with transaction details
         res.redirect(`/payment-success?transactionId=${transactionId}&orderRef=${orderRef}&amount=${amount}`);
         
-      } else if (status === 'failed' || status === 'error' || status === 'declined') {
-        console.log(`❌ Payment failed for order ${orderRef}: ${transactionId}`);
+      } else if (status === 'failed' || status === 'error' || status === 'declined' || status === 'cancelled') {
+        console.log(`❌ Payment failed for order ${orderRef}: ${transactionId} - Status: ${status}`);
         
         // Update payment status to failed
         const visaApplication = await storage.getApplicationByOrderRef(orderRef);
@@ -1289,11 +1289,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
         
-        res.redirect(`/payment-cancel?error=Payment was declined&orderRef=${orderRef}`);
+        // Provide specific error messages based on status
+        let errorMessage = 'Payment failed';
+        let errorCode = status;
+        
+        switch (status) {
+          case 'declined':
+            errorMessage = 'Payment was declined - Please check your card details and available balance';
+            break;
+          case 'failed':
+            errorMessage = 'Payment failed - Your card was unable to process this transaction';
+            break;
+          case 'error':
+            errorMessage = 'Payment system error - Please try again or use a different payment method';
+            break;
+          case 'cancelled':
+            errorMessage = 'Payment was cancelled - You can try again when ready';
+            break;
+        }
+        
+        res.redirect(`/payment-cancel?error=${encodeURIComponent(errorMessage)}&status=${errorCode}&orderRef=${orderRef}&amount=${amount}`);
         
       } else {
         console.log(`⚠️ Unknown payment status for order ${orderRef}: ${status}`);
-        res.redirect(`/payment-cancel?error=Unknown payment status&orderRef=${orderRef}`);
+        res.redirect(`/payment-cancel?error=${encodeURIComponent('Unknown payment status - Please contact support')}&status=unknown&orderRef=${orderRef}`);
       }
       
     } catch (error) {
