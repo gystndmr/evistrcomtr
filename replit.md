@@ -54,6 +54,12 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 - **Date Input**: Uses manual dropdowns for date selections for improved user control.
 
 ### Recent Fixes (August 16, 2025)
+- **STEP 2 SUPPORTING DOCUMENT VALIDATION CRITICAL FIX**: ✅ COMPLETED - Fixed customers getting stuck at Step 2
+  - **Root Cause**: State synchronization bug between SupportingDocumentCheck and visa-form components
+  - **Technical Issue**: Two separate processing type states (processingType vs documentProcessingType) not synchronized
+  - **Customer Impact**: Users with supporting documents filled all fields correctly but got "Missing Information" error
+  - **Solution**: Enhanced validation callback chain, added processing type to useEffect dependencies, fixed onValueChange handlers
+  - **Result**: Supporting document customers can now successfully proceed from Step 2 to Step 3
 - **VISA FORM CRITICAL BUG FIX**: ✅ COMPLETED - Fixed customer inability to reach payment step
   - **Root Cause**: GPay OrderRef collision - "The order ref has already been taken" error
   - **Solution**: Enhanced OrderRef generation with VIS prefix, nanosecond timestamp, and uppercase random string

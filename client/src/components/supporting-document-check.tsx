@@ -88,6 +88,9 @@ export function SupportingDocumentCheck({
       if (!isUnlimited && !endDate) return false;
     }
     
+    // Processing type is required for final validation
+    if (!processingType) return false;
+    
     return true;
   };
 
@@ -103,7 +106,8 @@ export function SupportingDocumentCheck({
     };
     onDocumentDetailsChange(details);
     onValidationChange(validateFields());
-    if (onProcessingTypeChange && processingType) {
+    // Always call processing type change, even if empty
+    if (onProcessingTypeChange) {
       onProcessingTypeChange(processingType);
     }
   };
@@ -111,7 +115,7 @@ export function SupportingDocumentCheck({
   // Auto-update details when any field changes
   useEffect(() => {
     handleDetailsChange();
-  }, [documentType, visaCountry, residenceCountry, documentNumber, startDate, endDate, isUnlimited]);
+  }, [documentType, visaCountry, residenceCountry, documentNumber, startDate, endDate, isUnlimited, processingType]);
 
   const visaCountries = [
     { code: "IRL", name: "Ireland" },
