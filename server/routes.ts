@@ -1161,8 +1161,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description // Support both orderDescription and description
       } = req.body;
       
-      // Use orderRef or orderId (support both) - if none provided, generate unique one with timestamp
-      const finalOrderRef = orderRef || orderId || `ORDER_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      // Use orderRef or orderId (support both) - if none provided, generate unique one with timestamp and random
+      const finalOrderRef = orderRef || orderId || `VIS_${Date.now()}_${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
       const finalDescription = orderDescription || description;
 
       // Always use production domain for GPay callbacks - required for GPay registration

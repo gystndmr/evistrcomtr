@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visa Form Step-by-Step Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .step { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .error { color: red; }
+        .success { color: green; }
+        button { padding: 10px 20px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🇹🇷 Müşteri Visa Form Test - Step by Step</h1>
+    
+    <div class="step">
+        <h3>Step 1: Site Yükleme Testi</h3>
+        <p>Ana sayfa yüklenebiliyor mu?</p>
+        <button onclick="testHomepage()">Test Homepage</button>
+        <div id="homepage-result"></div>
+    </div>
+
+    <div class="step">
+        <h3>Step 2: Application Sayfası</h3>
+        <p>Vize application form açılıyor mu?</p>
+        <button onclick="testApplicationPage()">Test Application Page</button>
+        <div id="application-result"></div>
+    </div>
+
+    <div class="step">
+        <h3>Step 3: Country Selection</h3>
+        <p>Ülke listesi yükleniyor mu?</p>
+        <button onclick="testCountries()">Test Countries API</button>
+        <div id="countries-result"></div>
+    </div>
+
+    <div class="step">
+        <h3>Step 4: Form Submission</h3>
+        <p>Form doldurulup submit edilebiliyor mu?</p>
+        <button onclick="testFormSubmission()">Test Form Submission</button>
+        <div id="form-result"></div>
+    </div>
+
+    <div class="step">
+        <h3>Step 5: Payment Creation</h3>
+        <p>Ödeme linki oluşturuluyor mu?</p>
+        <button onclick="testPaymentCreation()">Test Payment Creation</button>
+        <div id="payment-result"></div>
+    </div>
+
+    <script>
+        async function testHomepage() {
+            const result = document.getElementById('homepage-result');
+            result.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('http://localhost:5000/');
+                if (response.ok) {
+                    const html = await response.text();
+                    if (html.includes('Turkey E-Visa') || html.includes('turkey')) {
+                        result.innerHTML = '<span class="success">✅ Homepage loads successfully</span>';
+                    } else {
+                        result.innerHTML = '<span class="error">❌ Homepage content missing</span>';
+                    }
+                } else {
+                    result.innerHTML = '<span class="error">❌ Homepage failed to load: ' + response.status + '</span>';
+                }
+            } catch (error) {
+                result.innerHTML = '<span class="error">❌ Homepage error: ' + error.message + '</span>';
+            }
+        }
+
+        async function testApplicationPage() {
+            const result = document.getElementById('application-result');
+            result.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('http://localhost:5000/application');
+                if (response.ok) {
+                    const html = await response.text();
+                    if (html.includes('application') || html.includes('form')) {
+                        result.innerHTML = '<span class="success">✅ Application page loads</span>';
+                    } else {
+                        result.innerHTML = '<span class="error">❌ Application page content missing</span>';
+                    }
+                } else {
+                    result.innerHTML = '<span class="error">❌ Application page failed: ' + response.status + '</span>';
+                }
+            } catch (error) {
+                result.innerHTML = '<span class="error">❌ Application page error: ' + error.message + '</span>';
+            }
+        }
+
+        async function testCountries() {
+            const result = document.getElementById('countries-result');
+            result.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/countries');
+                if (response.ok) {
+                    const countries = await response.json();
+                    const eligibleCount = countries.filter(c => c.isEligible).length;
+                    result.innerHTML = `<span class="success">✅ Countries loaded: ${countries.length} total, ${eligibleCount} eligible</span>`;
+                } else {
+                    result.innerHTML = '<span class="error">❌ Countries API failed: ' + response.status + '</span>';
+                }
+            } catch (error) {
+                result.innerHTML = '<span class="error">❌ Countries API error: ' + error.message + '</span>';
+            }
+        }
+
+        async function testFormSubmission() {
+            const result = document.getElementById('form-result');
+            result.innerHTML = 'Testing...';
+            
+            const testData = {
+                firstName: "Test",
+                lastName: "Customer", 
+                email: "customer@test.com",
+                phone: "+1234567890",
+                passportNumber: "A12345678",
+                passportIssueDate: "2020-01-01",
+                passportExpiryDate: "2030-01-01",
+                dateOfBirth: "1990-01-01",
+                placeOfBirth: "Test City",
+                motherName: "Test Mother",
+                fatherName: "Test Father",
+                address: "Test Address 123 Street Test City",
+                arrivalDate: "2025-09-01",
+                processingType: "standard",
+                documentType: "ordinary"
+            };
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/applications', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(testData)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    result.innerHTML = `<span class="success">✅ Form submission successful: ${data.applicationNumber}</span>`;
+                } else {
+                    const errorText = await response.text();
+                    result.innerHTML = `<span class="error">❌ Form submission failed: ${response.status} - ${errorText}</span>`;
+                }
+            } catch (error) {
+                result.innerHTML = '<span class="error">❌ Form submission error: ' + error.message + '</span>';
+            }
+        }
+
+        async function testPaymentCreation() {
+            const result = document.getElementById('payment-result');
+            result.innerHTML = 'Testing...';
+            
+            const paymentData = {
+                orderRef: "TEST_" + Date.now(),
+                amount: 25,
+                currency: "USD",
+                orderDescription: "Test Payment"
+            };
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/payment/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(paymentData)
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.paymentUrl) {
+                        result.innerHTML = `<span class="success">✅ Payment creation successful<br>URL: ${data.paymentUrl}</span>`;
+                    } else {
+                        result.innerHTML = `<span class="error">❌ Payment creation failed: ${data.error}</span>`;
+                    }
+                } else {
+                    const errorText = await response.text();
+                    result.innerHTML = `<span class="error">❌ Payment API failed: ${response.status} - ${errorText}</span>`;
+                }
+            } catch (error) {
+                result.innerHTML = '<span class="error">❌ Payment error: ' + error.message + '</span>';
+            }
+        }
+
+        // Auto-run tests on page load
+        setTimeout(() => {
+            console.log("🔍 Starting automatic visa form tests...");
+            testHomepage();
+            setTimeout(testApplicationPage, 1000);
+            setTimeout(testCountries, 2000);
+            setTimeout(testFormSubmission, 3000);
+            setTimeout(testPaymentCreation, 4000);
+        }, 500);
+    </script>
+</body>
+</html>
