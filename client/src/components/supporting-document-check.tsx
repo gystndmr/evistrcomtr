@@ -66,30 +66,61 @@ export function SupportingDocumentCheck({
   };
 
   const validateFields = () => {
+    console.log("🔍 STEP 2 VALIDATION DEBUG:", {
+      hasDocument,
+      documentType,
+      documentNumber,
+      visaCountry,
+      residenceCountry,
+      endDate,
+      isUnlimited
+    });
+    
     if (hasDocument === null) return false;
     if (hasDocument === false) return true; // No document is valid
     
     // If has document, check required fields
-    if (!documentType) return false;
-    if (!documentNumber) return false;
+    if (!documentType) {
+      console.log("❌ Missing documentType");
+      return false;
+    }
+    if (!documentNumber) {
+      console.log("❌ Missing documentNumber");
+      return false;
+    }
     
     if (documentType === "visa") {
-      if (!visaCountry) return false;
+      if (!visaCountry) {
+        console.log("❌ Missing visaCountry");
+        return false;
+      }
       
       // For Schengen visa, start date is required
-      if (visaCountry === "SCHENGEN" && !startDate) return false;
+      if (visaCountry === "SCHENGEN" && !startDate) {
+        console.log("❌ Missing startDate for Schengen");
+        return false;
+      }
       
       // For all visa types, end date is required unless unlimited
-      if (!isUnlimited && !endDate) return false;
+      if (!isUnlimited && !endDate) {
+        console.log("❌ Missing endDate for visa");
+        return false;
+      }
     }
     
     if (documentType === "residence") {
-      if (!residenceCountry) return false;
-      if (!isUnlimited && !endDate) return false;
+      if (!residenceCountry) {
+        console.log("❌ Missing residenceCountry");
+        return false;
+      }
+      if (!isUnlimited && !endDate) {
+        console.log("❌ Missing endDate for residence");
+        return false;
+      }
     }
     
     // Processing type will be handled in Step 3, not required here
-    
+    console.log("✅ STEP 2 VALIDATION PASSED!");
     return true;
   };
 
@@ -104,7 +135,9 @@ export function SupportingDocumentCheck({
       processingType, // Keep for compatibility but not required for Step 2 validation
     };
     onDocumentDetailsChange(details);
-    onValidationChange(validateFields());
+    const isValid = validateFields();
+    console.log("🔄 CALLING onValidationChange with:", isValid);
+    onValidationChange(isValid);
     // Processing type handled in Step 3, clear it here
     if (onProcessingTypeChange) {
       onProcessingTypeChange("");
