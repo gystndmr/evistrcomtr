@@ -66,61 +66,28 @@ export function SupportingDocumentCheck({
   };
 
   const validateFields = () => {
-    console.log("🔍 STEP 2 VALIDATION DEBUG:", {
-      hasDocument,
-      documentType,
-      documentNumber,
-      visaCountry,
-      residenceCountry,
-      endDate,
-      isUnlimited
-    });
-    
     if (hasDocument === null) return false;
     if (hasDocument === false) return true; // No document is valid
     
     // If has document, check required fields
-    if (!documentType) {
-      console.log("❌ Missing documentType");
-      return false;
-    }
-    if (!documentNumber) {
-      console.log("❌ Missing documentNumber");
-      return false;
-    }
+    if (!documentType) return false;
+    if (!documentNumber) return false;
     
     if (documentType === "visa") {
-      if (!visaCountry) {
-        console.log("❌ Missing visaCountry");
-        return false;
-      }
+      if (!visaCountry) return false;
       
       // For Schengen visa, start date is required
-      if (visaCountry === "SCHENGEN" && !startDate) {
-        console.log("❌ Missing startDate for Schengen");
-        return false;
-      }
+      if (visaCountry === "SCHENGEN" && !startDate) return false;
       
       // For all visa types, end date is required unless unlimited
-      if (!isUnlimited && !endDate) {
-        console.log("❌ Missing endDate for visa");
-        return false;
-      }
+      if (!isUnlimited && !endDate) return false;
     }
     
     if (documentType === "residence") {
-      if (!residenceCountry) {
-        console.log("❌ Missing residenceCountry");
-        return false;
-      }
-      if (!isUnlimited && !endDate) {
-        console.log("❌ Missing endDate for residence");
-        return false;
-      }
+      if (!residenceCountry) return false;
+      if (!isUnlimited && !endDate) return false;
     }
     
-    // Processing type will be handled in Step 3, not required here
-    console.log("✅ STEP 2 VALIDATION PASSED!");
     return true;
   };
 
@@ -132,19 +99,16 @@ export function SupportingDocumentCheck({
       documentNumber,
       startDate,
       endDate: isUnlimited ? "unlimited" : endDate,
-      processingType, // Keep for compatibility but not required for Step 2 validation
+      processingType,
     };
     onDocumentDetailsChange(details);
-    const isValid = validateFields();
-    console.log("🔄 CALLING onValidationChange with:", isValid);
-    onValidationChange(isValid);
-    // Processing type handled in Step 3, clear it here
-    if (onProcessingTypeChange) {
-      onProcessingTypeChange("");
+    onValidationChange(validateFields());
+    if (onProcessingTypeChange && processingType) {
+      onProcessingTypeChange(processingType);
     }
   };
 
-  // Auto-update details when any field changes (processingType not needed for Step 2)
+  // Auto-update details when any field changes
   useEffect(() => {
     handleDetailsChange();
   }, [documentType, visaCountry, residenceCountry, documentNumber, startDate, endDate, isUnlimited]);
@@ -661,7 +625,6 @@ export function SupportingDocumentCheck({
                   </div>
                 </div>
               )}
-
 
 
             </div>
