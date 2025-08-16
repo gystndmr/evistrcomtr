@@ -405,14 +405,10 @@ export function VisaForm() {
         return;
       }
       if (hasSupportingDocument === false) {
-        // Don't automatically redirect - allow user to continue with visa application
-        // Just show a warning message but let them proceed
-        toast({
-          title: "Supporting Document Recommended",
-          description: "Supporting documents increase approval chances. You can still continue with your visa application.",
-          duration: 5000,
-        });
-        // Continue to next step instead of redirecting
+        // Redirect to insurance page immediately when no supporting document
+        const country = selectedCountry?.name || '';
+        window.location.href = `/insurance?country=${encodeURIComponent(country)}`;
+        return;
       }
       if (hasSupportingDocument === true) {
         // Check if supporting document details are valid
@@ -450,8 +446,7 @@ export function VisaForm() {
           });
           return;
         }
-      } else {
-        // For customers without supporting documents, always check standard processing type
+      } else if (hasSupportingDocument === false) {
         const processingType = form.getValues("processingType");
         if (!processingType) {
           toast({

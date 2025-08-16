@@ -58,6 +58,9 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
   - **Root Cause**: GPay OrderRef collision - "The order ref has already been taken" error
   - **Solution**: Enhanced OrderRef generation with VIS prefix, nanosecond timestamp, and uppercase random string
   - **Result**: Customers can now successfully complete visa application and reach payment
+- **Supporting Document Logic**: ✅ REVERTED - Restored original insurance redirect behavior
+  - **User Request**: Supporting document "HAYIR" must redirect to insurance (not continue with visa)
+  - **Implementation**: Automatic redirect to insurance page when no supporting document selected
 - **COMPREHENSIVE SITE TESTING & BUG FIXES**: ✅ COMPLETED - All critical issues resolved
   - **VISA FORM FIX**: ✅ COMPLETED - Fixed totalAmount validation error by making field optional and adding backend calculation
   - **PAYMENT ORDERREF FIX**: ✅ ENHANCED - Further improved OrderRef collision prevention 
