@@ -42,7 +42,7 @@ export function SupportingDocumentCheck({
       if (onProcessingTypeChange) {
         onProcessingTypeChange("");
       }
-      // No automatic redirect - let user choose manually via Get Insurance button
+      // Show option for manual insurance navigation
       return;
     }
     // Immediate call for better UX - no delay needed
