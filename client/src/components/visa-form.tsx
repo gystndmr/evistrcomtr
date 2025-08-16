@@ -957,10 +957,10 @@ export function VisaForm() {
                                     <SelectTrigger className={`${
                                       field.value && field.value.split('-')[1] ? '' : 'text-muted-foreground'
                                     }`}>
-                                      <SelectValue placeholder="Ay" showValue={true}>
+                                      <SelectValue placeholder="Month">
                                         {field.value && field.value.split('-')[1] ? 
-                                          getAvailableMonths().find(m => m.value === field.value.split('-')[1])?.label || "Ay"
-                                          : "Ay"
+                                          getAvailableMonths().find(m => m.value === field.value.split('-')[1])?.label || "Month"
+                                          : "Month"
                                         }
                                       </SelectValue>
                                     </SelectTrigger>
