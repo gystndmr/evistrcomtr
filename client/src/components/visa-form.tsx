@@ -469,8 +469,8 @@ export function VisaForm() {
                                   
       if (!allPrerequisitesMet) {
         toast({
-          title: t('form.error.prerequisites'),
-          description: t('form.error.prerequisites.desc'),
+          title: "Prerequisites Required",
+          description: "Please confirm all prerequisites are met to continue",
           variant: "destructive",
         });
         return;
@@ -481,6 +481,8 @@ export function VisaForm() {
     const personalInfoStep = (selectedCountry?.isEligible && hasSupportingDocument === true) ? 5 : 4;
     if (currentStep === personalInfoStep) {
       const formData = form.getValues();
+      console.log("🔍 Personal Info Step Validation - Form Data:", formData);
+      console.log("🔍 Current Step:", currentStep, "Personal Info Step:", personalInfoStep);
       
       if (!formData.firstName.trim()) {
         toast({
@@ -659,8 +661,8 @@ export function VisaForm() {
         
         if (supportingStartDate >= supportingEndDate) {
           toast({
-            title: t('form.validation.error.title'),
-            description: t('form.validation.error.description'),
+            title: "Invalid Document Dates",
+            description: "Supporting document start date must be before end date",
             variant: "destructive",
           });
           return;
@@ -1817,15 +1819,23 @@ export function VisaForm() {
                       const formData = form.getValues();
                       const errors = form.formState.errors;
                       
+                      console.log("🚨 PAYMENT BUTTON CLICKED!");
+                      console.log("🔍 Form Data:", formData);
+                      console.log("🔍 Form Errors:", errors);
+                      console.log("🔍 Current Step:", currentStep);
+                      console.log("🔍 Total Steps:", totalSteps);
+                      
                       if (Object.keys(errors).length > 0) {
+                        console.log("❌ Form validation errors:", errors);
                         toast({
-                          title: t('form.validation.error.title'),
-                          description: t('form.validation.error.description'),
+                          title: "Form Validation Error",
+                          description: "Please check all required fields are filled correctly",
                           variant: "destructive",
                         });
                         return;
                       }
                       
+                      console.log("✅ No validation errors - proceeding with payment");
                       // Direct payment mutation call
                       createApplicationMutation.mutate(formData);
                     }}
