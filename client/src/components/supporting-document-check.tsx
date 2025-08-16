@@ -88,8 +88,7 @@ export function SupportingDocumentCheck({
       if (!isUnlimited && !endDate) return false;
     }
     
-    // Processing type is required for final validation
-    if (!processingType) return false;
+    // Processing type will be handled in Step 3, not required here
     
     return true;
   };
@@ -102,20 +101,20 @@ export function SupportingDocumentCheck({
       documentNumber,
       startDate,
       endDate: isUnlimited ? "unlimited" : endDate,
-      processingType,
+      processingType, // Keep for compatibility but not required for Step 2 validation
     };
     onDocumentDetailsChange(details);
     onValidationChange(validateFields());
-    // Always call processing type change, even if empty
+    // Processing type handled in Step 3, clear it here
     if (onProcessingTypeChange) {
-      onProcessingTypeChange(processingType);
+      onProcessingTypeChange("");
     }
   };
 
-  // Auto-update details when any field changes
+  // Auto-update details when any field changes (processingType not needed for Step 2)
   useEffect(() => {
     handleDetailsChange();
-  }, [documentType, visaCountry, residenceCountry, documentNumber, startDate, endDate, isUnlimited, processingType]);
+  }, [documentType, visaCountry, residenceCountry, documentNumber, startDate, endDate, isUnlimited]);
 
   const visaCountries = [
     { code: "IRL", name: "Ireland" },
@@ -630,22 +629,7 @@ export function SupportingDocumentCheck({
                 </div>
               )}
 
-              {/* Processing Type Selection - Critical Missing Field */}
-              {(documentType === "visa" || documentType === "residence") && (
-                <div>
-                  <Label htmlFor="processingType">Processing Type *</Label>
-                  <Select value={processingType} onValueChange={setProcessingType}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select processing type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="standard">Standard Processing - $25</SelectItem>
-                      <SelectItem value="urgent">Urgent Processing - $60</SelectItem>
-                      <SelectItem value="super_urgent">Super Urgent Processing - $100</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
+
 
             </div>
           )}
