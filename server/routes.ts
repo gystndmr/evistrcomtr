@@ -61,24 +61,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
         supportingDocumentEndDate: req.body.supportingDocumentEndDate ? new Date(req.body.supportingDocumentEndDate) : undefined,
       };
 
-      // Calculate totalAmount based on processing type before validation
-      const processingTypes = {
-        'standard': '25.00',
-        'fast': '75.00', 
-        'express': '175.00',
-        'urgent': '295.00',
-        'slow': '50.00',
-        'urgent_24': '280.00',
-        'urgent_12': '330.00',
-        'urgent_4': '410.00',
-        'urgent_1': '645.00'
+      // Calculate totalAmount based on processing type and supporting document status
+      // EXACTLY matching frontend calculation logic
+      
+      // Standard processing types (no supporting document)
+      const standardProcessingTypes = {
+        'standard': 25,
+        'fast': 75, 
+        'express': 175,
+        'urgent': 295
       };
       
-      const totalAmount = processingTypes[req.body.processingType as keyof typeof processingTypes] || '60.00';
+      // Supporting document processing types
+      const supportingDocProcessingTypes = {
+        'slow': 50,
+        'standard': 115,
+        'fast': 165,
+        'urgent_24': 280,
+        'urgent_12': 330,
+        'urgent_4': 410,
+        'urgent_1': 645
+      };
+      
+      let totalAmount = 25; // Default fallback
+      
+      // Check if this application has supporting documents
+      const hasSupportingDocument = req.body.supportingDocumentType && req.body.supportingDocumentType !== '';
+      
+      if (hasSupportingDocument) {
+        // Supporting document application: processing fee + $69 document PDF fee
+        const processingFee = supportingDocProcessingTypes[req.body.processingType as keyof typeof supportingDocProcessingTypes] || 50;
+        const documentPdfFee = 69;
+        totalAmount = processingFee + documentPdfFee;
+      } else {
+        // Standard application: just processing fee
+        totalAmount = standardProcessingTypes[req.body.processingType as keyof typeof standardProcessingTypes] || 25;
+      }
       
       const validatedData = insertApplicationSchema.parse({
         ...bodyWithDates,
-        totalAmount
+        totalAmount: totalAmount.toString()
       });
 
       const application = await storage.createApplication(validatedData);
@@ -121,8 +143,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } catch (emailError) {
         console.error('❌ VISA EMAIL ERROR:', emailError);
         console.error('❌ Email error details:', {
-          message: emailError?.message,
-          stack: emailError?.stack
+          message: (emailError as Error)?.message || 'Unknown error',
+          stack: (emailError as Error)?.stack || 'No stack trace'
         });
       }
       
