@@ -405,13 +405,10 @@ export function VisaForm() {
         return;
       }
       if (hasSupportingDocument === false) {
-        // Show message but allow manual choice - no automatic redirect
-        toast({
-          title: "Supporting Document Required",
-          description: "Supporting documents are required for visa applications. You can check our travel insurance options or contact us for assistance.",
-          duration: 6000,
-        });
-        // Don't redirect automatically - let user choose manually
+        // Redirect to insurance page immediately when no supporting document
+        const country = selectedCountry?.name || '';
+        window.location.href = `/insurance?country=${encodeURIComponent(country)}`;
+        return;
       }
       if (hasSupportingDocument === true) {
         // Check if supporting document details are valid
@@ -804,39 +801,6 @@ export function VisaForm() {
                     onSupportingDocTypeChange={setSelectedSupportingDocType}
                     onProcessingTypeChange={setDocumentProcessingType}
                   />
-                  
-                  {/* Manual navigation options when supporting document is false */}
-                  {hasSupportingDocument === false && (
-                    <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                      <h4 className="font-semibold text-amber-800 mb-3">What would you like to do?</h4>
-                      <div className="flex flex-col sm:flex-row gap-3">
-                        <Button 
-                          type="button" 
-                          onClick={handleInsuranceRedirect}
-                          className="bg-blue-600 hover:bg-blue-700 text-white"
-                        >
-                          Get Travel Insurance Instead
-                        </Button>
-                        <Button 
-                          type="button" 
-                          variant="outline"
-                          onClick={() => {
-                            toast({
-                              title: "Contact Support",
-                              description: "Our team will help you with visa application requirements. Please reach out for assistance.",
-                              duration: 5000,
-                            });
-                          }}
-                          className="border-gray-600 text-gray-700 hover:bg-gray-50"
-                        >
-                          Contact Support for Help
-                        </Button>
-                      </div>
-                      <p className="text-sm text-amber-700 mt-3">
-                        Supporting documents are typically required for Turkey e-visa applications. Travel insurance may be a good alternative option.
-                      </p>
-                    </div>
-                  )}
                 </div>
               )}
 
@@ -1838,7 +1802,7 @@ export function VisaForm() {
                   </Button>
                 )}
                 
-                {currentStep < totalSteps && !(hasSupportingDocument === false && currentStep === 2) ? (
+                {currentStep < totalSteps ? (
                   <Button type="button" onClick={handleNextStep} className="order-1 sm:order-2 sm:ml-auto bg-primary hover:bg-primary/90 text-white">
                     {t('form.navigation.next.step')}
                     <ArrowRight className="w-4 h-4 ml-2" />
