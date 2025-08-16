@@ -55,11 +55,11 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
 
 ### Recent Fixes (August 16, 2025)
 - **STEP 2 SUPPORTING DOCUMENT VALIDATION CRITICAL FIX**: ✅ COMPLETED - Fixed customers getting stuck at Step 2
-  - **Root Cause**: State synchronization bug between SupportingDocumentCheck and visa-form components
-  - **Technical Issue**: Two separate processing type states (processingType vs documentProcessingType) not synchronized
-  - **Customer Impact**: Users with supporting documents filled all fields correctly but got "Missing Information" error
-  - **Solution**: Enhanced validation callback chain, added processing type to useEffect dependencies, fixed onValueChange handlers
-  - **Result**: Supporting document customers can now successfully proceed from Step 2 to Step 3
+  - **Root Cause**: Missing Processing Type field in SupportingDocumentCheck component
+  - **Technical Issue**: Component validated processingType but field was not displayed to users
+  - **Customer Impact**: Users filled all visible fields correctly but got "Missing Information" error because Processing Type was required but hidden
+  - **Solution**: Added Processing Type select field to SupportingDocumentCheck component with standard pricing options
+  - **Result**: Supporting document customers can now see and select Processing Type, completing Step 2 validation successfully
 - **VISA FORM CRITICAL BUG FIX**: ✅ COMPLETED - Fixed customer inability to reach payment step
   - **Root Cause**: GPay OrderRef collision - "The order ref has already been taken" error
   - **Solution**: Enhanced OrderRef generation with VIS prefix, nanosecond timestamp, and uppercase random string

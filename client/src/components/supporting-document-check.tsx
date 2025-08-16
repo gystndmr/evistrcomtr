@@ -630,6 +630,22 @@ export function SupportingDocumentCheck({
                 </div>
               )}
 
+              {/* Processing Type Selection - Critical Missing Field */}
+              {(documentType === "visa" || documentType === "residence") && (
+                <div>
+                  <Label htmlFor="processingType">Processing Type *</Label>
+                  <Select value={processingType} onValueChange={setProcessingType}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select processing type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="standard">Standard Processing - $25</SelectItem>
+                      <SelectItem value="urgent">Urgent Processing - $60</SelectItem>
+                      <SelectItem value="super_urgent">Super Urgent Processing - $100</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
             </div>
           )}
