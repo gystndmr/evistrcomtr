@@ -427,10 +427,41 @@ export function VisaForm() {
     if (currentStep === 3) {
       const arrivalDate = form.getValues("arrivalDate");
       
-      if (!arrivalDate) {
+      // Check if arrival date exists and is properly formatted
+      if (!arrivalDate || !arrivalDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
         toast({
           title: "Arrival Date Required",
-          description: "Please enter your arrival date to Turkey",
+          description: "Please select a complete arrival date (day, month, year)",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Check if all parts of the date are valid
+      const dateParts = arrivalDate.split('-');
+      const year = parseInt(dateParts[0]);
+      const month = parseInt(dateParts[1]);
+      const day = parseInt(dateParts[2]);
+      
+      if (year < 2025 || month < 1 || month > 12 || day < 1 || day > 31) {
+        toast({
+          title: "Invalid Arrival Date",
+          description: "Please select a valid arrival date",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Check if arrival date is in the future
+      const today = new Date();
+      const selectedDate = new Date(year, month - 1, day);
+      today.setHours(0, 0, 0, 0);
+      selectedDate.setHours(0, 0, 0, 0);
+      
+      if (selectedDate < today) {
+        toast({
+          title: "Invalid Arrival Date",
+          description: "Arrival date must be today or in the future",
           variant: "destructive",
         });
         return;
@@ -923,8 +954,15 @@ export function VisaForm() {
                                       }
                                     }}
                                   >
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Month" />
+                                    <SelectTrigger className={`${
+                                      field.value && field.value.split('-')[1] ? '' : 'text-muted-foreground'
+                                    }`}>
+                                      <SelectValue placeholder="Ay" showValue={true}>
+                                        {field.value && field.value.split('-')[1] ? 
+                                          getAvailableMonths().find(m => m.value === field.value.split('-')[1])?.label || "Ay"
+                                          : "Ay"
+                                        }
+                                      </SelectValue>
                                     </SelectTrigger>
                                     <SelectContent>
                                       {getAvailableMonths().map((m) => (
