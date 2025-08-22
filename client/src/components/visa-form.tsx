@@ -370,6 +370,11 @@ export function VisaForm() {
     setIsSupportingDocumentValid(false);
   };
 
+  // Update form documentType whenever selectedDocumentType changes
+  useEffect(() => {
+    form.setValue("documentType", selectedDocumentType);
+  }, [selectedDocumentType, form]);
+
   const handleNextStep = () => {
     // Step 1: Country and Document Type Selection
     if (currentStep === 1) {
