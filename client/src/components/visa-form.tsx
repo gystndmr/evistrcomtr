@@ -1854,13 +1854,16 @@ export function VisaForm() {
                   </Button>
                 ) : (
                   <Button 
-                    type="submit"
+                    type="button"
                     className="order-1 sm:order-2 sm:ml-auto bg-secondary hover:bg-secondary/90 text-sm sm:text-base px-4 py-2 text-white"
                     disabled={createApplicationMutation.isPending}
                     onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      
                       console.log("🚨 PAYMENT BUTTON CLICKED!");
                       
-                      // Trigger form validation by calling handleSubmit manually
+                      // Manually trigger form validation
                       form.handleSubmit((validatedData) => {
                         console.log("🔍 Validated Form Data:", validatedData);
                         console.log("🔍 Current Step:", currentStep);
@@ -1873,7 +1876,7 @@ export function VisaForm() {
                           description: "Please check all required fields are filled correctly",
                           variant: "destructive",
                         });
-                      })(e);
+                      })();
                     }}
                   >
                     <CreditCard className="w-4 h-4 mr-2" />
