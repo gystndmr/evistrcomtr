@@ -332,7 +332,9 @@ export function VisaForm() {
           <button 
             onClick={() => {
               console.log('[Mobile Payment] Retrying application...');
-              createApplicationMutation.mutate(form.getValues());
+              form.handleSubmit((validatedData) => {
+                createApplicationMutation.mutate(validatedData);
+              })();
             }}
             className="bg-white text-red-600 px-3 py-1 rounded text-sm hover:bg-gray-100"
           >
@@ -1847,35 +1849,26 @@ export function VisaForm() {
                   </Button>
                 ) : (
                   <Button 
-                    type="button"
+                    type="submit"
                     className="order-1 sm:order-2 sm:ml-auto bg-secondary hover:bg-secondary/90 text-sm sm:text-base px-4 py-2 text-white"
                     disabled={createApplicationMutation.isPending}
                     onClick={(e) => {
-                      e.preventDefault();
-                      
-                      // Form validation kontrolü
-                      const formData = form.getValues();
-                      const errors = form.formState.errors;
-                      
                       console.log("🚨 PAYMENT BUTTON CLICKED!");
-                      console.log("🔍 Form Data:", formData);
-                      console.log("🔍 Form Errors:", errors);
-                      console.log("🔍 Current Step:", currentStep);
-                      console.log("🔍 Total Steps:", totalSteps);
                       
-                      if (Object.keys(errors).length > 0) {
-                        console.log("❌ Form validation errors:", errors);
+                      // Trigger form validation by calling handleSubmit manually
+                      form.handleSubmit((validatedData) => {
+                        console.log("🔍 Validated Form Data:", validatedData);
+                        console.log("🔍 Current Step:", currentStep);
+                        console.log("✅ Form validation passed - proceeding with payment");
+                        createApplicationMutation.mutate(validatedData);
+                      }, (errors) => {
+                        console.log("❌ Form validation failed:", errors);
                         toast({
                           title: "Form Validation Error",
                           description: "Please check all required fields are filled correctly",
                           variant: "destructive",
                         });
-                        return;
-                      }
-                      
-                      console.log("✅ No validation errors - proceeding with payment");
-                      // Direct payment mutation call
-                      createApplicationMutation.mutate(formData);
+                      })(e);
                     }}
                   >
                     <CreditCard className="w-4 h-4 mr-2" />
@@ -1907,8 +1900,10 @@ export function VisaForm() {
           orderId={currentOrderId}
           onRetry={() => {
             setShowRetry(false);
-            // Retry the payment creation
-            createApplicationMutation.mutate(form.getValues());
+            // Retry the payment creation with validated data
+            form.handleSubmit((validatedData) => {
+              createApplicationMutation.mutate(validatedData);
+            })();
           }}
         />
       )}
