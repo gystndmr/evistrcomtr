@@ -107,8 +107,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // E-posta gönderimi (vize başvuru alındı) - USING DYNAMIC IMPORT LIKE INSURANCE
       try {
-        console.log('🔧 VISA EMAIL DEBUG - Starting email process...');
-        console.log('🔧 Application data:', {
+        console.log('VISA EMAIL - Starting email process...');
+        console.log('Application data:', {
           firstName: application.firstName,
           lastName: application.lastName,
           email: application.email,
@@ -124,7 +124,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           'en'
         );
         
-        console.log('🔧 Generated email content:', {
+        console.log('Generated email content:', {
           subject: emailContent.subject,
           hasHtml: !!emailContent.html,
           hasText: !!emailContent.text
