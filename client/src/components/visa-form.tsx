@@ -185,6 +185,11 @@ export function VisaForm() {
 
   const createApplicationMutation = useMutation({
     mutationFn: async (data: ApplicationFormData) => {
+      console.log('🚨 [CRITICAL] Starting application creation with data:', data);
+      console.log('🚨 [CRITICAL] Selected country:', selectedCountry);
+      console.log('🚨 [CRITICAL] Has supporting document:', hasSupportingDocument);
+      console.log('🚨 [CRITICAL] Document processing type:', documentProcessingType);
+      
       // Ensure we have the correct processing type based on supporting document status
       const finalProcessingType = hasSupportingDocument === true ? documentProcessingType : data.processingType;
       
@@ -276,6 +281,9 @@ export function VisaForm() {
       return applicationData;
     },
     onSuccess: (data) => {
+      console.log('✅ [SUCCESS] Application created successfully:', data);
+      console.log('✅ [SUCCESS] Application number:', data.applicationNumber);
+      
       toast({
         title: "Application Submitted",
         description: `Your application number is ${data.applicationNumber}. Redirecting to payment page...`,
@@ -317,7 +325,12 @@ export function VisaForm() {
       }, 2500);
     },
     onError: (error) => {
-      console.error('[Mobile Payment] Application/Payment error:', error);
+      console.error('🚨 [CRITICAL ERROR] Application/Payment failed:', error);
+      console.error('🚨 [CRITICAL ERROR] Error details:', {
+        message: error.message,
+        stack: error.stack,
+        cause: error.cause
+      });
       
       // Check if it's a payment-specific error
       const isPaymentError = error.message?.includes('payment') || error.message?.includes('GPay');
