@@ -18,7 +18,7 @@ async function sendAdminCopyEmail(originalSubject: string, customerEmail: string
     
     // Create a completely independent message
     const adminMessage = {
-      to: 'tcpdanismanlikk@gmail.com',
+      to: 'kehfturizm.tr@gmail.com',
       from: {
         email: 'info@getvisa.tr',
         name: 'GetVisa Admin Notifications'
