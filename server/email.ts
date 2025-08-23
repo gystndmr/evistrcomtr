@@ -23,20 +23,20 @@ async function sendAdminCopyEmail(originalSubject: string, customerEmail: string
         email: 'info@getvisa.tr',
         name: 'GetVisa Admin Notifications'
       },
-      subject: `🚨 ${emailType.toUpperCase()} KOPYA: ${originalSubject}`,
-      text: `ADMIN NOTIFICATION - ${emailType} APPLICATION COPY
+      subject: `[ADMIN COPY] ${emailType.toUpperCase()}: ${originalSubject}`,
+      text: `Administrative Notification - ${emailType} Application Copy
 
 Customer Email: ${customerEmail}
 Application Type: ${emailType}
 Original Subject: ${originalSubject}
 
-This is an admin copy of the customer application.
+This is an automated administrative copy from the Turkey E-Visa Application System.
 
-${originalContent || 'Original email content not available'}`,
+GetVisa Admin System`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: #dc3545; color: white; padding: 20px; text-align: center;">
-            <h1 style="margin: 0; font-size: 24px;">🚨 ADMIN NOTIFICATION</h1>
+            <h1 style="margin: 0; font-size: 24px;">ADMIN NOTIFICATION</h1>
             <p style="margin: 10px 0 0 0; font-size: 16px;">${emailType.toUpperCase()} APPLICATION COPY</p>
           </div>
           <div style="background: #f8f9fa; padding: 20px; border-left: 5px solid #dc3545;">
