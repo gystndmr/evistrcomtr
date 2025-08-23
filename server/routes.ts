@@ -115,8 +115,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           applicationNumber: application.applicationNumber
         });
         
-        // Dynamic import like insurance system
-        const { generateVisaReceivedEmail } = await import('./email');
+        // Use direct import instead of dynamic import
         const emailContent = generateVisaReceivedEmail(
           application.firstName, 
           application.lastName, 
