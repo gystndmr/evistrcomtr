@@ -127,8 +127,8 @@ export async function sendEmail(options: EmailOptions): Promise<void> {
   console.log('🔧 To address:', options.to);
   console.log('🔧 Subject:', options.subject);
   
-  // ALWAYS use info@getvisa.tr as sender - DO NOT CHANGE!
-  const fromEmail = "info@getvisa.tr";
+  // TEST: Use verified SendGrid sender
+  const fromEmail = "noreply@getvisa.tr";
   
   console.log('🔧 From address (FIXED to info@getvisa.tr):', fromEmail);
   
