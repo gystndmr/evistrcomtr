@@ -42,7 +42,7 @@ export function Footer() {
             <ul className="space-y-3 text-sm text-orange-100">
               <li className="flex items-center justify-center md:justify-start space-x-2">
                 <Phone className="w-4 h-4 text-orange-300" />
-                <span>0532 XXX XX XX</span>
+                <span>0537 062 5550</span>
               </li>
               <li className="flex items-center justify-center md:justify-start space-x-2">
                 <MapPin className="w-4 h-4 text-orange-300" />
@@ -134,7 +134,7 @@ export function Footer() {
             
             <div className="mt-4 text-xs space-y-1 text-orange-300">
               <p><strong>İşletme Sahibi:</strong> Mehmet Usta - 25 Yıllık Tecrübe</p>
-              <p><strong>Sipariş Hattı:</strong> 0532 XXX XX XX | WhatsApp: Aktif</p>
+              <p><strong>Sipariş Hattı:</strong> 0537 062 5550 | WhatsApp: Aktif</p>
               <p><strong>Sosyal Medya:</strong> @seyyarlokmaci | Instagram & TikTok</p>
               <p><strong>Özel Günler:</strong> Doğum günü, düğün, özel etkinlik siparişleri alınır</p>
             </div>

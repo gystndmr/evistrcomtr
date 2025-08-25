@@ -52,7 +52,7 @@ export function Header() {
             {/* Sipariş Hattı */}
             <div className="hidden md:flex items-center space-x-2 bg-green-100 px-3 py-1 rounded-full">
               <Phone className="h-4 w-4 text-green-600" />
-              <span className="text-sm font-medium text-green-800">0532 XXX XX XX</span>
+              <span className="text-sm font-medium text-green-800">0537 062 5550</span>
             </div>
             
             {/* Mobile menu button */}
