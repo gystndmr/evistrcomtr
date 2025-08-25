@@ -5,36 +5,85 @@ import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Clock, Phone, Star, Utensils, Heart } from "lucide-react";
+import { IdCard, CreditCard, Download, Shield, Star, Crown, Search } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
+import turkeySymbolRed from "@/assets/turkey-symbol-red.png";
+import cappadociaImg from "../../../attached_assets/pexels-musaortac-14186574_1752590100661.jpg";
+import ephesusImg from "../../../attached_assets/pexels-hilal-tosun-54875889-33011223_1752590240668.jpg";
+import antalyaImg from "../../../attached_assets/pexels-mikhail-nilov-8322807_1752590250012.jpg";
+import bosphorusImg from "../../../attached_assets/pexels-ugur-kahraman-1765266160-29649889_1752590268560.jpg";
+import pamukkaleImg from "../../../attached_assets/pexels-fromsalih-27829278_1752590288989.jpg";
+import hagiaSophiaImg from "../../../attached_assets/pexels-mustafa-eker-649114924-17634093_1752590829229.jpg";
 
-export default function LokmacıHome() {
+export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
   const { t } = useLanguage();
 
-  // Lokma görselleri (placeholder olarak genel yemek resimleri)
-  const lokmaImages = [
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Crect width='800' height='600' fill='%23D2691E'/%3E%3Ccircle cx='200' cy='150' r='30' fill='%23CD853F'/%3E%3Ccircle cx='300' cy='180' r='25' fill='%23CD853F'/%3E%3Ccircle cx='400' cy='160' r='28' fill='%23CD853F'/%3E%3Ccircle cx='500' cy='140' r='32' fill='%23CD853F'/%3E%3Ccircle cx='600' cy='170' r='26' fill='%23CD853F'/%3E%3Ctext x='400' y='350' text-anchor='middle' font-family='Arial' font-size='48' fill='white'%3ETaze Lokma%3C/text%3E%3Ctext x='400' y='400' text-anchor='middle' font-family='Arial' font-size='24' fill='white'%3ESıcacık %26 Tatlı%3C/text%3E%3C/svg%3E",
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Crect width='800' height='600' fill='%23B8860B'/%3E%3Ccircle cx='150' cy='200' r='35' fill='%23DAA520'/%3E%3Ccircle cx='250' cy='160' r='30' fill='%23DAA520'/%3E%3Ccircle cx='350' cy='190' r='33' fill='%23DAA520'/%3E%3Ccircle cx='450' cy='170' r='28' fill='%23DAA520'/%3E%3Ccircle cx='550' cy='200' r='31' fill='%23DAA520'/%3E%3Ccircle cx='650' cy='160' r='29' fill='%23DAA520'/%3E%3Ctext x='400' y='350' text-anchor='middle' font-family='Arial' font-size='44' fill='white'%3EBallı Lokma%3C/text%3E%3Ctext x='400' y='400' text-anchor='middle' font-family='Arial' font-size='22' fill='white'%3E100%25 Doğal Bal%3C/text%3E%3C/svg%3E",
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600' viewBox='0 0 800 600'%3E%3Crect width='800' height='600' fill='%23A0522D'/%3E%3Ccircle cx='180' cy='180' r='32' fill='%23D2B48C'/%3E%3Ccircle cx='280' cy='150' r='27' fill='%23D2B48C'/%3E%3Ccircle cx='380' cy='175' r='30' fill='%23D2B48C'/%3E%3Ccircle cx='480' cy='160' r='29' fill='%23D2B48C'/%3E%3Ccircle cx='580' cy='185' r='31' fill='%23D2B48C'/%3E%3Ctext x='400' y='350' text-anchor='middle' font-family='Arial' font-size='42' fill='white'%3EÇikolatalı Lokma%3C/text%3E%3Ctext x='400' y='400' text-anchor='middle' font-family='Arial' font-size='20' fill='white'%3EÖzel Tarifimiz%3C/text%3E%3C/svg%3E"
+  // Turkish landmark images 
+  const turkishLandmarks = [
+    { image: cappadociaImg },
+    { image: ephesusImg }, 
+    { image: antalyaImg },
+    { image: bosphorusImg },
+    { image: pamukkaleImg }
   ];
+
+  // Preload all images immediately when component mounts
+  useEffect(() => {
+    const preloadImages = async () => {
+      const imagePromises = turkishLandmarks.map((landmark) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = landmark.image;
+        });
+      });
+
+      try {
+        await Promise.all(imagePromises);
+        setImagesLoaded(true);
+        console.log('All homepage images preloaded successfully');
+      } catch (error) {
+        console.error('Error preloading images:', error);
+        setImagesLoaded(true); // Still show content even if some images fail
+      }
+    };
+
+    preloadImages();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % lokmaImages.length);
-    }, 3000);
+      setCurrentSlide((prev) => (prev + 1) % turkishLandmarks.length);
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
+
+
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
       
-      {/* Hero Section */}
+      
+      {/* Hero Section with Rotating Turkish Landmarks */}
       <section className="relative h-[70vh] overflow-hidden">
+        {/* Loading Placeholder */}
+        {!imagesLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center">
+            <div className="text-white text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+              <p className="text-lg font-semibold">Loading Turkey's beautiful landmarks...</p>
+            </div>
+          </div>
+        )}
+
         {/* Background Slides */}
-        <div className="absolute inset-0">
-          {lokmaImages.map((image, index) => (
+        <div className={`absolute inset-0 transition-opacity duration-500 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}>
+          {turkishLandmarks.map((landmark, index) => (
             <div
               key={index}
               className={`absolute inset-0 transition-opacity duration-1000 ${
@@ -42,190 +91,101 @@ export default function LokmacıHome() {
               }`}
             >
               <img 
-                src={image}
-                alt={`Lokma ${index + 1}`}
+                src={landmark.image}
+                alt={`Turkish landmark ${index + 1}`}
                 className="absolute inset-0 w-full h-full object-cover"
+                loading="eager"
+                decoding="async"
               />
-              <div className="absolute inset-0 bg-black opacity-40" />
+              <div className="absolute inset-0 bg-black opacity-50" />
             </div>
           ))}
         </div>
 
+
+
         {/* Main Content */}
         <div className="relative z-10 flex items-center justify-center h-full">
           <div className="text-center text-white px-4 max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
-              🍯 SEYYAR LOKMACI 🍯
+
+            
+            <h1 className="text-3xl md:text-4xl font-bold mb-4 drop-shadow-lg tracking-wider">
+              {t('header.title')}
             </h1>
-            <h2 className="text-2xl md:text-3xl font-semibold mb-6 drop-shadow-md">
-              Taze • Sıcak • Lezzetli
+            <h2 className="text-xl md:text-2xl font-semibold mb-3 drop-shadow-md border-b-2 border-white/30 pb-1 inline-block">
+              {t('home.hero.title')}
             </h2>
-            <p className="text-lg md:text-xl mb-8 opacity-90 drop-shadow-sm">
-              Ağzınızda eriyen, ballı lokmaların tadına doyamayacaksınız!<br/>
-              📍 Her gün farklı lokasyonlarda hizmetinizdeyiz
+            <p className="text-base md:text-lg mb-6 opacity-90 drop-shadow-sm font-medium">
+              {t('home.hero.subtitle')}
             </p>
             
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg">
-                <MapPin className="mr-2 h-5 w-5" />
-                Bugün Neredeyiz?
-              </Button>
-              <Button size="lg" variant="outline" className="bg-white/10 border-white text-white hover:bg-white hover:text-black px-8 py-3 text-lg">
-                <Phone className="mr-2 h-5 w-5" />
-                Sipariş Ver: 0537 062 5550
-              </Button>
+
+
+            {/* Transparent Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <Link href="/application">
+                <div className="bg-red-600/80 hover:bg-red-600/90 text-white px-12 py-4 text-xl font-semibold transition-all duration-200 cursor-pointer">
+                  {t('home.buttons.apply')}
+                </div>
+              </Link>
+              <Link href="/status">
+                <div className="bg-blue-600/80 hover:bg-blue-600/90 text-white px-12 py-4 text-xl font-semibold transition-all duration-200 cursor-pointer">
+                  {t('home.buttons.check')}
+                </div>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+
+      </section>
+
+      {/* Application Process Steps */}
+      <section className="py-12 sm:py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-800 mb-4">{t('home.hero.steps')}</h2>
+            <p className="text-base sm:text-lg text-neutral-600">{t('home.hero.subtitle')}</p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row sm:justify-center sm:items-start gap-6 sm:gap-8 lg:gap-12">
+            <div className="text-center sm:flex-1 max-w-xs mx-auto sm:mx-0">
+              <div className="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-white font-bold text-xl">1</span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">{t('home.steps.complete')}</h3>
+              <p className="text-sm sm:text-base text-neutral-600 px-2">{t('home.steps.complete.desc')}</p>
+            </div>
+            
+            <div className="text-center sm:flex-1 max-w-xs mx-auto sm:mx-0">
+              <div className="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-white font-bold text-xl">2</span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">{t('home.steps.payment')}</h3>
+              <p className="text-sm sm:text-base text-neutral-600 px-2">{t('home.steps.payment.desc')}</p>
+            </div>
+            
+            <div className="text-center sm:flex-1 max-w-xs mx-auto sm:mx-0">
+              <div className="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-white font-bold text-xl">3</span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">{t('home.steps.download')}</h3>
+              <p className="text-sm sm:text-base text-neutral-600 px-2">{t('home.steps.download.desc')}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Özel Menümüz */}
-      <section className="py-16 bg-gradient-to-b from-orange-50 to-yellow-50">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              🍯 Özel Lokma Menümüz 🍯
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Geleneksel tariflerimizle hazırlanan, taze ve sıcacık lokmalarımız
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="text-center hover:shadow-xl transition-shadow duration-300">
-              <CardHeader>
-                <CardTitle className="text-2xl text-orange-600">🍯 Klasik Lokma</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">Geleneksel ballı lokma, ağzınızda eriyen lezzet</p>
-                <div className="text-2xl font-bold text-orange-600 mb-2">₺15</div>
-                <div className="text-sm text-gray-500">10 adet</div>
-                <div className="flex justify-center mt-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center hover:shadow-xl transition-shadow duration-300 border-orange-200">
-              <CardHeader>
-                <Badge className="bg-orange-100 text-orange-800 mb-2">EN POPÜLER</Badge>
-                <CardTitle className="text-2xl text-orange-600">🍫 Çikolatalı Lokma</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">Özel çikolata soslu, çocukların favorisi</p>
-                <div className="text-2xl font-bold text-orange-600 mb-2">₺20</div>
-                <div className="text-sm text-gray-500">10 adet</div>
-                <div className="flex justify-center mt-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="text-center hover:shadow-xl transition-shadow duration-300">
-              <CardHeader>
-                <CardTitle className="text-2xl text-orange-600">🥥 Hindistan Cevizli</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">Hindistan cevizi serpiştirilmiş özel lokma</p>
-                <div className="text-2xl font-bold text-orange-600 mb-2">₺18</div>
-                <div className="text-sm text-gray-500">10 adet</div>
-                <div className="flex justify-center mt-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Bugün Neredeyiz */}
-      <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8">
-            📍 Bugün Neredeyiz?
-          </h2>
-          
-          <Card className="bg-gradient-to-r from-orange-100 to-yellow-100 border-orange-200">
-            <CardContent className="p-8">
-              <div className="flex items-center justify-center mb-4">
-                <Clock className="h-6 w-6 text-orange-600 mr-2" />
-                <span className="text-lg font-semibold text-gray-800">25 Ağustos 2025 - Pazar</span>
-              </div>
-              
-              <div className="text-2xl font-bold text-orange-600 mb-2">
-                🎯 Ataşehir Bulvar - Carrefour Yanı
-              </div>
-              
-              <p className="text-gray-700 mb-4">
-                📍 Ataşehir Bulvarı No: 142, Ataşehir/İstanbul<br/>
-                🕐 Saatler: 14:00 - 22:00
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button className="bg-green-600 hover:bg-green-700">
-                  <Phone className="mr-2 h-4 w-4" />
-                  Sipariş Ver: 0537 062 5550
-                </Button>
-                <Button variant="outline" className="border-orange-600 text-orange-600 hover:bg-orange-50">
-                  <MapPin className="mr-2 h-4 w-4" />
-                  Haritada Gör
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Müşteri Yorumları */}
-      <section className="py-16 bg-gradient-to-b from-yellow-50 to-orange-50">
-        <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12">
-            💬 Müşterilerimiz Ne Diyor?
-          </h2>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-white">
-              <CardContent className="p-6">
-                <div className="flex mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-gray-700 mb-4">"Gerçekten muhteşem! Çocuklarım bayılıyor, haftada en az 2 kez geliyoruz."</p>
-                <div className="font-semibold text-gray-800">- Ayşe Hanım</div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-white">
-              <CardContent className="p-6">
-                <div className="flex mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-gray-700 mb-4">"Ballı lokma favorim! Hem taze hem de çok lezzetli. Kesinlikle tavsiye ederim."</p>
-                <div className="font-semibold text-gray-800">- Mehmet Bey</div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-white">
-              <CardContent className="p-6">
-                <div className="flex mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-gray-700 mb-4">"Çikolatalı lokma harika! Fiyatları da çok uygun. Ellerinize sağlık."</p>
-                <div className="font-semibold text-gray-800">- Fatma Hanım</div>
-              </CardContent>
-            </Card>
+      {/* Travel Insurance Section */}
+      <section className="py-12 sm:py-16 bg-gradient-to-br from-blue-50 to-red-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <Link href="/insurance">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-4">
+                <Shield className="w-5 h-5 mr-2" />
+                {t('home.insurance.button')}
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

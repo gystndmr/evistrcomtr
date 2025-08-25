@@ -2,7 +2,10 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "./language-switcher";
-import { Star, Menu, X, MapPin, Phone, Clock } from "lucide-react";
+import { Star, Menu, X } from "lucide-react";
+import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
+import turkeyLogo from "@/assets/turkey-logo.png";
+import turkeyFlagCircle from "@/assets/turkey-flag-circle.png";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Header() {
@@ -11,10 +14,10 @@ export function Header() {
   const { t } = useLanguage();
 
   const navItems = [
-    { href: "/", label: "Ana Sayfa" },
-    { href: "/menu", label: "Menümüz" },
-    { href: "/konum", label: "Konum" },
-    { href: "/iletisim", label: "İletişim" },
+    { href: "/", label: t('header.home') },
+    { href: "/application", label: t('header.application') },
+    { href: "/status", label: t('header.status') },
+    { href: "/insurance", label: t('header.insurance') },
   ];
 
   return (
@@ -23,12 +26,12 @@ export function Header() {
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-12 h-12 shadow-sm bg-orange-100 rounded-full flex items-center justify-center">
-                <span className="text-2xl">🍯</span>
+              <div className="w-12 h-12 shadow-sm">
+                <img src={turkeyFlagCircle} alt="Turkey Flag" className="w-full h-full object-contain" />
               </div>
               <div className="flex flex-col">
-                <div className="text-xl font-bold text-orange-800">SEYYAR LOKMACI</div>
-                <div className="text-xs text-orange-600">Taze • Sıcak • Lezzetli</div>
+                <div className="text-xl font-bold text-neutral-800">{t('header.site.title')}</div>
+                <div className="text-xs text-neutral-600">{t('header.site.subtitle')}</div>
               </div>
             </Link>
           </div>
@@ -49,11 +52,7 @@ export function Header() {
           </nav>
 
           <div className="flex items-center space-x-4">
-            {/* Sipariş Hattı */}
-            <div className="hidden md:flex items-center space-x-2 bg-green-100 px-3 py-1 rounded-full">
-              <Phone className="h-4 w-4 text-green-600" />
-              <span className="text-sm font-medium text-green-800">0537 062 5550</span>
-            </div>
+            <LanguageSwitcher />
             
             {/* Mobile menu button */}
             <Button
