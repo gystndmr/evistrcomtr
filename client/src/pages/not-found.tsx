@@ -29,7 +29,7 @@ export default function NotFound() {
               <p className="text-sm text-gray-500 mb-2">Ya da bugün nerede olduğumuzu öğrenin:</p>
               <div className="flex items-center justify-center text-orange-600">
                 <MapPin className="w-4 h-4 mr-1" />
-                <span className="font-semibold">0532 XXX XX XX</span>
+                <span className="font-semibold">05370625550</span>
               </div>
             </div>
           </div>

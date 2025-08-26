@@ -73,7 +73,7 @@ export default function LokmacıHome() {
               </Button>
               <Button size="lg" variant="outline" className="bg-white/10 border-white text-white hover:bg-white hover:text-black px-8 py-3 text-lg">
                 <Phone className="mr-2 h-5 w-5" />
-                Sipariş Ver: 0532 XXX XX XX
+                Sipariş Ver: 05370625550
               </Button>
             </div>
           </div>
@@ -171,7 +171,7 @@ export default function LokmacıHome() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button className="bg-green-600 hover:bg-green-700">
                   <Phone className="mr-2 h-4 w-4" />
-                  Sipariş Ver: 0532 XXX XX XX
+                  Sipariş Ver: 05370625550
                 </Button>
                 <Button variant="outline" className="border-orange-600 text-orange-600 hover:bg-orange-50">
                   <MapPin className="mr-2 h-4 w-4" />

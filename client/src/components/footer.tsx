@@ -50,7 +50,7 @@ export function Footer() {
               
               <div className="flex items-center justify-center md:justify-start space-x-2 mt-3">
                 <Phone className="w-4 h-4 text-orange-400" />
-                <span className="text-white font-semibold">0532 XXX XX XX</span>
+                <span className="text-white font-semibold">05370625550</span>
               </div>
             </div>
           </div>
@@ -123,7 +123,7 @@ export function Footer() {
               &copy; 2025 Seyyar Lokmacı - Tüm hakları saklıdır
             </p>
             <p className="text-xs mb-2">
-              <strong>Sipariş & Bilgi:</strong> seyyarlokmaci@gmail.com | <strong>Telefon:</strong> 0532 XXX XX XX
+              <strong>Sipariş & Bilgi:</strong> seyyarlokmaci@gmail.com | <strong>Telefon:</strong> 05370625550
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4 text-xs">
               <span className="flex items-center">
