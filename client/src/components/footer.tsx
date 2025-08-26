@@ -1,227 +1,97 @@
 import { Link } from "wouter";
-import { Star } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
-import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
-import turkeyEmblem from "@assets/Ekran Resmi 2025-07-15 17.05.26_1752588365236.png";
-import turkeyLogo from "@/assets/turkey-logo.png";
-import evisaLogo from "@/assets/evisa-logo.png";
-import evisatrLogo from "@/assets/evisatr-logo.png";
-import turkeyOfficialLogo from "@/assets/turkey-official-logo.png";
-import tursabLogo from "@/assets/tursab-logo.png";
-import newTurkeyEmblem from "@assets/ChatGPT Image 18 Tem 2025 02_01_43_1752793336494.png";
-import newTursabLogo from "@assets/ChatGPT Image 18 Tem 2025 02_14_48_1752794298044.png";
+import { MapPin, Phone, Clock, Heart } from "lucide-react";
 
 export function Footer() {
-  const { t } = useLanguage();
-  
   return (
     <footer className="bg-neutral-800 text-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="text-center md:text-left">
-            <h3 className="text-lg font-semibold mb-4">{t('footer.application')}</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/application" className="hover:text-primary transition-colors">
-                  {t('footer.new.application')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/status" className="hover:text-primary transition-colors">
-                  {t('footer.check.status')}
-                </Link>
-              </li>
-
-            </ul>
+            <h3 className="text-lg font-semibold mb-4 flex items-center">
+              🍯 Seyyar Lokmacı
+            </h3>
+            <p className="text-sm text-neutral-400 mb-4">
+              Ağzınızda eriyen, ballı lokmaların tadına doyamayacaksınız! 
+              Her gün farklı lokasyonlarda taze ve sıcacık lokmalarımızla hizmetinizdeyiz.
+            </p>
+            <div className="flex items-center text-sm text-neutral-400 mb-2">
+              <Heart className="w-4 h-4 mr-2 text-orange-500" />
+              <span>2015'ten beri lezzet dolu hizmet</span>
+            </div>
           </div>
           
           <div className="text-center md:text-left">
-            <h3 className="text-lg font-semibold mb-4">{t('footer.information')}</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/faq" className="hover:text-primary transition-colors">
-                  {t('footer.faq')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/requirements" className="hover:text-primary transition-colors">
-                  {t('footer.requirements')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/processing-times" className="hover:text-primary transition-colors">
-                  {t('footer.processing.times')}
-                </Link>
-              </li>
-            </ul>
+            <h3 className="text-lg font-semibold mb-4">📍 Bugün Neredeyiz?</h3>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-start space-x-3">
+                <MapPin className="w-4 h-4 text-orange-500 mt-0.5" />
+                <div>
+                  <div className="font-semibold">Ataşehir Bulvar</div>
+                  <div className="text-neutral-400">Carrefour Yanı, Ataşehir/İstanbul</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Clock className="w-4 h-4 text-orange-500" />
+                <span className="text-neutral-400">14:00 - 22:00</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Phone className="w-4 h-4 text-orange-500" />
+                <span className="text-neutral-400">0532 XXX XX XX</span>
+              </div>
+            </div>
           </div>
           
           <div className="text-center md:text-left">
-            <h3 className="text-lg font-semibold mb-4">{t('footer.support')}</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a href="mailto:info@euramedglobal.com" className="hover:text-primary transition-colors">
-                  {t('footer.contact.us')}
-                </a>
-              </li>
-              <li>
-                <a href="mailto:info@euramedglobal.com" className="hover:text-primary transition-colors">
-                  {t('footer.live.chat')}
-                </a>
-              </li>
-              <li>
-                <a href="mailto:info@euramedglobal.com" className="hover:text-primary transition-colors">
-                  {t('footer.help.center')}
-                </a>
-              </li>
+            <h3 className="text-lg font-semibold mb-4">🍯 Özel Menümüz</h3>
+            <ul className="space-y-2 text-sm text-neutral-400">
+              <li>• Klasik Ballı Lokma - ₺15</li>
+              <li>• Çikolatalı Lokma - ₺20</li>
+              <li>• Hindistan Cevizli - ₺18</li>
+              <li>• Tarçınlı Özel - ₺22</li>
+              <li>• Fıstıklı Lokma - ₺25</li>
             </ul>
-          </div>
-          
-          <div className="text-center md:text-left">
-            <h3 className="text-lg font-semibold mb-4">{t('footer.legal')}</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/terms" className="hover:text-primary transition-colors">
-                  {t('footer.terms')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy" className="hover:text-primary transition-colors">
-                  {t('footer.privacy')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/security" className="hover:text-primary transition-colors">
-                  {t('footer.security')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/refund" className="hover:text-primary transition-colors">
-                  {t('footer.refund')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/payment-policy" className="hover:text-primary transition-colors">
-                  {t('footer.payment')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/admin" className="hover:text-primary transition-colors text-xs opacity-30">
-                  •
-                </Link>
-              </li>
-            </ul>
+            <div className="mt-4 text-xs text-neutral-500">
+              <p>🏆 En Popüler: Çikolatalı Lokma</p>
+              <p>⭐ 4.8/5 Müşteri Memnuniyeti</p>
+            </div>
           </div>
         </div>
         
         <div className="border-t border-neutral-700 mt-8 pt-8">
-          {/* Security and Payment badges */}
-          <div className="flex flex-wrap items-center justify-center gap-6 mb-6">
-            <div className="flex items-center space-x-2 text-xs text-neutral-400">
-              <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <span>{t('footer.ssl.secured')}</span>
-            </div>
-            <div className="flex items-center space-x-2 text-xs text-neutral-400">
-              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <span>{t('footer.encryption')}</span>
-            </div>
-            <div className="flex items-center space-x-2 text-xs text-neutral-400">
-              <div className="w-8 h-8 bg-yellow-600 rounded-full flex items-center justify-center">
-                <Star className="w-4 h-4 text-white" />
-              </div>
-              <span>{t('footer.government.approved')}</span>
-            </div>
-          </div>
-          
-          {/* Payment Method Logos */}
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <div className="text-xs text-neutral-400 mr-2">{t('footer.we.accept')}</div>
-            <div className="flex items-center space-x-3 flex-wrap justify-center">
-              {/* Visa */}
-              <div className="h-8 w-12 bg-white rounded border flex items-center justify-center">
-                <div className="text-blue-600 font-bold text-xs">VISA</div>
-              </div>
-              
-              {/* Mastercard */}
-              <div className="h-8 w-12 bg-white rounded border flex items-center justify-center">
-                <div className="flex space-x-0.5">
-                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                  <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                </div>
-              </div>
-              
-              {/* American Express */}
-              <div className="h-8 w-12 bg-blue-600 rounded border flex items-center justify-center">
-                <div className="text-white font-bold text-xs">AMEX</div>
-              </div>
-              
-              {/* Discover */}
-              <div className="h-8 w-12 bg-orange-500 rounded border flex items-center justify-center">
-                <div className="text-white font-bold text-xs">DISC</div>
-              </div>
-              
-              {/* TROY */}
-              <div className="h-8 w-12 bg-red-600 rounded border flex items-center justify-center">
-                <div className="text-white font-bold text-xs">TROY</div>
-              </div>
-              
-              {/* JCB */}
-              <div className="h-8 w-12 bg-blue-700 rounded border flex items-center justify-center">
-                <div className="text-white font-bold text-xs">JCB</div>
-              </div>
-              
-              {/* Diners Club */}
-              <div className="h-8 w-12 bg-gray-600 rounded border flex items-center justify-center">
-                <div className="text-white font-bold text-xs">DC</div>
-              </div>
-              
-              {/* UnionPay */}
-              <div className="h-8 w-12 bg-blue-500 rounded border flex items-center justify-center">
-                <div className="text-white font-bold text-xs">UP</div>
-              </div>
-            </div>
-          </div>
-
           <div className="text-center text-sm text-neutral-400">
-            {/* Official Turkish Government E-Visa Logo and TURSAB */}
-            <div className="flex items-center justify-center gap-8 mb-4">
-              <div className="w-32 h-32 flex items-center justify-center">
-                <img 
-                  src={newTurkeyEmblem} 
-                  alt="Türkiye Cumhuriyeti Arması" 
-                  className="w-full h-full object-contain"
-                />
+            <div className="flex items-center justify-center gap-6 mb-4">
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs">✓</span>
+                </div>
+                <span className="text-xs">Günlük Taze Üretim</span>
               </div>
-              <a 
-                href="https://www.tursab.org.tr/acenta-arama" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-32 h-32 flex items-center justify-center hover:opacity-80 transition-opacity"
-              >
-                <img 
-                  src={newTursabLogo} 
-                  alt="TURSAB Dijital Doğrulama Sistemi - Belge No: 5778" 
-                  className="w-full h-full object-contain"
-                />
-              </a>
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 bg-orange-600 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs">🍯</span>
+                </div>
+                <span className="text-xs">%100 Doğal Bal</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">
+                  <Heart className="w-3 h-3 text-white" />
+                </div>
+                <span className="text-xs">Geleneksel Tarif</span>
+              </div>
             </div>
-            <p>&copy; 2025 getvisa.tr. All rights reserved. Not affiliated with the Turkish Government.</p>
-            <p className="mt-2 text-xs">This is a private visa application service. Official government applications can be made directly through Turkish government websites.</p>
-            <div className="mt-4 text-xs space-y-1">
-              <p><strong>Business Information:</strong> GetVisa - Turkey E-Visa Services</p>
-              <p><strong>Contact:</strong> info@euramedglobal.com | Support: 24/7 Available</p>
-              <p><strong>Technical Support:</strong> security@getvisa.tr</p>
-              <p><strong>Compliance:</strong> PCI DSS Level 1 | KVKK Compliant | SSL Secured</p>
+            
+            <p>&copy; 2025 Seyyar Lokmacı. Tüm hakları saklıdır.</p>
+            <p className="mt-2 text-xs">
+              <strong>İletişim:</strong> seyyarlokmaci@gmail.com | <strong>Sipariş Hattı:</strong> 0532 XXX XX XX
+            </p>
+            <p className="mt-2 text-xs">
+              Her gün farklı lokasyonlarda, aynı lezzet ve kalite ile hizmetinizdeyiz!
+            </p>
+            <div className="mt-4 text-xs space-x-4">
+              <span>🕐 Pazartesi-Pazar: 14:00-22:00</span>
+              <span>📱 Instagram: @seyyarlokmaci</span>
+              <span>🚐 Mobil Hizmet</span>
             </div>
-            <p className="mt-1 text-xs">Fast, reliable and secure visa processing</p>
           </div>
         </div>
       </div>
