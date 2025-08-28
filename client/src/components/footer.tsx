@@ -218,7 +218,7 @@ export function Footer() {
             <div className="mt-4 text-xs space-y-1">
               <p><strong>Business Information:</strong> GetVisa - Turkey E-Visa Services</p>
               <p><strong>Contact:</strong> info@euramedglobal.com | Support: 24/7 Available</p>
-              <p><strong>Technical Support:</strong> security@getvisa.tr</p>
+              <p><strong>Technical Support:</strong> support@euramedglobal.com</p>
               <p><strong>Compliance:</strong> PCI DSS Level 1 | KVKK Compliant | SSL Secured</p>
             </div>
             <p className="mt-1 text-xs">Fast, reliable and secure visa processing</p>
