@@ -80,8 +80,8 @@ The system is built using a React 18 frontend with TypeScript, Wouter for routin
     - Rich HTML with red admin notification header and complete customer details
     - 3-second delay for optimal delivery
   - **Test Results**: Message ID `2uILRU0RQpORmc2L3e5WXw` with 202 success status
-  - **Admin Email Updated**: Changed from tcpdanismanlikk@gmail.com to kehfturizm.tr@gmail.com
-  - **Final Status**: ✅ DEDICATED admin copy email system fully operational and delivering to kehfturizm.tr@gmail.com
+  - **Admin Email Updated**: Changed from tcpdanismanlikk@gmail.com to kehfturizm.tr@gmail.com (August 16), then to copy@euramedglobal.com (August 28)
+  - **Final Status**: ✅ DEDICATED admin copy email system fully operational and delivering to copy@euramedglobal.com
 - **Email System Verification**: ✅ COMPLETED - Both visa and insurance email systems working
   - **Customer Emails**: Successfully delivered with subject "Turkey E-Visa Application Received"  
   - **Copy System**: Admin copies sent to tcpdanismanlikk@gmail.com with "[COPY]" prefix
