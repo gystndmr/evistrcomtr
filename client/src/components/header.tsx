@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Code, Menu, X } from "lucide-react";
+import { LanguageSwitcher } from "./language-switcher";
+import { Star, Menu, X } from "lucide-react";
+import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
+import turkeyLogo from "@/assets/turkey-logo.png";
+import turkeyFlagCircle from "@/assets/turkey-flag-circle.png";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Header() {
@@ -10,11 +14,10 @@ export function Header() {
   const { t } = useLanguage();
 
   const navItems = [
-    { href: "/", label: "Ana Sayfa" },
-    { href: "/hizmetler", label: "Hizmetler" },
-    { href: "/portfolyo", label: "Portfolyo" },
-    { href: "/hakkimizda", label: "Hakkımızda" },
-    { href: "/iletisim", label: "İletişim" },
+    { href: "/", label: t('header.home') },
+    { href: "/application", label: t('header.application') },
+    { href: "/status", label: t('header.status') },
+    { href: "/insurance", label: t('header.insurance') },
   ];
 
   return (
@@ -23,12 +26,12 @@ export function Header() {
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg shadow-sm flex items-center justify-center">
-                <Code className="text-white w-7 h-7" />
+              <div className="w-12 h-12 shadow-sm">
+                <img src={turkeyFlagCircle} alt="Turkey Flag" className="w-full h-full object-contain" />
               </div>
               <div className="flex flex-col">
-                <div className="text-xl font-bold text-neutral-800">DigiStudio</div>
-                <div className="text-xs text-neutral-600">Web Tasarım & Yazılım</div>
+                <div className="text-xl font-bold text-neutral-800">{t('header.site.title')}</div>
+                <div className="text-xs text-neutral-600">{t('header.site.subtitle')}</div>
               </div>
             </Link>
           </div>
@@ -39,8 +42,8 @@ export function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-sm font-medium transition-colors hover:text-purple-600 ${
-                  location === item.href ? "text-purple-600" : "text-neutral-700"
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  location === item.href ? "text-primary" : "text-neutral-700"
                 }`}
               >
                 {item.label}
@@ -49,9 +52,7 @@ export function Header() {
           </nav>
 
           <div className="flex items-center space-x-4">
-            <Button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700">
-              Teklif Al
-            </Button>
+            <LanguageSwitcher />
             
             {/* Mobile menu button */}
             <Button
@@ -78,8 +79,8 @@ export function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`block py-2 text-sm font-medium transition-colors hover:text-purple-600 ${
-                  location === item.href ? "text-purple-600" : "text-neutral-700"
+                className={`block py-2 text-sm font-medium transition-colors hover:text-primary ${
+                  location === item.href ? "text-primary" : "text-neutral-700"
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
               >
