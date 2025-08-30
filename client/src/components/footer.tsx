@@ -1,168 +1,188 @@
 import { Link } from "wouter";
-import { Megaphone, Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
+import { Star, Megaphone } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-white py-16">
+    <footer className="bg-neutral-800 text-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Company Info */}
           <div className="text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start space-x-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <Megaphone className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">AdAgency</span>
-            </div>
-            <p className="text-gray-400 mb-6 leading-relaxed">
-              We create powerful advertising campaigns that connect brands with their audiences and drive real business results.
-            </p>
-            <div className="flex justify-center md:justify-start space-x-4">
-              <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-pink-600 transition-colors">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-pink-600 transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-pink-600 transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-pink-600 transition-colors">
-                <Linkedin className="w-5 h-5" />
-              </a>
-            </div>
-          </div>
-          
-          {/* Services */}
-          <div className="text-center md:text-left">
-            <h3 className="text-lg font-semibold mb-6 text-pink-400">Our Services</h3>
-            <ul className="space-y-3 text-sm">
+            <h3 className="text-lg font-semibold mb-4">Services</h3>
+            <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/services/advertising" className="hover:text-pink-400 transition-colors">
+                <Link href="/services" className="hover:text-primary transition-colors">
                   Advertising Campaigns
                 </Link>
               </li>
               <li>
-                <Link href="/services/digital" className="hover:text-pink-400 transition-colors">
+                <Link href="/services" className="hover:text-primary transition-colors">
                   Digital Marketing
                 </Link>
               </li>
               <li>
-                <Link href="/services/branding" className="hover:text-pink-400 transition-colors">
-                  Brand Identity
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/production" className="hover:text-pink-400 transition-colors">
-                  Creative Production
-                </Link>
-              </li>
-              <li>
-                <Link href="/services/analytics" className="hover:text-pink-400 transition-colors">
-                  Analytics & Insights
+                <Link href="/services" className="hover:text-primary transition-colors">
+                  Brand Strategy
                 </Link>
               </li>
             </ul>
           </div>
           
-          {/* Company */}
           <div className="text-center md:text-left">
-            <h3 className="text-lg font-semibold mb-6 text-pink-400">Company</h3>
-            <ul className="space-y-3 text-sm">
+            <h3 className="text-lg font-semibold mb-4">Company</h3>
+            <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/about" className="hover:text-pink-400 transition-colors">
+                <Link href="/about" className="hover:text-primary transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/portfolio" className="hover:text-pink-400 transition-colors">
-                  Our Work
+                <Link href="/portfolio" className="hover:text-primary transition-colors">
+                  Portfolio
                 </Link>
               </li>
               <li>
-                <Link href="/team" className="hover:text-pink-400 transition-colors">
-                  Our Team
-                </Link>
-              </li>
-              <li>
-                <Link href="/careers" className="hover:text-pink-400 transition-colors">
-                  Careers
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="hover:text-pink-400 transition-colors">
-                  Blog
+                <Link href="/contact" className="hover:text-primary transition-colors">
+                  Contact
                 </Link>
               </li>
             </ul>
           </div>
           
-          {/* Contact */}
           <div className="text-center md:text-left">
-            <h3 className="text-lg font-semibold mb-6 text-pink-400">Contact Info</h3>
-            <ul className="space-y-4 text-sm">
-              <li className="flex items-center justify-center md:justify-start space-x-3">
-                <MapPin className="w-4 h-4 text-pink-400 flex-shrink-0" />
-                <span className="text-gray-400">123 Creative Street, NY 10001</span>
+            <h3 className="text-lg font-semibold mb-4">Support</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <a href="mailto:info@adagency.com" className="hover:text-primary transition-colors">
+                  Contact Us
+                </a>
               </li>
-              <li className="flex items-center justify-center md:justify-start space-x-3">
-                <Phone className="w-4 h-4 text-pink-400 flex-shrink-0" />
-                <span className="text-gray-400">+1 (555) 123-4567</span>
+              <li>
+                <a href="mailto:support@adagency.com" className="hover:text-primary transition-colors">
+                  Help Center
+                </a>
               </li>
-              <li className="flex items-center justify-center md:justify-start space-x-3">
-                <Mail className="w-4 h-4 text-pink-400 flex-shrink-0" />
-                <span className="text-gray-400">hello@adagency.com</span>
+              <li>
+                <a href="tel:+1234567890" className="hover:text-primary transition-colors">
+                  Phone Support
+                </a>
               </li>
             </ul>
-            
-            <div className="mt-6 p-4 bg-gray-800 rounded-lg">
-              <h4 className="font-semibold text-pink-400 mb-2">Office Hours</h4>
-              <p className="text-gray-400 text-sm">Monday - Friday: 9:00 AM - 6:00 PM</p>
-              <p className="text-gray-400 text-sm">Saturday: 10:00 AM - 4:00 PM</p>
-              <p className="text-gray-400 text-sm">Sunday: Closed</p>
-            </div>
+          </div>
+          
+          <div className="text-center md:text-left">
+            <h3 className="text-lg font-semibold mb-4">Legal</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link href="/terms" className="hover:text-primary transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="hover:text-primary transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/cookies" className="hover:text-primary transition-colors">
+                  Cookie Policy
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
         
-        <div className="border-t border-gray-800 mt-12 pt-8">
-          {/* Awards and Certifications */}
-          <div className="flex flex-wrap items-center justify-center gap-8 mb-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-2">
-                <span className="text-white font-bold text-sm">AWARD</span>
+        <div className="border-t border-neutral-700 mt-8 pt-8">
+          {/* Security and Trust badges */}
+          <div className="flex flex-wrap items-center justify-center gap-6 mb-6">
+            <div className="flex items-center space-x-2 text-xs text-neutral-400">
+              <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
               </div>
-              <p className="text-xs text-gray-500">Best Creative Agency 2024</p>
+              <span>SSL Secured</span>
             </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                <span className="text-white font-bold text-sm">CERT</span>
+            <div className="flex items-center space-x-2 text-xs text-neutral-400">
+              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                </svg>
               </div>
-              <p className="text-xs text-gray-500">Google Partner Certified</p>
+              <span>Data Protected</span>
             </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-2">
-                <span className="text-white font-bold text-sm">ISO</span>
+            <div className="flex items-center space-x-2 text-xs text-neutral-400">
+              <div className="w-8 h-8 bg-yellow-600 rounded-full flex items-center justify-center">
+                <Star className="w-4 h-4 text-white" />
               </div>
-              <p className="text-xs text-gray-500">ISO 9001:2015 Certified</p>
+              <span>Award Winning</span>
             </div>
           </div>
           
-          <div className="text-center text-sm text-gray-400">
-            <div className="flex flex-wrap justify-center gap-6 mb-4">
-              <Link href="/privacy" className="hover:text-pink-400 transition-colors">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-pink-400 transition-colors">Terms of Service</Link>
-              <Link href="/cookies" className="hover:text-pink-400 transition-colors">Cookie Policy</Link>
-              <Link href="/sitemap" className="hover:text-pink-400 transition-colors">Sitemap</Link>
+          {/* Payment Method Logos */}
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <div className="text-xs text-neutral-400 mr-2">We Accept:</div>
+            <div className="flex items-center space-x-3 flex-wrap justify-center">
+              {/* Visa */}
+              <div className="h-8 w-12 bg-white rounded border flex items-center justify-center">
+                <div className="text-blue-600 font-bold text-xs">VISA</div>
+              </div>
+              
+              {/* Mastercard */}
+              <div className="h-8 w-12 bg-white rounded border flex items-center justify-center">
+                <div className="flex space-x-0.5">
+                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                  <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                </div>
+              </div>
+              
+              {/* American Express */}
+              <div className="h-8 w-12 bg-blue-600 rounded border flex items-center justify-center">
+                <div className="text-white font-bold text-xs">AMEX</div>
+              </div>
+              
+              {/* Discover */}
+              <div className="h-8 w-12 bg-orange-500 rounded border flex items-center justify-center">
+                <div className="text-white font-bold text-xs">DISC</div>
+              </div>
+              
+              {/* PayPal */}
+              <div className="h-8 w-12 bg-blue-500 rounded border flex items-center justify-center">
+                <div className="text-white font-bold text-xs">PP</div>
+              </div>
+              
+              {/* Stripe */}
+              <div className="h-8 w-12 bg-purple-600 rounded border flex items-center justify-center">
+                <div className="text-white font-bold text-xs">ST</div>
+              </div>
             </div>
-            <div className="flex items-center justify-center space-x-4 mb-4">
-              <span>🏆 Award-Winning Agency</span>
-              <span>•</span>
-              <span>📈 Proven Results</span>
-              <span>•</span>
-              <span>🎯 Strategic Approach</span>
+          </div>
+
+          <div className="text-center text-sm text-neutral-400">
+            {/* Company Certifications */}
+            <div className="flex items-center justify-center gap-8 mb-4">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Megaphone className="w-8 h-8 text-white" />
+                </div>
+                <p className="text-xs">Certified Agency</p>
+              </div>
+              <div className="text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <span className="text-white font-bold text-sm">ISO</span>
+                </div>
+                <p className="text-xs">ISO 9001:2015</p>
+              </div>
             </div>
-            <p>&copy; 2025 AdAgency. All rights reserved.</p>
-            <p className="mt-2 text-xs">Building brands, driving growth, creating impact.</p>
+            
+            <p>&copy; 2025 AdAgency - Creative Advertising Solutions. All rights reserved.</p>
+            <p className="mt-2 text-xs">Professional advertising services with proven results.</p>
+            <div className="mt-4 text-xs space-y-1">
+              <p><strong>Business Information:</strong> AdAgency - Creative Advertising Solutions</p>
+              <p><strong>Contact:</strong> info@adagency.com | Support: 24/7 Available</p>
+              <p><strong>Technical Support:</strong> support@adagency.com</p>
+              <p><strong>Compliance:</strong> GDPR Compliant | SSL Secured | Data Protected</p>
+            </div>
+            <p className="mt-1 text-xs">Building brands, driving growth, creating impact</p>
           </div>
         </div>
       </div>
