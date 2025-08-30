@@ -1,293 +1,196 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Code, Smartphone, Globe, Server, Database, Zap, Users, Award, ArrowRight, CheckCircle } from "lucide-react";
+import { IdCard, CreditCard, Download, Shield, Star, Crown, Search } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
+import turkeySymbolRed from "@/assets/turkey-symbol-red.png";
+import cappadociaImg from "../../../attached_assets/pexels-musaortac-14186574_1752590100661.jpg";
+import ephesusImg from "../../../attached_assets/pexels-hilal-tosun-54875889-33011223_1752590240668.jpg";
+import antalyaImg from "../../../attached_assets/pexels-mikhail-nilov-8322807_1752590250012.jpg";
+import bosphorusImg from "../../../attached_assets/pexels-ugur-kahraman-1765266160-29649889_1752590268560.jpg";
+import pamukkaleImg from "../../../attached_assets/pexels-fromsalih-27829278_1752590288989.jpg";
+import hagiaSophiaImg from "../../../attached_assets/pexels-mustafa-eker-649114924-17634093_1752590829229.jpg";
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const { t } = useLanguage();
 
-  const slides = [
-    {
-      title: "Web Development Excellence",
-      subtitle: "Modern, Fast & Secure Web Solutions",
-      description: "We create stunning websites and powerful web applications that drive your business forward."
-    },
-    {
-      title: "Mobile App Development", 
-      subtitle: "iOS & Android Native Apps",
-      description: "Cross-platform mobile applications with native performance and beautiful user experiences."
-    },
-    {
-      title: "Custom Software Solutions",
-      subtitle: "Tailored to Your Business Needs",
-      description: "Enterprise-grade software solutions designed specifically for your unique requirements."
-    }
+  // Turkish landmark images 
+  const turkishLandmarks = [
+    { image: cappadociaImg },
+    { image: ephesusImg }, 
+    { image: antalyaImg },
+    { image: bosphorusImg },
+    { image: pamukkaleImg }
   ];
+
+  // Preload all images immediately when component mounts
+  useEffect(() => {
+    const preloadImages = async () => {
+      const imagePromises = turkishLandmarks.map((landmark) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = landmark.image;
+        });
+      });
+
+      try {
+        await Promise.all(imagePromises);
+        setImagesLoaded(true);
+        console.log('All homepage images preloaded successfully');
+      } catch (error) {
+        console.error('Error preloading images:', error);
+        setImagesLoaded(true); // Still show content even if some images fail
+      }
+    };
+
+    preloadImages();
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
+      setCurrentSlide((prev) => (prev + 1) % turkishLandmarks.length);
+    }, 4000);
     return () => clearInterval(interval);
   }, []);
 
-  const services = [
-    {
-      icon: Globe,
-      title: "Web Development",
-      description: "Responsive websites, e-commerce platforms, and web applications using modern technologies.",
-      technologies: ["React", "Next.js", "TypeScript", "Node.js"]
-    },
-    {
-      icon: Smartphone,
-      title: "Mobile Development",
-      description: "Native iOS and Android apps, React Native, and Flutter cross-platform solutions.",
-      technologies: ["React Native", "Flutter", "iOS", "Android"]
-    },
-    {
-      icon: Server,
-      title: "Backend Systems",
-      description: "Scalable APIs, microservices, cloud infrastructure, and database design.",
-      technologies: ["Python", "Node.js", "AWS", "PostgreSQL"]
-    },
-    {
-      icon: Database,
-      title: "Database Solutions",
-      description: "Database design, optimization, migration, and data analytics solutions.",
-      technologies: ["PostgreSQL", "MongoDB", "Redis", "Analytics"]
-    },
-    {
-      icon: Zap,
-      title: "Performance Optimization",
-      description: "Speed optimization, SEO, monitoring, and technical consulting services.",
-      technologies: ["SEO", "Analytics", "Monitoring", "CDN"]
-    },
-    {
-      icon: Code,
-      title: "Custom Software",
-      description: "Enterprise software, automation tools, and business process optimization.",
-      technologies: ["Python", "Java", "C#", "Automation"]
-    }
-  ];
 
-  const features = [
-    "Free Consultation & Project Analysis",
-    "Modern Tech Stack & Best Practices", 
-    "Mobile-First Responsive Design",
-    "SEO Optimized & Fast Loading",
-    "24/7 Support & Maintenance",
-    "Secure & Scalable Solutions"
-  ];
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Simple Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Code className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <div className="text-xl font-bold text-gray-800">DevStudio</div>
-                <div className="text-xs text-gray-600">Web & Software Development</div>
-              </div>
-            </div>
-            <nav className="hidden md:flex items-center space-x-8">
-              <a href="#services" className="text-gray-700 hover:text-blue-600 font-medium">Services</a>
-              <a href="#about" className="text-gray-700 hover:text-blue-600 font-medium">About</a>
-              <a href="#contact" className="text-gray-700 hover:text-blue-600 font-medium">Contact</a>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">Get Quote</Button>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header />
       
-      {/* Hero Section */}
-      <section className="relative h-[80vh] bg-gradient-to-br from-blue-900 via-blue-800 to-purple-900 overflow-hidden">
-        <div className="absolute inset-0 bg-black opacity-20"></div>
-        
-        {/* Animated Background */}
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
-          <div className="absolute top-40 right-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse animation-delay-2000"></div>
-          <div className="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse animation-delay-4000"></div>
-        </div>
-
-        <div className="relative z-10 flex items-center justify-center h-full">
-          <div className="text-center text-white px-4 max-w-5xl mx-auto">
-            <div className="transition-all duration-1000 ease-in-out">
-              <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
-                {slides[currentSlide].title}
-              </h1>
-              <h2 className="text-xl md:text-3xl font-semibold mb-6 text-blue-200 drop-shadow-md">
-                {slides[currentSlide].subtitle}
-              </h2>
-              <p className="text-lg md:text-xl mb-8 opacity-90 max-w-3xl mx-auto leading-relaxed">
-                {slides[currentSlide].description}
-              </p>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg">
-                Start Your Project
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-blue-900 px-8 py-4 text-lg">
-                View Our Work
-              </Button>
+      
+      {/* Hero Section with Rotating Turkish Landmarks */}
+      <section className="relative h-[70vh] overflow-hidden">
+        {/* Loading Placeholder */}
+        {!imagesLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center">
+            <div className="text-white text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+              <p className="text-lg font-semibold">Loading Turkey's beautiful landmarks...</p>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Slide Indicators */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
-          {slides.map((_, index) => (
-            <button
+        {/* Background Slides */}
+        <div className={`absolute inset-0 transition-opacity duration-500 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}>
+          {turkishLandmarks.map((landmark, index) => (
+            <div
               key={index}
-              className={`w-3 h-3 rounded-full transition-all ${
-                index === currentSlide ? 'bg-white' : 'bg-white/30'
+              className={`absolute inset-0 transition-opacity duration-1000 ${
+                index === currentSlide ? 'opacity-100' : 'opacity-0'
               }`}
-              onClick={() => setCurrentSlide(index)}
-            />
+            >
+              <img 
+                src={landmark.image}
+                alt={`Turkish landmark ${index + 1}`}
+                className="absolute inset-0 w-full h-full object-cover"
+                loading="eager"
+                decoding="async"
+              />
+              <div className="absolute inset-0 bg-black opacity-50" />
+            </div>
           ))}
         </div>
-      </section>
 
-      {/* Services Section */}
-      <section id="services" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Our Services</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              We provide comprehensive digital solutions to help your business thrive in the modern world
+
+
+        {/* Main Content */}
+        <div className="relative z-10 flex items-center justify-center h-full">
+          <div className="text-center text-white px-4 max-w-4xl mx-auto">
+
+            
+            <h1 className="text-3xl md:text-4xl font-bold mb-4 drop-shadow-lg tracking-wider">
+              {t('header.title')}
+            </h1>
+            <h2 className="text-xl md:text-2xl font-semibold mb-3 drop-shadow-md border-b-2 border-white/30 pb-1 inline-block">
+              {t('home.hero.title')}
+            </h2>
+            <p className="text-base md:text-lg mb-6 opacity-90 drop-shadow-sm font-medium">
+              {t('home.hero.subtitle')}
             </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, index) => {
-              const IconComponent = service.icon;
-              return (
-                <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-lg">
-                  <CardHeader className="text-center pb-4">
-                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-blue-600 transition-colors">
-                      <IconComponent className="w-8 h-8 text-blue-600 group-hover:text-white transition-colors" />
-                    </div>
-                    <CardTitle className="text-xl font-bold text-gray-800">{service.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center">
-                    <p className="text-gray-600 mb-4 leading-relaxed">{service.description}</p>
-                    <div className="flex flex-wrap gap-2 justify-center">
-                      {service.technologies.map((tech, techIndex) => (
-                        <Badge key={techIndex} variant="secondary" className="text-xs">
-                          {tech}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
+            
+
+
+            {/* Transparent Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <Link href="/application">
+                <div className="bg-red-600/80 hover:bg-red-600/90 text-white px-12 py-4 text-xl font-semibold transition-all duration-200 cursor-pointer">
+                  {t('home.buttons.apply')}
+                </div>
+              </Link>
+              <Link href="/status">
+                <div className="bg-blue-600/80 hover:bg-blue-600/90 text-white px-12 py-4 text-xl font-semibold transition-all duration-200 cursor-pointer">
+                  {t('home.buttons.check')}
+                </div>
+              </Link>
+            </div>
           </div>
         </div>
+
+
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Why Choose Us?</h2>
-            <p className="text-xl text-gray-600">Quality, Innovation, and Reliability in Every Project</p>
+      {/* Application Process Steps */}
+      <section className="py-12 sm:py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-800 mb-4">{t('home.hero.steps')}</h2>
+            <p className="text-base sm:text-lg text-neutral-600">{t('home.hero.subtitle')}</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, index) => (
-              <div key={index} className="flex items-center space-x-3 bg-white p-6 rounded-lg shadow-sm">
-                <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0" />
-                <span className="text-gray-700 font-medium">{feature}</span>
+          <div className="flex flex-col sm:flex-row sm:justify-center sm:items-start gap-6 sm:gap-8 lg:gap-12">
+            <div className="text-center sm:flex-1 max-w-xs mx-auto sm:mx-0">
+              <div className="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-white font-bold text-xl">1</span>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-20 bg-blue-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-4xl font-bold mb-2">150+</div>
-              <div className="text-blue-200">Projects Completed</div>
+              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">{t('home.steps.complete')}</h3>
+              <p className="text-sm sm:text-base text-neutral-600 px-2">{t('home.steps.complete.desc')}</p>
             </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">50+</div>
-              <div className="text-blue-200">Happy Clients</div>
+            
+            <div className="text-center sm:flex-1 max-w-xs mx-auto sm:mx-0">
+              <div className="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-white font-bold text-xl">2</span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">{t('home.steps.payment')}</h3>
+              <p className="text-sm sm:text-base text-neutral-600 px-2">{t('home.steps.payment.desc')}</p>
             </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">5+</div>
-              <div className="text-blue-200">Years Experience</div>
-            </div>
-            <div>
-              <div className="text-4xl font-bold mb-2">24/7</div>
-              <div className="text-blue-200">Support Available</div>
+            
+            <div className="text-center sm:flex-1 max-w-xs mx-auto sm:mx-0">
+              <div className="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-white font-bold text-xl">3</span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">{t('home.steps.download')}</h3>
+              <p className="text-sm sm:text-base text-neutral-600 px-2">{t('home.steps.download.desc')}</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section id="contact" className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Ready to Start Your Project?</h2>
-          <p className="text-xl text-gray-600 mb-8">
-            Get in touch with us today for a free consultation and project estimate
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 px-8 py-4 text-lg">
-              <Users className="w-5 h-5 mr-2" />
-              Schedule Consultation
-            </Button>
-            <Button variant="outline" size="lg" className="px-8 py-4 text-lg">
-              Get Free Quote
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div>
-              <h4 className="font-semibold text-gray-800 mb-2">Email</h4>
-              <p className="text-gray-600">hello@devstudio.com</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-800 mb-2">Phone</h4>
-              <p className="text-gray-600">+1 (555) 123-4567</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-800 mb-2">Response Time</h4>
-              <p className="text-gray-600">Within 24 hours</p>
-            </div>
+      {/* Travel Insurance Section */}
+      <section className="py-12 sm:py-16 bg-gradient-to-br from-blue-50 to-red-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <Link href="/insurance">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-4">
+                <Shield className="w-5 h-5 mr-2" />
+                {t('home.insurance.button')}
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Simple Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="flex items-center justify-center space-x-3 mb-4">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <Code className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-xl font-bold">DevStudio</span>
-          </div>
-          <p className="text-gray-400 mb-4">Professional Web & Software Development Services</p>
-          <p className="text-sm text-gray-500">
-            © 2025 DevStudio. All rights reserved. | Made with ❤️ for businesses worldwide
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
