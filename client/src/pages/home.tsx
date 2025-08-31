@@ -9,7 +9,6 @@ import {
   Camera, Palette, Monitor, Smartphone, Globe 
 } from "lucide-react";
 import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -283,8 +282,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 }
