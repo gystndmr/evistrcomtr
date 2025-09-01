@@ -4,205 +4,184 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  ShoppingCart, MapPin, Clock, Star, Phone, Instagram, 
-  ArrowRight, CheckCircle, Utensils, Truck, Award,
-  Users, Heart, Coffee, Cake
+  Zap, Rocket, Shield, Brain, Globe, Sparkles,
+  ArrowRight, CheckCircle, Star, Play, Users,
+  Phone, Mail, MapPin, Trophy, Target, Heart
 } from "lucide-react";
 import { Header } from "@/components/header";
 
 export default function Home() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-
-  const slides = [
-    {
-      title: "Seyyar Lokmacımız",
-      subtitle: "Taze ve Lezzetli Lokma",
-      description: "Geleneksel tariflerle hazırlanan, taze ve sıcak lokmalarımızla şehrin her yerindeyiz!"
-    },
-    {
-      title: "Özel Etkinlikler", 
-      subtitle: "Düğün & Organizasyon",
-      description: "Düğünleriniz, doğum günleriniz ve özel etkinlikleriniz için lokma ikramı hizmeti veriyoruz."
-    },
-    {
-      title: "Günlük Taze Üretim",
-      subtitle: "Sabahtan Hazır",
-      description: "Her gün taze hazırlanan lokmalarımız, geleneksel lezzeti modern sunumla buluşturuyor."
-    }
-  ];
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 4000);
-    return () => clearInterval(interval);
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
   const services = [
     {
-      icon: Truck,
-      title: "Seyyar Satış",
-      description: "Şehrin çeşitli noktalarında, taze ve sıcak lokmalarımızı sunuyoruz.",
-      features: ["Günlük Rotalar", "Taze Lokma", "Hızlı Servis", "Hijyenik Üretim"]
+      icon: Brain,
+      title: "AI & Machine Learning",
+      description: "Yapay zeka çözümleri ile işletmenizi geleceğe taşıyın",
+      price: "5.000₺'den başlayan fiyatlar",
+      color: "from-purple-500 to-pink-500"
     },
     {
-      icon: Users,
-      title: "Etkinlik Catering",
-      description: "Düğün, nişan, doğum günü ve özel etkinlikleriniz için lokma ikramı.",
-      features: ["Düğün Paketi", "Doğum Günü", "Kurumsal Etkinlik", "Özel Organizasyon"]
+      icon: Rocket,
+      title: "Startup Acceleration",
+      description: "Girişiminizi hızla büyütme stratejileri ve mentörlük",
+      price: "Ücretsiz değerlendirme",
+      color: "from-blue-500 to-cyan-500"
     },
     {
-      icon: Heart,
-      title: "Geleneksel Lezzet",
-      description: "Dededen kalma tariflerle, özenle hazırlanan geleneksel lokmalar.",
-      features: ["Ev Yapımı", "Doğal Malzeme", "Geleneksel Tarif", "El Emeği"]
+      icon: Globe,
+      title: "Global Expansion",
+      description: "Uluslararası pazarlara açılma ve global büyüme",
+      price: "Özel fiyatlandırma",
+      color: "from-green-500 to-emerald-500"
     },
     {
-      icon: Clock,
-      title: "Hızlı Teslimat",
-      description: "Siparişlerinizi en kısa sürede taze ve sıcak olarak teslim ediyoruz.",
-      features: ["30 Dk Teslimat", "Sıcak Servis", "Hijyenik Paket", "GPS Takip"]
-    }
-  ];
-
-  const achievements = [
-    { number: "5000+", label: "Mutlu Müşteri" },
-    { number: "15000+", label: "Lokma Satışı" },
-    { number: "50+", label: "Etkinlik" },
-    { number: "3+", label: "Yıllık Deneyim" }
-  ];
-
-  const menu = [
-    {
-      name: "Klasik Lokma",
-      description: "Geleneksel tarif ile hazırlanan, şerbet dökümlü lokma",
-      price: "100₺",
-      portion: "1 kg"
-    },
-    {
-      name: "Özel Lokma",
-      description: "Fıstık, hindistan cevizi ve özel soslarla süslenmiş lokma",
-      price: "150₺", 
-      portion: "1 kg"
-    },
-    {
-      name: "Mini Lokma",
-      description: "Çocuklar için özel hazırlanmış mini boy lokmalar",
-      price: "80₺",
-      portion: "1 kg"
-    },
-    {
-      name: "Etkinlik Paketi",
-      description: "100+ kişilik etkinlikler için özel hazırlanan büyük paket",
-      price: "800₺",
-      portion: "10 kg"
+      icon: Zap,
+      title: "Process Automation",
+      description: "İş süreçlerinizi otomatize edin, verimliliği artırın",
+      price: "10.000₺'den başlayan fiyatlar",
+      color: "from-orange-500 to-red-500"
     }
   ];
 
   const testimonials = [
     {
-      name: "Ayşe Hanım",
-      event: "Düğün",
-      text: "Düğünümüzde lokma ikramı harika oldu! Misafirlerimiz çok beğendi, teşekkürler!"
+      name: "Sarah Chen",
+      company: "TechVision",
+      text: "6 ayda %400 büyüme elde ettik. İnanılmaz sonuçlar!",
+      avatar: "SC",
+      rating: 5
     },
     {
-      name: "Mehmet Bey", 
-      event: "Doğum Günü",
-      text: "Oğlumun doğum günü için sipariş verdik. Lokma çok taze ve lezzetliydi!"
+      name: "Marcus Johnson",
+      company: "InnovateNow",
+      text: "AI entegrasyonu ile operasyon maliyetlerimizi %60 azalttık.",
+      avatar: "MJ",
+      rating: 5
     },
     {
-      name: "Fatma Hanım",
-      event: "Nişan",
-      text: "Nişanımızda lokma ikramı mükemmeldi. Herkese tavsiye ederim!"
+      name: "Elena Rodriguez",
+      company: "FutureScale",
+      text: "Global pazara açılmamızda rehberlik ettiler. Mükemmel!",
+      avatar: "ER",
+      rating: 5
     }
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-black text-white overflow-hidden">
       <Header />
       
-      {/* Hero Section */}
-      <section className="relative h-[85vh] bg-gradient-to-br from-orange-600 via-red-600 to-yellow-600 overflow-hidden">
-        <div className="absolute inset-0 bg-black opacity-40"></div>
-        
-        {/* Animated Background Elements */}
+      {/* Mouse Follower Effect */}
+      <div 
+        className="fixed w-4 h-4 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full pointer-events-none z-50 mix-blend-difference"
+        style={{
+          left: mousePosition.x - 8,
+          top: mousePosition.y - 8,
+          transition: 'all 0.1s ease-out'
+        }}
+      />
+
+      {/* Hero Section with Glassmorphism */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Animated Background */}
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-20 w-96 h-96 bg-orange-400 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
-          <div className="absolute top-40 right-20 w-96 h-96 bg-red-400 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse animation-delay-2000"></div>
-          <div className="absolute bottom-20 left-1/2 w-96 h-96 bg-yellow-400 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse animation-delay-4000"></div>
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000"></div>
+          <div className="absolute bottom-1/4 left-1/2 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-4000"></div>
         </div>
 
-        <div className="relative z-10 flex items-center justify-center h-full">
-          <div className="text-center text-white px-4 max-w-6xl mx-auto">
-            <div className="transition-all duration-1000 ease-in-out">
-              <h1 className="text-5xl md:text-7xl font-bold mb-6 drop-shadow-lg">
-                {slides[currentSlide].title}
-              </h1>
-              <h2 className="text-2xl md:text-4xl font-semibold mb-8 text-orange-200 drop-shadow-md">
-                {slides[currentSlide].subtitle}
-              </h2>
-              <p className="text-xl md:text-2xl mb-10 opacity-90 max-w-4xl mx-auto leading-relaxed">
-                {slides[currentSlide].description}
-              </p>
+        {/* Glassmorphism Card */}
+        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
+          <div className="bg-white/5 backdrop-blur-lg rounded-3xl p-12 border border-white/10 shadow-2xl">
+            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full px-6 py-2 mb-8">
+              <Sparkles className="w-4 h-4 text-purple-400" />
+              <span className="text-sm text-purple-300">Next-Gen Business Solutions</span>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Button size="lg" className="bg-orange-600 hover:bg-orange-700 text-white px-10 py-6 text-xl font-semibold">
-                <ShoppingCart className="w-6 h-6 mr-2" />
-                Sipariş Ver
+            <h1 className="text-6xl md:text-8xl font-black mb-6 bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
+              FUTURE
+              <span className="block text-5xl md:text-7xl bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                IS NOW
+              </span>
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+              Yapay zeka, otomasyon ve global stratejilerle işletmenizi yarının dünyasına hazırlıyoruz
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <Button size="lg" className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 text-lg font-bold rounded-full shadow-lg hover:shadow-purple-500/25 transition-all duration-300">
+                <Rocket className="w-5 h-5 mr-2" />
+                Ücretsiz Analiz Al
               </Button>
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-orange-600 px-10 py-6 text-xl font-semibold">
-                <MapPin className="w-6 h-6 mr-2" />
-                Konumlarımız
+              <Button variant="outline" size="lg" className="border-white/20 text-white hover:bg-white/10 px-8 py-4 text-lg rounded-full backdrop-blur-sm">
+                <Play className="w-5 h-5 mr-2" />
+                Demo İzle
               </Button>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-3 gap-8 mt-12 pt-8 border-t border-white/10">
+              <div>
+                <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">500+</div>
+                <div className="text-gray-400 text-sm">Başarılı Proje</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">%400</div>
+                <div className="text-gray-400 text-sm">Ortalama Büyüme</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">24/7</div>
+                <div className="text-gray-400 text-sm">Destek</div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Slide Indicators */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              className={`w-4 h-4 rounded-full transition-all ${
-                index === currentSlide ? 'bg-white' : 'bg-white/40'
-              }`}
-              onClick={() => setCurrentSlide(index)}
-            />
-          ))}
-        </div>
+        {/* Floating Elements */}
+        <div className="absolute top-20 left-10 w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg rotate-12 opacity-20 animate-bounce"></div>
+        <div className="absolute bottom-20 right-10 w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full opacity-30 animate-pulse"></div>
+        <div className="absolute top-1/2 left-5 w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg rotate-45 opacity-25 animate-spin-slow"></div>
       </section>
 
-      {/* Services Section */}
-      <section className="py-24 bg-orange-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Services Section - Card Grid */}
+      <section className="py-24 px-4">
+        <div className="max-w-7xl mx-auto">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-orange-800 mb-6">Hizmetlerimiz</h2>
-            <p className="text-xl text-orange-600 max-w-3xl mx-auto">
-              Geleneksel lezzeti modern hizmet anlayışıyla sunuyoruz
+            <h2 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+              HİZMETLERİMİZ
+            </h2>
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+              Gelecek teknolojileri ile işletmenizi dönüştürün
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {services.map((service, index) => {
               const IconComponent = service.icon;
               return (
-                <Card key={index} className="group hover:shadow-2xl transition-all duration-300 border-0 shadow-lg bg-white">
-                  <CardHeader className="text-center pb-6">
-                    <div className="w-20 h-20 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                      <IconComponent className="w-10 h-10 text-white" />
+                <Card key={index} className="group bg-white/5 backdrop-blur-lg border-white/10 hover:border-white/20 transition-all duration-500 hover:scale-105 cursor-pointer">
+                  <CardContent className="p-8">
+                    <div className={`w-16 h-16 bg-gradient-to-r ${service.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                      <IconComponent className="w-8 h-8 text-white" />
                     </div>
-                    <CardTitle className="text-2xl font-bold text-orange-800">{service.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-center">
-                    <p className="text-orange-600 mb-6 leading-relaxed text-lg">{service.description}</p>
-                    <div className="space-y-2">
-                      {service.features.map((feature, featureIndex) => (
-                        <div key={featureIndex} className="flex items-center justify-center text-sm text-orange-500">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                          {feature}
-                        </div>
-                      ))}
+                    <h3 className="text-2xl font-bold text-white mb-4">{service.title}</h3>
+                    <p className="text-gray-300 mb-4 leading-relaxed">{service.description}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent font-semibold">
+                        {service.price}
+                      </span>
+                      <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
                     </div>
                   </CardContent>
                 </Card>
@@ -212,79 +191,66 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Menu Section */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-orange-800 mb-6">Menümüz</h2>
-            <p className="text-xl text-orange-600">Taze malzemelerle hazırlanan özel lokmalarımız</p>
-          </div>
+      {/* Process Section - Timeline */}
+      <section className="py-24 px-4 relative">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-5xl font-black text-center mb-20 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+            ÇALIŞMA SÜRECİ
+          </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {menu.map((item, index) => (
-              <Card key={index} className="border-0 shadow-lg bg-gradient-to-br from-orange-50 to-red-50">
-                <CardContent className="p-8">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-2xl font-bold text-orange-800">{item.name}</h3>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold text-red-600">{item.price}</div>
-                      <div className="text-sm text-orange-500">{item.portion}</div>
-                    </div>
+          <div className="relative">
+            {/* Timeline Line */}
+            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-purple-500 to-pink-500"></div>
+            
+            {[
+              { step: "01", title: "Analiz", desc: "Mevcut durumunuzu detaylı analiz ediyoruz" },
+              { step: "02", title: "Strateji", desc: "Size özel çözüm stratejisi geliştiriyoruz" },
+              { step: "03", title: "Uygulama", desc: "Planları hayata geçiriyoruz" },
+              { step: "04", title: "Optimizasyon", desc: "Sürekli iyileştirme sağlıyoruz" }
+            ].map((item, index) => (
+              <div key={index} className={`flex items-center mb-16 ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
+                <div className={`flex-1 ${index % 2 === 0 ? 'text-right pr-8' : 'text-left pl-8'}`}>
+                  <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10">
+                    <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
+                    <p className="text-gray-300">{item.desc}</p>
                   </div>
-                  <p className="text-orange-600 mb-6 leading-relaxed">{item.description}</p>
-                  <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white">
-                    <ShoppingCart className="w-4 h-4 mr-2" />
-                    Sipariş Ver
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Achievements Section */}
-      <section className="py-20 bg-gradient-to-r from-orange-600 to-red-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Başarılarımız</h2>
-            <p className="text-xl text-orange-200">Müşteri memnuniyeti ile büyüyoruz</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-            {achievements.map((achievement, index) => (
-              <div key={index} className="bg-white/20 backdrop-blur-sm rounded-xl p-8">
-                <div className="text-5xl font-bold mb-3 text-white">
-                  {achievement.number}
                 </div>
-                <div className="text-orange-200 text-lg">{achievement.label}</div>
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg z-10">
+                  {item.step}
+                </div>
+                <div className="flex-1"></div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-24 bg-orange-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-orange-800 mb-6">Müşteri Yorumları</h2>
-            <p className="text-xl text-orange-600">Mutlu müşterilerimizden gelen gerçek yorumlar</p>
-          </div>
+      {/* Testimonials - Carousel Style */}
+      <section className="py-24 px-4">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-5xl font-black text-center mb-20 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+            MÜŞTERİ HİKAYELERİ
+          </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="border-0 shadow-lg bg-white">
+              <Card key={index} className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg border-white/20 hover:border-white/30 transition-all duration-300">
                 <CardContent className="p-8">
-                  <div className="flex items-center mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                  <div className="flex items-center mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-lg mr-4">
+                      {testimonial.avatar}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white">{testimonial.name}</h4>
+                      <p className="text-gray-400 text-sm">{testimonial.company}</p>
+                    </div>
+                  </div>
+                  <div className="flex mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 text-yellow-400 fill-current" />
                     ))}
                   </div>
-                  <p className="text-orange-600 mb-6 italic leading-relaxed">"{testimonial.text}"</p>
-                  <div>
-                    <p className="font-semibold text-orange-800">{testimonial.name}</p>
-                    <p className="text-orange-500 text-sm">{testimonial.event}</p>
-                  </div>
+                  <p className="text-gray-300 italic">"{testimonial.text}"</p>
                 </CardContent>
               </Card>
             ))}
@@ -292,59 +258,46 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="py-24 bg-gradient-to-r from-red-600 to-orange-700 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Lokma Siparişi Ver</h2>
-          <p className="text-xl mb-10 opacity-90">
-            Taze ve lezzetli lokmalarımızı denemek için hemen sipariş verin!
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-            <Button size="lg" className="bg-white text-orange-700 hover:bg-orange-50 px-10 py-6 text-xl font-semibold">
-              <Phone className="w-6 h-6 mr-2" />
-              Hemen Ara: 0532 123 4567
-            </Button>
-            <Button size="lg" className="bg-orange-800 hover:bg-orange-900 px-10 py-6 text-xl font-semibold">
-              <Instagram className="w-6 h-6 mr-2" />
-              Instagram'dan Takip Et
-            </Button>
-          </div>
+      {/* CTA Section - Bold & Modern */}
+      <section className="py-24 px-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/50 to-pink-900/50"></div>
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
+          <div className="bg-white/5 backdrop-blur-lg rounded-3xl p-12 border border-white/10">
+            <Trophy className="w-16 h-16 text-yellow-400 mx-auto mb-6" />
+            <h2 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
+              HAZIR MISINIZ?
+            </h2>
+            <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+              İşletmenizi geleceğe taşımak için bugün harekete geçin
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-12">
+              <Button size="lg" className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-10 py-4 text-xl font-bold rounded-full shadow-lg">
+                <Phone className="w-5 h-5 mr-2" />
+                0212 555 0123
+              </Button>
+              <Button size="lg" className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-10 py-4 text-xl font-bold rounded-full shadow-lg">
+                <Mail className="w-5 h-5 mr-2" />
+                Toplantı Planla
+              </Button>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div>
-              <h4 className="font-semibold text-xl mb-2">İletişim</h4>
-              <p className="text-orange-200">0532 123 4567</p>
-              <p className="text-orange-200">@seyyarlokma</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-xl mb-2">Çalışma Saatleri</h4>
-              <p className="text-orange-200">Hafta İçi: 09:00 - 22:00</p>
-              <p className="text-orange-200">Hafta Sonu: 10:00 - 23:00</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-xl mb-2">Lokasyonlar</h4>
-              <p className="text-orange-200">Kadıköy, Beşiktaş</p>
-              <p className="text-orange-200">Şişli, Bakırköy</p>
-            </div>
-          </div>
-
-          {/* Special Features */}
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-              <Utensils className="w-8 h-8 mx-auto mb-3" />
-              <h4 className="font-semibold mb-2">Hijyenik Üretim</h4>
-              <p className="text-orange-200 text-sm">Sağlık Bakanlığı onaylı hijyen standartları</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-              <Award className="w-8 h-8 mx-auto mb-3" />
-              <h4 className="font-semibold mb-2">Kalite Garantisi</h4>
-              <p className="text-orange-200 text-sm">100% müşteri memnuniyeti garantisi</p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-              <Heart className="w-8 h-8 mx-auto mb-3" />
-              <h4 className="font-semibold mb-2">El Emeği</h4>
-              <p className="text-orange-200 text-sm">Geleneksel yöntemlerle el yapımı</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+              <div className="p-4">
+                <Target className="w-8 h-8 text-purple-400 mx-auto mb-2" />
+                <h4 className="font-bold text-white mb-1">%100 Başarı</h4>
+                <p className="text-gray-400 text-sm">Garantili sonuçlar</p>
+              </div>
+              <div className="p-4">
+                <Heart className="w-8 h-8 text-pink-400 mx-auto mb-2" />
+                <h4 className="font-bold text-white mb-1">Özel Çözümler</h4>
+                <p className="text-gray-400 text-sm">Size özel stratejiler</p>
+              </div>
+              <div className="p-4">
+                <Shield className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+                <h4 className="font-bold text-white mb-1">Güvenilir</h4>
+                <p className="text-gray-400 text-sm">15+ yıl deneyim</p>
+              </div>
             </div>
           </div>
         </div>
