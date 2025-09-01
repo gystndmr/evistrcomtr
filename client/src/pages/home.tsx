@@ -309,10 +309,10 @@ export default function Home() {
             <div>
               <h3 className="text-lg font-semibold mb-4">Kurslar</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><Link href="/courses/digital-marketing" className="hover:text-white">Dijital Pazarlama</Link></li>
-                <li><Link href="/courses/web-development" className="hover:text-white">Web Geliştirme</Link></li>
-                <li><Link href="/courses/graphic-design" className="hover:text-white">Grafik Tasarım</Link></li>
-                <li><Link href="/courses/project-management" className="hover:text-white">Proje Yönetimi</Link></li>
+                <li><Link href="/courses" className="hover:text-white">Dijital Pazarlama</Link></li>
+                <li><Link href="/courses" className="hover:text-white">Web Geliştirme</Link></li>
+                <li><Link href="/courses" className="hover:text-white">Grafik Tasarım</Link></li>
+                <li><Link href="/courses" className="hover:text-white">Proje Yönetimi</Link></li>
               </ul>
             </div>
             
@@ -320,7 +320,7 @@ export default function Home() {
               <h3 className="text-lg font-semibold mb-4">Kurumsal</h3>
               <ul className="space-y-2 text-gray-400">
                 <li><Link href="/about" className="hover:text-white">Hakkımızda</Link></li>
-                <li><Link href="/instructors" className="hover:text-white">Eğitmenler</Link></li>
+                <li><Link href="/about" className="hover:text-white">Eğitmenler</Link></li>
                 <li><Link href="/blog" className="hover:text-white">Blog</Link></li>
                 <li><Link href="/contact" className="hover:text-white">İletişim</Link></li>
               </ul>
@@ -331,8 +331,8 @@ export default function Home() {
               <ul className="space-y-2 text-gray-400">
                 <li><Link href="/privacy" className="hover:text-white">Gizlilik Politikası</Link></li>
                 <li><Link href="/terms" className="hover:text-white">Kullanım Şartları</Link></li>
-                <li><Link href="/cookies" className="hover:text-white">Çerez Politikası</Link></li>
-                <li><Link href="/refund" className="hover:text-white">İade Politikası</Link></li>
+                <li><Link href="/privacy" className="hover:text-white">Çerez Politikası</Link></li>
+                <li><Link href="/terms" className="hover:text-white">İade Politikası</Link></li>
               </ul>
             </div>
           </div>
