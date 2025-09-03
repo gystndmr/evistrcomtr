@@ -5,18 +5,20 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 import Home from "@/pages/home";
+import VisaApplication from "@/pages/visa-application";
+import InsuranceApplication from "@/pages/insurance-application";
+import ApplicationStatus from "@/pages/application-status";
+import AdminPanel from "@/pages/admin-panel";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/courses" component={Home} />
-      <Route path="/about" component={Home} />
-      <Route path="/contact" component={Home} />
-      <Route path="/privacy" component={Home} />
-      <Route path="/terms" component={Home} />
-      <Route path="/blog" component={Home} />
+      <Route path="/visa-application" component={VisaApplication} />
+      <Route path="/insurance-application" component={InsuranceApplication} />
+      <Route path="/application-status" component={ApplicationStatus} />
+      <Route path="/admin" component={AdminPanel} />
       <Route component={NotFound} />
     </Switch>
   );

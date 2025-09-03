@@ -1,347 +1,196 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  BookOpen, Users, Award, Clock, Star, CheckCircle,
-  ArrowRight, Phone, Mail, MapPin, Play, Download,
-  GraduationCap, Badge as BadgeIcon, Target, Globe
-} from "lucide-react";
-import { Header } from "@/components/header";
+import { IdCard, CreditCard, Download, Shield, Star, Crown, Search } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
+import turkeySymbolRed from "@/assets/turkey-symbol-red.png";
+import cappadociaImg from "../../../attached_assets/pexels-musaortac-14186574_1752590100661.jpg";
+import ephesusImg from "../../../attached_assets/pexels-hilal-tosun-54875889-33011223_1752590240668.jpg";
+import antalyaImg from "../../../attached_assets/pexels-mikhail-nilov-8322807_1752590250012.jpg";
+import bosphorusImg from "../../../attached_assets/pexels-ugur-kahraman-1765266160-29649889_1752590268560.jpg";
+import pamukkaleImg from "../../../attached_assets/pexels-fromsalih-27829278_1752590288989.jpg";
+import hagiaSophiaImg from "../../../attached_assets/pexels-mustafa-eker-649114924-17634093_1752590829229.jpg";
 
 export default function Home() {
-  const courses = [
-    {
-      title: "Dijital Pazarlama Temel Eğitimi",
-      description: "Dijital pazarlama stratejileri, sosyal medya yönetimi ve online reklam teknikleri",
-      duration: "8 Hafta",
-      level: "Başlangıç",
-      price: "299₺",
-      rating: 4.8,
-      students: 1250
-    },
-    {
-      title: "Web Tasarım ve Geliştirme",
-      description: "HTML, CSS, JavaScript ile modern web siteleri tasarlama ve geliştirme",
-      duration: "12 Hafta", 
-      level: "Orta",
-      price: "499₺",
-      rating: 4.9,
-      students: 890
-    },
-    {
-      title: "Grafik Tasarım Fundamentals",
-      description: "Adobe Photoshop, Illustrator ile profesyonel grafik tasarım teknikleri",
-      duration: "10 Hafta",
-      level: "Başlangıç",
-      price: "399₺",
-      rating: 4.7,
-      students: 1520
-    },
-    {
-      title: "Proje Yönetimi Sertifikası",
-      description: "Agile, Scrum metodolojileri ile etkin proje yönetimi becerileri",
-      duration: "6 Hafta",
-      level: "İleri",
-      price: "599₺",
-      rating: 4.9,
-      students: 650
-    }
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const { t } = useLanguage();
+
+  // Turkish landmark images 
+  const turkishLandmarks = [
+    { image: cappadociaImg },
+    { image: ephesusImg }, 
+    { image: antalyaImg },
+    { image: bosphorusImg },
+    { image: pamukkaleImg }
   ];
 
-  const features = [
-    {
-      icon: BookOpen,
-      title: "Kapsamlı Müfredat",
-      description: "Sektör uzmanları tarafından hazırlanan güncel eğitim içerikleri"
-    },
-    {
-      icon: Users,
-      title: "Uzman Eğitmenler",
-      description: "Alanında deneyimli, sertifikalı eğitmenlerden öğrenme fırsatı"
-    },
-    {
-      icon: BadgeIcon,
-      title: "Sertifika Programı",
-      description: "Tamamlanan kurslar için geçerli sertifika ve diploma belgesi"
-    },
-    {
-      icon: Clock,
-      title: "Esnek Öğrenme",
-      description: "Kendi hızınızda, istediğiniz zaman öğrenme imkanı"
-    }
-  ];
+  // Preload all images immediately when component mounts
+  useEffect(() => {
+    const preloadImages = async () => {
+      const imagePromises = turkishLandmarks.map((landmark) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = landmark.image;
+        });
+      });
 
-  const testimonials = [
-    {
-      name: "Ayşe Kaya",
-      course: "Dijital Pazarlama",
-      text: "Kurs sayesinde kariyerimde büyük ilerleme kaydettim. Eğitmenler çok deneyimli ve içerik çok kaliteli.",
-      rating: 5
-    },
-    {
-      name: "Mehmet Özkan",
-      course: "Web Geliştirme",
-      text: "Sıfırdan başladım ve artık freelance web developer olarak çalışıyorum. Harika bir deneyimdi.",
-      rating: 5
-    },
-    {
-      name: "Zeynep Yılmaz",
-      course: "Grafik Tasarım",
-      text: "Hobimden mesleğime dönüştürdüğüm alan. EduLearn'de aldığım eğitim çok faydalıydı.",
-      rating: 5
-    }
-  ];
+      try {
+        await Promise.all(imagePromises);
+        setImagesLoaded(true);
+        console.log('All homepage images preloaded successfully');
+      } catch (error) {
+        console.error('Error preloading images:', error);
+        setImagesLoaded(true); // Still show content even if some images fail
+      }
+    };
+
+    preloadImages();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % turkishLandmarks.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <Header />
       
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Geleceğinizi Şekillendirin
+      
+      {/* Hero Section with Rotating Turkish Landmarks */}
+      <section className="relative h-[70vh] overflow-hidden">
+        {/* Loading Placeholder */}
+        {!imagesLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center">
+            <div className="text-white text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+              <p className="text-lg font-semibold">Loading Turkey's beautiful landmarks...</p>
+            </div>
+          </div>
+        )}
+
+        {/* Background Slides */}
+        <div className={`absolute inset-0 transition-opacity duration-500 ${imagesLoaded ? 'opacity-100' : 'opacity-0'}`}>
+          {turkishLandmarks.map((landmark, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 transition-opacity duration-1000 ${
+                index === currentSlide ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              <img 
+                src={landmark.image}
+                alt={`Turkish landmark ${index + 1}`}
+                className="absolute inset-0 w-full h-full object-cover"
+                loading="eager"
+                decoding="async"
+              />
+              <div className="absolute inset-0 bg-black opacity-50" />
+            </div>
+          ))}
+        </div>
+
+
+
+        {/* Main Content */}
+        <div className="relative z-10 flex items-center justify-center h-full">
+          <div className="text-center text-white px-4 max-w-4xl mx-auto">
+
+            
+            <h1 className="text-3xl md:text-4xl font-bold mb-4 drop-shadow-lg tracking-wider">
+              {t('header.title')}
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-blue-100 max-w-3xl mx-auto">
-              Uzman eğitmenlerden öğrenin, sertifikalı kurslarla kariyerinizi ileriye taşıyın
+            <h2 className="text-xl md:text-2xl font-semibold mb-3 drop-shadow-md border-b-2 border-white/30 pb-1 inline-block">
+              {t('home.hero.title')}
+            </h2>
+            <p className="text-base md:text-lg mb-6 opacity-90 drop-shadow-sm font-medium">
+              {t('home.hero.subtitle')}
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-3 text-lg">
-                <BookOpen className="w-5 h-5 mr-2" />
-                Kurslara Göz At
-              </Button>
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 text-lg">
-                <Play className="w-5 h-5 mr-2" />
-                Tanıtım Videosunu İzle
-              </Button>
-            </div>
             
-            {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-              <div className="text-center">
-                <div className="text-3xl font-bold">5000+</div>
-                <div className="text-blue-200">Başarılı Öğrenci</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold">50+</div>
-                <div className="text-blue-200">Uzman Eğitmen</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold">100+</div>
-                <div className="text-blue-200">Aktif Kurs</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Features Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Neden EduLearn?</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Modern eğitim teknolojileri ile kariyerinizi ileriye taşıyın
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => {
-              const IconComponent = feature.icon;
-              return (
-                <Card key={index} className="text-center border-0 shadow-lg hover:shadow-xl transition-shadow">
-                  <CardHeader>
-                    <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <IconComponent className="w-8 h-8 text-blue-600" />
-                    </div>
-                    <CardTitle className="text-xl">{feature.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600">{feature.description}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
-      {/* Courses Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Popüler Kurslar</h2>
-            <p className="text-xl text-gray-600">En çok tercih edilen eğitim programlarımız</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {courses.map((course, index) => (
-              <Card key={index} className="hover:shadow-xl transition-shadow border-0 shadow-lg">
-                <CardHeader>
-                  <div className="flex items-center justify-between mb-2">
-                    <Badge variant="secondary">{course.level}</Badge>
-                    <div className="flex items-center">
-                      <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                      <span className="text-sm text-gray-600 ml-1">{course.rating}</span>
-                    </div>
-                  </div>
-                  <CardTitle className="text-lg">{course.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 mb-4 text-sm">{course.description}</p>
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-sm text-gray-500">
-                      <Clock className="w-4 h-4 mr-2" />
-                      {course.duration}
-                    </div>
-                    <div className="flex items-center text-sm text-gray-500">
-                      <Users className="w-4 h-4 mr-2" />
-                      {course.students} öğrenci
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-blue-600">{course.price}</span>
-                    <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                      Kayıt Ol
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          
-          <div className="text-center mt-12">
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3">
-              Tüm Kursları Görüntüle
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Öğrenci Yorumları</h2>
-            <p className="text-xl text-gray-600">Başarılı öğrencilerimizden gelen geri bildirimler</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="border-0 shadow-lg">
-                <CardContent className="p-6">
-                  <div className="flex items-center mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                    ))}
-                  </div>
-                  <p className="text-gray-600 mb-6 italic">"{testimonial.text}"</p>
-                  <div>
-                    <p className="font-semibold text-gray-900">{testimonial.name}</p>
-                    <p className="text-blue-600 text-sm">{testimonial.course} Kursu</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-blue-600 text-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Eğitime Bugün Başlayın</h2>
-          <p className="text-xl mb-10 text-blue-100">
-            Uzman eğitmenlerden öğrenin, kariyerinizi ileriye taşıyın
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 px-8 py-3 text-lg">
-              <Phone className="w-5 h-5 mr-2" />
-              0212 444 0 555
-            </Button>
-            <Button size="lg" className="bg-blue-800 hover:bg-blue-900 px-8 py-3 text-lg">
-              <Mail className="w-5 h-5 mr-2" />
-              Bilgi Al
-            </Button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div>
-              <h4 className="font-semibold text-lg mb-2">İletişim</h4>
-              <p className="text-blue-200">0212 444 0 555</p>
-              <p className="text-blue-200">info@edulearn.com.tr</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-lg mb-2">Çalışma Saatleri</h4>
-              <p className="text-blue-200">Pazartesi - Cuma</p>
-              <p className="text-blue-200">09:00 - 18:00</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-lg mb-2">Adres</h4>
-              <p className="text-blue-200">Levent Mah. Büyükdere Cad.</p>
-              <p className="text-blue-200">İstanbul, Türkiye</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-white" />
+            {/* Transparent Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <Link href="/application">
+                <div className="bg-red-600/80 hover:bg-red-600/90 text-white px-12 py-4 text-xl font-semibold transition-all duration-200 cursor-pointer">
+                  {t('home.buttons.apply')}
                 </div>
-                <span className="text-xl font-bold">EduLearn</span>
-              </div>
-              <p className="text-gray-400 mb-4">
-                Türkiye'nin önde gelen online eğitim platformu
-              </p>
+              </Link>
+              <Link href="/status">
+                <div className="bg-blue-600/80 hover:bg-blue-600/90 text-white px-12 py-4 text-xl font-semibold transition-all duration-200 cursor-pointer">
+                  {t('home.buttons.check')}
+                </div>
+              </Link>
             </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Kurslar</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/courses" className="hover:text-white">Dijital Pazarlama</Link></li>
-                <li><Link href="/courses" className="hover:text-white">Web Geliştirme</Link></li>
-                <li><Link href="/courses" className="hover:text-white">Grafik Tasarım</Link></li>
-                <li><Link href="/courses" className="hover:text-white">Proje Yönetimi</Link></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Kurumsal</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/about" className="hover:text-white">Hakkımızda</Link></li>
-                <li><Link href="/about" className="hover:text-white">Eğitmenler</Link></li>
-                <li><Link href="/blog" className="hover:text-white">Blog</Link></li>
-                <li><Link href="/contact" className="hover:text-white">İletişim</Link></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Yasal</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="/privacy" className="hover:text-white">Gizlilik Politikası</Link></li>
-                <li><Link href="/terms" className="hover:text-white">Kullanım Şartları</Link></li>
-                <li><Link href="/privacy" className="hover:text-white">Çerez Politikası</Link></li>
-                <li><Link href="/terms" className="hover:text-white">İade Politikası</Link></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 EduLearn. Tüm hakları saklıdır.</p>
           </div>
         </div>
-      </footer>
+
+
+      </section>
+
+      {/* Application Process Steps */}
+      <section className="py-12 sm:py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-800 mb-4">{t('home.hero.steps')}</h2>
+            <p className="text-base sm:text-lg text-neutral-600">{t('home.hero.subtitle')}</p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row sm:justify-center sm:items-start gap-6 sm:gap-8 lg:gap-12">
+            <div className="text-center sm:flex-1 max-w-xs mx-auto sm:mx-0">
+              <div className="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-white font-bold text-xl">1</span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">{t('home.steps.complete')}</h3>
+              <p className="text-sm sm:text-base text-neutral-600 px-2">{t('home.steps.complete.desc')}</p>
+            </div>
+            
+            <div className="text-center sm:flex-1 max-w-xs mx-auto sm:mx-0">
+              <div className="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-white font-bold text-xl">2</span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">{t('home.steps.payment')}</h3>
+              <p className="text-sm sm:text-base text-neutral-600 px-2">{t('home.steps.payment.desc')}</p>
+            </div>
+            
+            <div className="text-center sm:flex-1 max-w-xs mx-auto sm:mx-0">
+              <div className="bg-primary rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <span className="text-white font-bold text-xl">3</span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-semibold text-neutral-800 mb-2">{t('home.steps.download')}</h3>
+              <p className="text-sm sm:text-base text-neutral-600 px-2">{t('home.steps.download.desc')}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Travel Insurance Section */}
+      <section className="py-12 sm:py-16 bg-gradient-to-br from-blue-50 to-red-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <Link href="/insurance">
+              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-4">
+                <Shield className="w-5 h-5 mr-2" />
+                {t('home.insurance.button')}
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
     </div>
   );
 }
