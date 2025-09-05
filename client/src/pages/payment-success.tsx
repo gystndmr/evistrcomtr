@@ -60,8 +60,8 @@ export default function PaymentSuccess() {
     }
   }, [toast]);
 
-  const transactionId = urlParams?.get('transaction');
-  const orderId = urlParams?.get('order');
+  const transactionId = urlParams?.get('transaction') || urlParams?.get('transactionId');
+  const orderId = urlParams?.get('order') || urlParams?.get('orderRef');
   const paymentStatus = urlParams?.get('payment');
   const isTest = urlParams?.get('test');
 

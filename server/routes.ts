@@ -1238,7 +1238,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.json({
           success: false,
           error: response.error,
-          paymentUrl: response.paymentUrl || `${baseUrl}/payment-cancel?error=${encodeURIComponent(response.error || 'Unknown payment error')}`
+          paymentUrl: response.paymentUrl || `${baseUrl}/payment/cancel?error=${encodeURIComponent(response.error || 'Unknown payment error')}`
         });
       }
       
@@ -1258,7 +1258,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!payload || typeof payload !== 'string') {
         console.log("❌ GPay GET callback: Missing or invalid payload");
-        return res.redirect('/payment-cancel?error=Invalid payment callback');
+        return res.redirect('/payment/cancel?error=Invalid payment callback');
       }
 
       console.log("🔔 GPay GET callback received with payload");
@@ -1268,7 +1268,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (!paymentData) {
         console.log("❌ GPay GET callback: Invalid payload format");
-        return res.redirect('/payment-cancel?error=Invalid payment data');
+        return res.redirect('/payment/cancel?error=Invalid payment data');
       }
 
       console.log("✅ GPay GET callback parsed:", paymentData);
@@ -1294,7 +1294,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         
         // Redirect to success page with transaction details
-        res.redirect(`/payment-success?transactionId=${transactionId}&orderRef=${orderRef}&amount=${amount}`);
+        res.redirect(`/payment/success?payment=success&transaction=${transactionId}&order=${orderRef}&amount=${amount}`);
         
       } else if (status === 'failed' || status === 'error' || status === 'declined' || status === 'cancelled') {
         console.log(`❌ Payment failed for order ${orderRef}: ${transactionId} - Status: ${status}`);
@@ -1329,16 +1329,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
             break;
         }
         
-        res.redirect(`/payment-cancel?error=${encodeURIComponent(errorMessage)}&status=${errorCode}&orderRef=${orderRef}&amount=${amount}`);
+        res.redirect(`/payment/cancel?error=${encodeURIComponent(errorMessage)}&status=${errorCode}&orderRef=${orderRef}&amount=${amount}`);
         
       } else {
         console.log(`⚠️ Unknown payment status for order ${orderRef}: ${status}`);
-        res.redirect(`/payment-cancel?error=${encodeURIComponent('Unknown payment status - Please contact support')}&status=unknown&orderRef=${orderRef}`);
+        res.redirect(`/payment/cancel?error=${encodeURIComponent('Unknown payment status - Please contact support')}&status=unknown&orderRef=${orderRef}`);
       }
       
     } catch (error) {
       console.error("GPay GET callback error:", error);
-      res.redirect('/payment-cancel?error=Payment processing error');
+      res.redirect('/payment/cancel?error=Payment processing error');
     }
   });
 
