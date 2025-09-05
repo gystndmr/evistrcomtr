@@ -120,27 +120,49 @@ export function SupportingDocumentCheck({
     { code: "GBR", name: "United Kingdom" },
   ];
 
+  // Official Turkish government list - Only these countries' residence permits are accepted
   const residenceCountries = [
+    // United States
     { code: "USA", name: "United States" },
+    // United Kingdom  
     { code: "GBR", name: "United Kingdom" },
-    { code: "DEU", name: "Germany" },
-    { code: "FRA", name: "France" },
-    { code: "ITA", name: "Italy" },
-    { code: "ESP", name: "Spain" },
-    { code: "NLD", name: "Netherlands" },
-    { code: "BEL", name: "Belgium" },
+    // Ireland
+    { code: "IRL", name: "Ireland" },
+    
+    // SCHENGEN COUNTRIES (27 EU + 4 EFTA countries)
+    // European Union Countries (27)
     { code: "AUT", name: "Austria" },
-    { code: "CHE", name: "Switzerland" },
-    { code: "SWE", name: "Sweden" },
-    { code: "NOR", name: "Norway" },
+    { code: "BEL", name: "Belgium" },
+    { code: "BGR", name: "Bulgaria" },
+    { code: "HRV", name: "Croatia" },
+    { code: "CYP", name: "Cyprus" },
+    { code: "CZE", name: "Czech Republic" },
     { code: "DNK", name: "Denmark" },
+    { code: "EST", name: "Estonia" },
     { code: "FIN", name: "Finland" },
-    { code: "CAN", name: "Canada" },
-    { code: "AUS", name: "Australia" },
-    { code: "JPN", name: "Japan" },
-    { code: "KOR", name: "South Korea" },
-    { code: "SGP", name: "Singapore" },
-    { code: "ARE", name: "United Arab Emirates" },
+    { code: "FRA", name: "France" },
+    { code: "DEU", name: "Germany" },
+    { code: "GRC", name: "Greece" },
+    { code: "HUN", name: "Hungary" },
+    { code: "ITA", name: "Italy" },
+    { code: "LVA", name: "Latvia" },
+    { code: "LTU", name: "Lithuania" },
+    { code: "LUX", name: "Luxembourg" },
+    { code: "MLT", name: "Malta" },
+    { code: "NLD", name: "Netherlands" },
+    { code: "POL", name: "Poland" },
+    { code: "PRT", name: "Portugal" },
+    { code: "ROU", name: "Romania" },
+    { code: "SVK", name: "Slovakia" },
+    { code: "SVN", name: "Slovenia" },
+    { code: "ESP", name: "Spain" },
+    { code: "SWE", name: "Sweden" },
+    
+    // EFTA Countries (4) - Also part of Schengen
+    { code: "ISL", name: "Iceland" },
+    { code: "LIE", name: "Liechtenstein" },
+    { code: "NOR", name: "Norway" },
+    { code: "CHE", name: "Switzerland" },
   ];
 
   return (
