@@ -7,9 +7,7 @@ import turkeyLogo from "@/assets/turkey-logo.png";
 import evisaLogo from "@/assets/evisa-logo.png";
 import evisatrLogo from "@/assets/evisatr-logo.png";
 import turkeyOfficialLogo from "@/assets/turkey-official-logo.png";
-import tursabLogo from "@/assets/tursab-logo.png";
 import newTurkeyEmblem from "@assets/ChatGPT Image 18 Tem 2025 02_01_43_1752793336494.png";
-import newTursabLogo from "@assets/ChatGPT Image 18 Tem 2025 02_14_48_1752794298044.png";
 
 export function Footer() {
   const { t } = useLanguage();
@@ -191,8 +189,8 @@ export function Footer() {
           </div>
 
           <div className="text-center text-sm text-neutral-400">
-            {/* Official Turkish Government E-Visa Logo and TURSAB */}
-            <div className="flex items-center justify-center gap-8 mb-4">
+            {/* Official Turkish Government E-Visa Logo */}
+            <div className="flex items-center justify-center mb-4">
               <div className="w-32 h-32 flex items-center justify-center">
                 <img 
                   src={newTurkeyEmblem} 
@@ -200,18 +198,6 @@ export function Footer() {
                   className="w-full h-full object-contain"
                 />
               </div>
-              <a 
-                href="https://www.tursab.org.tr/acenta-arama" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-32 h-32 flex items-center justify-center hover:opacity-80 transition-opacity"
-              >
-                <img 
-                  src={newTursabLogo} 
-                  alt="TURSAB Dijital Doğrulama Sistemi - Belge No: 5778" 
-                  className="w-full h-full object-contain"
-                />
-              </a>
             </div>
             <p>&copy; 2025 getvisa.tr. All rights reserved. Not affiliated with the Turkish Government.</p>
             <p className="mt-2 text-xs">This is a private visa application service. Official government applications can be made directly through Turkish government websites.</p>
