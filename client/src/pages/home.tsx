@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { IdCard, CreditCard, Download, Shield, Star, Crown, Search } from "lucide-react";
+import { IdCard, CreditCard, Download, Shield, Star, Crown, Search, X, AlertTriangle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
 import turkeySymbolRed from "@/assets/turkey-symbol-red.png";
@@ -19,6 +19,7 @@ import hagiaSophiaImg from "../../../attached_assets/pexels-mustafa-eker-6491149
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [showDesktopPopup, setShowDesktopPopup] = useState(true);
   const { t } = useLanguage();
 
   // Turkish landmark images 
@@ -103,6 +104,31 @@ export default function Home() {
         </div>
 
 
+
+        {/* Desktop Government Disclaimer Popup - Visible only on desktop, hidden on mobile */}
+        {showDesktopPopup && (
+          <div className="hidden md:block fixed top-20 right-6 z-50 max-w-sm bg-white border-2 border-orange-500 rounded-lg shadow-2xl p-4 animate-in slide-in-from-right-5 duration-500">
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-orange-500 mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <h3 className="font-semibold text-gray-900 text-sm mb-2">Important Notice</h3>
+                <p className="text-xs text-gray-700 leading-relaxed mb-3">
+                  We are not affiliated with the Turkish Government. This is a private consultancy service that assists with visa applications for a fee.
+                </p>
+                <p className="text-xs text-gray-600 italic">
+                  Official government applications can be made directly at evisa.gov.tr
+                </p>
+              </div>
+              <button
+                onClick={() => setShowDesktopPopup(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+                data-testid="button-close-popup"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Main Content */}
         <div className="relative z-10 flex items-center justify-center h-full">
