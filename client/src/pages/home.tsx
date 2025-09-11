@@ -215,19 +215,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Travel Insurance Section */}
-      <section className="py-12 sm:py-16 bg-gradient-to-br from-blue-50 to-red-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <Link href="/insurance">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white px-8 py-4">
-                <Shield className="w-5 h-5 mr-2" />
-                {t('home.insurance.button')}
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
 
       <Footer />
     </div>

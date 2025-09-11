@@ -17,7 +17,6 @@ export function Header() {
     { href: "/", label: t('header.home') },
     { href: "/application", label: t('header.application') },
     { href: "/status", label: t('header.status') },
-    { href: "/insurance", label: t('header.insurance') },
   ];
 
   return (
