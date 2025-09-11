@@ -358,7 +358,7 @@ export function VisaForm() {
   });
 
   const calculateTotal = () => {
-    const eVisaFee = 109; // Base e-visa application fee
+    const eVisaFee = 69; // Base e-visa application fee
     
     if (hasSupportingDocument === true && documentProcessingType) {
       // Find processing fee from dynamic list
@@ -1053,7 +1053,7 @@ export function VisaForm() {
                                   <>
                                     <p>• Selected: {selectedType?.label || documentProcessingType}</p>
                                     <p>• Processing Fee: ${selectedType?.price || 0}</p>
-                                    <p>• E-Visa Fee: $109</p>
+                                    <p>• E-Visa Fee: $69</p>
                                     <p className="font-bold text-lg">• Total Amount: ${calculateTotal()}</p>
                                   </>
                                 );
@@ -1746,7 +1746,7 @@ export function VisaForm() {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span>{t('form.payment.evisa.fee')}</span>
-                        <span>$109.00</span>
+                        <span>$69.00</span>
                       </div>
                       {hasSupportingDocument === true && documentProcessingType && (
                         <div className="flex justify-between">
@@ -1805,7 +1805,7 @@ export function VisaForm() {
                   <div className="text-sm text-gray-700 space-y-1">
                     <div className="flex justify-between">
                       <span>{t('form.payment.evisa.fee')}:</span>
-                      <span>$109.00</span>
+                      <span>$69.00</span>
                     </div>
                     {hasSupportingDocument === true && documentProcessingType && (
                       <div className="flex justify-between">

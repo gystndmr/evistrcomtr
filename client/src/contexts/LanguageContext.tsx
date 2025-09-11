@@ -229,7 +229,7 @@ const translations: Record<string, Record<string, string>> = {
     'faq.q3.question': 'What documents do I need for my e-visa application?',
     'faq.q3.answer': 'You need a valid passport with at least 6 months remaining validity, a recent passport-style photograph, and supporting documents if required for your nationality (such as hotel reservations, flight tickets, or bank statements).',
     'faq.q4.question': 'How much does the Turkey e-visa cost?',
-    'faq.q4.answer': 'The e-visa application fee is $109 plus processing fees that range from $65 (Standard) to $335 (Urgent). Additional supporting document fees may apply based on your nationality.',
+    'faq.q4.answer': 'The e-visa application fee is $69 plus processing fees that range from $65 (Standard) to $335 (Urgent). Additional supporting document fees may apply based on your nationality.',
     'faq.q5.question': 'Can I extend my e-visa once I\'m in Turkey?',
     'faq.q5.answer': 'No, e-visas cannot be extended. If you need to stay longer than your e-visa allows, you must exit Turkey and apply for a new e-visa or appropriate visa type.',
     'faq.q6.question': 'Is travel insurance required for Turkey e-visa?',
