@@ -46,21 +46,21 @@ const applicationSchema = z.object({
 type ApplicationFormData = z.infer<typeof applicationSchema>;
 
 const processingTypes = [
-  { value: "standard", label: "Ready in 5-7 days", price: 25, minDays: 7 },
-  { value: "fast", label: "Ready in 1-3 days", price: 75, minDays: 3 },
-  { value: "express", label: "Ready in 24 hours", price: 175, minDays: 1 },
-  { value: "urgent", label: "Ready in 4 hours", price: 295, minDays: 1 },
+  { value: "standard", label: "Ready in 5-7 days", price: 65, minDays: 7 },
+  { value: "fast", label: "Ready in 1-3 days", price: 115, minDays: 3 },
+  { value: "express", label: "Ready in 24 hours", price: 215, minDays: 1 },
+  { value: "urgent", label: "Ready in 4 hours", price: 335, minDays: 1 },
 ];
 
 // Supporting document processing types with minDays
 const supportingDocProcessingTypes = [
-  { value: "slow", label: "Ready in 7 days", price: 50, minDays: 7 },
-  { value: "standard", label: "Ready in 4 days", price: 115, minDays: 4 },
-  { value: "fast", label: "Ready in 2 days", price: 165, minDays: 2 },
-  { value: "urgent_24", label: "Ready in 24 hours", price: 280, minDays: 1 },
-  { value: "urgent_12", label: "Ready in 12 hours", price: 330, minDays: 1 },
-  { value: "urgent_4", label: "Ready in 4 hours", price: 410, minDays: 1 },
-  { value: "urgent_1", label: "Ready in 1 hour", price: 645, minDays: 1 },
+  { value: "slow", label: "Ready in 7 days", price: 90, minDays: 7 },
+  { value: "standard", label: "Ready in 4 days", price: 155, minDays: 4 },
+  { value: "fast", label: "Ready in 2 days", price: 205, minDays: 2 },
+  { value: "urgent_24", label: "Ready in 24 hours", price: 320, minDays: 1 },
+  { value: "urgent_12", label: "Ready in 12 hours", price: 370, minDays: 1 },
+  { value: "urgent_4", label: "Ready in 4 hours", price: 450, minDays: 1 },
+  { value: "urgent_1", label: "Ready in 1 hour", price: 685, minDays: 1 },
 ];
 
 // Helper function to calculate days between two dates
@@ -360,15 +360,17 @@ export function VisaForm() {
   });
 
   const calculateTotal = () => {
+    const eVisaFee = 109; // Base e-visa application fee
+    
     if (hasSupportingDocument === true && documentProcessingType) {
       // Find processing fee from dynamic list
       const processingFee = supportingDocProcessingTypes.find(type => type.value === documentProcessingType)?.price || 0;
-      const documentPdfFee = 69; // Document PDF fee
-      return processingFee + documentPdfFee;
+      return processingFee + eVisaFee;
     } else if (hasSupportingDocument === false) {
       // Standard e-visa processing fees (when no supporting document) 
       const selectedProcessingType = form.watch("processingType") || "standard";
-      return processingTypes.find(p => p.value === selectedProcessingType)?.price || 25;
+      const processingFee = processingTypes.find(p => p.value === selectedProcessingType)?.price || 65;
+      return processingFee + eVisaFee;
     }
     
     return 0;
@@ -1062,7 +1064,7 @@ export function VisaForm() {
                                   <>
                                     <p>• Selected: {selectedType?.label || documentProcessingType}</p>
                                     <p>• Processing Fee: ${selectedType?.price || 0}</p>
-                                    <p>• Document PDF Fee: $69</p>
+                                    <p>• E-Visa Fee: $109</p>
                                     <p className="font-bold text-lg">• Total Amount: ${calculateTotal()}</p>
                                   </>
                                 );
@@ -1755,20 +1757,20 @@ export function VisaForm() {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span>{t('form.payment.evisa.fee')}</span>
-                        <span>$69.00</span>
+                        <span>$109.00</span>
                       </div>
                       {hasSupportingDocument === true && documentProcessingType && (
                         <div className="flex justify-between">
                           <span>{t('form.payment.processing.document.fee')}</span>
                           <span>${(() => {
                             const documentProcessingTypes = [
-                              { value: "slow", price: 119 },
-                              { value: "standard", price: 184 },
-                              { value: "fast", price: 234 },
-                              { value: "urgent_24", price: 349 },
-                              { value: "urgent_12", price: 399 },
-                              { value: "urgent_4", price: 479 },
-                              { value: "urgent_1", price: 714 }
+                              { value: "slow", price: 159 },
+                              { value: "standard", price: 224 },
+                              { value: "fast", price: 274 },
+                              { value: "urgent_24", price: 389 },
+                              { value: "urgent_12", price: 439 },
+                              { value: "urgent_4", price: 519 },
+                              { value: "urgent_1", price: 754 }
                             ];
                             return documentProcessingTypes.find(p => p.value === documentProcessingType)?.price || 119;
                           })()}</span>
@@ -1814,20 +1816,20 @@ export function VisaForm() {
                   <div className="text-sm text-gray-700 space-y-1">
                     <div className="flex justify-between">
                       <span>{t('form.payment.evisa.fee')}:</span>
-                      <span>$69.00</span>
+                      <span>$109.00</span>
                     </div>
                     {hasSupportingDocument === true && documentProcessingType && (
                       <div className="flex justify-between">
                         <span>{t('form.payment.processing.document.fee')}:</span>
                         <span>${(() => {
                           const documentProcessingTypes = [
-                            { value: "slow", price: 119 },
-                            { value: "standard", price: 184 },
-                            { value: "fast", price: 234 },
-                            { value: "urgent_24", price: 349 },
-                            { value: "urgent_12", price: 399 },
-                            { value: "urgent_4", price: 479 },
-                            { value: "urgent_1", price: 714 }
+                            { value: "slow", price: 159 },
+                            { value: "standard", price: 224 },
+                            { value: "fast", price: 274 },
+                            { value: "urgent_24", price: 389 },
+                            { value: "urgent_12", price: 439 },
+                            { value: "urgent_4", price: 519 },
+                            { value: "urgent_1", price: 754 }
                           ];
                           return documentProcessingTypes.find(p => p.value === documentProcessingType)?.price || 119;
                         })()}</span>

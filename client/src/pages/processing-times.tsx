@@ -138,19 +138,19 @@ export default function ProcessingTimes() {
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
                   <span>E-Visa Application Fee:</span>
-                  <span className="font-semibold">$69</span>
+                  <span className="font-semibold">$109</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Processing Fee:</span>
-                  <span className="font-semibold">$25 - $295</span>
+                  <span className="font-semibold">$65 - $335</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Supporting Documents (if required):</span>
-                  <span className="font-semibold">$50 - $645</span>
+                  <span className="font-semibold">$90 - $685</span>
                 </div>
                 <div className="border-t pt-2 flex justify-between font-bold">
                   <span>Total Cost Range:</span>
-                  <span>$94 - $1,009</span>
+                  <span>$134 - $1,049</span>
                 </div>
               </div>
             </div>
