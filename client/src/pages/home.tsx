@@ -105,27 +105,40 @@ export default function Home() {
 
 
 
-        {/* Desktop Government Disclaimer Popup - Visible only on desktop, hidden on mobile */}
+        {/* Desktop Government Disclaimer Modal - Visible only on desktop, hidden on mobile */}
         {showDesktopPopup && (
-          <div className="hidden md:block fixed top-20 right-6 z-50 max-w-sm bg-white border-2 border-orange-500 rounded-lg shadow-2xl p-4 animate-in slide-in-from-right-5 duration-500">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="h-5 w-5 text-orange-500 mt-0.5 flex-shrink-0" />
-              <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 text-sm mb-2">Important Notice</h3>
-                <p className="text-xs text-gray-700 leading-relaxed mb-3">
-                  We are not affiliated with the Turkish Government. This is a private consultancy service that assists with visa applications for a fee.
-                </p>
-                <p className="text-xs text-gray-600 italic">
-                  Official government applications can be made directly at evisa.gov.tr
-                </p>
+          <div className="hidden md:flex fixed inset-0 z-50 items-center justify-center">
+            {/* Backdrop */}
+            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+            
+            {/* Modal Content */}
+            <div className="relative bg-white rounded-xl shadow-2xl p-8 max-w-md mx-4 animate-in zoom-in-95 duration-300">
+              <div className="text-center">
+                <div className="mx-auto flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-6">
+                  <AlertTriangle className="h-8 w-8 text-orange-500" />
+                </div>
+                
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Important Notice</h3>
+                
+                <div className="text-sm text-gray-700 space-y-3 mb-6">
+                  <p className="leading-relaxed">
+                    <strong>We are not affiliated with the Turkish Government.</strong> This is a private consultancy service that assists with visa applications for a fee.
+                  </p>
+                  <p className="text-gray-600">
+                    Official government applications can be made directly at <span className="font-medium text-blue-600">evisa.gov.tr</span>
+                  </p>
+                </div>
+                
+                <div className="flex gap-3 justify-center">
+                  <Button
+                    onClick={() => setShowDesktopPopup(false)}
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                    data-testid="button-accept-popup"
+                  >
+                    I Understand
+                  </Button>
+                </div>
               </div>
-              <button
-                onClick={() => setShowDesktopPopup(false)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
-                data-testid="button-close-popup"
-              >
-                <X className="h-4 w-4" />
-              </button>
             </div>
           </div>
         )}
