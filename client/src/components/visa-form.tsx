@@ -13,7 +13,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CountrySelector } from "./country-selector";
 import { SupportingDocs } from "./supporting-docs";
 import { SupportingDocumentCheck } from "./supporting-document-check";
-import { InsuranceModal } from "./insurance-modal";
 // PaymentForm removed - now using direct redirects
 import { PaymentRetry } from "./payment-retry";
 import { useToast } from "@/hooks/use-toast";
@@ -98,7 +97,6 @@ export function VisaForm() {
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
   const [selectedDocumentType, setSelectedDocumentType] = useState("");
   const [uploadedDocument, setUploadedDocument] = useState<File | null>(null);
-  const [showInsuranceModal, setShowInsuranceModal] = useState(false);
   const [showPrerequisites, setShowPrerequisites] = useState(false);
   const [hasSupportingDocument, setHasSupportingDocument] = useState<boolean | null>(null);
   const [supportingDocumentDetails, setSupportingDocumentDetails] = useState<any>(null);
@@ -402,16 +400,12 @@ export function VisaForm() {
         return;
       }
       if (!selectedCountry.isEligible) {
-        // Show message and redirect to insurance
+        // Show message for non-eligible countries
         toast({
           title: "E-Visa Not Available", 
-          description: "This country is not eligible for Turkey e-visa. You may check our travel insurance options instead.",
+          description: "This country is not eligible for Turkey e-visa. Please check the official Turkish government website for visa requirements.",
           duration: 4000,
         });
-        // Redirect to insurance page after showing the message
-        setTimeout(() => {
-          window.location.href = `/insurance?country=${encodeURIComponent(selectedCountry?.name || '')}`;
-        }, 2000);
         return;
       }
     }
@@ -427,10 +421,8 @@ export function VisaForm() {
         return;
       }
       if (hasSupportingDocument === false) {
-        // Redirect to insurance page immediately when no supporting document
-        const country = selectedCountry?.name || '';
-        window.location.href = `/insurance?country=${encodeURIComponent(country)}`;
-        return;
+        // Continue to next step for regular processing when no supporting document
+        // This will show standard processing options
       }
       if (hasSupportingDocument === true) {
         // Check if supporting document details are valid
@@ -736,9 +728,6 @@ export function VisaForm() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleInsuranceRedirect = () => {
-    window.location.href = "/insurance";
-  };
 
   const onSubmit = (data: ApplicationFormData) => {
     createApplicationMutation.mutate(data);
@@ -1910,11 +1899,6 @@ export function VisaForm() {
         </CardContent>
       </Card>
 
-      <InsuranceModal
-        isOpen={showInsuranceModal}
-        onClose={() => setShowInsuranceModal(false)}
-        onGetInsurance={handleInsuranceRedirect}
-      />
       
       {/* Payment Retry Component */}
       {showRetry && currentOrderId && (
