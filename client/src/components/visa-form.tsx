@@ -44,12 +44,6 @@ const applicationSchema = z.object({
 
 type ApplicationFormData = z.infer<typeof applicationSchema>;
 
-const processingTypes = [
-  { value: "standard", label: "Ready in 5-7 days", price: 65, minDays: 7 },
-  { value: "fast", label: "Ready in 1-3 days", price: 115, minDays: 3 },
-  { value: "express", label: "Ready in 24 hours", price: 215, minDays: 1 },
-  { value: "urgent", label: "Ready in 4 hours", price: 335, minDays: 1 },
-];
 
 // Supporting document processing types with minDays
 const supportingDocProcessingTypes = [
@@ -81,7 +75,7 @@ const calculateDaysDifference = (arrivalDate: string): number => {
 // Helper function to filter processing types based on arrival date
 const getAvailableProcessingTypes = (arrivalDate: string, isSupporting: boolean = false) => {
   const daysUntilArrival = calculateDaysDifference(arrivalDate);
-  const types = isSupporting ? supportingDocProcessingTypes : processingTypes;
+  const types = supportingDocProcessingTypes;
   
   // If arrival date is in the past, show only fastest options (1 day processing)
   if (daysUntilArrival <= 0) {
@@ -103,7 +97,6 @@ export function VisaForm() {
   const [selectedSupportingDocType, setSelectedSupportingDocType] = useState("");
   const [documentProcessingType, setDocumentProcessingType] = useState("");
   const [isSupportingDocumentValid, setIsSupportingDocumentValid] = useState(false);
-  const [availableProcessingTypes, setAvailableProcessingTypes] = useState(processingTypes);
   const [availableSupportingDocTypes, setAvailableSupportingDocTypes] = useState(supportingDocProcessingTypes);
   // Removed paymentData state - now using direct redirects
   const [showRetry, setShowRetry] = useState(false);
@@ -151,7 +144,6 @@ export function VisaForm() {
       const standardTypes = getAvailableProcessingTypes(watchedArrivalDate, false);
       const supportingTypes = getAvailableProcessingTypes(watchedArrivalDate, true);
       
-      setAvailableProcessingTypes(standardTypes);
       setAvailableSupportingDocTypes(supportingTypes);
       
       // Reset processing type if current selection is no longer available
@@ -176,7 +168,6 @@ export function VisaForm() {
       }
     } else {
       // If no arrival date, show all options
-      setAvailableProcessingTypes(processingTypes);
       setAvailableSupportingDocTypes(supportingDocProcessingTypes);
     }
   }, [watchedArrivalDate, form, documentProcessingType, toast]);
@@ -365,10 +356,8 @@ export function VisaForm() {
       const processingFee = supportingDocProcessingTypes.find(type => type.value === documentProcessingType)?.price || 0;
       return processingFee + eVisaFee;
     } else if (hasSupportingDocument === false) {
-      // Standard e-visa processing fees (when no supporting document) 
-      const selectedProcessingType = form.watch("processingType") || "standard";
-      const processingFee = processingTypes.find(p => p.value === selectedProcessingType)?.price || 65;
-      return processingFee + eVisaFee;
+      // This should not happen as we stop users without supporting documents
+      return eVisaFee;
     }
     
     return 0;
@@ -421,8 +410,14 @@ export function VisaForm() {
         return;
       }
       if (hasSupportingDocument === false) {
-        // Continue to next step for regular processing when no supporting document
-        // This will show standard processing options
+        // Show message and stop processing when no supporting document
+        toast({
+          title: "Supporting Documents Required",
+          description: "Turkey e-visa applications require supporting documents. Please visit your nearest Turkish consulate to apply for a traditional visa, or obtain the necessary supporting documents to apply online.",
+          duration: 6000,
+          variant: "destructive",
+        });
+        return;
       }
       if (hasSupportingDocument === true) {
         // Check if supporting document details are valid
@@ -1064,41 +1059,6 @@ export function VisaForm() {
                       </div>
                     )}
                     
-                    {/* Standard processing type for non-supporting document applications */}
-                    {hasSupportingDocument === false && (
-                      <FormField
-                        control={form.control}
-                        name="processingType"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Processing Type *</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select processing type" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {availableProcessingTypes?.map((type) => (
-                                  <SelectItem key={type.value} value={type.value}>
-                                    {type.label} - ${type.price}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                            
-                            {availableProcessingTypes.length === 0 && (
-                              <div className="bg-orange-50 p-4 rounded-lg mt-2 border border-orange-200">
-                                <p className="text-orange-800 text-sm">
-                                  <strong>Dikkat:</strong> Seçilen varış tarihi için işlem seçeneği mevcut değil. Lütfen daha ileri bir tarih seçiniz.
-                                </p>
-                              </div>
-                            )}
-                          </FormItem>
-                        )}
-                      />
-                    )}
                   </div>
                 </div>
               )}
@@ -1768,11 +1728,7 @@ export function VisaForm() {
                       {hasSupportingDocument === false && (
                         <div className="flex justify-between">
                           <span>{t('form.payment.processing.fee')}</span>
-                          <span>${(() => {
-                            const processingType = form.watch("processingType") || "standard";
-                            const selectedProcessing = processingTypes.find(p => p.value === processingType);
-                            return selectedProcessing?.price || 25;
-                          })()}</span>
+                          <span>$0.00</span>
                         </div>
                       )}
                       <div className="border-t pt-2 mt-2">
@@ -1827,11 +1783,7 @@ export function VisaForm() {
                     {hasSupportingDocument === false && (
                       <div className="flex justify-between">
                         <span>{t('form.payment.processing.fee')}:</span>
-                        <span>${(() => {
-                          const processingType = form.watch("processingType") || "standard";
-                          const selectedProcessing = processingTypes.find(p => p.value === processingType);
-                          return selectedProcessing?.price || 25;
-                        })()}</span>
+                        <span>$0.00</span>
                       </div>
                     )}
                     <div className="border-t pt-2 flex justify-between font-bold">
