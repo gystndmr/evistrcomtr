@@ -1086,6 +1086,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         billingLastName: "Topal",
         billingStreet1: "abc",
         billingStreet2: "",
+        billingCity: "Test City",
         brandName: "",
         callbackUrl: "https://localhost:7092/Odeme/GPayResult",
         cancelUrl: "https://localhost:7092/Odeme/GPayResult",

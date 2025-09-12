@@ -154,9 +154,3 @@ export const DOCUMENT_TYPES = [
   { value: "insurance", label: "Travel Insurance" },
 ];
 
-export const PROCESSING_TYPES = [
-  { value: "standard", label: "Standard Processing (5-7 days)", price: 0 },
-  { value: "fast", label: "Fast Processing (1-3 days)", price: 50 },
-  { value: "express", label: "Express Processing (24 hours)", price: 150 },
-  { value: "urgent", label: "Urgent Processing (4 hours)", price: 270 },
-];
