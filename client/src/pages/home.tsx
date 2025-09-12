@@ -148,9 +148,6 @@ export default function Home() {
           <div className="text-center text-white px-4 max-w-4xl mx-auto">
 
             
-            <h1 className="text-3xl md:text-4xl font-bold mb-4 drop-shadow-lg tracking-wider">
-              {t('header.title')}
-            </h1>
             <h2 className="text-xl md:text-2xl font-semibold mb-3 drop-shadow-md border-b-2 border-white/30 pb-1 inline-block">
               {t('home.hero.title')}
             </h2>
