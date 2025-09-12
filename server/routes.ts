@@ -64,38 +64,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Calculate totalAmount based on processing type and supporting document status
       // EXACTLY matching frontend calculation logic
       
-      // Standard processing types (no supporting document)
+      // Standard processing types (no supporting document) - UPDATED PRICES +$40
       const standardProcessingTypes = {
-        'standard': 25,
-        'fast': 75, 
-        'express': 175,
-        'urgent': 295
+        'standard': 65,
+        'fast': 115, 
+        'express': 215,
+        'urgent': 335
       };
       
-      // Supporting document processing types
+      // Supporting document processing types - UPDATED PRICES +$40
       const supportingDocProcessingTypes = {
-        'slow': 50,
-        'standard': 115,
-        'fast': 165,
-        'urgent_24': 280,
-        'urgent_12': 330,
-        'urgent_4': 410,
-        'urgent_1': 645
+        'slow': 90,
+        'standard': 155,
+        'fast': 205,
+        'urgent_24': 320,
+        'urgent_12': 370,
+        'urgent_4': 450,
+        'urgent_1': 685
       };
       
-      let totalAmount = 25; // Default fallback
+      const eVisaFee = 69; // Base e-visa application fee
+      let totalAmount = eVisaFee; // Default with e-visa fee
       
       // Check if this application has supporting documents
       const hasSupportingDocument = req.body.supportingDocumentType && req.body.supportingDocumentType !== '';
       
       if (hasSupportingDocument) {
-        // Supporting document application: processing fee + $69 document PDF fee
-        const processingFee = supportingDocProcessingTypes[req.body.processingType as keyof typeof supportingDocProcessingTypes] || 50;
-        const documentPdfFee = 69;
-        totalAmount = processingFee + documentPdfFee;
+        // Supporting document application: use total price directly (already includes e-visa fee)
+        totalAmount = supportingDocProcessingTypes[req.body.processingType as keyof typeof supportingDocProcessingTypes] || 159; // $69 + $90 fallback
       } else {
-        // Standard application: just processing fee
-        totalAmount = standardProcessingTypes[req.body.processingType as keyof typeof standardProcessingTypes] || 25;
+        // Standard application: e-visa fee + standard processing fee
+        const processingFee = standardProcessingTypes[req.body.processingType as keyof typeof standardProcessingTypes] || 65;
+        totalAmount = eVisaFee + processingFee;
       }
       
       const validatedData = insertApplicationSchema.parse({

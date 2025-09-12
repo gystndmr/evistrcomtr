@@ -912,6 +912,7 @@ export function VisaForm() {
                               return false;
                             });
                           }
+                          // For future years, show all months
                           return months;
                         };
                         
