@@ -5,6 +5,7 @@ import { Footer } from "@/components/footer";
 import { VisaForm } from "@/components/visa-form";
 import { Star } from "lucide-react";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
+import teamPhoto from "@/assets/team-photo.png";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -49,7 +50,7 @@ export default function Application() {
             {/* Team Photo */}
             <div className="flex justify-center mt-6 mb-8">
               <img 
-                src="/attached_assets/ChatGPT Image 23 Tem 2025 15_14_53_1757773980146.png"
+                src={teamPhoto}
                 alt="Our Professional Team"
                 className="w-full max-w-2xl h-auto object-cover rounded-lg shadow-lg"
               />
