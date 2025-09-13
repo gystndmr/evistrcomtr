@@ -440,6 +440,13 @@ export function VisaForm() {
         });
         return;
       }
+
+      if (effectiveScenario === 1) {
+        // Scenario 1: E-visa eligible + NO supporting document required
+        // Skip supporting document check step, go directly to personal information
+        setCurrentStep(3);
+        return;
+      }
     }
     
     // Step 2: Supporting Document Check
