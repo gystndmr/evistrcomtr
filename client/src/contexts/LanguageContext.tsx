@@ -23,26 +23,13 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// AUTO BROWSER LANGUAGE DETECTION
+// AUTO BROWSER LANGUAGE DETECTION - Default to English
 const detectBrowserLanguage = (): Language => {
   try {
-    const browserLang = navigator.language.toLowerCase();
-    console.log('Browser language detected:', browserLang);
-    
-    // Check for exact matches first (tr-tr, en-us, etc.)
-    let detectedLang = languages.find(lang => 
-      browserLang.startsWith(lang.code.toLowerCase())
-    );
-    
-    // If no match found, default to English
-    if (!detectedLang) {
-      detectedLang = languages.find(lang => lang.code === 'en')!;
-      console.log('No matching language found, defaulting to English');
-    } else {
-      console.log('Auto-detected language:', detectedLang.name);
-    }
-    
-    return detectedLang;
+    // Force English as default for now
+    const defaultLang = languages.find(lang => lang.code === 'en')!;
+    console.log('Default language set to English');
+    return defaultLang;
   } catch (error) {
     console.error('Error detecting browser language:', error);
     return languages.find(lang => lang.code === 'en')!;
