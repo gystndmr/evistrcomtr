@@ -416,14 +416,14 @@ export function VisaForm() {
     // Step 2: Supporting Document Check
     if (currentStep === 2) {
       // Handle supporting document logic based on scenario
-      if (selectedCountry.scenario === 1) {
+      if (selectedCountry && selectedCountry.scenario === 1) {
         // Scenario 1: E-visa eligible + NO supporting document required
         // Skip to next step directly, no supporting document needed
         setCurrentStep(3);
         return;
       }
       
-      if (selectedCountry.scenario === 2) {
+      if (selectedCountry && selectedCountry.scenario === 2) {
         // Scenario 2: E-visa eligible + supporting document required
         if (hasSupportingDocument === null) {
           toast({
@@ -754,26 +754,48 @@ export function VisaForm() {
   };
 
   const getDynamicSteps = () => {
-    const baseSteps = [
+    // For Scenario 1 (E-visa eligible, no supporting docs), skip Step 2 entirely
+    if (selectedCountry?.scenario === 1) {
+      return [
+        { number: 1, title: t("app.step1") },
+        { number: 2, title: t("app.step3") }, // Travel Information (renumbered)
+        { number: 3, title: t("app.step4") }, // Personal Information (renumbered)
+        { number: 4, title: t("app.step5") }, // Review & Payment (renumbered)
+      ];
+    }
+    
+    // For Scenario 2 (E-visa eligible, supporting docs required)
+    if (selectedCountry?.scenario === 2) {
+      const baseSteps = [
+        { number: 1, title: t("app.step1") },
+        { number: 2, title: t("app.step2") },
+        { number: 3, title: t("app.step3") },
+      ];
+      
+      if (hasSupportingDocument === true) {
+        return [
+          ...baseSteps,
+          { number: 4, title: t("app.step4.prerequisites") },
+          { number: 5, title: t("app.step4") },
+          { number: 6, title: t("app.step5") },
+        ];
+      } else {
+        return [
+          ...baseSteps,
+          { number: 4, title: t("app.step4") },
+          { number: 5, title: t("app.step5") },
+        ];
+      }
+    }
+    
+    // Default steps (fallback for scenarios 3, 4 or no country selected)
+    return [
       { number: 1, title: t("app.step1") },
       { number: 2, title: t("app.step2") },
       { number: 3, title: t("app.step3") },
+      { number: 4, title: t("app.step4") },
+      { number: 5, title: t("app.step5") },
     ];
-    
-    if (selectedCountry?.isEligible && hasSupportingDocument === true) {
-      return [
-        ...baseSteps,
-        { number: 4, title: t("app.step4.prerequisites") },
-        { number: 5, title: t("app.step4") },
-        { number: 6, title: t("app.step5") },
-      ];
-    } else {
-      return [
-        ...baseSteps,
-        { number: 4, title: t("app.step4") },
-        { number: 5, title: t("app.step5") },
-      ];
-    }
   };
   
   const steps = getDynamicSteps();
@@ -853,7 +875,7 @@ export function VisaForm() {
               )}
 
               {/* Step 2: Supporting Document Check */}
-              {currentStep === 2 && selectedCountry?.isEligible && (
+              {currentStep === 2 && selectedCountry?.scenario === 2 && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4">{t("app.step2.title")}</h3>
                   <SupportingDocumentCheck
