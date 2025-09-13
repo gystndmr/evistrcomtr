@@ -405,6 +405,35 @@ export function VisaForm() {
     form.setValue("documentType", selectedDocumentType);
   }, [selectedDocumentType, form]);
 
+  // Egypt special case: Re-evaluate scenario when date of birth changes
+  useEffect(() => {
+    if (selectedCountry?.code === 'EGY') {
+      const dob = form.watch('dateOfBirth');
+      if (dob) {
+        const effectiveScenario = getEffectiveScenario(selectedCountry, dob);
+        
+        if (effectiveScenario === 1) {
+          // Age <15 or >45: No supporting document required
+          setHasSupportingDocument(false);
+          setSupportingDocumentDetails(null);
+          setDocumentProcessingType("");
+          setIsSupportingDocumentValid(true);
+          
+          // If currently on step 2, auto-advance to step 3
+          if (currentStep === 2) {
+            setCurrentStep(3);
+          }
+        } else if (effectiveScenario === 2) {
+          // Age 15-45: Supporting document required
+          setHasSupportingDocument(null); // Reset to force user selection
+          setSupportingDocumentDetails(null);
+          setDocumentProcessingType("");
+          setIsSupportingDocumentValid(false);
+        }
+      }
+    }
+  }, [form.watch('dateOfBirth'), selectedCountry, currentStep]);
+
   const handleNextStep = () => {
     // Step 1: Country and Document Type Selection
     if (currentStep === 1) {
@@ -441,6 +470,13 @@ export function VisaForm() {
         return;
       }
 
+      // Egypt special case: If Egypt is selected but no dateOfBirth yet, go to Step 2
+      const dob = form.getValues('dateOfBirth');
+      if (selectedCountry?.code === 'EGY' && !dob) {
+        setCurrentStep(2);
+        return;
+      }
+
       if (effectiveScenario === 1) {
         // Scenario 1: E-visa eligible + NO supporting document required
         // Skip supporting document check step, go directly to personal information
@@ -451,8 +487,19 @@ export function VisaForm() {
     
     // Step 2: Supporting Document Check
     if (currentStep === 2) {
+      // Egypt special case: If Egypt is selected but no dateOfBirth yet, require DOB first
+      const dob = form.getValues('dateOfBirth');
+      if (selectedCountry?.code === 'EGY' && !dob) {
+        toast({
+          title: "Date of Birth Required",
+          description: "Please enter your date of birth to determine document requirements",
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Handle supporting document logic based on effective scenario (includes Egypt age-based logic)
-      const effectiveScenario = getEffectiveScenario(selectedCountry, form.getValues("dateOfBirth"));
+      const effectiveScenario = getEffectiveScenario(selectedCountry, dob);
       
       if (effectiveScenario === 1) {
         // Scenario 1: E-visa eligible + NO supporting document required
@@ -967,6 +1014,33 @@ export function VisaForm() {
               {getCurrentStepContent() === 'supporting' && (
                 <div>
                   <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">{t("app.step2.title")}</h3>
+                  
+                  {/* Egypt Special Case: Date of Birth field in Step 2 */}
+                  {selectedCountry?.code === 'EGY' && (
+                    <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <h4 className="text-sm font-semibold text-blue-800 mb-3">Required for Egypt Applications</h4>
+                      <FormField
+                        control={form.control}
+                        name="dateOfBirth"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Date of Birth *</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="date"
+                                placeholder="Select date of birth"
+                                className="w-full"
+                                max={new Date().toISOString().split('T')[0]}
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
+                  
                   <SupportingDocumentCheck
                     onHasSupportingDocument={setHasSupportingDocument}
                     onDocumentDetailsChange={setSupportingDocumentDetails}
