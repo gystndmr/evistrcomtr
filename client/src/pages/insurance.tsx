@@ -457,24 +457,24 @@ export default function Insurance() {
       <Header />
       
       {/* Simple Header */}
-      <section className="bg-white py-8 border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="bg-white py-4 sm:py-6 lg:py-8 border-b border-gray-200">
+        <div className="max-w-4xl mx-auto px-2 sm:px-4 lg:px-8">
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Turkey Travel Insurance</h1>
-            <p className="text-gray-600">Complete your application below</p>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Turkey Travel Insurance</h1>
+            <p className="text-sm sm:text-base text-gray-600">Complete your application below</p>
           </div>
         </div>
       </section>
 
       {/* Main Form */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-4xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
         <div className="bg-white rounded-xl shadow-lg border border-gray-200">
-          <div className="p-8">
-            <form onSubmit={handleSubmit} className="space-y-8" noValidate key="insurance-form-v2">
+          <div className="p-4 sm:p-6 lg:p-8">
+            <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8" noValidate key="insurance-form-v2">
               
 
               {/* Personal Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <Label htmlFor="firstName">First Name *</Label>
                   <Input
@@ -549,10 +549,10 @@ export default function Insurance() {
               </div>
 
               {/* Travel Dates */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <Label>Travel Date * (Cannot be in the past)</Label>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <Select
                       value={applicationData.travelDate ? applicationData.travelDate.split('-')[2] : ''}
                       onValueChange={(day) => {
@@ -714,7 +714,7 @@ export default function Insurance() {
                 </div>
                 <div>
                   <Label>Return Date *</Label>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <Select
                       value={applicationData.returnDate ? applicationData.returnDate.split('-')[2] : ''}
                       onValueChange={(day) => {
@@ -791,7 +791,7 @@ export default function Insurance() {
               {/* Date of Birth */}
               <div>
                 <Label>Date of Birth *</Label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <Select
                     value={applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-')[2] : ''}
                     onValueChange={(day) => {
@@ -1001,7 +1001,7 @@ export default function Insurance() {
                   <SelectTrigger data-testid="select-insurance-plan">
                     <SelectValue placeholder="Choose insurance duration and price" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent position="popper" side="bottom" align="start">
                     {sortedProducts.map((product: InsuranceProduct) => (
                       <SelectItem key={product.id} value={product.id.toString()}>
                         {product.name.replace(" Coverage", "")} - ${product.price} USD

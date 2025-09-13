@@ -884,7 +884,7 @@ export function VisaForm() {
   const totalSteps = steps.length;
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto px-2 sm:px-0">
       <Card>
         <CardHeader>
           <CardTitle>{t("app.form.title")}</CardTitle>
@@ -942,11 +942,11 @@ export function VisaForm() {
 
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
               {/* Step 1: Country Selection */}
               {getCurrentStepContent() === 'country' && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">{t("app.step1.title")}</h3>
+                  <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">{t("app.step1.title")}</h3>
                   <CountrySelector
                     onCountrySelect={handleCountrySelect}
                     onDocumentTypeSelect={setSelectedDocumentType}
@@ -959,7 +959,7 @@ export function VisaForm() {
               {/* Step 2: Supporting Document Check */}
               {getCurrentStepContent() === 'supporting' && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">{t("app.step2.title")}</h3>
+                  <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">{t("app.step2.title")}</h3>
                   <SupportingDocumentCheck
                     onHasSupportingDocument={setHasSupportingDocument}
                     onDocumentDetailsChange={setSupportingDocumentDetails}
@@ -973,7 +973,7 @@ export function VisaForm() {
               {/* Step 3: Travel Information */}
               {getCurrentStepContent() === 'travel' && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-4">{t("app.step3.title")}</h3>
+                  <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">{t("app.step3.title")}</h3>
                   <div className="grid md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}

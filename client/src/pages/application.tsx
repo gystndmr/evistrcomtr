@@ -36,15 +36,15 @@ export default function Application() {
       <section className="relative bg-gradient-to-br from-blue-50 to-red-50 min-h-screen">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=2071&auto=format&fit=crop')] bg-cover bg-center opacity-5"></div>
         {/* Team Photo - Full Width & Short */}
-        <div className="w-full mb-4">
+        <div className="w-full mb-2 sm:mb-4">
           <img 
             src={teamPhoto}
             alt="Our Professional Team"
-            className="w-full h-32 sm:h-36 md:h-40 object-cover object-center"
+            className="w-full h-24 sm:h-32 md:h-36 lg:h-40 object-cover object-center"
           />
         </div>
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        <div className="relative max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 pt-4 sm:pt-6 lg:pt-8">
           <VisaForm />
         </div>
       </section>
