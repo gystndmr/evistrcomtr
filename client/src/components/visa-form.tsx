@@ -420,10 +420,9 @@ export function VisaForm() {
           setDocumentProcessingType("");
           setIsSupportingDocumentValid(true);
           
-          // If currently on step 2, auto-advance to step 3
-          if (currentStep === 2) {
-            setCurrentStep(3);
-          }
+          // DISABLED: Auto-advance to prevent UX issues
+          // User will manually click Next Step button
+          
         } else if (effectiveScenario === 2) {
           // Age 15-45: Supporting document required
           setHasSupportingDocument(null); // Reset to force user selection
@@ -433,7 +432,7 @@ export function VisaForm() {
         }
       }
     }
-  }, [form.watch('dateOfBirth'), selectedCountry, currentStep]);
+  }, [form.watch('dateOfBirth'), selectedCountry]);
 
   const handleNextStep = () => {
     // Step 1: Country and Document Type Selection
@@ -1045,7 +1044,7 @@ export function VisaForm() {
                             <FormControl>
                               <Input
                                 type="date"
-                                placeholder="Select date of birth"
+                                placeholder="Please select your date of birth"
                                 className="w-full"
                                 max={new Date().toISOString().split('T')[0]}
                                 data-testid="input-dob"
