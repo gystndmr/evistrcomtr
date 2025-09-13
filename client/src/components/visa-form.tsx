@@ -834,6 +834,54 @@ export function VisaForm() {
       { number: 5, title: t("app.step5") },
     ];
   };
+
+  // Helper function to determine what content should be shown for current step
+  const getCurrentStepContent = () => {
+    const effectiveScenario = getEffectiveScenario(selectedCountry, form.getValues("dateOfBirth"));
+    
+    if (effectiveScenario === 1) {
+      // Scenario 1: [Country, Travel, Personal, Payment]
+      switch (currentStep) {
+        case 1: return 'country';
+        case 2: return 'travel';
+        case 3: return 'personal';
+        case 4: return 'payment';
+        default: return 'country';
+      }
+    } else if (effectiveScenario === 2) {
+      // Scenario 2: [Country, Supporting, Travel, Prerequisites?, Personal, Payment]
+      if (hasSupportingDocument === true) {
+        switch (currentStep) {
+          case 1: return 'country';
+          case 2: return 'supporting';
+          case 3: return 'travel';
+          case 4: return 'prerequisites';
+          case 5: return 'personal';
+          case 6: return 'payment';
+          default: return 'country';
+        }
+      } else {
+        switch (currentStep) {
+          case 1: return 'country';
+          case 2: return 'supporting';
+          case 3: return 'travel';
+          case 4: return 'personal';
+          case 5: return 'payment';
+          default: return 'country';
+        }
+      }
+    } else {
+      // Default scenario: [Country, Supporting, Travel, Personal, Payment]
+      switch (currentStep) {
+        case 1: return 'country';
+        case 2: return 'supporting';
+        case 3: return 'travel';
+        case 4: return 'personal';
+        case 5: return 'payment';
+        default: return 'country';
+      }
+    }
+  };
   
   const steps = getDynamicSteps();
   const totalSteps = steps.length;
@@ -899,7 +947,7 @@ export function VisaForm() {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               {/* Step 1: Country Selection */}
-              {currentStep === 1 && (
+              {getCurrentStepContent() === 'country' && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4">{t("app.step1.title")}</h3>
                   <CountrySelector
@@ -912,7 +960,7 @@ export function VisaForm() {
               )}
 
               {/* Step 2: Supporting Document Check */}
-              {currentStep === 2 && selectedCountry?.scenario === 2 && (
+              {getCurrentStepContent() === 'supporting' && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4">{t("app.step2.title")}</h3>
                   <SupportingDocumentCheck
@@ -926,7 +974,7 @@ export function VisaForm() {
               )}
 
               {/* Step 3: Travel Information */}
-              {currentStep === 3 && (
+              {getCurrentStepContent() === 'travel' && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4">{t("app.step3.title")}</h3>
                   <div className="grid md:grid-cols-2 gap-6">
@@ -1148,7 +1196,7 @@ export function VisaForm() {
               )}
 
               {/* Step 4: Prerequisites (for eligible countries with supporting docs) */}
-              {currentStep === 4 && selectedCountry?.isEligible && hasSupportingDocument === true && (
+              {getCurrentStepContent() === 'prerequisites' && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4">{t("app.step4.prerequisites.title")}</h3>
                   <div className="space-y-4">
@@ -1216,8 +1264,8 @@ export function VisaForm() {
                 </div>
               )}
 
-              {/* Step 5: Personal Details (for eligible countries with supporting docs) or Step 4 (for others) */}
-              {(currentStep === 5 || (currentStep === 4 && (!selectedCountry?.isEligible || hasSupportingDocument === false))) && (
+              {/* Personal Details */}
+              {getCurrentStepContent() === 'personal' && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4">{hasSupportingDocument === true ? t("app.step5.title") : t("app.step4.title")}</h3>
                   <div className="grid md:grid-cols-2 gap-6">
@@ -1780,8 +1828,8 @@ export function VisaForm() {
                 </div>
               )}
 
-              {/* Step 6: Payment (for eligible countries with supporting docs) or Step 5 (for others) */}
-              {(currentStep === 6 || (currentStep === 5 && (!selectedCountry?.isEligible || hasSupportingDocument === false))) && (
+              {/* Payment */}
+              {getCurrentStepContent() === 'payment' && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4">{hasSupportingDocument === true ? t("app.step6.title") : t("app.step5.title")}</h3>
                   
