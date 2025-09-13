@@ -35,28 +35,16 @@ export default function Application() {
       
       <section className="relative py-8 sm:py-16 bg-gradient-to-br from-blue-50 to-red-50 min-h-screen">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=2071&auto=format&fit=crop')] bg-cover bg-center opacity-5"></div>
+        {/* Team Photo - Full Width & Short */}
+        <div className="w-full mb-4">
+          <img 
+            src={teamPhoto}
+            alt="Our Professional Team"
+            className="w-full h-24 sm:h-32 object-cover object-center"
+          />
+        </div>
+        
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-6 sm:mb-8">
-            <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full mb-4 shadow-lg p-2">
-              <img 
-                src={turkeyFlag} 
-                alt="Turkey Flag" 
-                className="w-full h-full object-cover rounded-full"
-              />
-            </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-800 mb-4">{t('app.title')}</h1>
-            <p className="text-base sm:text-lg text-neutral-600 px-4">{t('app.subtitle')}</p>
-            
-            {/* Team Photo */}
-            <div className="flex justify-center mt-6 mb-8">
-              <img 
-                src={teamPhoto}
-                alt="Our Professional Team"
-                className="w-full max-w-2xl h-auto object-cover rounded-lg shadow-lg"
-              />
-            </div>
-          </div>
-          
           <VisaForm />
         </div>
       </section>
