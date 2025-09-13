@@ -351,16 +351,14 @@ export function VisaForm() {
   const calculateTotal = () => {
     const eVisaFee = 69; // Base e-visa application fee
     
-    if (hasSupportingDocument === true && documentProcessingType) {
-      // Find processing fee from dynamic list
+    // If processing type is selected, add processing fee (for all scenarios)
+    if (documentProcessingType) {
       const processingFee = supportingDocProcessingTypes.find(type => type.value === documentProcessingType)?.price || 0;
       return processingFee + eVisaFee;
-    } else if (hasSupportingDocument === false) {
-      // This should not happen as we stop users without supporting documents
-      return eVisaFee;
     }
     
-    return 0;
+    // If no processing type selected, return just e-visa fee
+    return eVisaFee;
   };
 
   // Calculate age from date of birth
@@ -1145,30 +1143,29 @@ export function VisaForm() {
                       }}
                     />
                     
-                    {/* Processing Type for supporting document applications */}
-                    {hasSupportingDocument === true && (
-                      <div className="space-y-4">
-                        <Label htmlFor="processingType">Processing Type *</Label>
-                        <Select value={documentProcessingType} onValueChange={setDocumentProcessingType}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select processing type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {availableSupportingDocTypes.map((type) => (
-                              <SelectItem key={type.value} value={type.value}>
-                                {type.label} - ${type.price}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        
-                        {availableSupportingDocTypes.length === 0 && (
-                          <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                            <p className="text-orange-800 text-sm">
-                              <strong>Dikkat:</strong> Seçilen varış tarihi için işlem seçeneği mevcut değil. Lütfen daha ileri bir tarih seçiniz.
-                            </p>
-                          </div>
-                        )}
+                    {/* Processing Type - Available for all scenarios */}
+                    <div className="space-y-4">
+                      <Label htmlFor="processingType">Processing Type *</Label>
+                      <Select value={documentProcessingType} onValueChange={setDocumentProcessingType}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select processing type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {availableSupportingDocTypes.map((type) => (
+                            <SelectItem key={type.value} value={type.value}>
+                              {type.label} - ${type.price}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      
+                      {availableSupportingDocTypes.length === 0 && (
+                        <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                          <p className="text-orange-800 text-sm">
+                            <strong>Dikkat:</strong> Seçilen varış tarihi için işlem seçeneği mevcut değil. Lütfen daha ileri bir tarih seçiniz.
+                          </p>
+                        </div>
+                      )}
                         
                         {documentProcessingType && (
                           <div className="bg-blue-50 p-4 rounded-lg">
@@ -1189,7 +1186,6 @@ export function VisaForm() {
                           </div>
                         )}
                       </div>
-                    )}
                     
                   </div>
                 </div>
