@@ -45,6 +45,15 @@ export default function Application() {
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-neutral-800 mb-4">{t('app.title')}</h1>
             <p className="text-base sm:text-lg text-neutral-600 px-4">{t('app.subtitle')}</p>
+            
+            {/* Team Photo */}
+            <div className="flex justify-center mt-6 mb-8">
+              <img 
+                src="/attached_assets/ChatGPT Image 23 Tem 2025 15_14_53_1757773980146.png"
+                alt="Our Professional Team"
+                className="w-full max-w-2xl h-auto object-cover rounded-lg shadow-lg"
+              />
+            </div>
           </div>
           
           <VisaForm />
