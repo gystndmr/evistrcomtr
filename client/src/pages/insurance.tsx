@@ -472,35 +472,6 @@ export default function Insurance() {
           <div className="p-8">
             <form onSubmit={handleSubmit} className="space-y-8" noValidate key="insurance-form-v2">
               
-              {/* Insurance Plan Selection */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Insurance Plan *</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {sortedProducts.map((product: InsuranceProduct) => (
-                    <div key={product.id} className="relative">
-                      <input
-                        type="radio"
-                        name="insurance-product"
-                        id={`product-${product.id}`}
-                        checked={selectedProduct?.id === product.id}
-                        onChange={() => setSelectedProduct(product)}
-                        className="sr-only"
-                      />
-                      <label
-                        htmlFor={`product-${product.id}`}
-                        className={`block p-4 border rounded-lg cursor-pointer text-center transition-all ${
-                          selectedProduct?.id === product.id
-                            ? "border-blue-600 bg-blue-50"
-                            : "border-gray-300 hover:border-gray-400"
-                        }`}
-                      >
-                        <div className="font-semibold text-gray-900">{product.name.replace(" Coverage", "")}</div>
-                        <div className="text-lg font-bold text-blue-600">${product.price} USD</div>
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
 
               {/* Personal Information */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1016,6 +987,29 @@ export default function Insurance() {
                 }
                 return null;
               })()}
+
+              {/* Insurance Plan Selection - Dropdown */}
+              <div>
+                <Label htmlFor="insurancePlan">Select Insurance Plan *</Label>
+                <Select
+                  value={selectedProduct?.id?.toString() || ""}
+                  onValueChange={(value) => {
+                    const product = sortedProducts.find(p => p.id.toString() === value);
+                    setSelectedProduct(product || null);
+                  }}
+                >
+                  <SelectTrigger data-testid="select-insurance-plan">
+                    <SelectValue placeholder="Choose insurance duration and price" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {sortedProducts.map((product: InsuranceProduct) => (
+                      <SelectItem key={product.id} value={product.id.toString()}>
+                        {product.name.replace(" Coverage", "")} - ${product.price} USD
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
               {/* Payment Summary */}
               {selectedProduct && (
