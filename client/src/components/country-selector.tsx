@@ -131,6 +131,32 @@ export function CountrySelector({
   const renderEligibilityStatus = () => {
     if (!selectedCountry || !selectedDocumentType) return null;
 
+    // Scenario 4: Not eligible for e-visa (red warning) - Check this first!
+    if (!selectedCountry.isEligible || selectedCountry.scenario === 4) {
+      return (
+        <Alert className="border-red-200 bg-red-50">
+          <XCircle className="h-4 w-4 text-red-600" />
+          <AlertDescription className="text-red-800">
+            An e‑Visa cannot be issued for citizens of the country you selected. Please apply for a visa at your nearest Turkish mission or consulate.
+            <div className="mt-3 flex gap-2">
+              <button 
+                onClick={() => window.history.back()}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded font-medium text-sm"
+              >
+                Go Back
+              </button>
+              <button 
+                onClick={() => window.location.href = '/'}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium text-sm"
+              >
+                Return to Homepage
+              </button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      );
+    }
+
     // Scenario 3: Visa-free + insurance required (soft blue warning)
     if (selectedCountry.scenario === 3) {
       return (
@@ -138,26 +164,6 @@ export function CountrySelector({
           <AlertTriangle className="h-4 w-4 text-blue-600" />
           <AlertDescription className="text-blue-800">
             {t('form.warning.visa.exempt.insurance.description')}
-          </AlertDescription>
-        </Alert>
-      );
-    }
-
-    // Scenario 4: Not eligible for e-visa (red warning)
-    if (!selectedCountry.isEligible || selectedCountry.scenario === 4) {
-      return (
-        <Alert className="border-red-200 bg-red-50">
-          <XCircle className="h-4 w-4 text-red-600" />
-          <AlertDescription className="text-red-800">
-            Your nationality requires consulate visa processing, but entry to Turkey is STRICTLY PROHIBITED without mandatory travel insurance as required by Turkish Law No. 6458 - border officials will deny entry to any visitor lacking proper insurance coverage.
-            <div className="mt-3">
-              <button 
-                onClick={() => window.location.href = `/insurance?country=${encodeURIComponent(selectedCountry.name)}`}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-medium text-sm"
-              >
-                GET MANDATORY INSURANCE
-              </button>
-            </div>
           </AlertDescription>
         </Alert>
       );

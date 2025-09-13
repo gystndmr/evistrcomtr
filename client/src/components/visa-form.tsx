@@ -1931,7 +1931,10 @@ export function VisaForm() {
                 )}
                 
                 {currentStep < totalSteps ? (
-                  selectedCountry && getEffectiveScenario(selectedCountry) === 3 ? (
+                  selectedCountry && getEffectiveScenario(selectedCountry) === 4 ? (
+                    // Scenario 4: Not eligible for e-visa - no next step button
+                    null
+                  ) : selectedCountry && getEffectiveScenario(selectedCountry) === 3 ? (
                     <Button 
                       type="button" 
                       onClick={() => window.location.href = '/insurance'} 
