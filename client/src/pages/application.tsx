@@ -40,7 +40,7 @@ export default function Application() {
           <img 
             src={teamPhoto}
             alt="Our Professional Team"
-            className="w-full h-20 sm:h-24 md:h-28 object-contain"
+            className="w-full h-20 sm:h-24 md:h-28 object-cover object-center"
           />
         </div>
         
