@@ -213,10 +213,7 @@ export function SupportingDocumentCheck({
             <Alert className="border-red-200 bg-red-50">
               <AlertTriangle className="h-4 w-4 text-red-600" />
               <AlertDescription className="text-red-800">
-                <div className="space-y-2">
-                  <p>Destekleyici belge olmadan vize başvurusunda bulunmak için en yakın konsolosluğa gidebilirsiniz.</p>
-                  <p className="text-sm">Without supporting documents, you can visit the nearest consulate to apply for a visa.</p>
-                </div>
+                Without supporting documents, you can visit the nearest consulate to apply for a visa.
               </AlertDescription>
             </Alert>
           )}
