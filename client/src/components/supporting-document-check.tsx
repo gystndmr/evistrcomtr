@@ -213,19 +213,7 @@ export function SupportingDocumentCheck({
             <Alert className="border-red-200 bg-red-50">
               <AlertTriangle className="h-4 w-4 text-red-600" />
               <AlertDescription className="text-red-800">
-                Without supporting documents, you must apply through the consulate, but entry to Turkey is STRICTLY PROHIBITED without mandatory travel insurance as required by Turkish Law No. 6458 - border officials will deny entry to any visitor lacking proper insurance coverage.
-                <div className="mt-4">
-                  <button 
-                    onClick={() => {
-                      const urlParams = new URLSearchParams(window.location.search);
-                      const country = urlParams.get('country') || '';
-                      window.location.href = `/insurance?country=${encodeURIComponent(country)}`;
-                    }}
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded font-medium text-sm transition-colors"
-                  >
-                    GET MANDATORY INSURANCE
-                  </button>
-                </div>
+                Destekleyici belge olmadan en yakın konsolosluk üzerinden başvuru yapmanız gerekmektedir.
               </AlertDescription>
             </Alert>
           )}
