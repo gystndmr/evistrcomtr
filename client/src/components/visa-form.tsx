@@ -409,7 +409,8 @@ export function VisaForm() {
   useEffect(() => {
     if (selectedCountry?.code === 'EGY') {
       const dob = form.watch('dateOfBirth');
-      if (dob) {
+      // Only process COMPLETE and VALID dates (YYYY-MM-DD format)
+      if (dob && dob.match(/^\d{4}-\d{2}-\d{2}$/) && new Date(dob).toString() !== 'Invalid Date') {
         const effectiveScenario = getEffectiveScenario(selectedCountry, dob);
         
         if (effectiveScenario === 1) {
@@ -1047,6 +1048,7 @@ export function VisaForm() {
                                 placeholder="Select date of birth"
                                 className="w-full"
                                 max={new Date().toISOString().split('T')[0]}
+                                data-testid="input-dob"
                                 {...field}
                               />
                             </FormControl>
