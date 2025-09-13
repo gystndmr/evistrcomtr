@@ -396,6 +396,10 @@ const translations: Record<string, Record<string, string>> = {
     // Validation
     'form.validation.error.title': 'Form Validation Error',
     'form.validation.error.description': 'Please fill in all required fields correctly',
+    
+    // Supporting Document Warnings
+    'form.warning.supporting.document.required.title': 'Supporting Documents Required',
+    'form.warning.supporting.document.required.description': 'Supporting documents are required for citizens of this country to obtain an e-visa. You can visit the nearest consulate to complete your application.',
 
     // Footer
     'footer.application': 'Application',
@@ -732,6 +736,10 @@ const translations: Record<string, Record<string, string>> = {
     // Validation
     'form.validation.error.title': 'Form Doğrulama Hatası',
     'form.validation.error.description': 'Lütfen tüm zorunlu alanları doğru şekilde doldurun',
+    
+    // Supporting Document Warnings
+    'form.warning.supporting.document.required.title': 'Destekleyici Belge Zorunlu',
+    'form.warning.supporting.document.required.description': 'Bu ülke vatandaşları için e‑Vize alınabilmesi için destekleyici belge zorunludur. İşlemlerinizi en yakın konsolosluk üzerinden gerçekleştirebilirsiniz.',
 
     // Footer
     'footer.application': 'Başvuru',

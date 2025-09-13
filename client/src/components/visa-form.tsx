@@ -462,8 +462,8 @@ export function VisaForm() {
         if (hasSupportingDocument === false) {
           // Show message and stop processing when no supporting document
           toast({
-            title: "Destekleyici Belge Zorunlu",
-            description: "Bu ülke vatandaşları için e‑Vize alınabilmesi için destekleyici belge zorunludur. İşlemlerinizi en yakın konsolosluk üzerinden gerçekleştirebilirsiniz.",
+            title: t("form.warning.supporting.document.required.title"),
+            description: t("form.warning.supporting.document.required.description"),
             duration: 8000,
             variant: "destructive",
           });
