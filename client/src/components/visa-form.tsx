@@ -1047,6 +1047,7 @@ export function VisaForm() {
                                 placeholder="Please select your date of birth"
                                 className="w-full"
                                 max={new Date().toISOString().split('T')[0]}
+                                lang="en"
                                 data-testid="input-dob"
                                 {...field}
                               />
