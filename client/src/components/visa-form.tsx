@@ -363,6 +363,36 @@ export function VisaForm() {
     return 0;
   };
 
+  // Calculate age from date of birth
+  const calculateAge = (dateOfBirth: string): number => {
+    if (!dateOfBirth) return 0;
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    
+    return age;
+  };
+
+  // Get effective scenario for a country (handles special cases like Egypt age-based rules)
+  const getEffectiveScenario = (country: Country | null, dateOfBirth?: string): number => {
+    if (!country) return 3; // Default scenario
+    
+    // Egypt special case: age-based scenario determination
+    if (country.code === 'EGY' && dateOfBirth) {
+      const age = calculateAge(dateOfBirth);
+      // Age 15-45: Scenario 2 (supporting docs required)
+      // Under 15 or over 45: Scenario 1 (no supporting docs)
+      return (age >= 15 && age <= 45) ? 2 : 1;
+    }
+    
+    return country.scenario || 3;
+  };
+
   const handleCountrySelect = (country: Country | null) => {
     setSelectedCountry(country);
     // Reset supporting document state when country changes
@@ -388,8 +418,10 @@ export function VisaForm() {
         });
         return;
       }
-      // Handle different scenarios
-      if (selectedCountry.scenario === 4) {
+      // Handle different scenarios using effective scenario (includes Egypt age-based logic)
+      const effectiveScenario = getEffectiveScenario(selectedCountry, form.getValues("dateOfBirth"));
+      
+      if (effectiveScenario === 4) {
         // Scenario 4: Not eligible for e-visa
         toast({
           title: "E-Visa Not Available",
@@ -400,7 +432,7 @@ export function VisaForm() {
         return;
       }
       
-      if (selectedCountry.scenario === 3) {
+      if (effectiveScenario === 3) {
         // Scenario 3: E-visa exempt + travel insurance mandatory
         toast({
           title: "Visa Exemption - Travel Insurance Required",
@@ -415,15 +447,17 @@ export function VisaForm() {
     
     // Step 2: Supporting Document Check
     if (currentStep === 2) {
-      // Handle supporting document logic based on scenario
-      if (selectedCountry && selectedCountry.scenario === 1) {
+      // Handle supporting document logic based on effective scenario (includes Egypt age-based logic)
+      const effectiveScenario = getEffectiveScenario(selectedCountry, form.getValues("dateOfBirth"));
+      
+      if (effectiveScenario === 1) {
         // Scenario 1: E-visa eligible + NO supporting document required
         // Skip to next step directly, no supporting document needed
         setCurrentStep(3);
         return;
       }
       
-      if (selectedCountry && selectedCountry.scenario === 2) {
+      if (effectiveScenario === 2) {
         // Scenario 2: E-visa eligible + supporting document required
         if (hasSupportingDocument === null) {
           toast({
@@ -754,8 +788,11 @@ export function VisaForm() {
   };
 
   const getDynamicSteps = () => {
+    // Use effective scenario (includes Egypt age-based logic)
+    const effectiveScenario = getEffectiveScenario(selectedCountry, form.getValues("dateOfBirth"));
+    
     // For Scenario 1 (E-visa eligible, no supporting docs), skip Step 2 entirely
-    if (selectedCountry?.scenario === 1) {
+    if (effectiveScenario === 1) {
       return [
         { number: 1, title: t("app.step1") },
         { number: 2, title: t("app.step3") }, // Travel Information (renumbered)
@@ -765,7 +802,7 @@ export function VisaForm() {
     }
     
     // For Scenario 2 (E-visa eligible, supporting docs required)
-    if (selectedCountry?.scenario === 2) {
+    if (effectiveScenario === 2) {
       const baseSteps = [
         { number: 1, title: t("app.step1") },
         { number: 2, title: t("app.step2") },
