@@ -103,6 +103,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
         totalAmount: totalAmount.toString()
       });
 
+      // BACKEND SCENARIO VALIDATION - Enforce scenario rules
+      try {
+        if (!validatedData.countryId) {
+          return res.status(400).json({ message: "Country ID is required" });
+        }
+
+        const country = await storage.getCountryById(validatedData.countryId);
+        if (!country) {
+          return res.status(400).json({ message: "Invalid country ID" });
+        }
+
+        // Calculate effective scenario (includes Egypt age-based logic)
+        let effectiveScenario = country.scenario;
+        
+        // Egypt special case: age-based scenario determination
+        if (country.code === 'EGY' && validatedData.dateOfBirth) {
+          const age = Math.floor((Date.now() - validatedData.dateOfBirth.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
+          // Age 15-45: Scenario 2 (supporting docs required)
+          // Under 15 or over 45: Scenario 1 (no supporting docs)
+          effectiveScenario = (age >= 15 && age <= 45) ? 2 : 1;
+          console.log(`Egypt age-based scenario: age=${age}, scenario=${effectiveScenario}`);
+        }
+        
+        // Validate scenario rules
+        if (effectiveScenario === 4) {
+          return res.status(400).json({ 
+            message: "E-visa applications are not available for this country. Please visit the nearest consulate." 
+          });
+        }
+        
+        if (effectiveScenario === 3) {
+          return res.status(400).json({ 
+            message: "You are exempt from visa requirements, but travel insurance is mandatory. Please purchase travel insurance instead." 
+          });
+        }
+        
+        // Check supporting document requirements
+        const hasSupporting = hasSupportingDocument;
+        
+        if (effectiveScenario === 1 && hasSupporting) {
+          return res.status(400).json({ 
+            message: "Supporting documents are not required for your country. Please remove supporting documents." 
+          });
+        }
+        
+        if (effectiveScenario === 2 && !hasSupporting) {
+          return res.status(400).json({ 
+            message: "Supporting documents are required for your country. Please provide the necessary supporting documents." 
+          });
+        }
+        
+        console.log(`✅ Scenario validation passed: Country=${country.code}, Scenario=${effectiveScenario}, HasSupporting=${hasSupporting}`);
+        
+      } catch (validationError) {
+        console.error("Scenario validation error:", validationError);
+        return res.status(500).json({ message: "Failed to validate application requirements" });
+      }
+
       const application = await storage.createApplication(validatedData);
       
       // E-posta gönderimi (vize başvuru alındı) - USING DYNAMIC IMPORT LIKE INSURANCE

@@ -22,6 +22,7 @@ export interface IStorage {
   // Country operations
   getCountries(): Promise<Country[]>;
   getCountryByCode(code: string): Promise<Country | undefined>;
+  getCountryById(id: number): Promise<Country | undefined>;
   createCountry(country: InsertCountry): Promise<Country>;
   
   // Application operations
@@ -96,6 +97,11 @@ export class DatabaseStorage implements IStorage {
 
   async getCountryByCode(code: string): Promise<Country | undefined> {
     const [country] = await db.select().from(countries).where(eq(countries.code, code));
+    return country;
+  }
+
+  async getCountryById(id: number): Promise<Country | undefined> {
+    const [country] = await db.select().from(countries).where(eq(countries.id, id));
     return country;
   }
 
