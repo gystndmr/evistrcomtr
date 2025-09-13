@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer";
 import { VisaForm } from "@/components/visa-form";
 import { Star } from "lucide-react";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
-import teamPhoto from "@/assets/team-photo.png";
+import teamPhoto from "@/assets/team-photo-new.png";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useLanguage } from "@/contexts/LanguageContext";
