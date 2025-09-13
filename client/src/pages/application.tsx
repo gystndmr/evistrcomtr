@@ -5,7 +5,6 @@ import { Footer } from "@/components/footer";
 import { VisaForm } from "@/components/visa-form";
 import { Star } from "lucide-react";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
-import teamImage from "@assets/ChatGPT Image 23 Tem 2025 15_14_53_1757773593390.png";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -53,19 +52,6 @@ export default function Application() {
       </section>
 
       <Footer />
-      
-      {/* Team Image Section */}
-      <section className="bg-white py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <img 
-              src={teamImage} 
-              alt="Our Professional Team" 
-              className="w-full max-w-3xl mx-auto rounded-lg shadow-md"
-            />
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
