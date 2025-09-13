@@ -8,8 +8,11 @@ export const countries = pgTable("countries", {
   code: text("code").notNull().unique(),
   name: text("name").notNull(),
   flag: text("flag"),
+  // Legacy columns (temporary - will be removed after migration)
   isEligible: boolean("is_eligible").notNull().default(false),
   requiresSupportingDocs: boolean("requires_supporting_docs").notNull().default(false),
+  // New scenario column
+  scenario: integer("scenario").notNull().default(3), // 1: E-visa no docs, 2: E-visa with docs, 3: Visa-free + insurance, 4: Not eligible
   supportedDocumentTypes: text("supported_document_types").array(),
   visaFee: decimal("visa_fee", { precision: 10, scale: 2 }).default("60.00"),
   maxStayDays: integer("max_stay_days").default(30),

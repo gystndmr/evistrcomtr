@@ -388,46 +388,71 @@ export function VisaForm() {
         });
         return;
       }
-      if (!selectedCountry.isEligible) {
-        // Show message for non-eligible countries
+      // Handle different scenarios
+      if (selectedCountry.scenario === 4) {
+        // Scenario 4: Not eligible for e-visa
         toast({
-          title: "E-Visa Not Available", 
-          description: "This country is not eligible for Turkey e-visa. Please check the official Turkish government website for visa requirements.",
-          duration: 4000,
+          title: "E-Visa Not Available",
+          description: "Seçtiğiniz ülke uyruklarına e-Vize düzenlenememektedir. Vize başvurusunda bulunmak üzere en yakın temsilciliğimize gidebilirsiniz.",
+          duration: 8000,
+          variant: "destructive",
         });
+        return;
+      }
+      
+      if (selectedCountry.scenario === 3) {
+        // Scenario 3: E-visa exempt + travel insurance mandatory
+        toast({
+          title: "Visa Exemption - Travel Insurance Required",
+          description: "You are exempt from visa requirements, but travel insurance is mandatory by law. You will be redirected to purchase travel insurance.",
+          duration: 8000,
+        });
+        // Redirect to insurance page
+        window.location.href = '/insurance';
         return;
       }
     }
     
     // Step 2: Supporting Document Check
     if (currentStep === 2) {
-      if (hasSupportingDocument === null) {
-        toast({
-          title: "Required Selection",
-          description: "Please indicate if you have supporting documents",
-          variant: "destructive",
-        });
+      // Handle supporting document logic based on scenario
+      if (selectedCountry.scenario === 1) {
+        // Scenario 1: E-visa eligible + NO supporting document required
+        // Skip to next step directly, no supporting document needed
+        setCurrentStep(3);
         return;
       }
-      if (hasSupportingDocument === false) {
-        // Show message and stop processing when no supporting document
-        toast({
-          title: "Supporting Documents Required",
-          description: "Turkey e-visa applications require supporting documents. Please visit your nearest Turkish consulate to apply for a traditional visa, or obtain the necessary supporting documents to apply online.",
-          duration: 6000,
-          variant: "destructive",
-        });
-        return;
-      }
-      if (hasSupportingDocument === true) {
-        // Check if supporting document details are valid
-        if (!isSupportingDocumentValid) {
+      
+      if (selectedCountry.scenario === 2) {
+        // Scenario 2: E-visa eligible + supporting document required
+        if (hasSupportingDocument === null) {
           toast({
-            title: "Missing Information",
-            description: "Please complete all required supporting document fields",
+            title: "Required Selection",
+            description: "Please indicate if you have supporting documents",
             variant: "destructive",
           });
           return;
+        }
+        if (hasSupportingDocument === false) {
+          // Show message and stop processing when no supporting document
+          toast({
+            title: "Supporting Documents Required",
+            description: "Turkey e-visa applications require supporting documents. Please visit your nearest Turkish consulate to apply for a traditional visa, or obtain the necessary supporting documents to apply online.",
+            duration: 6000,
+            variant: "destructive",
+          });
+          return;
+        }
+        if (hasSupportingDocument === true) {
+          // Check if supporting document details are valid
+          if (!isSupportingDocumentValid) {
+            toast({
+              title: "Missing Information",
+              description: "Please complete all required supporting document fields",
+              variant: "destructive",
+            });
+            return;
+          }
         }
       }
     }
