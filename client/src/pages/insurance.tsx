@@ -12,6 +12,7 @@ import { Shield, CheckCircle, Calendar, MapPin, Star, Crown } from "lucide-react
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { PaymentRetry } from "@/components/payment-retry";
+import teamPhoto from "@/assets/team-photo-new.png";
 import type { InsuranceProduct } from "@shared/schema";
 
 export default function Insurance() {
@@ -465,6 +466,15 @@ export default function Insurance() {
           </div>
         </div>
       </section>
+
+      {/* Team Photo - Full Width & Short */}
+      <div className="w-full mb-2 sm:mb-4">
+        <img 
+          src={teamPhoto}
+          alt="Our Professional Team"
+          className="w-full h-24 sm:h-32 md:h-36 lg:h-40 object-cover object-center"
+        />
+      </div>
 
       {/* Main Form */}
       <main className="max-w-4xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
