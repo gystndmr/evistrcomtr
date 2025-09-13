@@ -36,11 +36,11 @@ export default function Application() {
       <section className="relative bg-gradient-to-br from-blue-50 to-red-50 min-h-screen">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=2071&auto=format&fit=crop')] bg-cover bg-center opacity-5"></div>
         {/* Team Photo - Full Width & Short */}
-        <div className="w-full mb-4 flex justify-center bg-gray-50">
+        <div className="w-full mb-4">
           <img 
             src={teamPhoto}
             alt="Our Professional Team"
-            className="w-full max-h-40 object-contain"
+            className="w-full h-32 sm:h-36 md:h-40 object-cover object-center"
           />
         </div>
         
