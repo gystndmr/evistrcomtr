@@ -387,6 +387,9 @@ const translations: Record<string, Record<string, string>> = {
     // Supporting Document Warnings
     'form.warning.supporting.document.required.title': 'Supporting Documents Required',
     'form.warning.supporting.document.required.description': 'Supporting documents are required for citizens of this country to obtain an e-visa. You can visit the nearest consulate to complete your application.',
+    'form.warning.visa.exempt.insurance.title': 'Travel Insurance Required',
+    'form.warning.visa.exempt.insurance.description': 'You are exempt from visa but travel health insurance is mandatory.',
+    'button.get.insurance': 'Get Insurance',
 
     // Footer
     'footer.application': 'Application',
@@ -727,6 +730,9 @@ const translations: Record<string, Record<string, string>> = {
     // Supporting Document Warnings
     'form.warning.supporting.document.required.title': 'Destekleyici Belge Zorunlu',
     'form.warning.supporting.document.required.description': 'Bu ülke vatandaşları için e‑Vize alınabilmesi için destekleyici belge zorunludur. İşlemlerinizi en yakın konsolosluk üzerinden gerçekleştirebilirsiniz.',
+    'form.warning.visa.exempt.insurance.title': 'Seyahat Sigortası Zorunlu',
+    'form.warning.visa.exempt.insurance.description': 'Vizeden muafsınız ancak seyahat sağlık sigortası yapmak zorundasınız.',
+    'button.get.insurance': 'Sigorta Al',
 
     // Footer
     'footer.application': 'Başvuru',

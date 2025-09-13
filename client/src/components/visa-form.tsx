@@ -432,7 +432,12 @@ export function VisaForm() {
       
       if (effectiveScenario === 3) {
         // Scenario 3: E-visa exempt + travel insurance mandatory
-        // No toast message or automatic redirect - user can continue with form
+        toast({
+          title: t("form.warning.visa.exempt.insurance.title"),
+          description: t("form.warning.visa.exempt.insurance.description"),
+          variant: "default", // Blue/green variant instead of destructive (red)
+          className: "border-blue-500 bg-blue-50 text-blue-900",
+        });
         return;
       }
     }
@@ -1926,10 +1931,21 @@ export function VisaForm() {
                 )}
                 
                 {currentStep < totalSteps ? (
-                  <Button type="button" onClick={handleNextStep} className="order-1 sm:order-2 sm:ml-auto bg-primary hover:bg-primary/90 text-white">
-                    {t('form.navigation.next.step')}
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
+                  selectedCountry && getEffectiveScenario(selectedCountry) === 3 ? (
+                    <Button 
+                      type="button" 
+                      onClick={() => window.location.href = '/insurance'} 
+                      className="order-1 sm:order-2 sm:ml-auto bg-green-600 hover:bg-green-700 text-white"
+                    >
+                      {t('button.get.insurance')}
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  ) : (
+                    <Button type="button" onClick={handleNextStep} className="order-1 sm:order-2 sm:ml-auto bg-primary hover:bg-primary/90 text-white">
+                      {t('form.navigation.next.step')}
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  )
                 ) : (
                   <Button 
                     type="button"
