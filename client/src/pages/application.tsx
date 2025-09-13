@@ -33,18 +33,18 @@ export default function Application() {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <section className="relative py-8 sm:py-16 bg-gradient-to-br from-blue-50 to-red-50 min-h-screen">
+      <section className="relative bg-gradient-to-br from-blue-50 to-red-50 min-h-screen">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=2071&auto=format&fit=crop')] bg-cover bg-center opacity-5"></div>
         {/* Team Photo - Full Width & Short */}
         <div className="w-full mb-4">
           <img 
             src={teamPhoto}
             alt="Our Professional Team"
-            className="w-full h-24 sm:h-32 object-cover object-center"
+            className="w-full h-24 sm:h-32 object-cover object-top"
           />
         </div>
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
           <VisaForm />
         </div>
       </section>
