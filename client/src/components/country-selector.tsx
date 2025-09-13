@@ -90,9 +90,6 @@ export function CountrySelector({
     queryKey: ["/api/countries"],
   });
 
-  // Debug logging
-  console.log("Countries query state:", { countries: countries?.length, isLoading, error });
-
   // Cleanup interval on unmount
   useEffect(() => {
     return () => {
@@ -167,10 +164,6 @@ export function CountrySelector({
 
   return (
     <div className="space-y-6">
-      {/* Temporary debug info */}
-      <div className="bg-yellow-100 border border-yellow-400 p-2 text-sm">
-        Debug: Countries: {countries?.length || 0}, Loading: {isLoading ? 'yes' : 'no'}, Error: {error ? error.message : 'none'}
-      </div>
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <Label htmlFor="country">Country/Region of Travel Document *</Label>

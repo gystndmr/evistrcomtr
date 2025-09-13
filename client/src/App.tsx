@@ -7,6 +7,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 
 import Home from "@/pages/home";
 import Application from "@/pages/application";
+import Insurance from "@/pages/insurance";
 import Status from "@/pages/status";
 import Admin from "@/pages/admin";
 import ChatAdmin from "@/pages/chat-admin";
@@ -32,6 +33,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/application" component={Application} />
+      <Route path="/insurance" component={Insurance} />
       <Route path="/status" component={Status} />
       <Route path="/admin" component={Admin} />
       <Route path="/chat-admin" component={ChatAdmin} />
