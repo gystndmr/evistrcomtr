@@ -432,13 +432,7 @@ export function VisaForm() {
       
       if (effectiveScenario === 3) {
         // Scenario 3: E-visa exempt + travel insurance mandatory
-        toast({
-          title: "Vizeden Muaf - Seyahat Sigortası Zorunlu",
-          description: "Vizeden muaftır; Türkiye'ye giriş için seyahat sigortası gereklidir.",
-          duration: 8000,
-        });
-        // Redirect to insurance page
-        window.location.href = '/insurance';
+        // No toast message or automatic redirect - user can continue with form
         return;
       }
     }
@@ -469,8 +463,8 @@ export function VisaForm() {
           // Show message and stop processing when no supporting document
           toast({
             title: "Destekleyici Belge Zorunlu",
-            description: "Bu ülke vatandaşları için e‑Vize alınabilmesi için destekleyici belge zorunludur.",
-            duration: 6000,
+            description: "Bu ülke vatandaşları için e‑Vize alınabilmesi için destekleyici belge zorunludur. İşlemlerinizi en yakın konsolosluk üzerinden gerçekleştirebilirsiniz.",
+            duration: 8000,
             variant: "destructive",
           });
           return;
