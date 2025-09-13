@@ -29,7 +29,7 @@ const applicationSchema = z.object({
   passportNumber: z.string().min(1, "Passport number is required"),
   passportIssueDate: z.string().min(1, "Passport issue date is required").regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
   passportExpiryDate: z.string().min(1, "Passport expiry date is required").regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
-  dateOfBirth: z.string().optional().refine((val) => !val || /^\d{4}-\d{2}-\d{2}$/.test(val), "Invalid date format"),
+  dateOfBirth: z.string().min(1, "Date of birth is required").regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
   placeOfBirth: z.string().min(2, "Place of birth is required (minimum 2 characters)"),
   motherName: z.string().min(2, "Mother's name is required (minimum 2 characters)"),
   fatherName: z.string().min(2, "Father's name is required (minimum 2 characters)"),
@@ -651,16 +651,6 @@ export function VisaForm() {
         });
         return;
       }
-
-      // Egypt special case: Validate date of birth is required
-      if (selectedCountry?.code === 'EGY' && (!formData.dateOfBirth || !formData.dateOfBirth.trim())) {
-        toast({
-          title: "Date of Birth Required",
-          description: "Date of birth is required for Egypt applications to determine document requirements",
-          variant: "destructive",
-        });
-        return;
-      }
       
       if (!formData.email.trim()) {
         toast({
@@ -700,12 +690,22 @@ export function VisaForm() {
         return;
       }
       
+      // Date of birth validation - Egypt special case handled
       if (!formData.dateOfBirth) {
-        toast({
-          title: t('form.error.birth.date'),
-          description: t('form.error.birth.date.desc'),
-          variant: "destructive",
-        });
+        // For Egypt, date of birth might be entered in Step 2 for age-based scenario determination
+        if (selectedCountry?.code === 'EGY') {
+          toast({
+            title: "Date of Birth Required",
+            description: "Please enter your date of birth to determine document requirements",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: t('form.error.birth.date'),
+            description: t('form.error.birth.date.desc'),
+            variant: "destructive",
+          });
+        }
         return;
       }
       
