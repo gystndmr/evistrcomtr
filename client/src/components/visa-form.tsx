@@ -690,12 +690,22 @@ export function VisaForm() {
         return;
       }
       
+      // Date of birth validation - Egypt special case handled
       if (!formData.dateOfBirth) {
-        toast({
-          title: t('form.error.birth.date'),
-          description: t('form.error.birth.date.desc'),
-          variant: "destructive",
-        });
+        // For Egypt, date of birth might be entered in Step 2 for age-based scenario determination
+        if (selectedCountry?.code === 'EGY') {
+          toast({
+            title: "Date of Birth Required",
+            description: "Please enter your date of birth to determine document requirements",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: t('form.error.birth.date'),
+            description: t('form.error.birth.date.desc'),
+            variant: "destructive",
+          });
+        }
         return;
       }
       
