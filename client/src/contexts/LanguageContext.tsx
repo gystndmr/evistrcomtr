@@ -731,7 +731,7 @@ const translations: Record<string, Record<string, string>> = {
     'form.warning.supporting.document.required.title': 'Destekleyici Belge Zorunlu',
     'form.warning.supporting.document.required.description': 'Bu ülke vatandaşları için e‑Vize alınabilmesi için destekleyici belge zorunludur. İşlemlerinizi en yakın konsolosluk üzerinden gerçekleştirebilirsiniz.',
     'form.warning.visa.exempt.insurance.title': 'Seyahat Sigortası Zorunlu',
-    'form.warning.visa.exempt.insurance.description': 'Vizeden muafsınız ancak 6458 sayılı Yabancılar ve Uluslararası Koruma Kanunu gereği seyahat sağlık sigortası yapmak zorundasınız - sınır memurları sigortasız girişleri reddedecektir.',
+    'form.warning.visa.exempt.insurance.description': 'Vizeden muafsınız ancak seyahat sağlık sigortası yapmak zorundasınız.',
     'button.get.insurance': 'Sigorta Al',
 
     // Footer
