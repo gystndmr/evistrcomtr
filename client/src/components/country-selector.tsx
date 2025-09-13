@@ -131,7 +131,20 @@ export function CountrySelector({
   const renderEligibilityStatus = () => {
     if (!selectedCountry || !selectedDocumentType) return null;
 
-    if (!selectedCountry.isEligible) {
+    // Scenario 3: Visa-free + insurance required (soft blue warning)
+    if (selectedCountry.scenario === 3) {
+      return (
+        <Alert className="border-blue-200 bg-blue-50">
+          <AlertTriangle className="h-4 w-4 text-blue-600" />
+          <AlertDescription className="text-blue-800">
+            {t('form.warning.visa.exempt.insurance.description')}
+          </AlertDescription>
+        </Alert>
+      );
+    }
+
+    // Scenario 4: Not eligible for e-visa (red warning)
+    if (!selectedCountry.isEligible || selectedCountry.scenario === 4) {
       return (
         <Alert className="border-red-200 bg-red-50">
           <XCircle className="h-4 w-4 text-red-600" />
@@ -150,6 +163,7 @@ export function CountrySelector({
       );
     }
 
+    // Scenario 1 & 2: E-visa available (green confirmation)
     return (
       <Alert className="border-green-200 bg-green-50">
         <CheckCircle className="h-4 w-4 text-green-500" />
