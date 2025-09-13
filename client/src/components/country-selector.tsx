@@ -86,9 +86,12 @@ export function CountrySelector({
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const { t } = useLanguage();
 
-  const { data: countries = [], isLoading } = useQuery<Country[]>({
+  const { data: countries = [], isLoading, error } = useQuery<Country[]>({
     queryKey: ["/api/countries"],
   });
+
+  // Debug logging
+  console.log("Countries query state:", { countries: countries?.length, isLoading, error });
 
   // Cleanup interval on unmount
   useEffect(() => {
@@ -164,6 +167,10 @@ export function CountrySelector({
 
   return (
     <div className="space-y-6">
+      {/* Temporary debug info */}
+      <div className="bg-yellow-100 border border-yellow-400 p-2 text-sm">
+        Debug: Countries: {countries?.length || 0}, Loading: {isLoading ? 'yes' : 'no'}, Error: {error ? error.message : 'none'}
+      </div>
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <Label htmlFor="country">Country/Region of Travel Document *</Label>
@@ -174,8 +181,10 @@ export function CountrySelector({
             <SelectContent>
               {isLoading ? (
                 <SelectItem value="loading" disabled>Loading countries...</SelectItem>
+              ) : error ? (
+                <SelectItem value="error" disabled>Error: {error.message}</SelectItem>
               ) : countries.length === 0 ? (
-                <SelectItem value="no-data" disabled>No countries available</SelectItem>
+                <SelectItem value="no-data" disabled>No countries available (Query returned empty)</SelectItem>
               ) : (
                 [...countries]
                   .sort((a, b) => a.name.localeCompare(b.name))
