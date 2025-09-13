@@ -1,0 +1,77 @@
+1. Senaryo – E‑Vizeye Uygun ve Destekleyici Belge Gerekmeyen Ülkeler
+
+Bu ülkelerin vatandaşları destekleyici belge sunmadan e‑Vize alabilir. Başvuru sırasında “Uyruğunuz” alanından bu ülkelerden biri seçildiğinde:
+
+Destekleyici belge ile ilgili hiçbir alan gösterilmesin.
+
+Kişi temel bilgilerini (pasaport ve seyahat bilgileri) girip doğrudan ödeme adımına geçebilsin.
+
+Ödeme ekranı mevcut e‑Vize ücretlendirme sisteminizle aynı şekilde çalışmalıdır.
+
+Ülkeler:
+Bahamalar, Bermuda, Antigua ve Barbuda, Avustralya, Barbados, Çin, Doğu Timor, Dominik Cumhuriyeti, Ermenistan, Fiji, Estonya, Grenada, Güney Afrika, Güney Kıbrıs Rum Yönetimi, Hırvatistan, Hong Kong, Jamaika, Letonya, Litvanya, Maldivler, Mauritius, Meksika, Mısır (15 yaşın altındakiler veya 45 yaşın üzerindekiler), Namibya, Saint Lucia, Saint Vincent ve Grenadinler, Surinam, Tayvan, Vietnam.
+
+replit AI’a talimat: Eğer uyruk bu listedeki ülkelerden biriyse:
+
+Başvuru formunda destekleyici belgelere ilişkin alanları gösterme.
+
+Kullanıcının pasaport ve seyahat bilgilerini girmesine izin ver; ardından ödeme sayfasına yönlendir.
+
+2. Senaryo – E‑Vizeye Uygun ve Destekleyici Belge Sunmak Zorunda Olan Ülkeler
+
+Bu ülkelerin vatandaşları e‑Vize alabilmek için geçerli Schengen/ABD/Birleşik Krallık/İrlanda vizesi veya oturum izni gibi destekleyici bir belge sunmak zorundadır. Başvuru sırasında bu ülkelerden biri seçildiğinde:
+
+“Destekleyici belgeniz var mı?” sorusu çıkmalıdır (Evet/Hayır).
+
+Kullanıcı “Evet” seçerse destekleyici belgelerini yükleyeceği ve ilgili bilgileri gireceği form adımları devam etmelidir (mevcut süreç korunur).
+
+Kullanıcı “Hayır” seçerse başvuruya devam edemez; e‑Vize alamayacağı bildirilebilir.
+
+Ülkeler:
+Afganistan, Bangladeş, Cezayir, Ekvator Ginesi, Filipinler, Filistin, Haiti, Hindistan, Irak, Kamboçya, Libya, Mısır (15 yaş üstü ve 45 yaş altı), Nepal, Pakistan, Senegal, Solomon Adaları, Sri Lanka, Vanuatu, Yemen, Yeşil Burun Adaları (Cabo Verde).
+
+replit AI’a talimat: Eğer uyruk bu listedeki ülkelerden biriyse:
+
+“Destekleyici belgeniz var mı?” sorusunu göster (Evet/Hayır).
+
+Evet seçilirse destekleyici belgenin türü, numarası ve geçerlilik tarihlerini soran alanları göster; mevcut süreçte olduğu gibi belge yüklemelerine izin ver.
+
+Hayır seçilirse “Bu ülke vatandaşları için e‑Vize alınabilmesi için destekleyici belge zorunludur.” uyarısı ver ve başvuruyu durdur.
+
+3. Senaryo – E‑Vizeden Muaf (Vizesiz) Ülkeler
+
+Bu ülkelerin vatandaşları Türkiye’ye seyahatlerinde e‑Vizeye ihtiyaç duymazlar; ancak Türkiye’ye giriş için seyahat sigortası yaptırmaları zorunludur. Başvuru sırasında:
+
+Kullanıcıya “Vizeden muaftır; Türkiye’ye giriş için seyahat sigortası gereklidir.” mesajı gösterin.
+
+Kullanıcı, sigorta başvurusu sayfasına yönlendirilmelidir.
+
+Sigorta sayfasında bir fiyatlandırma açılır menüsü (drop‑down) ve diğer zorunlu sigorta bilgisi alanları bulunmalıdır; sayfanın en alt kısmında yer almalıdır.
+
+Ülkeler:
+Bu senaryo, yukarıda 1. ve 2. ve 4. senaryolarda belirtilenler dışında kalan tüm ülkeler için geçerlidir. Yani başvuruda seçilen uyruk ne 1. senaryodaki (destekleyici belge gerekmeyen), ne 2. senaryodaki (destekleyici belge zorunlu), ne de 4. senaryodaki (e‑Vize uygun olmayan) bir ülkeyse, varsayılan olarak vizesiz giriş kapsamına alınacaktır.
+
+replit AI’a talimat: Eğer uyruk yukarıdaki listelerde yer almıyorsa:
+
+“Bu ülke vatandaşları vizeden muaftır; Türkiye’ye girişte seyahat sigortası zorunludur.” mesajını göster.
+
+Başvuruyu e‑Vize adımlarına yönlendirme; bunun yerine kullanıcıyı sigorta başvuru sayfasına aktar.
+
+Sigorta sayfasında fiyatlandırma seçenekleri için bir drop‑down menüsü ve sigorta bilgilerini girebileceği alanlar sağla.
+
+4. Senaryo – E‑Vizeye Uygunluğu Olmayan Ülkeler
+
+Bu ülkelerin vatandaşlarına e‑Vize verilmez. Başvuru sırasında bu ülkelerden biri seçildiğinde:
+
+“Seçtiğiniz ülke uyruklarına e‑Vize düzenlenememektedir. Vize başvurusunda bulunmak üzere en yakın Türkiye temsilciliğine gidebilirsiniz.” uyarısı çıkmalıdır.
+
+Kullanıcı hiçbir ilerleme yapamaz; başvuru formu ve ödeme adımlarına erişim kapatılır.
+
+Ülkeler:
+Angola, Anguilla, Aruba, Benin, Botsvana, Burkina Faso, Burundi, Cibuti, Cook Adaları, Çad, Dominika, Eritre, Etiyopya, Faroe Adaları, Fildişi Sahili, Gabon, Gambiya, Gana, Gine, Gine Bissau, Grönland, Guadeloupe, Guam, Guyana, Güney Sudan, Kamerun, Kayman Adaları, Kenya, Kiribati, Komor Adaları, Kongo Cumhuriyeti, Kongo Demokratik Cumhuriyeti, Kuzey Kore, Küba, Laos, Lesoto, Liberya, Madagaskar, Malavi, Mali, Marşal Adaları, Martinik, Mayotte, Mikronezya Federal Devletleri, Moritanya, Mozambik, Myanmar, Nauru, Nijer, Nijerya, Norfolk Adaları, Orta Afrika Cumhuriyeti, Palau, Papua Yeni Gine, Porto Riko, Réunion, Ruanda, Samoa, Sao Tome ve Principe, Saint Kitts ve Nevis, Sierra Leone, Somali, Sudan, Suriye, Esvatini (Svaziland), Tacikistan, Tanzanya, Togo, Tonga, Turks ve Caicos Adaları, Tuvalu, Türkmenistan, Uganda, Yeni Kaledonya, Zimbabve.
+
+replit AI’a talimat: Eğer uyruk bu listedeki ülkelerden biriyse:
+
+Kullanıcıya “Seçtiğiniz ülke uyruklarına e‑Vize düzenlenememektedir. Vize başvurusunda bulunmak üzere en yakın temsilciliğe başvurabilirsiniz.” uyarısını göster.
+
+Başvuruyu durdur; formun diğer adımlarına ve ödeme sayfasına erişimi engelle.

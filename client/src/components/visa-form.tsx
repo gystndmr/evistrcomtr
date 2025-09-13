@@ -422,8 +422,8 @@ export function VisaForm() {
       if (effectiveScenario === 4) {
         // Scenario 4: Not eligible for e-visa
         toast({
-          title: "E-Visa Not Available",
-          description: "Seçtiğiniz ülke uyruklarına e-Vize düzenlenememektedir. Vize başvurusunda bulunmak üzere en yakın temsilciliğimize gidebilirsiniz.",
+          title: "E-Vize Uygun Değil",
+          description: "Seçtiğiniz ülke uyruklarına e‑Vize düzenlenememektedir. Vize başvurusunda bulunmak üzere en yakın temsilciliğe gidebilirsiniz.",
           duration: 8000,
           variant: "destructive",
         });
@@ -433,8 +433,8 @@ export function VisaForm() {
       if (effectiveScenario === 3) {
         // Scenario 3: E-visa exempt + travel insurance mandatory
         toast({
-          title: "Visa Exemption - Travel Insurance Required",
-          description: "You are exempt from visa requirements, but travel insurance is mandatory by law. You will be redirected to purchase travel insurance.",
+          title: "Vizeden Muaf - Seyahat Sigortası Zorunlu",
+          description: "Vizeden muaftır; Türkiye'ye giriş için seyahat sigortası gereklidir.",
           duration: 8000,
         });
         // Redirect to insurance page
@@ -468,8 +468,8 @@ export function VisaForm() {
         if (hasSupportingDocument === false) {
           // Show message and stop processing when no supporting document
           toast({
-            title: "Supporting Documents Required",
-            description: "Turkey e-visa applications require supporting documents. Please visit your nearest Turkish consulate to apply for a traditional visa, or obtain the necessary supporting documents to apply online.",
+            title: "Destekleyici Belge Zorunlu",
+            description: "Bu ülke vatandaşları için e‑Vize alınabilmesi için destekleyici belge zorunludur.",
             duration: 6000,
             variant: "destructive",
           });
