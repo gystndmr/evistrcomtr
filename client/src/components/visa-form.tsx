@@ -265,6 +265,11 @@ export function VisaForm() {
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
   const [paymentRedirectUrl, setPaymentRedirectUrl] = useState<string>("");
   const [prerequisites, setPrerequisites] = useState(defaultPrerequisites);
+  
+  // Egypt DOB local state to prevent dropdown closing
+  const [egyptLocalDay, setEgyptLocalDay] = useState('');
+  const [egyptLocalMonth, setEgyptLocalMonth] = useState('');
+  const [egyptLocalYear, setEgyptLocalYear] = useState('');
   const { toast } = useToast();
 
   const form = useForm<ApplicationFormData>({
@@ -583,10 +588,16 @@ export function VisaForm() {
   // Egypt special case: Re-evaluate scenario when date of birth changes
   useEffect(() => {
     if (selectedCountry?.code === 'EGY') {
-      const dob = form.watch('dateOfBirth');
+      const dob = form.getValues('dateOfBirth');
       
       // Only process COMPLETE and VALID dates (YYYY-MM-DD format)
-      if (dob && dob.match(/^\d{4}-\d{2}-\d{2}$/) && new Date(dob).toString() !== 'Invalid Date') {
+      // Use stricter validation to prevent premature triggers
+      if (dob && 
+          dob.length === 10 && 
+          dob.match(/^\d{4}-\d{2}-\d{2}$/) && 
+          new Date(dob).toString() !== 'Invalid Date' &&
+          !dob.includes('01-01')) { // Avoid default incomplete dates
+        
         const effectiveScenario = getEffectiveScenario(selectedCountry, dob);
         
         if (effectiveScenario === 1) {
@@ -605,7 +616,7 @@ export function VisaForm() {
         }
       }
     }
-  }, [form.watch('dateOfBirth'), selectedCountry]);
+  }, [selectedCountry]); // Removed form.watch dependency to prevent early triggers
 
   const handleNextStep = () => {
     // Step 1: Country and Document Type Selection
@@ -1214,85 +1225,109 @@ export function VisaForm() {
                       <FormField
                         control={form.control}
                         name="dateOfBirth"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Date of Birth *</FormLabel>
-                            <FormControl>
-                              <div className="grid grid-cols-3 gap-2">
-                                <Select
-                                  value={field.value ? field.value.split('-')[2] : ''}
-                                  onValueChange={(day) => {
-                                    const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                                    const year = parts[0];
-                                    const month = parts[1];
-                                    field.onChange(`${year}-${month}-${day.padStart(2, '0')}`);
-                                  }}
-                                >
-                                  <SelectTrigger data-testid="select-dob-day">
-                                    <SelectValue placeholder="Day" />
-                                  </SelectTrigger>
-                                  <SelectContent position="popper" side="bottom" align="start">
-                                    {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
-                                      <SelectItem key={d} value={d}>{d}</SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
+                        render={({ field }) => {
+                          // Update form only when all three parts are selected
+                          const updateFormDate = (day: string, month: string, year: string) => {
+                            if (day && month && year) {
+                              const fullDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                              form.setValue('dateOfBirth', fullDate);
+                              
+                              // Trigger Egypt age determination once complete date is entered
+                              if (selectedCountry?.code === 'EGY') {
+                                const effectiveScenario = getEffectiveScenario(selectedCountry, fullDate);
+                                
+                                if (effectiveScenario === 1) {
+                                  // Age <15 or >45: No supporting document required
+                                  setHasSupportingDocument(false);
+                                  setSupportingDocumentDetails(null);
+                                  setDocumentProcessingType("");
+                                  setIsSupportingDocumentValid(true);
+                                  
+                                } else if (effectiveScenario === 2) {
+                                  // Age 15-45: Supporting document required
+                                  setHasSupportingDocument(null); // Reset to force user selection
+                                  setSupportingDocumentDetails(null);
+                                  setDocumentProcessingType("");
+                                  setIsSupportingDocumentValid(false);
+                                }
+                              }
+                            }
+                          };
 
-                                <Select
-                                  value={field.value ? field.value.split('-')[1] : ''}
-                                  onValueChange={(month) => {
-                                    const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                                    const year = parts[0];
-                                    const day = parts[2];
-                                    field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                                  }}
-                                >
-                                  <SelectTrigger data-testid="select-dob-month">
-                                    <SelectValue placeholder="Month" />
-                                  </SelectTrigger>
-                                  <SelectContent position="popper" side="bottom" align="start">
-                                    {[
-                                      { value: '01', label: 'January' },
-                                      { value: '02', label: 'February' },
-                                      { value: '03', label: 'March' },
-                                      { value: '04', label: 'April' },
-                                      { value: '05', label: 'May' },
-                                      { value: '06', label: 'June' },
-                                      { value: '07', label: 'July' },
-                                      { value: '08', label: 'August' },
-                                      { value: '09', label: 'September' },
-                                      { value: '10', label: 'October' },
-                                      { value: '11', label: 'November' },
-                                      { value: '12', label: 'December' }
-                                    ].map((m) => (
-                                      <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
+                          return (
+                            <FormItem>
+                              <FormLabel>Date of Birth *</FormLabel>
+                              <FormControl>
+                                <div className="grid grid-cols-3 gap-2">
+                                  <Select
+                                    value={egyptLocalDay}
+                                    onValueChange={(day) => {
+                                      setEgyptLocalDay(day);
+                                      updateFormDate(day, egyptLocalMonth, egyptLocalYear);
+                                    }}
+                                  >
+                                    <SelectTrigger data-testid="select-dob-day">
+                                      <SelectValue placeholder="Day" />
+                                    </SelectTrigger>
+                                    <SelectContent position="popper" side="bottom" align="start">
+                                      {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                                        <SelectItem key={d} value={d}>{d}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
 
-                                <Select
-                                  value={field.value ? field.value.split('-')[0] : ''}
-                                  onValueChange={(year) => {
-                                    const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                                    const month = parts[1];
-                                    const day = parts[2];
-                                    field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                                  }}
-                                >
-                                  <SelectTrigger data-testid="select-dob-year">
-                                    <SelectValue placeholder="Year" />
-                                  </SelectTrigger>
-                                  <SelectContent position="popper" side="bottom" align="start">
-                                    {Array.from({ length: 100 }, (_, i) => (new Date().getFullYear() - i).toString()).map((y) => (
-                                      <SelectItem key={y} value={y}>{y}</SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
+                                  <Select
+                                    value={egyptLocalMonth}
+                                    onValueChange={(month) => {
+                                      setEgyptLocalMonth(month);
+                                      updateFormDate(egyptLocalDay, month, egyptLocalYear);
+                                    }}
+                                  >
+                                    <SelectTrigger data-testid="select-dob-month">
+                                      <SelectValue placeholder="Month" />
+                                    </SelectTrigger>
+                                    <SelectContent position="popper" side="bottom" align="start">
+                                      {[
+                                        { value: '01', label: 'January' },
+                                        { value: '02', label: 'February' },
+                                        { value: '03', label: 'March' },
+                                        { value: '04', label: 'April' },
+                                        { value: '05', label: 'May' },
+                                        { value: '06', label: 'June' },
+                                        { value: '07', label: 'July' },
+                                        { value: '08', label: 'August' },
+                                        { value: '09', label: 'September' },
+                                        { value: '10', label: 'October' },
+                                        { value: '11', label: 'November' },
+                                        { value: '12', label: 'December' }
+                                      ].map((m) => (
+                                        <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+
+                                  <Select
+                                    value={egyptLocalYear}
+                                    onValueChange={(year) => {
+                                      setEgyptLocalYear(year);
+                                      updateFormDate(egyptLocalDay, egyptLocalMonth, year);
+                                    }}
+                                  >
+                                    <SelectTrigger data-testid="select-dob-year">
+                                      <SelectValue placeholder="Year" />
+                                    </SelectTrigger>
+                                    <SelectContent position="popper" side="bottom" align="start">
+                                      {Array.from({ length: 100 }, (_, i) => (new Date().getFullYear() - i).toString()).map((y) => (
+                                        <SelectItem key={y} value={y}>{y}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          );
+                        }}
                       />
                     </div>
                   )}
