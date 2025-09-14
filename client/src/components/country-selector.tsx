@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -85,6 +86,7 @@ export function CountrySelector({
   const [redirectCountdown, setRedirectCountdown] = useState<number | null>(null);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const { t } = useLanguage();
+  const [, setLocation] = useLocation();
 
   const { data: countries = [], isLoading, error } = useQuery<Country[]>({
     queryKey: ["/api/countries"],
@@ -171,8 +173,9 @@ export function CountrySelector({
               </div>
               <div className="mt-3">
                 <button 
-                  onClick={() => window.location.href = '/insurance'}
+                  onClick={() => setLocation('/insurance')}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium text-sm transition-colors duration-200"
+                  data-testid="button-get-insurance"
                 >
                   {t('button.get.insurance')}
                 </button>
