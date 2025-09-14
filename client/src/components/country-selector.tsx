@@ -133,8 +133,8 @@ export function CountrySelector({
   const renderEligibilityStatus = () => {
     if (!selectedCountry || !selectedDocumentType) return null;
 
-    // Scenario 4: Not eligible for e-visa (red warning) - Check this first!
-    if (!selectedCountry.isEligible || selectedCountry.scenario === 4) {
+    // Scenario 4: Not eligible for e-visa (red warning) - Check this first, but exclude scenario 3!
+    if ((!selectedCountry.isEligible && selectedCountry.scenario !== 3) || selectedCountry.scenario === 4) {
       return (
         <Alert className="border-red-200 bg-red-50">
           <XCircle className="h-4 w-4 text-red-600" />
