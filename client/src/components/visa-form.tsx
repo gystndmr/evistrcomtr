@@ -1085,10 +1085,32 @@ export function VisaForm() {
   const getCurrentStepContent = () => {
     const dob = form.getValues('dateOfBirth');
     
-    // Egypt special case: Always show supporting step in Step 2 for DOB collection
-    // This allows users to modify their DOB even after entering it
-    if (selectedCountry?.code === 'EGY' && currentStep === 2) {
-      return 'supporting';
+    // Egypt special case: Handle DOB collection and age-based routing
+    if (selectedCountry?.code === 'EGY') {
+      // If no DOB yet, show supporting step for DOB collection
+      if (!dob && currentStep === 2) {
+        return 'supporting';
+      }
+      
+      // If DOB exists, determine scenario and route accordingly
+      if (dob) {
+        const egyptScenario = getEffectiveScenario(selectedCountry, dob);
+        
+        if (egyptScenario === 1) {
+          // Age <15 or >45: No supporting docs needed, show normal scenario 1 flow
+          // But allow DOB modification in step 2
+          if (currentStep === 2) {
+            return 'supporting'; // Still show DOB field for editing
+          }
+          // For step 3+, follow normal scenario 1 logic below
+        } else if (egyptScenario === 2) {
+          // Age 15-45: Supporting docs needed, show supporting in step 2
+          if (currentStep === 2) {
+            return 'supporting';
+          }
+          // For step 3+, follow normal scenario 2 logic below
+        }
+      }
     }
     
     const effectiveScenario = getEffectiveScenario(selectedCountry, dob);
@@ -1318,6 +1340,125 @@ export function VisaForm() {
                                     </SelectTrigger>
                                     <SelectContent position="popper" side="bottom" align="start">
                                       {Array.from({ length: 100 }, (_, i) => (new Date().getFullYear() - i).toString()).map((y) => (
+                                        <SelectItem key={y} value={y}>{y}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    </div>
+                  )}
+                  
+                  {/* Egypt Scenario 1: Show Arrival Date after DOB */}
+                  {selectedCountry?.code === 'EGY' && 
+                   form.getValues('dateOfBirth') && 
+                   getEffectiveScenario(selectedCountry, form.getValues('dateOfBirth')) === 1 && (
+                    <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                      <h4 className="text-sm font-semibold text-green-800 mb-3">Continue with Travel Details</h4>
+                      <FormField
+                        control={form.control}
+                        name="arrivalDate"
+                        render={({ field }) => {
+                          const today = new Date();
+                          const currentYear = today.getFullYear();
+                          const currentMonth = today.getMonth() + 1; // getMonth() returns 0-11
+                          const currentDay = today.getDate();
+                          
+                          // Get currently selected values
+                          const selectedParts = field.value ? field.value.split('-') : [];
+                          const selectedYear = selectedParts[0] ? parseInt(selectedParts[0]) : currentYear;
+                          const selectedMonth = selectedParts[1] ? parseInt(selectedParts[1]) : currentMonth;
+                          const selectedDay = selectedParts[2] ? parseInt(selectedParts[2]) : currentDay;
+                          
+                          // Determine available options based on current date
+                          const getAvailableYears = () => {
+                            return Array.from({ length: 11 }, (_, i) => (currentYear + i).toString());
+                          };
+                          
+                          const getAvailableMonths = () => {
+                            const months = [
+                              { value: '01', label: 'January' },
+                              { value: '02', label: 'February' },
+                              { value: '03', label: 'March' },
+                              { value: '04', label: 'April' },
+                              { value: '05', label: 'May' },
+                              { value: '06', label: 'June' },
+                              { value: '07', label: 'July' },
+                              { value: '08', label: 'August' },
+                              { value: '09', label: 'September' },
+                              { value: '10', label: 'October' },
+                              { value: '11', label: 'November' },
+                              { value: '12', label: 'December' }
+                            ];
+                            
+                            if (selectedYear === currentYear) {
+                              return months.filter(month => parseInt(month.value) >= currentMonth);
+                            }
+                            return months;
+                          };
+                          
+                          const getAvailableDays = () => {
+                            const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
+                            const startDay = (selectedYear === currentYear && selectedMonth === currentMonth) ? currentDay : 1;
+                            return Array.from({ length: daysInMonth - startDay + 1 }, (_, i) => (startDay + i).toString().padStart(2, '0'));
+                          };
+
+                          return (
+                            <FormItem>
+                              <FormLabel>Planned Arrival Date *</FormLabel>
+                              <FormControl>
+                                <div className="grid grid-cols-3 gap-2">
+                                  <Select
+                                    value={selectedDay.toString().padStart(2, '0')}
+                                    onValueChange={(day) => {
+                                      const newDate = `${selectedYear}-${selectedMonth.toString().padStart(2, '0')}-${day}`;
+                                      field.onChange(newDate);
+                                    }}
+                                  >
+                                    <SelectTrigger data-testid="select-arrival-day">
+                                      <SelectValue placeholder="Day" />
+                                    </SelectTrigger>
+                                    <SelectContent position="popper" side="bottom" align="start">
+                                      {getAvailableDays().map((d) => (
+                                        <SelectItem key={d} value={d}>{d}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+
+                                  <Select
+                                    value={selectedMonth.toString().padStart(2, '0')}
+                                    onValueChange={(month) => {
+                                      const newDate = `${selectedYear}-${month}-${selectedDay.toString().padStart(2, '0')}`;
+                                      field.onChange(newDate);
+                                    }}
+                                  >
+                                    <SelectTrigger data-testid="select-arrival-month">
+                                      <SelectValue placeholder="Month" />
+                                    </SelectTrigger>
+                                    <SelectContent position="popper" side="bottom" align="start">
+                                      {getAvailableMonths().map((m) => (
+                                        <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+
+                                  <Select
+                                    value={selectedYear.toString()}
+                                    onValueChange={(year) => {
+                                      const newDate = `${year}-${selectedMonth.toString().padStart(2, '0')}-${selectedDay.toString().padStart(2, '0')}`;
+                                      field.onChange(newDate);
+                                    }}
+                                  >
+                                    <SelectTrigger data-testid="select-arrival-year">
+                                      <SelectValue placeholder="Year" />
+                                    </SelectTrigger>
+                                    <SelectContent position="popper" side="bottom" align="start">
+                                      {getAvailableYears().map((y) => (
                                         <SelectItem key={y} value={y}>{y}</SelectItem>
                                       ))}
                                     </SelectContent>
