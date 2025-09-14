@@ -57,6 +57,8 @@ const defaultPrerequisites = {
   financialProof: false,
   supportingDocuments: false,
   passportValidity: false,
+  passportSixMonths: false,
+  thyPegasusTicket: false,
   allRequirements: false,
 };
 
@@ -72,6 +74,14 @@ const countryPrerequisites: Record<string, PrerequisiteItem[]> = {
     { key: 'passportValidity', textKey: 'prerequisites.passport.validity' },
     { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
     { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
+    { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
+  ],
+  'SEN': [ // Senegal
+    { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
+    { key: 'passportSixMonths', textKey: 'prerequisites.passport.six.months' },
+    { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
+    { key: 'thyPegasusTicket', textKey: 'prerequisites.thy.pegasus.ticket' },
+    { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
     { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
   ],
   'default': [ // Default for all other countries

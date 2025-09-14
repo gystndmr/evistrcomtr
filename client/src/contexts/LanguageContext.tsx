@@ -319,6 +319,8 @@ const translations: Record<string, Record<string, string>> = {
     'prerequisites.financial.proof': 'I can prove that I have return tickets, hotel reservations, and at least $50 for each day I stay.',
     'prerequisites.supporting.documents': 'I have valid supporting documents (Schengen visa or valid residence permit, or visa/residence permit from USA, UK, or Ireland). E-visas are not accepted as supporting documents.',
     'prerequisites.passport.validity': 'My passport validity period covers the period I will stay in Turkey.',
+    'prerequisites.passport.six.months': 'My passport has at least 6 months validity from the date of entry to Turkey.',
+    'prerequisites.thy.pegasus.ticket': 'I have round-trip tickets with Turkish Airlines (THY) or Pegasus Airlines.',
     'prerequisites.all.requirements': 'I have carefully read all items and confirm that I meet all requirements.',
 
     // Form Validation
@@ -455,6 +457,8 @@ const translations: Record<string, Record<string, string>> = {
     'prerequisites.financial.proof': 'Dönüş biletimin, otel rezervasyonumun ve kalacağım her gün için en az 50 Dolarımın olduğunu kanıtlayabilirim.',
     'prerequisites.supporting.documents': 'Geçerli destekleyici belgeye sahibim (Schengen vizesi veya geçerli ikamet izni, ABD, İngiltere ve İrlanda ülkelerinden birinin vizesi veya geçerli ikamet izni). e-Vizeler destekleyici belge olarak kabul edilememektedir.',
     'prerequisites.passport.validity': 'Pasaportumun geçerlilik süresi Türkiye\'de kalacağım dönemi kapsamaktadır.',
+    'prerequisites.passport.six.months': 'Türkiye\'ye giriş tarihinden itibaren en az 6 ay geçerlilik süresine sahip pasaportum var.',
+    'prerequisites.thy.pegasus.ticket': 'Gidiş-Dönüş THY ya da Pegasus Havayolları biletim var.',
     'prerequisites.all.requirements': 'Tüm maddeleri dikkatlice okudum ve tamamını sağladığımı kabul ediyorum.',
 
     // Homepage
