@@ -1481,6 +1481,71 @@ export function VisaForm() {
                     </div>
                   )}
                   
+                  {/* Egypt Scenario 1: Show Processing Type after Arrival Date */}
+                  {selectedCountry?.code === 'EGY' && 
+                   form.getValues('dateOfBirth') && 
+                   form.getValues('arrivalDate') &&
+                   getEffectiveScenario(selectedCountry, form.getValues('dateOfBirth')) === 1 && (
+                    <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <h4 className="text-sm font-semibold text-blue-800 mb-3">Select Processing Type</h4>
+                      <FormField
+                        control={form.control}
+                        name="processingType"
+                        render={({ field }) => {
+                          const availableTypes = getAvailableProcessingTypes(form.getValues('arrivalDate'), false);
+                          
+                          return (
+                            <FormItem>
+                              <FormLabel>Processing Type *</FormLabel>
+                              <FormControl>
+                                <Select value={field.value} onValueChange={field.onChange}>
+                                  <SelectTrigger data-testid="select-processing-type">
+                                    <SelectValue placeholder="Select processing type" />
+                                  </SelectTrigger>
+                                  <SelectContent position="popper" side="bottom" align="start">
+                                    {availableTypes.map((type) => (
+                                      <SelectItem key={type.value} value={type.value}>
+                                        {type.label} - ${type.price}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </FormControl>
+                              <FormMessage />
+                              
+                              {availableTypes.length === 0 && (
+                                <div className="bg-orange-50 p-4 rounded-lg border border-orange-200 mt-2">
+                                  <p className="text-orange-800 text-sm">
+                                    <strong>Notice:</strong> No processing options available for selected arrival date. Please choose a later date.
+                                  </p>
+                                </div>
+                              )}
+                              
+                              {field.value && (
+                                <div className="bg-green-50 p-3 rounded-lg mt-2">
+                                  <h5 className="font-medium text-green-900 mb-1">Processing Summary:</h5>
+                                  <div className="text-sm text-green-800">
+                                    {(() => {
+                                      const selectedType = availableTypes.find(type => type.value === field.value);
+                                      return (
+                                        <>
+                                          <p>• Selected: {selectedType?.label || field.value}</p>
+                                          <p>• Processing Fee: ${selectedType?.price || 0}</p>
+                                          <p>• E-Visa Fee: $69</p>
+                                          <p className="font-medium">• Total: ${(selectedType?.price || 0) + 69}</p>
+                                        </>
+                                      );
+                                    })()}
+                                  </div>
+                                </div>
+                              )}
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    </div>
+                  )}
+                  
                   {/* Conditional Supporting Document Check */}
                   {(() => {
                     const dob = form.getValues('dateOfBirth');
