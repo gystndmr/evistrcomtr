@@ -114,6 +114,12 @@ const countryPrerequisites: Record<string, PrerequisiteItem[]> = {
     { key: 'financialProofDaily', textKey: 'prerequisites.financial.proof.daily' },
     { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
   ],
+  'BTN': [ // Bhutan
+    { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
+    { key: 'passportValidity', textKey: 'prerequisites.passport.validity' },
+    { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
+    { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
+  ],
   'default': [ // Default for all other countries
     { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
     { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
