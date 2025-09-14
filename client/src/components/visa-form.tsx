@@ -96,6 +96,14 @@ const countryPrerequisites: Record<string, PrerequisiteItem[]> = {
     { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
     { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
   ],
+  'DZA': [ // Algeria
+    { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
+    { key: 'ageRequirement', textKey: 'prerequisites.age.requirement' },
+    { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
+    { key: 'passportSixMonths', textKey: 'prerequisites.passport.six.months' },
+    { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
+    { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
+  ],
   'default': [ // Default for all other countries
     { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
     { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
