@@ -147,6 +147,14 @@ const countryPrerequisites: Record<string, PrerequisiteItem[]> = {
     { key: 'passportThreeMonthsAfterEvisa', textKey: 'prerequisites.passport.three.months.after.evisa' },
     { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
   ],
+  'GNQ': [ // Equatorial Guinea
+    { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
+    { key: 'passportSixMonths', textKey: 'prerequisites.passport.six.months' },
+    { key: 'thyPegasusTicket', textKey: 'prerequisites.thy.pegasus.ticket' },
+    { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
+    { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
+    { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
+  ],
   'default': [ // Default for all other countries
     { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
     { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
