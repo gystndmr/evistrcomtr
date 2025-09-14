@@ -398,6 +398,17 @@ export function VisaForm() {
     setSupportingDocumentDetails(null);
     setDocumentProcessingType("");
     setIsSupportingDocumentValid(false);
+    
+    // For Scenario 1 countries (no supporting docs needed), immediately set valid state
+    if (country) {
+      const effectiveScenario = getEffectiveScenario(country);
+      if (effectiveScenario === 1) {
+        setHasSupportingDocument(false);
+        setSupportingDocumentDetails(null);
+        setDocumentProcessingType("");
+        setIsSupportingDocumentValid(true);
+      }
+    }
   };
 
   // Update form documentType whenever selectedDocumentType changes
@@ -477,8 +488,8 @@ export function VisaForm() {
 
       if (effectiveScenario === 1) {
         // Scenario 1: E-visa eligible + NO supporting document required
-        // Skip supporting document check step, go directly to personal information
-        setCurrentStep(3);
+        // Go to Step 2 to show "No supporting documents required" message
+        setCurrentStep(2);
         return;
       }
     }

@@ -126,6 +126,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log(`Egypt age-based scenario: age=${age}, scenario=${effectiveScenario}`);
         }
         
+        // For Scenario 1 countries (no supporting docs required), clear supporting document fields
+        if (effectiveScenario === 1) {
+          validatedData.supportingDocumentType = undefined;
+          validatedData.supportingDocumentNumber = undefined;
+          validatedData.supportingDocumentStartDate = undefined;
+          validatedData.supportingDocumentEndDate = undefined;
+          validatedData.supportingDocumentCountry = undefined;
+          validatedData.processingType = "standard"; // Default for Scenario 1
+        }
+        
         // Validate scenario rules
         if (effectiveScenario === 4) {
           return res.status(400).json({ 
