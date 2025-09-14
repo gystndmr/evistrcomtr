@@ -1072,13 +1072,15 @@ export function VisaForm() {
 
   // Helper function to determine what content should be shown for current step
   const getCurrentStepContent = () => {
-    // Egypt special case: Always show supporting step in Step 2 when Egypt is selected
-    // This allows users to enter DOB which is required for determining final scenario
-    if (selectedCountry?.code === 'EGY' && currentStep === 2) {
+    const dob = form.getValues('dateOfBirth');
+    
+    // Egypt special case: Show supporting step in Step 2 ONLY when DOB is needed
+    // If DOB exists, use normal scenario-based routing
+    if (selectedCountry?.code === 'EGY' && currentStep === 2 && !dob) {
       return 'supporting';
     }
     
-    const effectiveScenario = getEffectiveScenario(selectedCountry, form.getValues("dateOfBirth"));
+    const effectiveScenario = getEffectiveScenario(selectedCountry, dob);
     
     if (effectiveScenario === 1) {
       // Scenario 1: [Country, Travel, Personal, Payment]
