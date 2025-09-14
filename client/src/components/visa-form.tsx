@@ -1218,15 +1218,77 @@ export function VisaForm() {
                           <FormItem>
                             <FormLabel>Date of Birth *</FormLabel>
                             <FormControl>
-                              <Input
-                                type="date"
-                                placeholder="Please select your date of birth"
-                                className="w-full"
-                                max={new Date().toISOString().split('T')[0]}
-                                lang="en"
-                                data-testid="input-dob"
-                                {...field}
-                              />
+                              <div className="grid grid-cols-3 gap-2">
+                                <Select
+                                  value={field.value ? field.value.split('-')[2] : ''}
+                                  onValueChange={(day) => {
+                                    const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                    const year = parts[0];
+                                    const month = parts[1];
+                                    field.onChange(`${year}-${month}-${day.padStart(2, '0')}`);
+                                  }}
+                                >
+                                  <SelectTrigger data-testid="select-dob-day">
+                                    <SelectValue placeholder="Day" />
+                                  </SelectTrigger>
+                                  <SelectContent position="popper" side="bottom" align="start">
+                                    {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                                      <SelectItem key={d} value={d}>{d}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+
+                                <Select
+                                  value={field.value ? field.value.split('-')[1] : ''}
+                                  onValueChange={(month) => {
+                                    const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                    const year = parts[0];
+                                    const day = parts[2];
+                                    field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                  }}
+                                >
+                                  <SelectTrigger data-testid="select-dob-month">
+                                    <SelectValue placeholder="Month" />
+                                  </SelectTrigger>
+                                  <SelectContent position="popper" side="bottom" align="start">
+                                    {[
+                                      { value: '01', label: 'January' },
+                                      { value: '02', label: 'February' },
+                                      { value: '03', label: 'March' },
+                                      { value: '04', label: 'April' },
+                                      { value: '05', label: 'May' },
+                                      { value: '06', label: 'June' },
+                                      { value: '07', label: 'July' },
+                                      { value: '08', label: 'August' },
+                                      { value: '09', label: 'September' },
+                                      { value: '10', label: 'October' },
+                                      { value: '11', label: 'November' },
+                                      { value: '12', label: 'December' }
+                                    ].map((m) => (
+                                      <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+
+                                <Select
+                                  value={field.value ? field.value.split('-')[0] : ''}
+                                  onValueChange={(year) => {
+                                    const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                    const month = parts[1];
+                                    const day = parts[2];
+                                    field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                  }}
+                                >
+                                  <SelectTrigger data-testid="select-dob-year">
+                                    <SelectValue placeholder="Year" />
+                                  </SelectTrigger>
+                                  <SelectContent position="popper" side="bottom" align="start">
+                                    {Array.from({ length: 100 }, (_, i) => (new Date().getFullYear() - i).toString()).map((y) => (
+                                      <SelectItem key={y} value={y}>{y}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
