@@ -322,6 +322,7 @@ const translations: Record<string, Record<string, string>> = {
     'prerequisites.passport.six.months': 'My passport has at least 6 months validity from the date of entry to Turkey.',
     'prerequisites.thy.pegasus.ticket': 'I have round-trip tickets with Turkish Airlines (THY) or Pegasus Airlines.',
     'prerequisites.age.requirement': 'I am under 18 years old or over 35 years old.',
+    'prerequisites.financial.proof.daily': 'I can prove that I have at least $50 USD or equivalent foreign currency for each day I will stay in my country.',
     'prerequisites.all.requirements': 'I have carefully read all items and confirm that I meet all requirements.',
 
     // Form Validation

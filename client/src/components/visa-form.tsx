@@ -55,6 +55,7 @@ interface PrerequisiteItem {
 const defaultPrerequisites = {
   tourismBusiness: false,
   financialProof: false,
+  financialProofDaily: false,
   supportingDocuments: false,
   passportValidity: false,
   passportSixMonths: false,
@@ -103,6 +104,14 @@ const countryPrerequisites: Record<string, PrerequisiteItem[]> = {
     { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
     { key: 'passportSixMonths', textKey: 'prerequisites.passport.six.months' },
     { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
+    { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
+  ],
+  'PSE': [ // Palestine
+    { key: 'passportSixMonths', textKey: 'prerequisites.passport.six.months' },
+    { key: 'thyPegasusTicket', textKey: 'prerequisites.thy.pegasus.ticket' },
+    { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
+    { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
+    { key: 'financialProofDaily', textKey: 'prerequisites.financial.proof.daily' },
     { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
   ],
   'default': [ // Default for all other countries
