@@ -325,6 +325,8 @@ const translations: Record<string, Record<string, string>> = {
     'prerequisites.financial.proof.daily': 'I can prove that I have at least $50 USD or equivalent foreign currency for each day I will stay in my country.',
     'prerequisites.egypt.airlines': 'I have round-trip tickets with Turkish Airlines (THY), Pegasus Airlines, A-Jet, Air Cairo, or EgyptAir.',
     'prerequisites.egypt.age.or.docs': 'I am under 15 years old or over 45 years old; OR I have valid supporting documents (Schengen visa or valid residence permit, or visa/residence permit from USA, UK, or Ireland).',
+    'prerequisites.financial.proof.border': 'I can prove that I have $50 USD or equivalent foreign currency for each day I stay at the border crossing.',
+    'prerequisites.passport.three.months.after.evisa': 'My passport validity period is at least 3 months longer than the validity period of the e-Visa to be issued.',
     'prerequisites.all.requirements': 'I have carefully read all items and confirm that I meet all requirements.',
 
     // Form Validation
