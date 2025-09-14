@@ -130,6 +130,14 @@ const countryPrerequisites: Record<string, PrerequisiteItem[]> = {
     { key: 'egyptAgeOrDocs', textKey: 'prerequisites.egypt.age.or.docs' },
     { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
   ],
+  'YEM': [ // Yemen
+    { key: 'passportSixMonths', textKey: 'prerequisites.passport.six.months' },
+    { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
+    { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
+    { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
+    { key: 'thyPegasusTicket', textKey: 'prerequisites.thy.pegasus.ticket' },
+    { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
+  ],
   'default': [ // Default for all other countries
     { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
     { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
