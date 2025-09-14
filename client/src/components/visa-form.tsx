@@ -65,6 +65,7 @@ const defaultPrerequisites = {
   ageRequirement: false,
   egyptAirlines: false,
   egyptAgeOrDocs: false,
+  airTravelOnly: false,
   allRequirements: false,
 };
 
@@ -183,6 +184,13 @@ const countryPrerequisites: Record<string, PrerequisiteItem[]> = {
   ],
   'FJI': [ // Fiji
     { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
+    { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
+  ],
+  'NPL': [ // Nepal
+    { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
+    { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
+    { key: 'passportSixMonths', textKey: 'prerequisites.passport.six.months' },
+    { key: 'airTravelOnly', textKey: 'prerequisites.air.travel.only' },
     { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
   ],
   'default': [ // Default for all other countries
