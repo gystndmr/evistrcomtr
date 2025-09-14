@@ -1358,8 +1358,8 @@ export function VisaForm() {
                   {selectedCountry?.code === 'EGY' && 
                    form.getValues('dateOfBirth') && 
                    getEffectiveScenario(selectedCountry, form.getValues('dateOfBirth')) === 1 && (
-                    <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
-                      <h4 className="text-sm font-semibold text-green-800 mb-3">Continue with Travel Details</h4>
+                    <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <h4 className="text-sm font-semibold text-blue-800 mb-3">Continue with Travel Details</h4>
                       <FormField
                         control={form.control}
                         name="arrivalDate"
@@ -1369,11 +1369,11 @@ export function VisaForm() {
                           const currentMonth = today.getMonth() + 1; // getMonth() returns 0-11
                           const currentDay = today.getDate();
                           
-                          // Get currently selected values
+                          // Get currently selected values (empty if not set)
                           const selectedParts = field.value ? field.value.split('-') : [];
-                          const selectedYear = selectedParts[0] ? parseInt(selectedParts[0]) : currentYear;
-                          const selectedMonth = selectedParts[1] ? parseInt(selectedParts[1]) : currentMonth;
-                          const selectedDay = selectedParts[2] ? parseInt(selectedParts[2]) : currentDay;
+                          const selectedYear = selectedParts[0] ? parseInt(selectedParts[0]) : '';
+                          const selectedMonth = selectedParts[1] ? parseInt(selectedParts[1]) : '';
+                          const selectedDay = selectedParts[2] ? parseInt(selectedParts[2]) : '';
                           
                           // Determine available options based on current date
                           const getAvailableYears = () => {
@@ -1403,8 +1403,10 @@ export function VisaForm() {
                           };
                           
                           const getAvailableDays = () => {
-                            const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
-                            const startDay = (selectedYear === currentYear && selectedMonth === currentMonth) ? currentDay : 1;
+                            const year = selectedYear || currentYear;
+                            const month = selectedMonth || currentMonth;
+                            const daysInMonth = new Date(year, month, 0).getDate();
+                            const startDay = (year === currentYear && month === currentMonth) ? currentDay : 1;
                             return Array.from({ length: daysInMonth - startDay + 1 }, (_, i) => (startDay + i).toString().padStart(2, '0'));
                           };
 
@@ -1414,9 +1416,11 @@ export function VisaForm() {
                               <FormControl>
                                 <div className="grid grid-cols-3 gap-2">
                                   <Select
-                                    value={selectedDay.toString().padStart(2, '0')}
+                                    value={selectedDay ? selectedDay.toString().padStart(2, '0') : ''}
                                     onValueChange={(day) => {
-                                      const newDate = `${selectedYear}-${selectedMonth.toString().padStart(2, '0')}-${day}`;
+                                      const year = selectedYear || currentYear;
+                                      const month = selectedMonth || currentMonth;
+                                      const newDate = `${year}-${month.toString().padStart(2, '0')}-${day}`;
                                       field.onChange(newDate);
                                     }}
                                   >
@@ -1431,9 +1435,11 @@ export function VisaForm() {
                                   </Select>
 
                                   <Select
-                                    value={selectedMonth.toString().padStart(2, '0')}
+                                    value={selectedMonth ? selectedMonth.toString().padStart(2, '0') : ''}
                                     onValueChange={(month) => {
-                                      const newDate = `${selectedYear}-${month}-${selectedDay.toString().padStart(2, '0')}`;
+                                      const year = selectedYear || currentYear;
+                                      const day = selectedDay || currentDay;
+                                      const newDate = `${year}-${month}-${day.toString().padStart(2, '0')}`;
                                       field.onChange(newDate);
                                     }}
                                   >
@@ -1448,9 +1454,11 @@ export function VisaForm() {
                                   </Select>
 
                                   <Select
-                                    value={selectedYear.toString()}
+                                    value={selectedYear ? selectedYear.toString() : ''}
                                     onValueChange={(year) => {
-                                      const newDate = `${year}-${selectedMonth.toString().padStart(2, '0')}-${selectedDay.toString().padStart(2, '0')}`;
+                                      const month = selectedMonth || currentMonth;
+                                      const day = selectedDay || currentDay;
+                                      const newDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
                                       field.onChange(newDate);
                                     }}
                                   >
