@@ -32,7 +32,7 @@ export default function Insurance() {
     travelDate: "", // Empty to force user selection
     returnDate: "", // Empty to force user selection
     destination: "Turkey",
-    dateOfBirth: "1990-01-01", // Default valid birth date
+    dateOfBirth: "", // Empty to force user selection
   });
   const [parentIdPhotos, setParentIdPhotos] = useState<File[]>([]);
   const [motherIdPhotos, setMotherIdPhotos] = useState<File[]>([]);
@@ -571,18 +571,26 @@ export default function Insurance() {
                         const month = parts[1] || '01';
                         const newDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
                         
-                        // Immediate validation for past dates
-                        const selectedDate = new Date(newDate);
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
+                        // Only validate after all parts are selected (day, month, year)
+                        const dateparts = newDate.split('-');
+                        const hasValidYear = dateparts[0] && dateparts[0].length === 4 && dateparts[0] !== new Date().getFullYear().toString();
+                        const hasValidMonth = dateparts[1] && dateparts[1] !== '01';
+                        const hasValidDay = dateparts[2] && dateparts[2] !== '01';
+                        const isCompleteDate = hasValidYear && hasValidMonth && hasValidDay;
                         
-                        if (selectedDate.getTime() < today.getTime()) {
-                          toast({
-                            title: "❌ Past Date Not Allowed",
-                            description: "Travel date must be today or in the future!",
-                            variant: "destructive",
-                          });
-                          return;
+                        if (isCompleteDate) {
+                          const selectedDate = new Date(newDate);
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+                          
+                          if (selectedDate.getTime() < today.getTime()) {
+                            toast({
+                              title: "❌ Past Date Not Allowed",
+                              description: "Travel date must be today or in the future!",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
                         }
                         
                         handleInputChange("travelDate", newDate);
@@ -624,18 +632,26 @@ export default function Insurance() {
                         const day = parts[2] || '01';
                         const newDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
                         
-                        // Immediate validation for past dates
-                        const selectedDate = new Date(newDate);
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
+                        // Only validate after all parts are selected (day, month, year)
+                        const dateparts = newDate.split('-');
+                        const hasValidYear = dateparts[0] && dateparts[0].length === 4 && dateparts[0] !== new Date().getFullYear().toString();
+                        const hasValidMonth = dateparts[1] && dateparts[1] !== '01';
+                        const hasValidDay = dateparts[2] && dateparts[2] !== '01';
+                        const isCompleteDate = hasValidYear && hasValidMonth && hasValidDay;
                         
-                        if (selectedDate.getTime() < today.getTime()) {
-                          toast({
-                            title: "❌ Past Date Not Allowed",
-                            description: "Travel date must be today or in the future!",
-                            variant: "destructive",
-                          });
-                          return;
+                        if (isCompleteDate) {
+                          const selectedDate = new Date(newDate);
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+                          
+                          if (selectedDate.getTime() < today.getTime()) {
+                            toast({
+                              title: "❌ Past Date Not Allowed",
+                              description: "Travel date must be today or in the future!",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
                         }
                         
                         handleInputChange("travelDate", newDate);
@@ -693,18 +709,26 @@ export default function Insurance() {
                         const day = parts[2] || '01';
                         const newDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
                         
-                        // Immediate validation for past dates
-                        const selectedDate = new Date(newDate);
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
+                        // Only validate after all parts are selected (day, month, year)
+                        const dateparts = newDate.split('-');
+                        const hasValidYear = dateparts[0] && dateparts[0].length === 4 && dateparts[0] !== new Date().getFullYear().toString();
+                        const hasValidMonth = dateparts[1] && dateparts[1] !== '01';
+                        const hasValidDay = dateparts[2] && dateparts[2] !== '01';
+                        const isCompleteDate = hasValidYear && hasValidMonth && hasValidDay;
                         
-                        if (selectedDate.getTime() < today.getTime()) {
-                          toast({
-                            title: "❌ Past Date Not Allowed",
-                            description: "Travel date must be today or in the future!",
-                            variant: "destructive",
-                          });
-                          return;
+                        if (isCompleteDate) {
+                          const selectedDate = new Date(newDate);
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+                          
+                          if (selectedDate.getTime() < today.getTime()) {
+                            toast({
+                              title: "❌ Past Date Not Allowed",
+                              description: "Travel date must be today or in the future!",
+                              variant: "destructive",
+                            });
+                            return;
+                          }
                         }
                         
                         handleInputChange("travelDate", newDate);
