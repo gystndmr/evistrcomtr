@@ -2216,7 +2216,7 @@ export function VisaForm() {
                     <Button 
                       type="button" 
                       onClick={() => window.location.href = '/insurance'} 
-                      className="order-1 sm:order-2 sm:ml-auto bg-green-600 hover:bg-green-700 text-white"
+                      className="order-1 sm:order-2 sm:ml-auto bg-blue-600 hover:bg-blue-700 text-white"
                     >
                       {t('button.get.insurance')}
                       <ArrowRight className="w-4 h-4 ml-2" />

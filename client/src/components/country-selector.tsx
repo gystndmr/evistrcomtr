@@ -165,21 +165,10 @@ export function CountrySelector({
         <Alert className="border-blue-200 bg-blue-50">
           <AlertTriangle className="h-4 w-4 text-blue-600" />
           <AlertDescription className="text-blue-800">
-            <div className="space-y-3">
-              <div>
-                <strong className="text-blue-900">{t('country.selector.visa.free.title')}</strong>
-                <br />
-                {t('form.warning.visa.exempt.insurance.description')}
-              </div>
-              <div className="mt-3">
-                <button 
-                  onClick={() => setLocation('/insurance')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium text-sm transition-colors duration-200"
-                  data-testid="button-get-insurance"
-                >
-                  {t('button.get.insurance')}
-                </button>
-              </div>
+            <div>
+              <strong className="text-blue-900">{t('country.selector.visa.free.title')}</strong>
+              <br />
+              {t('form.warning.visa.exempt.insurance.description')}
             </div>
           </AlertDescription>
         </Alert>
