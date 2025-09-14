@@ -181,6 +181,10 @@ const countryPrerequisites: Record<string, PrerequisiteItem[]> = {
     { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
     { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
   ],
+  'FJI': [ // Fiji
+    { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
+    { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
+  ],
   'default': [ // Default for all other countries
     { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
     { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
