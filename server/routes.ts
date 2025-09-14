@@ -61,46 +61,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         supportingDocumentEndDate: req.body.supportingDocumentEndDate ? new Date(req.body.supportingDocumentEndDate) : undefined,
       };
 
-      // Calculate totalAmount based on processing type and supporting document status
-      // EXACTLY matching frontend calculation logic
-      
-      // Standard processing types (no supporting document)
-      const standardProcessingTypes = {
-        'standard': 25,
-        'fast': 75, 
-        'express': 175,
-        'urgent': 295
-      };
-      
-      // Supporting document processing types
-      const supportingDocProcessingTypes = {
-        'slow': 50,
-        'standard': 115,
-        'fast': 165,
-        'urgent_24': 280,
-        'urgent_12': 330,
-        'urgent_4': 410,
-        'urgent_1': 645
-      };
-      
-      let totalAmount = 25; // Default fallback
-      
-      // Check if this application has supporting documents
-      const hasSupportingDocument = req.body.supportingDocumentType && req.body.supportingDocumentType !== '';
-      
-      if (hasSupportingDocument) {
-        // Supporting document application: processing fee + $69 document PDF fee
-        const processingFee = supportingDocProcessingTypes[req.body.processingType as keyof typeof supportingDocProcessingTypes] || 50;
-        const documentPdfFee = 69;
-        totalAmount = processingFee + documentPdfFee;
-      } else {
-        // Standard application: just processing fee
-        totalAmount = standardProcessingTypes[req.body.processingType as keyof typeof standardProcessingTypes] || 25;
-      }
-      
+      // Parse initial data WITHOUT totalAmount (will calculate after scenario normalization)
       const validatedData = insertApplicationSchema.parse({
         ...bodyWithDates,
-        totalAmount: totalAmount.toString()
+        totalAmount: "0" // Temporary value, will be recalculated after scenario normalization
       });
 
       // BACKEND SCENARIO VALIDATION - Enforce scenario rules
@@ -150,6 +114,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         
         // Check supporting document requirements
+        const hasSupportingDocument = req.body.supportingDocumentType && req.body.supportingDocumentType !== '';
         const hasSupporting = hasSupportingDocument;
         
         if (effectiveScenario === 1 && hasSupporting) {
@@ -165,6 +130,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         
         console.log(`✅ Scenario validation passed: Country=${country.code}, Scenario=${effectiveScenario}, HasSupporting=${hasSupporting}`);
+        
+        // CALCULATE TOTAL AMOUNT AFTER SCENARIO NORMALIZATION
+        // Processing types (matching frontend exactly)
+        const processingTypes = {
+          'slow': 90,      // Ready in 7 days
+          'standard': 155, // Ready in 4 days  
+          'fast': 205,     // Ready in 2 days
+          'urgent_24': 320, // Ready in 24 hours
+          'urgent_12': 370, // Ready in 12 hours
+          'urgent_4': 450,  // Ready in 4 hours
+          'urgent_1': 685   // Ready in 1 hour
+        };
+        
+        // Use NORMALIZED data for pricing calculation
+        const finalHasSupporting = validatedData.supportingDocumentType && validatedData.supportingDocumentType !== '';
+        const finalProcessingType = validatedData.processingType || 'slow';
+        
+        let calculatedTotalAmount = 90; // Default fallback
+        
+        if (finalHasSupporting) {
+          // Supporting document application: processing fee + $69 document PDF fee
+          const processingFee = processingTypes[finalProcessingType as keyof typeof processingTypes] || 90;
+          const documentPdfFee = 69;
+          calculatedTotalAmount = processingFee + documentPdfFee;
+        } else {
+          // Standard application: just processing fee
+          calculatedTotalAmount = processingTypes[finalProcessingType as keyof typeof processingTypes] || 90;
+        }
+        
+        // Update the validated data with correct total amount
+        validatedData.totalAmount = calculatedTotalAmount.toString();
+        
+        console.log(`💰 Final pricing calculation: ProcessingType=${finalProcessingType}, HasSupporting=${finalHasSupporting}, TotalAmount=$${calculatedTotalAmount}`);
         
       } catch (validationError) {
         console.error("Scenario validation error:", validationError);
