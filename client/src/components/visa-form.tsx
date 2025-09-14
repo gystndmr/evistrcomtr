@@ -155,6 +155,12 @@ const countryPrerequisites: Record<string, PrerequisiteItem[]> = {
     { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
     { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
   ],
+  'TWN': [ // Taiwan
+    { key: 'passportValidity', textKey: 'prerequisites.passport.validity' },
+    { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
+    { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
+    { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
+  ],
   'default': [ // Default for all other countries
     { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
     { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
