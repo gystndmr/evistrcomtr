@@ -454,7 +454,7 @@ export default function Insurance() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50" key={`insurance-page-${Date.now()}`}>
+    <div className="min-h-screen bg-gray-50">
       <Header />
       
       {/* Simple Header */}
