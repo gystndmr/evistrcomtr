@@ -167,6 +167,14 @@ const countryPrerequisites: Record<string, PrerequisiteItem[]> = {
     { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
     { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
   ],
+  'CPV': [ // Cape Verde
+    { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
+    { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
+    { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
+    { key: 'thyPegasusTicket', textKey: 'prerequisites.thy.pegasus.ticket' },
+    { key: 'passportSixMonths', textKey: 'prerequisites.passport.six.months' },
+    { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
+  ],
   'default': [ // Default for all other countries
     { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
     { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
