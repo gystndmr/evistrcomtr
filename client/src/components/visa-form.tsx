@@ -475,17 +475,12 @@ export function VisaForm() {
         return;
       }
 
-      // Normalize state for scenarios before going to Step 2
       if (effectiveScenario === 1) {
-        // Scenario 1: No supporting document required - set state accordingly
-        setHasSupportingDocument(false);
-        setSupportingDocumentDetails(null);
-        setDocumentProcessingType("");
-        setIsSupportingDocumentValid(true);
+        // Scenario 1: E-visa eligible + NO supporting document required
+        // Skip supporting document check step, go directly to personal information
+        setCurrentStep(3);
+        return;
       }
-      
-      // Always go to Step 2 - supporting document check will handle different scenarios
-      setCurrentStep(2);
     }
     
     // Step 2: Supporting Document Check
@@ -506,7 +501,7 @@ export function VisaForm() {
       
       if (effectiveScenario === 1) {
         // Scenario 1: E-visa eligible + NO supporting document required
-        // Go to next step (travel information)
+        // Skip to next step directly, no supporting document needed
         setCurrentStep(3);
         return;
       }
@@ -855,13 +850,13 @@ export function VisaForm() {
     // Use effective scenario (includes Egypt age-based logic)
     const effectiveScenario = getEffectiveScenario(selectedCountry, form.getValues("dateOfBirth"));
     
-    // For Scenario 1 (E-visa eligible, no supporting docs), skip supporting document step
+    // For Scenario 1 (E-visa eligible, no supporting docs), skip Step 2 entirely
     if (effectiveScenario === 1) {
       return [
         { number: 1, title: t("app.step1") },
-        { number: 2, title: t("app.step3") }, // Travel Information (renumbered as Step 2)
-        { number: 3, title: t("app.step4") }, // Personal Information (renumbered as Step 3)
-        { number: 4, title: t("app.step5") }, // Review & Payment (renumbered as Step 4)
+        { number: 2, title: t("app.step3") }, // Travel Information (renumbered)
+        { number: 3, title: t("app.step4") }, // Personal Information (renumbered)
+        { number: 4, title: t("app.step5") }, // Review & Payment (renumbered)
       ];
     }
     
@@ -910,7 +905,7 @@ export function VisaForm() {
     const effectiveScenario = getEffectiveScenario(selectedCountry, form.getValues("dateOfBirth"));
     
     if (effectiveScenario === 1) {
-      // Scenario 1: [Country, Travel, Personal, Payment] - NO supporting document step
+      // Scenario 1: [Country, Travel, Personal, Payment]
       switch (currentStep) {
         case 1: return 'country';
         case 2: return 'travel';
