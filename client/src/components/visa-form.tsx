@@ -475,12 +475,17 @@ export function VisaForm() {
         return;
       }
 
+      // Normalize state for scenarios before going to Step 2
       if (effectiveScenario === 1) {
-        // Scenario 1: E-visa eligible + NO supporting document required
-        // Skip supporting document check step, go directly to personal information
-        setCurrentStep(3);
-        return;
+        // Scenario 1: No supporting document required - set state accordingly
+        setHasSupportingDocument(false);
+        setSupportingDocumentDetails(null);
+        setDocumentProcessingType("");
+        setIsSupportingDocumentValid(true);
       }
+      
+      // Always go to Step 2 - supporting document check will handle different scenarios
+      setCurrentStep(2);
     }
     
     // Step 2: Supporting Document Check
@@ -501,7 +506,7 @@ export function VisaForm() {
       
       if (effectiveScenario === 1) {
         // Scenario 1: E-visa eligible + NO supporting document required
-        // Skip to next step directly, no supporting document needed
+        // User will see green message and can manually proceed to Step 3
         setCurrentStep(3);
         return;
       }
