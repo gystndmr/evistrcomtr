@@ -676,8 +676,8 @@ export function VisaForm() {
       
       if (effectiveScenario === 1) {
         // Scenario 1: E-visa eligible + NO supporting document required
-        // Skip to next step directly, no supporting document needed
-        setCurrentStep(3);
+        // Continue to next step (arrival information) normally - don't skip steps
+        setCurrentStep(currentStep + 1);
         return;
       }
       
