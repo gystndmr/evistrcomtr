@@ -517,7 +517,7 @@ export function VisaForm() {
           return;
         }
         if (hasSupportingDocument === false) {
-          // Show message and stop processing when no supporting document
+          // Show consulate warning and stop processing when no supporting document
           toast({
             title: t("form.warning.supporting.document.required.title"),
             description: t("form.warning.supporting.document.required.description"),
@@ -1058,27 +1058,36 @@ export function VisaForm() {
                   )}
                   
                   {/* Conditional Supporting Document Check */}
-                  {selectedCountry?.code === 'EGY' && hasSupportingDocument === false ? (
-                    // Egypt: Age <15 or >45 - No supporting document required
-                    <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
-                      <div className="flex items-center gap-3">
-                        <CheckCircle className="h-5 w-5 text-green-600" />
-                        <div>
-                          <h4 className="text-sm font-semibold text-green-800">No Supporting Documents Required</h4>
-                          <p className="text-sm text-green-700 mt-1">Based on your age, no supporting documents are needed for your application.</p>
+                  {(() => {
+                    const dob = form.getValues('dateOfBirth');
+                    const effectiveScenario = getEffectiveScenario(selectedCountry, dob);
+                    
+                    // Egypt Scenario 1 (age <15 or >45): Show green message, no supporting docs needed
+                    if (selectedCountry?.code === 'EGY' && effectiveScenario === 1) {
+                      return (
+                        <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                          <div className="flex items-center gap-3">
+                            <CheckCircle className="h-5 w-5 text-green-600" />
+                            <div>
+                              <h4 className="text-sm font-semibold text-green-800">No Supporting Documents Required</h4>
+                              <p className="text-sm text-green-700 mt-1">Based on your age, no supporting documents are needed for your application.</p>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  ) : (
-                    // Standard or Egypt age 15-45: Show supporting document check
-                    <SupportingDocumentCheck
-                      onHasSupportingDocument={setHasSupportingDocument}
-                      onDocumentDetailsChange={setSupportingDocumentDetails}
-                      onValidationChange={setIsSupportingDocumentValid}
-                      onSupportingDocTypeChange={setSelectedSupportingDocType}
-                      onProcessingTypeChange={setDocumentProcessingType}
-                    />
-                  )}
+                      );
+                    }
+                    
+                    // Egypt Scenario 2 (age 15-45) or other countries: Show supporting document check
+                    return (
+                      <SupportingDocumentCheck
+                        onHasSupportingDocument={setHasSupportingDocument}
+                        onDocumentDetailsChange={setSupportingDocumentDetails}
+                        onValidationChange={setIsSupportingDocumentValid}
+                        onSupportingDocTypeChange={setSelectedSupportingDocType}
+                        onProcessingTypeChange={setDocumentProcessingType}
+                      />
+                    );
+                  })()}
                 </div>
               )}
 
