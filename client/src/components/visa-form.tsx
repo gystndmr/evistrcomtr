@@ -1085,9 +1085,9 @@ export function VisaForm() {
   const getCurrentStepContent = () => {
     const dob = form.getValues('dateOfBirth');
     
-    // Egypt special case: Show supporting step in Step 2 ONLY when DOB is needed
-    // If DOB exists, use normal scenario-based routing
-    if (selectedCountry?.code === 'EGY' && currentStep === 2 && !dob) {
+    // Egypt special case: Always show supporting step in Step 2 for DOB collection
+    // This allows users to modify their DOB even after entering it
+    if (selectedCountry?.code === 'EGY' && currentStep === 2) {
       return 'supporting';
     }
     
@@ -1218,7 +1218,7 @@ export function VisaForm() {
                 <div>
                   <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">{t("app.step2.title")}</h3>
                   
-                  {/* Egypt Special Case: Date of Birth field in Step 2 */}
+                  {/* Egypt Special Case: Date of Birth field in Step 2 - Always visible for Egypt */}
                   {selectedCountry?.code === 'EGY' && (
                     <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                       <h4 className="text-sm font-semibold text-blue-800 mb-3">Required for Egypt Applications</h4>
