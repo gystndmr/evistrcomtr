@@ -46,6 +46,48 @@ type ApplicationFormData = z.infer<typeof applicationSchema>;
 
 
 // Supporting document processing types with minDays
+// Types for prerequisites
+interface PrerequisiteItem {
+  key: keyof typeof defaultPrerequisites;
+  textKey: string;
+}
+
+const defaultPrerequisites = {
+  tourismBusiness: false,
+  financialProof: false,
+  supportingDocuments: false,
+  passportValidity: false,
+  allRequirements: false,
+};
+
+// Country-specific prerequisites definitions
+const countryPrerequisites: Record<string, PrerequisiteItem[]> = {
+  'LBY': [ // Libya
+    { key: 'passportValidity', textKey: 'prerequisites.passport.validity' },
+    { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
+    { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
+    { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
+  ],
+  'LY': [ // Libya (alternative code)
+    { key: 'passportValidity', textKey: 'prerequisites.passport.validity' },
+    { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
+    { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
+    { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
+  ],
+  'default': [ // Default for all other countries
+    { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
+    { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
+    { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
+    { key: 'passportValidity', textKey: 'prerequisites.passport.validity' },
+    { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
+  ]
+};
+
+// Helper function to get prerequisites for a country
+const getCountryPrerequisites = (countryCode: string): PrerequisiteItem[] => {
+  return countryPrerequisites[countryCode] || countryPrerequisites['default'];
+};
+
 // Processing types for all applications
 const supportingDocProcessingTypes = [
   { value: "slow", label: "Ready in 7 days", price: 90, minDays: 7 },
@@ -103,13 +145,7 @@ export function VisaForm() {
   const [showRetry, setShowRetry] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
   const [paymentRedirectUrl, setPaymentRedirectUrl] = useState<string>("");
-  const [prerequisites, setPrerequisites] = useState({
-    tourismBusiness: false,
-    financialProof: false,
-    supportingDocuments: false,
-    passportValidity: false,
-    allRequirements: false,
-  });
+  const [prerequisites, setPrerequisites] = useState(defaultPrerequisites);
   const { toast } = useToast();
 
   const form = useForm<ApplicationFormData>({
@@ -629,11 +665,12 @@ export function VisaForm() {
     
     // Step 4: Prerequisites (only if supporting document exists)
     if (currentStep === 4 && selectedCountry?.isEligible && hasSupportingDocument === true) {
-      const allPrerequisitesMet = prerequisites.tourismBusiness && 
-                                  prerequisites.financialProof && 
-                                  prerequisites.supportingDocuments && 
-                                  prerequisites.passportValidity && 
-                                  prerequisites.allRequirements;
+      const countryCode = selectedCountry?.code || '';
+      const requiredPrerequisites = getCountryPrerequisites(countryCode);
+      
+      const allPrerequisitesMet = requiredPrerequisites.every(req => 
+        prerequisites[req.key] === true
+      );
                                   
       if (!allPrerequisitesMet) {
         toast({
@@ -1339,51 +1376,24 @@ export function VisaForm() {
                     <div className="bg-blue-50 p-4 rounded-lg">
                       <h4 className="font-medium text-blue-900 mb-2">{t("prerequisites.confirm.title")}</h4>
                       <div className="space-y-3">
-                        <label className="flex items-start">
-                          <input 
-                            type="checkbox" 
-                            className="mr-3 mt-1" 
-                            checked={prerequisites.tourismBusiness}
-                            onChange={(e) => setPrerequisites({...prerequisites, tourismBusiness: e.target.checked})}
-                          />
-                          <span className="text-sm text-blue-800">{t("prerequisites.tourism.business")}</span>
-                        </label>
-                        <label className="flex items-start">
-                          <input 
-                            type="checkbox" 
-                            className="mr-3 mt-1" 
-                            checked={prerequisites.financialProof}
-                            onChange={(e) => setPrerequisites({...prerequisites, financialProof: e.target.checked})}
-                          />
-                          <span className="text-sm text-blue-800">{t("prerequisites.financial.proof")}</span>
-                        </label>
-                        <label className="flex items-start">
-                          <input 
-                            type="checkbox" 
-                            className="mr-3 mt-1" 
-                            checked={prerequisites.supportingDocuments}
-                            onChange={(e) => setPrerequisites({...prerequisites, supportingDocuments: e.target.checked})}
-                          />
-                          <span className="text-sm text-blue-800">{t("prerequisites.supporting.documents")}</span>
-                        </label>
-                        <label className="flex items-start">
-                          <input 
-                            type="checkbox" 
-                            className="mr-3 mt-1" 
-                            checked={prerequisites.passportValidity}
-                            onChange={(e) => setPrerequisites({...prerequisites, passportValidity: e.target.checked})}
-                          />
-                          <span className="text-sm text-blue-800">{t("prerequisites.passport.validity")}</span>
-                        </label>
-                        <label className="flex items-start">
-                          <input 
-                            type="checkbox" 
-                            className="mr-3 mt-1" 
-                            checked={prerequisites.allRequirements}
-                            onChange={(e) => setPrerequisites({...prerequisites, allRequirements: e.target.checked})}
-                          />
-                          <span className="text-sm text-blue-800 font-medium">{t("prerequisites.all.requirements")}</span>
-                        </label>
+                        {(() => {
+                          const countryCode = selectedCountry?.code || '';
+                          const requiredPrerequisites = getCountryPrerequisites(countryCode);
+                          
+                          return requiredPrerequisites.map((req) => (
+                            <label key={req.key} className="flex items-start">
+                              <input 
+                                type="checkbox" 
+                                className="mr-3 mt-1" 
+                                checked={prerequisites[req.key] || false}
+                                onChange={(e) => setPrerequisites({...prerequisites, [req.key]: e.target.checked})}
+                              />
+                              <span className={`text-sm text-blue-800 ${req.key === 'allRequirements' ? 'font-medium' : ''}`}>
+                                {t(req.textKey)}
+                              </span>
+                            </label>
+                          ));
+                        })()}
                       </div>
                     </div>
                     
