@@ -46,6 +46,15 @@ type ApplicationFormData = z.infer<typeof applicationSchema>;
 
 
 // Supporting document processing types with minDays
+// Standard processing types (no supporting documents)
+const standardProcessingTypes = [
+  { value: "standard", label: "Standard (24-48 hours)", price: 25 },
+  { value: "fast", label: "Fast (6-12 hours)", price: 75 },
+  { value: "express", label: "Express (2-4 hours)", price: 175 },
+  { value: "urgent", label: "Urgent (1-2 hours)", price: 295 },
+];
+
+// Supporting document processing types
 const supportingDocProcessingTypes = [
   { value: "slow", label: "Ready in 7 days", price: 90, minDays: 7 },
   { value: "standard", label: "Ready in 4 days", price: 155, minDays: 4 },
@@ -351,13 +360,21 @@ export function VisaForm() {
   const calculateTotal = () => {
     const eVisaFee = 69; // Base e-visa application fee
     
-    // If processing type is selected, add processing fee (for all scenarios)
-    if (documentProcessingType) {
+    // Check if supporting documents are required
+    if (hasSupportingDocument === true && documentProcessingType) {
+      // Supporting document applications: use documentProcessingType
       const processingFee = supportingDocProcessingTypes.find(type => type.value === documentProcessingType)?.price || 0;
       return processingFee + eVisaFee;
     }
     
-    // If no processing type selected, return just e-visa fee
+    // Standard applications (no supporting docs): use processingType from form
+    const processingType = form.getValues("processingType");
+    if (processingType) {
+      const processingFee = standardProcessingTypes.find(type => type.value === processingType)?.price || 0;
+      return processingFee + eVisaFee;
+    }
+    
+    // Fallback: just e-visa fee
     return eVisaFee;
   };
 
@@ -1987,7 +2004,11 @@ export function VisaForm() {
                       {hasSupportingDocument === false && (
                         <div className="flex justify-between">
                           <span>{t('form.payment.processing.fee')}</span>
-                          <span>$0.00</span>
+                          <span>${(() => {
+                            const processingType = form.getValues("processingType");
+                            const standardFee = standardProcessingTypes.find(type => type.value === processingType)?.price || 0;
+                            return standardFee.toFixed(2);
+                          })()}</span>
                         </div>
                       )}
                       <div className="border-t pt-2 mt-2">
@@ -2042,7 +2063,11 @@ export function VisaForm() {
                     {hasSupportingDocument === false && (
                       <div className="flex justify-between">
                         <span>{t('form.payment.processing.fee')}:</span>
-                        <span>$0.00</span>
+                        <span>${(() => {
+                          const processingType = form.getValues("processingType");
+                          const standardFee = standardProcessingTypes.find(type => type.value === processingType)?.price || 0;
+                          return standardFee.toFixed(2);
+                        })()}</span>
                       </div>
                     )}
                     <div className="border-t pt-2 flex justify-between font-bold">
