@@ -59,6 +59,7 @@ const defaultPrerequisites = {
   passportValidity: false,
   passportSixMonths: false,
   thyPegasusTicket: false,
+  ageRequirement: false,
   allRequirements: false,
 };
 
