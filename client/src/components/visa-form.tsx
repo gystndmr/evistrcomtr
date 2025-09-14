@@ -61,6 +61,8 @@ const defaultPrerequisites = {
   passportSixMonths: false,
   thyPegasusTicket: false,
   ageRequirement: false,
+  egyptAirlines: false,
+  egyptAgeOrDocs: false,
   allRequirements: false,
 };
 
@@ -118,6 +120,14 @@ const countryPrerequisites: Record<string, PrerequisiteItem[]> = {
     { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
     { key: 'passportValidity', textKey: 'prerequisites.passport.validity' },
     { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
+    { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
+  ],
+  'EGY': [ // Egypt
+    { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
+    { key: 'egyptAirlines', textKey: 'prerequisites.egypt.airlines' },
+    { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
+    { key: 'passportSixMonths', textKey: 'prerequisites.passport.six.months' },
+    { key: 'egyptAgeOrDocs', textKey: 'prerequisites.egypt.age.or.docs' },
     { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
   ],
   'default': [ // Default for all other countries

@@ -323,6 +323,8 @@ const translations: Record<string, Record<string, string>> = {
     'prerequisites.thy.pegasus.ticket': 'I have round-trip tickets with Turkish Airlines (THY) or Pegasus Airlines.',
     'prerequisites.age.requirement': 'I am under 18 years old or over 35 years old.',
     'prerequisites.financial.proof.daily': 'I can prove that I have at least $50 USD or equivalent foreign currency for each day I will stay in my country.',
+    'prerequisites.egypt.airlines': 'I have round-trip tickets with Turkish Airlines (THY), Pegasus Airlines, A-Jet, Air Cairo, or EgyptAir.',
+    'prerequisites.egypt.age.or.docs': 'I am under 15 years old or over 45 years old; OR I have valid supporting documents (Schengen visa or valid residence permit, or visa/residence permit from USA, UK, or Ireland).',
     'prerequisites.all.requirements': 'I have carefully read all items and confirm that I meet all requirements.',
 
     // Form Validation
