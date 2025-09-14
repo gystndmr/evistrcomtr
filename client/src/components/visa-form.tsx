@@ -855,13 +855,14 @@ export function VisaForm() {
     // Use effective scenario (includes Egypt age-based logic)
     const effectiveScenario = getEffectiveScenario(selectedCountry, form.getValues("dateOfBirth"));
     
-    // For Scenario 1 (E-visa eligible, no supporting docs), skip Step 2 entirely
+    // For Scenario 1 (E-visa eligible, no supporting docs), show all steps consistently
     if (effectiveScenario === 1) {
       return [
         { number: 1, title: t("app.step1") },
-        { number: 2, title: t("app.step3") }, // Travel Information (renumbered)
-        { number: 3, title: t("app.step4") }, // Personal Information (renumbered)
-        { number: 4, title: t("app.step5") }, // Review & Payment (renumbered)
+        { number: 2, title: t("app.step2") }, // Supporting Document Check (shows green message)
+        { number: 3, title: t("app.step3") }, // Travel Information
+        { number: 4, title: t("app.step4") }, // Personal Information
+        { number: 5, title: t("app.step5") }, // Review & Payment
       ];
     }
     
@@ -910,12 +911,13 @@ export function VisaForm() {
     const effectiveScenario = getEffectiveScenario(selectedCountry, form.getValues("dateOfBirth"));
     
     if (effectiveScenario === 1) {
-      // Scenario 1: [Country, Travel, Personal, Payment]
+      // Scenario 1: [Country, Supporting, Travel, Personal, Payment]
       switch (currentStep) {
         case 1: return 'country';
-        case 2: return 'travel';
-        case 3: return 'personal';
-        case 4: return 'payment';
+        case 2: return 'supporting';
+        case 3: return 'travel';
+        case 4: return 'personal';
+        case 5: return 'payment';
         default: return 'country';
       }
     } else if (effectiveScenario === 2) {
