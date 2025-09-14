@@ -97,7 +97,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           validatedData.supportingDocumentStartDate = undefined;
           validatedData.supportingDocumentEndDate = undefined;
           validatedData.supportingDocumentCountry = undefined;
-          validatedData.processingType = "standard"; // Default for Scenario 1
+          // KEEP USER'S SELECTED PROCESSING TYPE - Do not override to "standard"
+          // validatedData.processingType = "standard"; // REMOVED - was causing all emails to show $155
         }
         
         // Validate scenario rules
