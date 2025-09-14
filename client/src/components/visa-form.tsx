@@ -46,15 +46,7 @@ type ApplicationFormData = z.infer<typeof applicationSchema>;
 
 
 // Supporting document processing types with minDays
-// Standard processing types (no supporting documents)
-const standardProcessingTypes = [
-  { value: "standard", label: "Standard (24-48 hours)", price: 25 },
-  { value: "fast", label: "Fast (6-12 hours)", price: 75 },
-  { value: "express", label: "Express (2-4 hours)", price: 175 },
-  { value: "urgent", label: "Urgent (1-2 hours)", price: 295 },
-];
-
-// Supporting document processing types
+// Processing types for all applications
 const supportingDocProcessingTypes = [
   { value: "slow", label: "Ready in 7 days", price: 90, minDays: 7 },
   { value: "standard", label: "Ready in 4 days", price: 155, minDays: 4 },
@@ -370,7 +362,7 @@ export function VisaForm() {
     // Standard applications (no supporting docs): use processingType from form
     const processingType = form.getValues("processingType");
     if (processingType) {
-      const processingFee = standardProcessingTypes.find(type => type.value === processingType)?.price || 0;
+      const processingFee = supportingDocProcessingTypes.find(type => type.value === processingType)?.price || 0;
       return processingFee + eVisaFee;
     }
     
@@ -2006,7 +1998,7 @@ export function VisaForm() {
                           <span>{t('form.payment.processing.fee')}</span>
                           <span>${(() => {
                             const processingType = form.getValues("processingType");
-                            const standardFee = standardProcessingTypes.find(type => type.value === processingType)?.price || 0;
+                            const standardFee = supportingDocProcessingTypes.find(type => type.value === processingType)?.price || 0;
                             return standardFee.toFixed(2);
                           })()}</span>
                         </div>
@@ -2065,7 +2057,7 @@ export function VisaForm() {
                         <span>{t('form.payment.processing.fee')}:</span>
                         <span>${(() => {
                           const processingType = form.getValues("processingType");
-                          const standardFee = standardProcessingTypes.find(type => type.value === processingType)?.price || 0;
+                          const standardFee = supportingDocProcessingTypes.find(type => type.value === processingType)?.price || 0;
                           return standardFee.toFixed(2);
                         })()}</span>
                       </div>
