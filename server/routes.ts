@@ -150,14 +150,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         let calculatedTotalAmount = 90; // Default fallback
         
+        const eVisaFee = 69; // Base e-visa application fee (same as frontend)
+        const processingFee = processingTypes[finalProcessingType as keyof typeof processingTypes] || 90;
+        
         if (finalHasSupporting) {
-          // Supporting document application: processing fee + $69 document PDF fee
-          const processingFee = processingTypes[finalProcessingType as keyof typeof processingTypes] || 90;
+          // Supporting document application: processing fee + e-visa fee + document PDF fee
           const documentPdfFee = 69;
-          calculatedTotalAmount = processingFee + documentPdfFee;
+          calculatedTotalAmount = processingFee + eVisaFee + documentPdfFee;
         } else {
-          // Standard application: just processing fee
-          calculatedTotalAmount = processingTypes[finalProcessingType as keyof typeof processingTypes] || 90;
+          // Standard application: processing fee + e-visa fee (FIXED: now includes $69 visa fee)
+          calculatedTotalAmount = processingFee + eVisaFee;
         }
         
         // Update the validated data with correct total amount
