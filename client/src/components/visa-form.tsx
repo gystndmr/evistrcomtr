@@ -17,7 +17,7 @@ import { SupportingDocumentCheck } from "./supporting-document-check";
 import { PaymentRetry } from "./payment-retry";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { ArrowLeft, ArrowRight, CreditCard } from "lucide-react";
+import { ArrowLeft, ArrowRight, CreditCard, CheckCircle } from "lucide-react";
 import type { Country } from "@shared/schema";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -409,6 +409,7 @@ export function VisaForm() {
   useEffect(() => {
     if (selectedCountry?.code === 'EGY') {
       const dob = form.watch('dateOfBirth');
+      
       // Only process COMPLETE and VALID dates (YYYY-MM-DD format)
       if (dob && dob.match(/^\d{4}-\d{2}-\d{2}$/) && new Date(dob).toString() !== 'Invalid Date') {
         const effectiveScenario = getEffectiveScenario(selectedCountry, dob);
@@ -419,9 +420,6 @@ export function VisaForm() {
           setSupportingDocumentDetails(null);
           setDocumentProcessingType("");
           setIsSupportingDocumentValid(true);
-          
-          // DISABLED: Auto-advance to prevent UX issues
-          // User will manually click Next Step button
           
         } else if (effectiveScenario === 2) {
           // Age 15-45: Supporting document required
@@ -1059,13 +1057,28 @@ export function VisaForm() {
                     </div>
                   )}
                   
-                  <SupportingDocumentCheck
-                    onHasSupportingDocument={setHasSupportingDocument}
-                    onDocumentDetailsChange={setSupportingDocumentDetails}
-                    onValidationChange={setIsSupportingDocumentValid}
-                    onSupportingDocTypeChange={setSelectedSupportingDocType}
-                    onProcessingTypeChange={setDocumentProcessingType}
-                  />
+                  {/* Conditional Supporting Document Check */}
+                  {selectedCountry?.code === 'EGY' && hasSupportingDocument === false ? (
+                    // Egypt: Age <15 or >45 - No supporting document required
+                    <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                      <div className="flex items-center gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-600" />
+                        <div>
+                          <h4 className="text-sm font-semibold text-green-800">No Supporting Documents Required</h4>
+                          <p className="text-sm text-green-700 mt-1">Based on your age, no supporting documents are needed for your application.</p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    // Standard or Egypt age 15-45: Show supporting document check
+                    <SupportingDocumentCheck
+                      onHasSupportingDocument={setHasSupportingDocument}
+                      onDocumentDetailsChange={setSupportingDocumentDetails}
+                      onValidationChange={setIsSupportingDocumentValid}
+                      onSupportingDocTypeChange={setSelectedSupportingDocType}
+                      onProcessingTypeChange={setDocumentProcessingType}
+                    />
+                  )}
                 </div>
               )}
 
