@@ -90,6 +90,12 @@ const countryPrerequisites: Record<string, PrerequisiteItem[]> = {
     { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
     { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
   ],
+  'VUT': [ // Vanuatu
+    { key: 'passportValidity', textKey: 'prerequisites.passport.validity' },
+    { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
+    { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
+    { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
+  ],
   'default': [ // Default for all other countries
     { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
     { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
