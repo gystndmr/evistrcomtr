@@ -161,6 +161,12 @@ const countryPrerequisites: Record<string, PrerequisiteItem[]> = {
     { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
     { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
   ],
+  'LKA': [ // Sri Lanka
+    { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
+    { key: 'supportingDocuments', textKey: 'prerequisites.supporting.documents' },
+    { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
+    { key: 'allRequirements', textKey: 'prerequisites.all.requirements' }
+  ],
   'default': [ // Default for all other countries
     { key: 'tourismBusiness', textKey: 'prerequisites.tourism.business' },
     { key: 'financialProof', textKey: 'prerequisites.financial.proof' },
