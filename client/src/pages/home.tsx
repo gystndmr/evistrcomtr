@@ -31,29 +31,40 @@ export default function Home() {
     { image: pamukkaleImg }
   ];
 
-  // Preload all images immediately when component mounts
+  // ⚡ PERFORMANCE: Progressive image loading - show first image immediately
   useEffect(() => {
-    const preloadImages = async () => {
-      const imagePromises = turkishLandmarks.map((landmark) => {
-        return new Promise((resolve, reject) => {
-          const img = new Image();
-          img.onload = resolve;
-          img.onerror = reject;
-          img.src = landmark.image;
-        });
-      });
+    const progressiveImageLoad = async () => {
+      // ⚡ Step 1: Load first image immediately for instant display
+      const firstImage = new Image();
+      firstImage.onload = () => {
+        setImagesLoaded(true); // Show content immediately with first image
+        console.log('🚀 First homepage image loaded - showing content');
+      };
+      firstImage.onerror = () => {
+        setImagesLoaded(true); // Show content even if first image fails
+      };
+      firstImage.src = turkishLandmarks[0].image;
 
-      try {
-        await Promise.all(imagePromises);
-        setImagesLoaded(true);
-        console.log('All homepage images preloaded successfully');
-      } catch (error) {
-        console.error('Error preloading images:', error);
-        setImagesLoaded(true); // Still show content even if some images fail
-      }
+      // ⚡ Step 2: Load remaining images in background (non-blocking)
+      setTimeout(() => {
+        const remainingImagePromises = turkishLandmarks.slice(1).map((landmark) => {
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = resolve;
+            img.onerror = reject;
+            img.src = landmark.image;
+          });
+        });
+
+        Promise.all(remainingImagePromises).then(() => {
+          console.log('🚀 All remaining homepage images loaded in background');
+        }).catch((error) => {
+          console.log('⚠️ Some background images failed to load:', error);
+        });
+      }, 100); // Small delay to prioritize first image
     };
 
-    preloadImages();
+    progressiveImageLoad();
   }, []);
 
   useEffect(() => {
@@ -95,8 +106,13 @@ export default function Home() {
                 src={landmark.image}
                 alt={`Turkish landmark ${index + 1}`}
                 className="absolute inset-0 w-full h-full object-cover"
-                loading="eager"
+                loading={index === 0 ? "eager" : "lazy"}
                 decoding="async"
+                {...(index === 0 ? { fetchpriority: "high" } : { fetchpriority: "low" })}
+                style={{
+                  contentVisibility: index === currentSlide ? 'visible' : 'auto',
+                  contain: 'layout style paint'
+                }}
               />
               <div className="absolute inset-0 bg-black opacity-50" />
             </div>

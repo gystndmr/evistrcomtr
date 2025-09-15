@@ -58,10 +58,22 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
+  // ⚡ PERFORMANCE: Add memory cache for countries
+  private countriesCache: Country[] | null = null;
+  private cacheTimestamp: number = 0;
+  private readonly CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
   async getCountries(): Promise<Country[]> {
+    // ⚡ Check cache first
+    const now = Date.now();
+    if (this.countriesCache && (now - this.cacheTimestamp) < this.CACHE_DURATION) {
+      console.log(`🚀 Countries served from cache (${this.countriesCache.length} countries)`);
+      return this.countriesCache;
+    }
+
     try {
+      console.log(`🔍 Loading countries from database...`);
       const results = await db.select().from(countries);
-      console.log(`🔍 Total countries from DB: ${results.length}`);
       
       // Create a Map to store unique countries by name
       const uniqueCountriesMap = new Map<string, typeof results[0]>();
@@ -80,7 +92,6 @@ export class DatabaseStorage implements IStorage {
       });
       
       const uniqueCountries = Array.from(uniqueCountriesMap.values());
-      console.log(`🔍 Unique countries after filtering: ${uniqueCountries.length}`);
       
       // Map database fields to frontend-expected format  
       const formattedCountries = uniqueCountries.map(country => ({
@@ -88,10 +99,15 @@ export class DatabaseStorage implements IStorage {
         isEligible: Boolean(country.isEligible) // Keep isEligible field name for frontend consistency
       })) as any[];
       
+      // ⚡ Cache the results
+      this.countriesCache = formattedCountries;
+      this.cacheTimestamp = now;
+      console.log(`🚀 Countries cached (${formattedCountries.length} countries)`);
+      
       return formattedCountries;
     } catch (error) {
       console.error('Database error in getCountries:', error);
-      return [];
+      return this.countriesCache || []; // Return cache if available, empty array if not
     }
   }
 
