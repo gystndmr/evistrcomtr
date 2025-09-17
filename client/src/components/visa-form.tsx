@@ -640,9 +640,22 @@ export function VisaForm() {
   }, [selectedCountry]); // Removed form.watch dependency to prevent early triggers
 
   const handleNextStep = () => {
+    console.log("🔍 HandleNextStep clicked - Current step:", currentStep);
+    console.log("🔍 Selected country:", selectedCountry?.name);
+    console.log("🔍 Selected document type:", selectedDocumentType);
+    
+    // TEST: Always show a toast to verify toast system works
+    toast({
+      title: "🧪 DEBUG: Next Step Clicked!",
+      description: `Step: ${currentStep}, Country: ${selectedCountry?.name || 'None'}, Doc: ${selectedDocumentType}`,
+      variant: "default",
+      duration: 3000,
+    });
+    
     // Step 1: Country and Document Type Selection
     if (currentStep === 1) {
       if (!selectedCountry || !selectedDocumentType) {
+        console.log("🚨 VALIDATION FAILED - Missing country or document type");
         toast({
           title: "Required Fields",
           description: "Please select country and document type",
