@@ -343,12 +343,12 @@ export function VisaForm() {
       // Ensure we have the correct processing type based on supporting document status
       const finalProcessingType = hasSupportingDocument === true ? documentProcessingType : data.processingType;
       
-      // First create the application - ALL DATA IS PRESERVED
+      // First create the application - USE CORRECT PROCESSING TYPE
       const applicationResponse = await apiRequest("POST", "/api/applications", {
         ...data,
+        processingType: finalProcessingType, // ✅ FIXED: Use correct processing type
         countryId: selectedCountry?.id,
         countryOfOrigin: selectedCountry?.name,
-        processingType: finalProcessingType, // Use the correct processing type
         totalAmount: calculateTotal().toString(),
         supportingDocumentType: selectedSupportingDocType || null,
         supportingDocumentCountry: supportingDocumentDetails?.visaCountry || supportingDocumentDetails?.residenceCountry || null,
