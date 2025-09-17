@@ -2221,6 +2221,28 @@ export function VisaForm() {
                       />
                     </div>
                     
+                    {/* Supporting Document Details */}
+                    {hasSupportingDocument === true && (
+                      <>
+                        <div className="md:col-span-2">
+                          <h4 className="text-md font-semibold mb-3 text-blue-900">Supporting Document Details</h4>
+                        </div>
+                        <FormField
+                          control={form.control}
+                          name="supportingDocumentNumber"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Document Number</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Enter document number" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="supportingDocumentStartDate"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Document Start Date</FormLabel>
