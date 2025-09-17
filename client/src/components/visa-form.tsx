@@ -251,7 +251,7 @@ export function VisaForm() {
   const { t } = useLanguage();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
-  const [selectedDocumentType, setSelectedDocumentType] = useState("passport"); // Default to passport for visa applications
+  const [selectedDocumentType, setSelectedDocumentType] = useState(""); // No default - user must explicitly select
   const [uploadedDocument, setUploadedDocument] = useState<File | null>(null);
   const [showPrerequisites, setShowPrerequisites] = useState(false);
   const [hasSupportingDocument, setHasSupportingDocument] = useState<boolean | null>(null);
@@ -657,7 +657,7 @@ export function VisaForm() {
         return;
       }
       
-      if (!selectedDocumentType) {
+      if (!selectedDocumentType || selectedDocumentType.trim() === "") {
         toast({
           title: "Document Type Required",
           description: "Please select your document type (passport or national ID)",
