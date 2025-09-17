@@ -352,9 +352,9 @@ export function VisaForm() {
         totalAmount: calculateTotal().toString(),
         supportingDocumentType: selectedSupportingDocType || null,
         supportingDocumentCountry: supportingDocumentDetails?.visaCountry || supportingDocumentDetails?.residenceCountry || null,
-        supportingDocumentNumber: data.supportingDocumentNumber || null,
-        supportingDocumentStartDate: data.supportingDocumentStartDate || null,
-        supportingDocumentEndDate: data.supportingDocumentEndDate || null,
+        supportingDocumentNumber: supportingDocumentDetails?.documentNumber || null,
+        supportingDocumentStartDate: supportingDocumentDetails?.startDate || null,
+        supportingDocumentEndDate: supportingDocumentDetails?.endDate === 'unlimited' ? null : supportingDocumentDetails?.endDate || null,
       });
       const applicationData = await applicationResponse.json();
       
