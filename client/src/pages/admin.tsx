@@ -337,31 +337,63 @@ export default function Admin() {
         }
         return "Visa (Tür Belirsiz)";
       case "residence":
-        // ISO ülke kodlarına göre ikamet ülkesini göster
-        if (visaCountry === "USA") return "Amerika İkamet İzni";
-        if (visaCountry === "GBR") return "İngiltere İkamet İzni";
-        if (visaCountry === "DEU") return "Almanya İkamet İzni";
-        if (visaCountry === "FRA") return "Fransa İkamet İzni";
-        if (visaCountry === "ITA") return "İtalya İkamet İzni";
-        if (visaCountry === "ESP") return "İspanya İkamet İzni";
-        if (visaCountry === "NLD") return "Hollanda İkamet İzni";
-        if (visaCountry === "BEL") return "Belçika İkamet İzni";
-        if (visaCountry === "AUT") return "Avusturya İkamet İzni";
-        if (visaCountry === "CHE") return "İsviçre İkamet İzni";
-        if (visaCountry === "SWE") return "İsveç İkamet İzni";
-        if (visaCountry === "NOR") return "Norveç İkamet İzni";
-        if (visaCountry === "DNK") return "Danimarka İkamet İzni";
-        if (visaCountry === "FIN") return "Finlandiya İkamet İzni";
-        if (visaCountry === "CAN") return "Kanada İkamet İzni";
-        if (visaCountry === "AUS") return "Avustralya İkamet İzni";
-        if (visaCountry === "JPN") return "Japonya İkamet İzni";
-        if (visaCountry === "KOR") return "Güney Kore İkamet İzni";
-        if (visaCountry === "SGP") return "Singapur İkamet İzni";
-        if (visaCountry === "ARE") return "BAE İkamet İzni";
+        // Kapsamlı ülke listesi - tüm ISO ülke kodları
+        const residenceCountryNames: Record<string, string> = {
+          "USA": "Amerika",
+          "GBR": "İngiltere", 
+          "IRL": "İrlanda",
+          "DEU": "Almanya",
+          "FRA": "Fransa",
+          "ITA": "İtalya", 
+          "ESP": "İspanya",
+          "NLD": "Hollanda",
+          "BEL": "Belçika",
+          "AUT": "Avusturya",
+          "CHE": "İsviçre",
+          "SWE": "İsveç",
+          "NOR": "Norveç",
+          "DNK": "Danimarka",
+          "FIN": "Finlandiya",
+          "BGR": "Bulgaristan",
+          "HRV": "Hırvatistan",
+          "CYP": "Kıbrıs",
+          "CZE": "Çek Cumhuriyeti",
+          "EST": "Estonya",
+          "GRC": "Yunanistan",
+          "HUN": "Macaristan",
+          "LVA": "Letonya",
+          "LTU": "Litvanya", 
+          "LUX": "Lüksemburg",
+          "MLT": "Malta",
+          "POL": "Polonya",
+          "PRT": "Portekiz",
+          "ROU": "Romanya",
+          "SVK": "Slovakya",
+          "SVN": "Slovenya",
+          "ISL": "İzlanda",
+          "LIE": "Liechtenstein",
+          "CAN": "Kanada",
+          "AUS": "Avustralya", 
+          "JPN": "Japonya",
+          "KOR": "Güney Kore",
+          "SGP": "Singapur",
+          "ARE": "BAE"
+        };
+        
+        if (visaCountry && residenceCountryNames[visaCountry]) {
+          return `${residenceCountryNames[visaCountry]} İkamet İzni`;
+        }
+        
         // Eski kayıtlar için
         if (visaNumber && !visaCountry) {
           return `İkamet İzni Mevcut (No: ${visaNumber.substring(0, 6)}...)`;
         }
+        
+        // Ülke kodu bilinmiyorsa ama var ise, kodu göster
+        if (visaCountry) {
+          return `İkamet İzni (${visaCountry})`;
+        }
+        
         return "İkamet İzni (Ülke Belirsiz)";
       case "passport":
         return "Pasaport";
