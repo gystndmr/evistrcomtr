@@ -193,7 +193,7 @@ export function CountrySelector({
       <div className="grid md:grid-cols-2 gap-6">
         <div>
           <Label htmlFor="country">Country/Region of Travel Document *</Label>
-          <Select value={selectedCountry?.code || ""} onValueChange={handleCountryChange}>
+          <Select onValueChange={handleCountryChange}>
             <SelectTrigger>
               <SelectValue placeholder="Select Country/Region" />
             </SelectTrigger>
@@ -224,7 +224,7 @@ export function CountrySelector({
 
         <div>
           <Label htmlFor="documentType">Travel Document Type *</Label>
-          <Select value={selectedDocumentType || ""} onValueChange={handleDocumentTypeChange}>
+          <Select onValueChange={handleDocumentTypeChange}>
             <SelectTrigger>
               <SelectValue placeholder="Select Document Type" />
             </SelectTrigger>
