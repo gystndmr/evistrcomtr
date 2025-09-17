@@ -314,6 +314,13 @@ export function VisaForm() {
       form.setValue('arrivalDate', '');
     }
   }, [arrivalDay, arrivalMonth, arrivalYear, form]);
+
+  // Sync documentProcessingType with form processingType field
+  useEffect(() => {
+    if (documentProcessingType) {
+      form.setValue('processingType', documentProcessingType);
+    }
+  }, [documentProcessingType, form]);
   
   useEffect(() => {
     if (watchedArrivalDate) {
