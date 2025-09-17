@@ -287,8 +287,16 @@ export function generateVisaReceivedEmail(
                       <td style="padding: 12px 0; color: #1a1a1a; text-transform: capitalize;">${applicationData.processingType || 'Standard'}</td>
                     </tr>
                     <tr>
-                      <td style="padding: 12px 0; color: #666; font-weight: bold;">Total Amount:</td>
-                      <td style="padding: 12px 0; color: #1a1a1a; font-weight: bold;">$${applicationData.totalAmount || 'Not specified'}</td>
+                      <td style="padding: 12px 0; color: #666; font-weight: bold;">E-Visa Fee:</td>
+                      <td style="padding: 12px 0; color: #1a1a1a;">$69.00</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px 0; color: #666; font-weight: bold;">${applicationData.supportingDocumentType ? 'Processing Fee (with docs):' : 'Processing Fee:'}</td>
+                      <td style="padding: 12px 0; color: #1a1a1a;">$${(parseFloat(applicationData.totalAmount || '69') - 69).toFixed(2)}</td>
+                    </tr>
+                    <tr style="border-top: 2px solid #DC2626;">
+                      <td style="padding: 12px 0; color: #DC2626; font-weight: bold; font-size: 16px;">Total Amount:</td>
+                      <td style="padding: 12px 0; color: #DC2626; font-weight: bold; font-size: 16px;">$${applicationData.totalAmount || 'Not specified'}</td>
                     </tr>
                     <tr>
                       <td style="padding: 12px 0; color: #666; font-weight: bold;">Status:</td>
@@ -411,7 +419,14 @@ Date of Birth: ${applicationData.dateOfBirth ? new Date(applicationData.dateOfBi
 Country of Origin: ${applicationData.countryOfOrigin || 'Not specified'}
 Arrival Date: ${applicationData.arrivalDate ? new Date(applicationData.arrivalDate).toLocaleDateString('en-US') : 'Not specified'}
 Processing Type: ${applicationData.processingType || 'Standard'}
-Total Amount: $${applicationData.totalAmount || 'Not specified'}
+
+PRICING BREAKDOWN:
+E-Visa Fee: $69.00
+${applicationData.supportingDocumentType ? 'Processing Fee (with docs):' : 'Processing Fee:'} $${(parseFloat(applicationData.totalAmount || '69') - 69).toFixed(2)}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TOTAL AMOUNT: $${applicationData.totalAmount || 'Not specified'}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
 Status: UNDER REVIEW
 Application Date: ${new Date().toLocaleDateString('en-US')} ${new Date().toLocaleTimeString('en-US')}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
