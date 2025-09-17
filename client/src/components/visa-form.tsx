@@ -251,7 +251,7 @@ export function VisaForm() {
   const { t } = useLanguage();
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedCountry, setSelectedCountry] = useState<Country | null>(null);
-  const [selectedDocumentType, setSelectedDocumentType] = useState("passport"); // Default to passport for visa applications
+  const [selectedDocumentType, setSelectedDocumentType] = useState(""); // No default - force user selection
   const [uploadedDocument, setUploadedDocument] = useState<File | null>(null);
   const [showPrerequisites, setShowPrerequisites] = useState(false);
   const [hasSupportingDocument, setHasSupportingDocument] = useState<boolean | null>(null);

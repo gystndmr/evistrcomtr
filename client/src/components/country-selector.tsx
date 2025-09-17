@@ -226,7 +226,7 @@ export function CountrySelector({
           <Label htmlFor="documentType">Travel Document Type *</Label>
           <Select onValueChange={handleDocumentTypeChange}>
             <SelectTrigger>
-              <SelectValue placeholder="Select Document Type" />
+              <SelectValue placeholder="Please select document type (required)" />
             </SelectTrigger>
             <SelectContent>
               {documentTypes.map((type) => (
