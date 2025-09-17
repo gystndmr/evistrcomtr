@@ -1709,7 +1709,16 @@ export function VisaForm() {
                     {/* Processing Type - Available for all scenarios */}
                     <div className="space-y-4">
                       <Label htmlFor="processingType">Processing Type *</Label>
-                      <Select value={documentProcessingType} onValueChange={setDocumentProcessingType}>
+                      <Select 
+                        value={hasSupportingDocument === true ? documentProcessingType : form.getValues("processingType")} 
+                        onValueChange={(value) => {
+                          if (hasSupportingDocument === true) {
+                            setDocumentProcessingType(value);
+                          } else {
+                            form.setValue("processingType", value);
+                          }
+                        }}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Select processing type" />
                         </SelectTrigger>
