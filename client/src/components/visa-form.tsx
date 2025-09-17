@@ -259,7 +259,7 @@ export function VisaForm() {
   const [selectedSupportingDocType, setSelectedSupportingDocType] = useState("");
   const [documentProcessingType, setDocumentProcessingType] = useState("");
   const [isSupportingDocumentValid, setIsSupportingDocumentValid] = useState(false);
-  // Remove availableSupportingDocTypes - now always use full list supportingDocProcessingTypes
+  const [availableSupportingDocTypes, setAvailableSupportingDocTypes] = useState(supportingDocProcessingTypes);
   // Removed paymentData state - now using direct redirects
   const [showRetry, setShowRetry] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
@@ -289,7 +289,7 @@ export function VisaForm() {
       fatherName: "",
       address: "",
       arrivalDate: "",
-      processingType: "",
+      processingType: "standard",
       documentType: "",
       supportingDocumentNumber: "",
       supportingDocumentStartDate: "",
@@ -298,33 +298,59 @@ export function VisaForm() {
   });
 
   // Watch arrival date changes and update available processing types
-  // Manual date selection state
-  const [arrivalDay, setArrivalDay] = useState("");
-  const [arrivalMonth, setArrivalMonth] = useState("");
-  const [arrivalYear, setArrivalYear] = useState("");
-
-  // Compose complete date when all parts are selected
+  const watchedArrivalDate = form.watch("arrivalDate");
+  
   useEffect(() => {
-    if (arrivalDay && arrivalMonth && arrivalYear) {
-      const dateString = `${arrivalYear}-${arrivalMonth.padStart(2, '0')}-${arrivalDay.padStart(2, '0')}`;
-      const date = new Date(dateString);
+    if (watchedArrivalDate) {
+      // Update available processing types based on arrival date
+      const standardTypes = getAvailableProcessingTypes(watchedArrivalDate, false);
+      const supportingTypes = getAvailableProcessingTypes(watchedArrivalDate, true);
       
-      // Validate if it's a real date
-      if (date.getFullYear() == parseInt(arrivalYear) && 
-          date.getMonth() + 1 == parseInt(arrivalMonth) && 
-          date.getDate() == parseInt(arrivalDay)) {
-        form.setValue("arrivalDate", dateString);
-        form.clearErrors("arrivalDate");
-      } else {
-        // Invalid date - clear form value
-        form.setValue("arrivalDate", "");
-        form.setError("arrivalDate", { message: "Please select a valid date" });
+      setAvailableSupportingDocTypes(supportingTypes);
+      
+      // Reset processing type if current selection is no longer available
+      const currentProcessingType = form.getValues("processingType");
+      if (currentProcessingType && !standardTypes.some(type => type.value === currentProcessingType)) {
+        // Find the closest matching option by price (preserve user intent)
+        const currentType = supportingDocProcessingTypes.find(type => type.value === currentProcessingType);
+        const bestMatch = standardTypes.length > 0 ? 
+          standardTypes.reduce((best, current) => 
+            Math.abs(current.price - (currentType?.price || 0)) < Math.abs(best.price - (currentType?.price || 0)) 
+            ? current : best
+          ) : null;
+
+        form.setValue("processingType", bestMatch?.value || "");
+        
+        toast({
+          title: "⚠️ İşlem Türü Değiştirildi",
+          description: `"${currentType?.label || currentProcessingType}" seçeneği varış tarihiniz için mevcut değil. En yakın seçenek "${bestMatch?.label}" otomatik seçildi.`,
+          duration: 8000,
+        });
+      }
+      
+      // Reset supporting document processing type if no longer available
+      if (documentProcessingType && !supportingTypes.some(type => type.value === documentProcessingType)) {
+        // Find the closest matching option by price (preserve user intent)
+        const currentType = supportingDocProcessingTypes.find(type => type.value === documentProcessingType);
+        const bestMatch = supportingTypes.length > 0 ? 
+          supportingTypes.reduce((best, current) => 
+            Math.abs(current.price - (currentType?.price || 0)) < Math.abs(best.price - (currentType?.price || 0)) 
+            ? current : best
+          ) : null;
+
+        setDocumentProcessingType(bestMatch?.value || "");
+        
+        toast({
+          title: "⚠️ Destekleyici Belge İşlem Türü Değiştirildi",
+          description: `"${currentType?.label || documentProcessingType}" seçeneği varış tarihiniz için mevcut değil. En yakın seçenek "${bestMatch?.label}" otomatik seçildi.`,
+          duration: 8000,
+        });
       }
     } else {
-      // Not all parts selected - clear form value
-      form.setValue("arrivalDate", "");
+      // If no arrival date, show all options
+      setAvailableSupportingDocTypes(supportingDocProcessingTypes);
     }
-  }, [arrivalDay, arrivalMonth, arrivalYear, form]);
+  }, [watchedArrivalDate, form, documentProcessingType, toast]);
 
   const createApplicationMutation = useMutation({
     mutationFn: async (data: ApplicationFormData) => {
@@ -1589,119 +1615,196 @@ export function VisaForm() {
                 <div>
                   <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">{t("app.step3.title")}</h3>
                   <div className="grid md:grid-cols-2 gap-6">
-                    {/* Manual Day/Month/Year Selection */}
-                    <div>
-                      <FormLabel>Arrival Date in Turkey *</FormLabel>
-                      <div className="space-y-2">
-                        <div className="grid grid-cols-3 gap-2">
-                          {/* Day Selection */}
-                          <Select
-                            value={arrivalDay}
-                            onValueChange={setArrivalDay}
-                          >
-                            <SelectTrigger data-testid="select-arrival-day">
-                              <SelectValue placeholder="Day" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {Array.from({ length: 31 }, (_, i) => (
-                                <SelectItem key={i + 1} value={(i + 1).toString()}>
-                                  {i + 1}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-
-                          {/* Month Selection - only enabled after day is selected */}
-                          <Select
-                            value={arrivalMonth}
-                            onValueChange={setArrivalMonth}
-                            disabled={!arrivalDay}
-                          >
-                            <SelectTrigger data-testid="select-arrival-month" className={!arrivalDay ? 'opacity-50' : ''}>
-                              <SelectValue placeholder="Month" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {[
-                                { value: '1', label: 'January' },
-                                { value: '2', label: 'February' },
-                                { value: '3', label: 'March' },
-                                { value: '4', label: 'April' },
-                                { value: '5', label: 'May' },
-                                { value: '6', label: 'June' },
-                                { value: '7', label: 'July' },
-                                { value: '8', label: 'August' },
-                                { value: '9', label: 'September' },
-                                { value: '10', label: 'October' },
-                                { value: '11', label: 'November' },
-                                { value: '12', label: 'December' }
-                              ].map((month) => (
-                                <SelectItem key={month.value} value={month.value}>
-                                  {month.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-
-                          {/* Year Selection - only enabled after month is selected */}
-                          <Select
-                            value={arrivalYear}
-                            onValueChange={setArrivalYear}
-                            disabled={!arrivalMonth}
-                          >
-                            <SelectTrigger data-testid="select-arrival-year" className={!arrivalMonth ? 'opacity-50' : ''}>
-                              <SelectValue placeholder="Year" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {Array.from({ length: 5 }, (_, i) => {
-                                const year = new Date().getFullYear() + i;
-                                return (
-                                  <SelectItem key={year} value={year.toString()}>
-                                    {year}
-                                  </SelectItem>
-                                );
-                              })}
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        {/* Show selected date confirmation */}
-                        {arrivalDay && arrivalMonth && arrivalYear && (
-                          <div className="text-sm text-green-600 font-medium">
-                            ✅ Selected: {arrivalDay}/{arrivalMonth}/{arrivalYear}
-                          </div>
-                        )}
-                      </div>
-                      
-                      {/* Show form error if exists */}
-                      <FormField
-                        control={form.control}
-                        name="arrivalDate"
-                        render={({ field }) => (
+                    <FormField
+                      control={form.control}
+                      name="arrivalDate"
+                      render={({ field }) => {
+                        const today = new Date();
+                        const currentYear = today.getFullYear();
+                        const currentMonth = today.getMonth() + 1; // getMonth() returns 0-11
+                        const currentDay = today.getDate();
+                        
+                        // Get currently selected values
+                        const selectedParts = field.value ? field.value.split('-') : [];
+                        const selectedYear = selectedParts[0] ? parseInt(selectedParts[0]) : currentYear;
+                        const selectedMonth = selectedParts[1] ? parseInt(selectedParts[1]) : currentMonth;
+                        const selectedDay = selectedParts[2] ? parseInt(selectedParts[2]) : currentDay;
+                        
+                        // Determine available options based on current date
+                        const getAvailableYears = () => {
+                          return Array.from({ length: 11 }, (_, i) => (currentYear + i).toString());
+                        };
+                        
+                        const getAvailableMonths = () => {
+                          const months = [
+                            { value: '01', label: 'January' },
+                            { value: '02', label: 'February' },
+                            { value: '03', label: 'March' },
+                            { value: '04', label: 'April' },
+                            { value: '05', label: 'May' },
+                            { value: '06', label: 'June' },
+                            { value: '07', label: 'July' },
+                            { value: '08', label: 'August' },
+                            { value: '09', label: 'September' },
+                            { value: '10', label: 'October' },
+                            { value: '11', label: 'November' },
+                            { value: '12', label: 'December' }
+                          ];
+                          
+                          // If current year selected, filter months based on date logic
+                          if (selectedYear === currentYear) {
+                            return months.filter(m => {
+                              const monthNum = parseInt(m.value);
+                              // Future months are always available
+                              if (monthNum > currentMonth) {
+                                return true;
+                              }
+                              // For current month, check if user can select a valid day
+                              if (monthNum === currentMonth) {
+                                // If day is selected and it's valid for current month, show current month
+                                if (selectedParts[2] && selectedDay >= currentDay) {
+                                  return true;
+                                }
+                                // If no day selected yet, show current month
+                                if (!selectedParts[2]) {
+                                  return true;
+                                }
+                                // Day is selected but invalid for current month
+                                return false;
+                              }
+                              // Past months are never available
+                              return false;
+                            });
+                          }
+                          return months;
+                        };
+                        
+                        const getAvailableDays = () => {
+                          // Always show days 1-31, but let month filtering handle the logic
+                          const daysInMonth = selectedParts[1] ? new Date(selectedYear, selectedMonth, 0).getDate() : 31;
+                          return Array.from({ length: daysInMonth }, (_, i) => (i + 1).toString().padStart(2, '0'));
+                        };
+                        
+                        return (
                           <FormItem>
+                            <FormLabel>Arrival Date in Turkey *</FormLabel>
                             <FormControl>
-                              <input type="hidden" {...field} />
+                              <div className="space-y-2">
+                                <div className="grid grid-cols-3 gap-2">
+                                  <Select
+                                    value={field.value ? field.value.split('-')[2] : ''}
+                                    onValueChange={(day) => {
+                                      const parts = field.value ? field.value.split('-') : [currentYear.toString(), currentMonth.toString().padStart(2, '0'), '01'];
+                                      const year = parts[0];
+                                      const month = parts[1];
+                                      field.onChange(`${year}-${month}-${day.padStart(2, '0')}`);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Day" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {getAvailableDays().map((d) => (
+                                        <SelectItem key={d} value={d}>{d}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+
+                                  <Select
+                                    value={field.value ? field.value.split('-')[1] : ''}
+                                    onValueChange={(month) => {
+                                      const parts = field.value ? field.value.split('-') : [currentYear.toString(), '01', '01'];
+                                      const year = parts[0];
+                                      const day = parts[2];
+                                      
+                                      // Update the form value
+                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day}`);
+                                      
+                                      // If selected day is not available in new month, reset to first available day
+                                      const daysInNewMonth = new Date(parseInt(year), parseInt(month), 0).getDate();
+                                      const dayInt = parseInt(day);
+                                      if (dayInt > daysInNewMonth) {
+                                        const firstAvailableDay = (parseInt(year) === currentYear && parseInt(month) === currentMonth) ? currentDay : 1;
+                                        field.onChange(`${year}-${month.padStart(2, '0')}-${firstAvailableDay.toString().padStart(2, '0')}`);
+                                      }
+                                    }}
+                                  >
+                                    <SelectTrigger className={`${
+                                      field.value && field.value.split('-')[1] ? '' : 'text-muted-foreground'
+                                    }`}>
+                                      <SelectValue placeholder="Month">
+                                        {field.value && field.value.split('-')[1] ? 
+                                          getAvailableMonths().find(m => m.value === field.value.split('-')[1])?.label || "Month"
+                                          : "Month"
+                                        }
+                                      </SelectValue>
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {getAvailableMonths().map((m) => (
+                                        <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+
+                                  <Select
+                                    value={field.value ? field.value.split('-')[0] : ''}
+                                    onValueChange={(year) => {
+                                      const parts = field.value ? field.value.split('-') : [currentYear.toString(), currentMonth.toString().padStart(2, '0'), '01'];
+                                      const month = parts[1];
+                                      const day = parts[2];
+                                      
+                                      // If switching to current year and month is not available, reset to current month
+                                      if (parseInt(year) === currentYear && parseInt(month) < currentMonth) {
+                                        field.onChange(`${year}-${currentMonth.toString().padStart(2, '0')}-${currentDay.toString().padStart(2, '0')}`);
+                                      } else {
+                                        field.onChange(`${year}-${month}-${day}`);
+                                      }
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Year" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {getAvailableYears().map((y) => (
+                                        <SelectItem key={y} value={y}>{y}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  📅 Bugünden önce tarih seçilemez
+                                </div>
+                              </div>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
-                        )}
+                        );
+                      }}
                     />
                     
-                    {/* Processing Type - Only show after complete date selection */}
-                    {arrivalDay && arrivalMonth && arrivalYear && (
-                      <div className="space-y-4">
-                        <Label htmlFor="processingType">Processing Type *</Label>
-                        <Select value={documentProcessingType} onValueChange={setDocumentProcessingType}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select processing type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {getAvailableProcessingTypes(form.getValues('arrivalDate'), false).map((type) => (
-                              <SelectItem key={type.value} value={type.value}>
-                                {type.label} - ${type.price}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                    {/* Processing Type - Available for all scenarios */}
+                    <div className="space-y-4">
+                      <Label htmlFor="processingType">Processing Type *</Label>
+                      <Select value={documentProcessingType} onValueChange={setDocumentProcessingType}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select processing type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {availableSupportingDocTypes.map((type) => (
+                            <SelectItem key={type.value} value={type.value}>
+                              {type.label} - ${type.price}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      
+                      {availableSupportingDocTypes.length === 0 && (
+                        <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                          <p className="text-orange-800 text-sm">
+                            <strong>Dikkat:</strong> Seçilen varış tarihi için işlem seçeneği mevcut değil. Lütfen daha ileri bir tarih seçiniz.
+                          </p>
+                        </div>
+                      )}
                         
                         {documentProcessingType && (
                           <div className="bg-blue-50 p-4 rounded-lg">
@@ -1722,7 +1825,6 @@ export function VisaForm() {
                           </div>
                         )}
                       </div>
-                    )}
                     
                   </div>
                 </div>
@@ -2437,76 +2539,77 @@ export function VisaForm() {
                   </Button>
                 )}
                 
-                <div className="order-1 sm:order-2 sm:ml-auto">
-                  {currentStep < totalSteps ? (
-                    selectedCountry && getEffectiveScenario(selectedCountry) === 4 ? null : (
-                      selectedCountry && getEffectiveScenario(selectedCountry) === 3 ? (
-                        <Button 
-                          type="button" 
-                          onClick={() => window.location.href = '/insurance'} 
-                          className="bg-blue-600 hover:bg-blue-700 text-white"
-                        >
-                          {t('button.get.insurance')}
-                          <ArrowRight className="w-4 h-4 ml-2" />
-                        </Button>
-                      ) : (
-                        <Button type="button" onClick={handleNextStep} className="bg-primary hover:bg-primary/90 text-white">
-                          {t('form.navigation.next.step')}
-                          <ArrowRight className="w-4 h-4 ml-2" />
-                        </Button>
-                      )
-                    )
-                  ) : (
+                {currentStep < totalSteps ? (
+                  selectedCountry && getEffectiveScenario(selectedCountry) === 4 ? (
+                    // Scenario 4: Not eligible for e-visa - no next step button
+                    null
+                  ) : selectedCountry && getEffectiveScenario(selectedCountry) === 3 ? (
                     <Button 
-                      type="button"
-                      className={`text-sm sm:text-base px-4 py-2 text-white ${
-                        !termsAccepted || createApplicationMutation.isPending 
-                          ? 'bg-gray-400 cursor-not-allowed' 
-                          : 'bg-secondary hover:bg-secondary/90'
-                      }`}
-                      disabled={createApplicationMutation.isPending || !termsAccepted}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        console.log("🚨 PAYMENT BUTTON CLICKED!");
-                        
-                        if (!termsAccepted) {
-                          toast({
-                            title: "Terms & Conditions Required",
-                            description: "Please read and accept the Privacy Policy and Terms & Conditions before proceeding with payment.",
-                            variant: "destructive",
-                            duration: 5000,
-                          });
-                          return;
-                        }
-                        
-                        form.handleSubmit((validatedData) => {
-                          console.log("🔍 Validated Form Data:", validatedData);
-                          console.log("🔍 Current Step:", currentStep);
-                          console.log("✅ Form validation passed - proceeding with payment");
-                          createApplicationMutation.mutate(validatedData);
-                        }, (errors) => {
-                          console.log("❌ Form validation failed:", errors);
-                          toast({
-                            title: "Form Validation Error",
-                            description: "Please check all required fields are filled correctly",
-                            variant: "destructive",
-                          });
-                        })();
-                      }}
+                      type="button" 
+                      onClick={() => window.location.href = '/insurance'} 
+                      className="order-1 sm:order-2 sm:ml-auto bg-blue-600 hover:bg-blue-700 text-white"
                     >
-                      <CreditCard className="w-4 h-4 mr-2" />
-                      <span className="hidden sm:inline">
-                        {createApplicationMutation.isPending ? t('form.button.processing') : t('form.button.submit.pay.desktop')}
-                      </span>
-                      <span className="sm:hidden">
-                        {createApplicationMutation.isPending ? t('form.button.processing') : t('form.button.pay.mobile')}
-                      </span>
-                      {!createApplicationMutation.isPending && ` $${calculateTotal().toFixed(2)}`}
+                      {t('button.get.insurance')}
+                      <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
-                  )}
-                </div>
+                  ) : (
+                    <Button type="button" onClick={handleNextStep} className="order-1 sm:order-2 sm:ml-auto bg-primary hover:bg-primary/90 text-white">
+                      {t('form.navigation.next.step')}
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  )
+                ) : (
+                  <Button 
+                    type="button"
+                    className={`order-1 sm:order-2 sm:ml-auto text-sm sm:text-base px-4 py-2 text-white ${
+                      !termsAccepted || createApplicationMutation.isPending 
+                        ? 'bg-gray-400 cursor-not-allowed' 
+                        : 'bg-secondary hover:bg-secondary/90'
+                    }`}
+                    disabled={createApplicationMutation.isPending || !termsAccepted}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      
+                      console.log("🚨 PAYMENT BUTTON CLICKED!");
+                      
+                      // Check terms acceptance first
+                      if (!termsAccepted) {
+                        toast({
+                          title: "Terms & Conditions Required",
+                          description: "Please read and accept the Privacy Policy and Terms & Conditions before proceeding with payment.",
+                          variant: "destructive",
+                          duration: 5000,
+                        });
+                        return;
+                      }
+                      
+                      // Manually trigger form validation
+                      form.handleSubmit((validatedData) => {
+                        console.log("🔍 Validated Form Data:", validatedData);
+                        console.log("🔍 Current Step:", currentStep);
+                        console.log("✅ Form validation passed - proceeding with payment");
+                        createApplicationMutation.mutate(validatedData);
+                      }, (errors) => {
+                        console.log("❌ Form validation failed:", errors);
+                        toast({
+                          title: "Form Validation Error",
+                          description: "Please check all required fields are filled correctly",
+                          variant: "destructive",
+                        });
+                      })();
+                    }}
+                  >
+                    <CreditCard className="w-4 h-4 mr-2" />
+                    <span className="hidden sm:inline">
+                      {createApplicationMutation.isPending ? t('form.button.processing') : t('form.button.submit.pay.desktop')}
+                    </span>
+                    <span className="sm:hidden">
+                      {createApplicationMutation.isPending ? t('form.button.processing') : t('form.button.pay.mobile')}
+                    </span>
+                    {!createApplicationMutation.isPending && calculateTotal().toFixed(2)}
+                  </Button>
+                )}
               </div>
             </form>
           </Form>
