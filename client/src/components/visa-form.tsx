@@ -334,6 +334,18 @@ export function VisaForm() {
     }
   }, [watchedArrivalDate, form, documentProcessingType, toast]);
 
+  // Sync supporting document details to form fields when they change
+  useEffect(() => {
+    if (supportingDocumentDetails) {
+      // Map dynamic form data to main form fields for backend submission
+      form.setValue("supportingDocumentNumber", supportingDocumentDetails.documentNumber || "");
+      form.setValue("supportingDocumentStartDate", supportingDocumentDetails.startDate || "");
+      form.setValue("supportingDocumentEndDate", 
+        supportingDocumentDetails.endDate === "unlimited" ? "" : supportingDocumentDetails.endDate || ""
+      );
+    }
+  }, [supportingDocumentDetails, form]);
+
   const createApplicationMutation = useMutation({
     mutationFn: async (data: ApplicationFormData) => {
       console.log('🚨 [CRITICAL] Starting application creation with data:', data);
