@@ -1724,7 +1724,11 @@ export function VisaForm() {
                       return (
                         <div className="space-y-4">
                           <Label htmlFor="processingType">Processing Fee *</Label>
-                          <Select value={documentProcessingType} onValueChange={setDocumentProcessingType}>
+                          <Select value={documentProcessingType} onValueChange={(value) => {
+                            setDocumentProcessingType(value);
+                            // Update form field for validation
+                            form.setValue("processingType", value);
+                          }}>
                             <SelectTrigger>
                               <SelectValue placeholder="Select processing fee" />
                             </SelectTrigger>
