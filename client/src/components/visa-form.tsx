@@ -2221,6 +2221,11 @@ export function VisaForm() {
                       />
                     </div>
                     
+                    {hasSupportingDocument === true && (
+                      <>
+                        <FormField
+                          control={form.control}
+                          name="supportingDocumentStartDate"
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Document Start Date</FormLabel>
