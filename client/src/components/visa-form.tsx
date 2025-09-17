@@ -270,6 +270,7 @@ export function VisaForm() {
   const [egyptLocalDay, setEgyptLocalDay] = useState('');
   const [egyptLocalMonth, setEgyptLocalMonth] = useState('');
   const [egyptLocalYear, setEgyptLocalYear] = useState('');
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<ApplicationFormData>({
@@ -2463,6 +2464,42 @@ export function VisaForm() {
                 </div>
               )}
 
+              {/* Terms and Conditions Checkbox - Only show on final payment step */}
+              {currentStep === totalSteps && (
+                <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
+                  <label className="flex items-start cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={termsAccepted}
+                      onChange={(e) => setTermsAccepted(e.target.checked)}
+                      className="mt-1 mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      data-testid="terms-checkbox"
+                    />
+                    <span className="text-sm text-gray-700 leading-relaxed">
+                      I have read and agree to the{' '}
+                      <a 
+                        href="/privacy-policy" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 underline font-medium"
+                      >
+                        Privacy Policy
+                      </a>
+                      {' '}and{' '}
+                      <a 
+                        href="/terms-and-conditions" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 underline font-medium"
+                      >
+                        Terms and Conditions
+                      </a>
+                      . I understand that my personal information will be processed in accordance with these policies.
+                    </span>
+                  </label>
+                </div>
+              )}
+
               {/* Navigation Buttons */}
               <div className="flex flex-col sm:flex-row justify-between gap-4 mt-8">
                 {currentStep > 1 && (
@@ -2494,13 +2531,28 @@ export function VisaForm() {
                 ) : (
                   <Button 
                     type="button"
-                    className="order-1 sm:order-2 sm:ml-auto bg-secondary hover:bg-secondary/90 text-sm sm:text-base px-4 py-2 text-white"
-                    disabled={createApplicationMutation.isPending}
+                    className={`order-1 sm:order-2 sm:ml-auto text-sm sm:text-base px-4 py-2 text-white ${
+                      !termsAccepted || createApplicationMutation.isPending 
+                        ? 'bg-gray-400 cursor-not-allowed' 
+                        : 'bg-secondary hover:bg-secondary/90'
+                    }`}
+                    disabled={createApplicationMutation.isPending || !termsAccepted}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       
                       console.log("🚨 PAYMENT BUTTON CLICKED!");
+                      
+                      // Check terms acceptance first
+                      if (!termsAccepted) {
+                        toast({
+                          title: "Terms & Conditions Required",
+                          description: "Please read and accept the Privacy Policy and Terms & Conditions before proceeding with payment.",
+                          variant: "destructive",
+                          duration: 5000,
+                        });
+                        return;
+                      }
                       
                       // Manually trigger form validation
                       form.handleSubmit((validatedData) => {
