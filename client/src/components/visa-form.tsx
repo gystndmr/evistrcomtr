@@ -234,33 +234,6 @@ const calculateDaysDifference = (arrivalDate: string): number => {
   return diffDays;
 };
 
-// Helper function to get days in month (handling leap years)
-const getDaysInMonth = (year: number, month: number): number => {
-  return new Date(year, month, 0).getDate();
-};
-
-// Helper function to validate date parts
-const isValidDateParts = (year: string, month: string, day: string): boolean => {
-  if (!year || !month || !day) return false;
-  
-  const y = parseInt(year);
-  const m = parseInt(month);
-  const d = parseInt(day);
-  
-  if (isNaN(y) || isNaN(m) || isNaN(d)) return false;
-  if (m < 1 || m > 12) return false;
-  if (d < 1) return false;
-  
-  const maxDays = getDaysInMonth(y, m);
-  return d <= maxDays;
-};
-
-// Helper function to format date parts to YYYY-MM-DD
-const formatDateParts = (year: string, month: string, day: string): string => {
-  if (!isValidDateParts(year, month, day)) return "";
-  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-};
-
 // Helper function to filter processing types based on arrival date
 const getAvailableProcessingTypes = (arrivalDate: string, isSupporting: boolean = false) => {
   const daysUntilArrival = calculateDaysDifference(arrivalDate);
@@ -293,11 +266,6 @@ export function VisaForm() {
   const [paymentRedirectUrl, setPaymentRedirectUrl] = useState<string>("");
   const [prerequisites, setPrerequisites] = useState(defaultPrerequisites);
   
-  // Progressive arrival date selection states
-  const [arrivalDay, setArrivalDay] = useState<string>("");
-  const [arrivalMonth, setArrivalMonth] = useState<string>("");
-  const [arrivalYear, setArrivalYear] = useState<string>("");
-  
   // Egypt DOB local state to prevent dropdown closing
   const [egyptLocalDay, setEgyptLocalDay] = useState('');
   const [egyptLocalMonth, setEgyptLocalMonth] = useState('');
@@ -321,36 +289,13 @@ export function VisaForm() {
       fatherName: "",
       address: "",
       arrivalDate: "",
-      processingType: "", // Default to empty - user must explicitly select
+      processingType: "standard",
       documentType: "",
       supportingDocumentNumber: "",
       supportingDocumentStartDate: "",
       supportingDocumentEndDate: "",
     },
   });
-
-  // Effect to compose arrival date from parts and update form field
-  useEffect(() => {
-    const composedDate = formatDateParts(arrivalYear, arrivalMonth, arrivalDay);
-    
-    // Only update form if we have a complete valid date or need to clear it
-    const currentFormDate = form.getValues("arrivalDate");
-    if (composedDate !== currentFormDate) {
-      form.setValue("arrivalDate", composedDate);
-      
-      // If date became invalid after month/year change, show warning
-      if (arrivalDay && arrivalMonth && arrivalYear && !composedDate) {
-        toast({
-          title: "⚠️ Invalid Date Combination",
-          description: `${arrivalMonth}/${arrivalDay} is not valid for year ${arrivalYear}. Please select a different day.`,
-          variant: "destructive",
-          duration: 5000,
-        });
-        // Clear the invalid day selection
-        setArrivalDay("");
-      }
-    }
-  }, [arrivalDay, arrivalMonth, arrivalYear, form, toast]);
 
   // Watch arrival date changes and update available processing types
   const watchedArrivalDate = form.watch("arrivalDate");
@@ -366,39 +311,21 @@ export function VisaForm() {
       // Reset processing type if current selection is no longer available
       const currentProcessingType = form.getValues("processingType");
       if (currentProcessingType && !standardTypes.some(type => type.value === currentProcessingType)) {
-        // Find the closest matching option by price (preserve user intent)
-        const currentType = supportingDocProcessingTypes.find(type => type.value === currentProcessingType);
-        const bestMatch = standardTypes.length > 0 ? 
-          standardTypes.reduce((best, current) => 
-            Math.abs(current.price - (currentType?.price || 0)) < Math.abs(best.price - (currentType?.price || 0)) 
-            ? current : best
-          ) : null;
-
-        form.setValue("processingType", bestMatch?.value || "");
-        
+        form.setValue("processingType", standardTypes.length > 0 ? standardTypes[0].value : "");
         toast({
-          title: "⚠️ İşlem Türü Değiştirildi",
-          description: `"${currentType?.label || currentProcessingType}" seçeneği varış tarihiniz için mevcut değil. En yakın seçenek "${bestMatch?.label}" otomatik seçildi.`,
-          duration: 8000,
+          title: "İşlem Türü Güncellendi",
+          description: "Varış tarihinize göre işlem türü otomatik olarak ayarlandı.",
+          duration: 3000,
         });
       }
       
       // Reset supporting document processing type if no longer available
       if (documentProcessingType && !supportingTypes.some(type => type.value === documentProcessingType)) {
-        // Find the closest matching option by price (preserve user intent)
-        const currentType = supportingDocProcessingTypes.find(type => type.value === documentProcessingType);
-        const bestMatch = supportingTypes.length > 0 ? 
-          supportingTypes.reduce((best, current) => 
-            Math.abs(current.price - (currentType?.price || 0)) < Math.abs(best.price - (currentType?.price || 0)) 
-            ? current : best
-          ) : null;
-
-        setDocumentProcessingType(bestMatch?.value || "");
-        
+        setDocumentProcessingType(supportingTypes.length > 0 ? supportingTypes[0].value : "");
         toast({
-          title: "⚠️ Destekleyici Belge İşlem Türü Değiştirildi",
-          description: `"${currentType?.label || documentProcessingType}" seçeneği varış tarihiniz için mevcut değil. En yakın seçenek "${bestMatch?.label}" otomatik seçildi.`,
-          duration: 8000,
+          title: "İşlem Türü Güncellendi", 
+          description: "Varış tarihinize göre işlem türü otomatik olarak ayarlandı.",
+          duration: 3000,
         });
       }
     } else {
@@ -1741,7 +1668,7 @@ export function VisaForm() {
                         };
                         
                         return (
-                          <FormItem className="hidden">
+                          <FormItem>
                             <FormLabel>Arrival Date in Turkey *</FormLabel>
                             <FormControl>
                               <div className="space-y-2">
@@ -1837,172 +1764,12 @@ export function VisaForm() {
                       }}
                     />
                     
-                    {/* PROGRESSIVE ARRIVAL DATE UI */}
-                    <div className="space-y-4">
-                      <div>
-                        <label className="text-sm font-medium leading-none">
-                          Arrival Date in Turkey *
-                        </label>
-                        <div className="text-xs text-gray-600 mt-1 mb-3">
-                          Please complete each step: Day → Month → Year → Processing Type
-                        </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-3 gap-2">
-                        {/* Step 1: Day Selection */}
-                        <div>
-                          <Select 
-                            value={arrivalDay} 
-                            onValueChange={(day) => {
-                              setArrivalDay(day);
-                              // Clear dependent selections if needed
-                              if (arrivalMonth && arrivalYear) {
-                                const maxDays = getDaysInMonth(parseInt(arrivalYear), parseInt(arrivalMonth));
-                                if (parseInt(day) > maxDays) {
-                                  toast({
-                                    title: "⚠️ Invalid Day",
-                                    description: `${arrivalMonth}/${day} is not valid. Maximum day for this month: ${maxDays}`,
-                                    variant: "destructive",
-                                    duration: 3000,
-                                  });
-                                  setArrivalDay("");
-                                  return;
-                                }
-                              }
-                            }}
-                            data-testid="select-arrival-day"
-                          >
-                            <SelectTrigger className={arrivalDay ? "border-green-300" : ""}>
-                              <SelectValue placeholder="1. Select Day" />
-                            </SelectTrigger>
-                            <SelectContent position="popper" side="bottom" align="start">
-                              {Array.from({ length: 31 }, (_, i) => (i + 1).toString()).map((day) => (
-                                <SelectItem key={day} value={day}>
-                                  {day}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          {arrivalDay && <div className="text-xs text-green-600 mt-1">✓ Day selected</div>}
-                        </div>
-
-                        {/* Step 2: Month Selection */}
-                        <div>
-                          <Select 
-                            value={arrivalMonth} 
-                            onValueChange={(month) => {
-                              setArrivalMonth(month);
-                              // Validate day if already selected
-                              if (arrivalDay && arrivalYear) {
-                                const maxDays = getDaysInMonth(parseInt(arrivalYear), parseInt(month));
-                                if (parseInt(arrivalDay) > maxDays) {
-                                  toast({
-                                    title: "⚠️ Day Reset Required",
-                                    description: `${month}/${arrivalDay} is not valid. Please reselect day (max: ${maxDays})`,
-                                    duration: 5000,
-                                  });
-                                  setArrivalDay("");
-                                }
-                              }
-                            }}
-                            disabled={!arrivalDay}
-                            data-testid="select-arrival-month"
-                          >
-                            <SelectTrigger className={arrivalMonth ? "border-green-300" : arrivalDay ? "" : "opacity-50"}>
-                              <SelectValue placeholder="2. Select Month" />
-                            </SelectTrigger>
-                            <SelectContent position="popper" side="bottom" align="start">
-                              {[
-                                { value: '1', label: 'January' }, { value: '2', label: 'February' }, { value: '3', label: 'March' },
-                                { value: '4', label: 'April' }, { value: '5', label: 'May' }, { value: '6', label: 'June' },
-                                { value: '7', label: 'July' }, { value: '8', label: 'August' }, { value: '9', label: 'September' },
-                                { value: '10', label: 'October' }, { value: '11', label: 'November' }, { value: '12', label: 'December' }
-                              ].map((month) => (
-                                <SelectItem key={month.value} value={month.value}>
-                                  {month.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          {arrivalMonth && <div className="text-xs text-green-600 mt-1">✓ Month selected</div>}
-                          {!arrivalDay && <div className="text-xs text-gray-400 mt-1">Select day first</div>}
-                        </div>
-
-                        {/* Step 3: Year Selection */}
-                        <div>
-                          <Select 
-                            value={arrivalYear} 
-                            onValueChange={(year) => {
-                              setArrivalYear(year);
-                              // Validate day if already selected
-                              if (arrivalDay && arrivalMonth) {
-                                const maxDays = getDaysInMonth(parseInt(year), parseInt(arrivalMonth));
-                                if (parseInt(arrivalDay) > maxDays) {
-                                  toast({
-                                    title: "⚠️ Day Reset Required", 
-                                    description: `${arrivalMonth}/${arrivalDay}/${year} is not valid. Please reselect day (max: ${maxDays})`,
-                                    duration: 5000,
-                                  });
-                                  setArrivalDay("");
-                                }
-                              }
-                            }}
-                            disabled={!arrivalMonth}
-                            data-testid="select-arrival-year"
-                          >
-                            <SelectTrigger className={arrivalYear ? "border-green-300" : arrivalMonth ? "" : "opacity-50"}>
-                              <SelectValue placeholder="3. Select Year" />
-                            </SelectTrigger>
-                            <SelectContent position="popper" side="bottom" align="start">
-                              {Array.from({ length: 11 }, (_, i) => {
-                                const year = new Date().getFullYear() + i;
-                                return year.toString();
-                              }).map((year) => (
-                                <SelectItem key={year} value={year}>
-                                  {year}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          {arrivalYear && <div className="text-xs text-green-600 mt-1">✓ Year selected</div>}
-                          {!arrivalMonth && <div className="text-xs text-gray-400 mt-1">Select month first</div>}
-                        </div>
-                      </div>
-
-                      {/* Date Preview */}
-                      {arrivalDay && arrivalMonth && arrivalYear && (
-                        <div className="bg-green-50 p-3 rounded-lg border border-green-200">
-                          <div className="text-sm font-medium text-green-800">
-                            ✓ Selected Date: {arrivalMonth}/{arrivalDay}/{arrivalYear}
-                          </div>
-                          <div className="text-xs text-green-600 mt-1">
-                            Now you can select processing type below
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Show form validation errors */}
-                      {form.formState.errors.arrivalDate && (
-                        <div className="text-sm text-red-600 mt-2">
-                          {form.formState.errors.arrivalDate.message}
-                        </div>
-                      )}
-                    </div>
-                    
                     {/* Processing Type - Available for all scenarios */}
                     <div className="space-y-4">
-                      <Label htmlFor="processingType">
-                        Processing Type * 
-                        {!watchedArrivalDate && <span className="text-gray-400 ml-2">(Select date first)</span>}
-                      </Label>
-                      <Select 
-                        value={documentProcessingType} 
-                        onValueChange={setDocumentProcessingType}
-                        disabled={!watchedArrivalDate}
-                        data-testid="select-processing-type"
-                      >
-                        <SelectTrigger className={!watchedArrivalDate ? "opacity-50" : ""}>
-                          <SelectValue placeholder={!watchedArrivalDate ? "4. Select Processing Type" : "Select processing type"} />
+                      <Label htmlFor="processingType">Processing Type *</Label>
+                      <Select value={documentProcessingType} onValueChange={setDocumentProcessingType}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select processing type" />
                         </SelectTrigger>
                         <SelectContent>
                           {availableSupportingDocTypes.map((type) => (
@@ -2768,17 +2535,8 @@ export function VisaForm() {
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   ) : (
-                    <Button 
-                      type="button" 
-                      onClick={handleNextStep} 
-                      className="order-1 sm:order-2 sm:ml-auto bg-primary hover:bg-primary/90 text-white disabled:opacity-50" 
-                      disabled={!watchedArrivalDate || !documentProcessingType}
-                      data-testid="button-next-step"
-                    >
-                      {!watchedArrivalDate || !documentProcessingType ? 
-                        "5. Complete All Steps Above" : 
-                        t('form.navigation.next.step')
-                      }
+                    <Button type="button" onClick={handleNextStep} className="order-1 sm:order-2 sm:ml-auto bg-primary hover:bg-primary/90 text-white">
+                      {t('form.navigation.next.step')}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   )
