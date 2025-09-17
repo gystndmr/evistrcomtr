@@ -333,11 +333,6 @@ export function generateVisaReceivedEmail(
                     <td style="padding: 8px 0; color: #666; font-weight: bold; width: 30%;">Document Type:</td>
                     <td style="padding: 8px 0; color: #1a1a1a; text-transform: capitalize;">${applicationData.supportingDocumentType}</td>
                   </tr>
-                  ${applicationData.supportingDocumentCountry ? `
-                  <tr>
-                    <td style="padding: 8px 0; color: #666; font-weight: bold;">Country/Region:</td>
-                    <td style="padding: 8px 0; color: #1a1a1a;">${applicationData.supportingDocumentCountry === 'SCHENGEN' ? 'Schengen Area' : applicationData.supportingDocumentCountry}</td>
-                  </tr>` : ''}
                   ${applicationData.supportingDocumentNumber ? `
                   <tr>
                     <td style="padding: 8px 0; color: #666; font-weight: bold;">Document Number:</td>
