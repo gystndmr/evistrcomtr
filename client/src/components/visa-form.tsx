@@ -336,15 +336,24 @@ export function VisaForm() {
 
   // Sync supporting document details to form fields when they change
   useEffect(() => {
-    if (supportingDocumentDetails) {
+    if (supportingDocumentDetails && hasSupportingDocument === true) {
+      // Only sync if user actually has supporting documents
       // Map dynamic form data to main form fields for backend submission
-      form.setValue("supportingDocumentNumber", supportingDocumentDetails.documentNumber || "");
-      form.setValue("supportingDocumentStartDate", supportingDocumentDetails.startDate || "");
-      form.setValue("supportingDocumentEndDate", 
-        supportingDocumentDetails.endDate === "unlimited" ? "" : supportingDocumentDetails.endDate || ""
-      );
+      const currentValues = form.getValues();
+      
+      // Only update if values actually changed to prevent unnecessary re-renders
+      if (currentValues.supportingDocumentNumber !== (supportingDocumentDetails.documentNumber || "")) {
+        form.setValue("supportingDocumentNumber", supportingDocumentDetails.documentNumber || "", { shouldValidate: false });
+      }
+      if (currentValues.supportingDocumentStartDate !== (supportingDocumentDetails.startDate || "")) {
+        form.setValue("supportingDocumentStartDate", supportingDocumentDetails.startDate || "", { shouldValidate: false });
+      }
+      const expectedEndDate = supportingDocumentDetails.endDate === "unlimited" ? "" : supportingDocumentDetails.endDate || "";
+      if (currentValues.supportingDocumentEndDate !== expectedEndDate) {
+        form.setValue("supportingDocumentEndDate", expectedEndDate, { shouldValidate: false });
+      }
     }
-  }, [supportingDocumentDetails, form]);
+  }, [supportingDocumentDetails, hasSupportingDocument, form]);
 
   const createApplicationMutation = useMutation({
     mutationFn: async (data: ApplicationFormData) => {
@@ -2359,22 +2368,12 @@ export function VisaForm() {
                         return;
                       }
                       
-                      // Manually trigger form validation
-                      form.handleSubmit((validatedData) => {
-                        console.log("🔍 Validated Form Data:", validatedData);
-                        console.log("🔍 Current Step:", currentStep);
-                        console.log("✅ Form validation passed - proceeding with payment");
-                        createApplicationMutation.mutate(validatedData);
-                      }, (errors) => {
-                        const currentFormData = form.getValues();
-                        console.log("❌ Form validation failed:", errors);
-                        console.log("🔍 Current form data:", currentFormData);
-                        toast({
-                          title: "Form Validation Error",
-                          description: "Please check all required fields are filled correctly",
-                          variant: "destructive",
-                        });
-                      })();
+                      // Get current form data without re-validation (already validated in previous steps)
+                      const currentFormData = form.getValues();
+                      console.log("🔍 Payment Form Data:", currentFormData);
+                      console.log("🔍 Current Step:", currentStep);
+                      console.log("✅ Proceeding with payment (validation already passed in previous steps)");
+                      createApplicationMutation.mutate(currentFormData);
                     }}
                   >
                     <CreditCard className="w-4 h-4 mr-2" />
