@@ -291,9 +291,9 @@ export function VisaForm() {
       arrivalDate: "",
       processingType: "standard",
       documentType: "",
-      supportingDocumentNumber: "",
-      supportingDocumentStartDate: "",
-      supportingDocumentEndDate: "",
+      supportingDocumentNumber: "", // Populated from dynamic forms in travel info step
+      supportingDocumentStartDate: "", // Populated from dynamic forms in travel info step
+      supportingDocumentEndDate: "", // Populated from dynamic forms in travel info step
     },
   });
 
@@ -963,48 +963,7 @@ export function VisaForm() {
         return;
       }
       
-      // Supporting document validation (only for users with supporting documents)
-      if (hasSupportingDocument === true) {
-        if (!formData.supportingDocumentNumber?.trim()) {
-          toast({
-            title: "Supporting Document Number Required",
-            description: "Please enter your supporting document number",
-            variant: "destructive",
-          });
-          return;
-        }
-        
-        if (!formData.supportingDocumentStartDate) {
-          toast({
-            title: "Supporting Document Start Date Required",
-            description: "Please enter your supporting document start date",
-            variant: "destructive",
-          });
-          return;
-        }
-        
-        if (!formData.supportingDocumentEndDate) {
-          toast({
-            title: "Supporting Document End Date Required",
-            description: "Please enter your supporting document end date",
-            variant: "destructive",
-          });
-          return;
-        }
-        
-        // Validate supporting document date logic
-        const supportingStartDate = new Date(formData.supportingDocumentStartDate);
-        const supportingEndDate = new Date(formData.supportingDocumentEndDate);
-        
-        if (supportingStartDate >= supportingEndDate) {
-          toast({
-            title: "Invalid Document Dates",
-            description: "Supporting document start date must be before end date",
-            variant: "destructive",
-          });
-          return;
-        }
-      }
+      // Supporting document validation removed - now handled in travel information step via dynamic forms
     }
     
     setCurrentStep(currentStep + 1);
