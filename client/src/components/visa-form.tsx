@@ -804,6 +804,10 @@ export function VisaForm() {
         });
         return;
       }
+      
+      // All Step 3 validation passed - advance to next step
+      setCurrentStep(currentStep + 1);
+      return;
     }
     
     // Step 4: Prerequisites (only if supporting document exists)
@@ -823,6 +827,10 @@ export function VisaForm() {
         });
         return;
       }
+      
+      // All Step 4 (Prerequisites) validation passed - advance to next step
+      setCurrentStep(currentStep + 1);
+      return;
     }
     
     // Step 5: Personal Information (with supporting document) OR Step 4 (without)
@@ -985,9 +993,14 @@ export function VisaForm() {
       }
       
       // Supporting document validation removed - now handled in travel information step via dynamic forms
+      
+      // All Personal Information validation passed - advance to payment step
+      setCurrentStep(currentStep + 1);
+      return;
     }
     
-    setCurrentStep(currentStep + 1);
+    // All step progression is handled within each step's validation logic above
+    // No generic step increment needed here to prevent double advancement
     
     // Scroll to top of page for better user experience
     window.scrollTo({ top: 0, behavior: 'smooth' });
