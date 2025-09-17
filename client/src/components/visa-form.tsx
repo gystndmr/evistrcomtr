@@ -2410,42 +2410,6 @@ export function VisaForm() {
                 <div>
                   <h3 className="text-lg font-semibold mb-4">{hasSupportingDocument === true ? t("app.step6.title") : t("app.step5.title")}</h3>
                   
-                  <div className="bg-neutral-50 rounded-lg p-6 mb-6">
-                    <h4 className="text-lg font-semibold mb-4">{t('form.section.order.summary')}</h4>
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span>{t('form.payment.evisa.fee')}</span>
-                        <span>$69.00</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>{hasSupportingDocument === true ? t('form.payment.processing.document.fee') : t('form.payment.processing.fee')}</span>
-                        <span>${(() => {
-                          // Use SAME logic as calculateTotal() function for consistency
-                          // Priority 1: Use documentProcessingType if available (supporting documents)
-                          if (documentProcessingType) {
-                            const processingFee = supportingDocProcessingTypes.find(type => type.value === documentProcessingType)?.price || 0;
-                            return processingFee.toFixed(2);
-                          }
-                          
-                          // Priority 2: Use processingType from form (standard applications)
-                          const processingType = form.getValues("processingType");
-                          if (processingType) {
-                            const processingFee = supportingDocProcessingTypes.find(type => type.value === processingType)?.price || 0;
-                            return processingFee.toFixed(2);
-                          }
-                          
-                          // Fallback
-                          return "0.00";
-                        })()}</span>
-                      </div>
-                      <div className="border-t pt-2 mt-2">
-                        <div className="flex justify-between font-semibold">
-                          <span>{t('form.payment.total.amount')}</span>
-                          <span>${calculateTotal()}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                     <div className="flex items-center mb-2">
