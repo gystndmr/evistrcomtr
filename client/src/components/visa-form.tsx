@@ -513,13 +513,14 @@ export function VisaForm() {
   const calculateTotal = () => {
     const eVisaFee = 69; // Base e-visa application fee
     
-    // Priority 1: Use documentProcessingType if available (supporting documents)
-    if (documentProcessingType) {
+    // 🚨 CRITICAL FIX: Use same logic as form submission
+    // Priority 1: If supporting docs required, use documentProcessingType
+    if (hasSupportingDocument === true && documentProcessingType) {
       const processingFee = supportingDocProcessingTypes.find(type => type.value === documentProcessingType)?.price || 0;
       return processingFee + eVisaFee;
     }
     
-    // Priority 2: Use processingType from form (standard applications)
+    // Priority 2: For standard applications or when no supporting docs, use form processingType
     const processingType = form.getValues("processingType");
     if (processingType) {
       const processingFee = supportingDocProcessingTypes.find(type => type.value === processingType)?.price || 0;
@@ -1544,7 +1545,7 @@ export function VisaForm() {
                                           <p>• Selected: {selectedType?.label || field.value}</p>
                                           <p>• Processing Fee: ${selectedType?.price || 0}</p>
                                           <p>• E-Visa Fee: $69</p>
-                                          <p className="font-medium">• Total: ${(selectedType?.price || 0) + 69}</p>
+                                          <p className="font-medium">• Total: ${calculateTotal()}</p>
                                         </>
                                       );
                                     })()}
