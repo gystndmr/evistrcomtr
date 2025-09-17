@@ -740,16 +740,20 @@ export function VisaForm() {
         return;
       }
       
-      // Check if all parts of the date are valid
+      // Check if all parts of the date are valid (no 0000 placeholders)
       const dateParts = arrivalDate.split('-');
       const year = parseInt(dateParts[0]);
       const month = parseInt(dateParts[1]);
       const day = parseInt(dateParts[2]);
       
-      if (year < 2025 || month < 1 || month > 12 || day < 1 || day > 31) {
+      // Check for incomplete date selection (placeholder values)
+      if (year === 0 || month === 0 || day === 0 || 
+          arrivalDate === "0000-00-01" || 
+          arrivalDate === "0000-01-01" ||
+          year < 2025 || month < 1 || month > 12 || day < 1 || day > 31) {
         toast({
-          title: "Invalid Arrival Date",
-          description: "Please select a valid arrival date",
+          title: "Complete Date Selection Required",
+          description: "Please select day, month AND year for your arrival date",
           variant: "destructive",
         });
         return;
@@ -770,26 +774,14 @@ export function VisaForm() {
         return;
       }
       
-      // Check processing type based on supporting document status
-      if (hasSupportingDocument === true) {
-        if (!documentProcessingType) {
-          toast({
-            title: "Processing Type Required",
-            description: "Please select a processing type",
-            variant: "destructive",
-          });
-          return;
-        }
-      } else if (hasSupportingDocument === false) {
-        const processingType = form.getValues("processingType");
-        if (!processingType) {
-          toast({
-            title: "Processing Type Required",
-            description: "Please select a processing type",
-            variant: "destructive",
-          });
-          return;
-        }
+      // Check if processing fee is selected (REQUIRED for all cases when complete date is selected)
+      if (!documentProcessingType) {
+        toast({
+          title: "Processing Fee Required",
+          description: "Please select a processing fee option after completing date selection",
+          variant: "destructive",
+        });
+        return;
       }
     }
     
@@ -1608,15 +1600,16 @@ export function VisaForm() {
                         
                         // Get currently selected values
                         const selectedParts = field.value ? field.value.split('-') : [];
-                        const selectedYear = selectedParts[0] ? parseInt(selectedParts[0]) : currentYear;
-                        const selectedMonth = selectedParts[1] ? parseInt(selectedParts[1]) : currentMonth;
-                        const selectedDay = selectedParts[2] ? parseInt(selectedParts[2]) : currentDay;
+                        const selectedDay = selectedParts[2] ? parseInt(selectedParts[2]) : null;
+                        const selectedMonth = selectedParts[1] ? parseInt(selectedParts[1]) : null;
+                        const selectedYear = selectedParts[0] ? parseInt(selectedParts[0]) : null;
                         
-                        // Determine available options based on current date
-                        const getAvailableYears = () => {
-                          return Array.from({ length: 11 }, (_, i) => (currentYear + i).toString());
+                        // Get available days (1-31)
+                        const getAvailableDays = () => {
+                          return Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0'));
                         };
                         
+                        // Get available months based on selected day
                         const getAvailableMonths = () => {
                           const months = [
                             { value: '01', label: 'January' },
@@ -1633,38 +1626,35 @@ export function VisaForm() {
                             { value: '12', label: 'December' }
                           ];
                           
-                          // If current year selected, filter months based on date logic
-                          if (selectedYear === currentYear) {
-                            return months.filter(m => {
-                              const monthNum = parseInt(m.value);
-                              // Future months are always available
-                              if (monthNum > currentMonth) {
-                                return true;
+                          if (!selectedDay) return months; // Show all months if no day selected
+                          
+                          return months.filter(m => {
+                            const monthNum = parseInt(m.value);
+                            const year = selectedYear || currentYear; // Use selected year or current as fallback
+                            
+                            // Check if the selected day exists in this month
+                            const daysInMonth = new Date(year, monthNum, 0).getDate();
+                            if (selectedDay > daysInMonth) {
+                              return false; // Day doesn't exist in this month
+                            }
+                            
+                            // If current year, check date restrictions
+                            if (year === currentYear) {
+                              if (monthNum < currentMonth) {
+                                return false; // Past months not allowed
                               }
-                              // For current month, check if user can select a valid day
-                              if (monthNum === currentMonth) {
-                                // If day is selected and it's valid for current month, show current month
-                                if (selectedParts[2] && selectedDay >= currentDay) {
-                                  return true;
-                                }
-                                // If no day selected yet, show current month
-                                if (!selectedParts[2]) {
-                                  return true;
-                                }
-                                // Day is selected but invalid for current month
-                                return false;
+                              if (monthNum === currentMonth && selectedDay < currentDay) {
+                                return false; // Past dates in current month not allowed
                               }
-                              // Past months are never available
-                              return false;
-                            });
-                          }
-                          return months;
+                            }
+                            
+                            return true;
+                          });
                         };
                         
-                        const getAvailableDays = () => {
-                          // Always show days 1-31, but let month filtering handle the logic
-                          const daysInMonth = selectedParts[1] ? new Date(selectedYear, selectedMonth, 0).getDate() : 31;
-                          return Array.from({ length: daysInMonth }, (_, i) => (i + 1).toString().padStart(2, '0'));
+                        // Get available years
+                        const getAvailableYears = () => {
+                          return Array.from({ length: 11 }, (_, i) => (currentYear + i).toString());
                         };
                         
                         return (
@@ -1673,13 +1663,12 @@ export function VisaForm() {
                             <FormControl>
                               <div className="space-y-2">
                                 <div className="grid grid-cols-3 gap-2">
+                                  {/* DAY - First selection */}
                                   <Select
-                                    value={field.value ? field.value.split('-')[2] : ''}
+                                    value={selectedDay ? selectedDay.toString().padStart(2, '0') : ''}
                                     onValueChange={(day) => {
-                                      const parts = field.value ? field.value.split('-') : [currentYear.toString(), currentMonth.toString().padStart(2, '0'), '01'];
-                                      const year = parts[0];
-                                      const month = parts[1];
-                                      field.onChange(`${year}-${month}-${day.padStart(2, '0')}`);
+                                      // Reset month and year when day changes
+                                      field.onChange(`0000-00-${day.padStart(2, '0')}`);
                                     }}
                                   >
                                     <SelectTrigger>
@@ -1692,31 +1681,21 @@ export function VisaForm() {
                                     </SelectContent>
                                   </Select>
 
+                                  {/* MONTH - Second selection, enabled only after day */}
                                   <Select
-                                    value={field.value ? field.value.split('-')[1] : ''}
+                                    value={selectedMonth ? selectedMonth.toString().padStart(2, '0') : ''}
                                     onValueChange={(month) => {
-                                      const parts = field.value ? field.value.split('-') : [currentYear.toString(), '01', '01'];
-                                      const year = parts[0];
-                                      const day = parts[2];
-                                      
-                                      // Update the form value
-                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day}`);
-                                      
-                                      // If selected day is not available in new month, reset to first available day
-                                      const daysInNewMonth = new Date(parseInt(year), parseInt(month), 0).getDate();
-                                      const dayInt = parseInt(day);
-                                      if (dayInt > daysInNewMonth) {
-                                        const firstAvailableDay = (parseInt(year) === currentYear && parseInt(month) === currentMonth) ? currentDay : 1;
-                                        field.onChange(`${year}-${month.padStart(2, '0')}-${firstAvailableDay.toString().padStart(2, '0')}`);
+                                      if (selectedDay) {
+                                        // Reset year when month changes
+                                        field.onChange(`0000-${month.padStart(2, '0')}-${selectedDay.toString().padStart(2, '0')}`);
                                       }
                                     }}
+                                    disabled={!selectedDay}
                                   >
-                                    <SelectTrigger className={`${
-                                      field.value && field.value.split('-')[1] ? '' : 'text-muted-foreground'
-                                    }`}>
+                                    <SelectTrigger className={!selectedDay ? "opacity-50" : ""}>
                                       <SelectValue placeholder="Month">
-                                        {field.value && field.value.split('-')[1] ? 
-                                          getAvailableMonths().find(m => m.value === field.value.split('-')[1])?.label || "Month"
+                                        {selectedMonth ? 
+                                          getAvailableMonths().find(m => m.value === selectedMonth.toString().padStart(2, '0'))?.label || "Month"
                                           : "Month"
                                         }
                                       </SelectValue>
@@ -1728,22 +1707,18 @@ export function VisaForm() {
                                     </SelectContent>
                                   </Select>
 
+                                  {/* YEAR - Third selection, enabled only after day and month */}
                                   <Select
-                                    value={field.value ? field.value.split('-')[0] : ''}
+                                    value={selectedYear ? selectedYear.toString() : ''}
                                     onValueChange={(year) => {
-                                      const parts = field.value ? field.value.split('-') : [currentYear.toString(), currentMonth.toString().padStart(2, '0'), '01'];
-                                      const month = parts[1];
-                                      const day = parts[2];
-                                      
-                                      // If switching to current year and month is not available, reset to current month
-                                      if (parseInt(year) === currentYear && parseInt(month) < currentMonth) {
-                                        field.onChange(`${year}-${currentMonth.toString().padStart(2, '0')}-${currentDay.toString().padStart(2, '0')}`);
-                                      } else {
-                                        field.onChange(`${year}-${month}-${day}`);
+                                      if (selectedDay && selectedMonth) {
+                                        // Now we have complete date
+                                        field.onChange(`${year}-${selectedMonth.toString().padStart(2, '0')}-${selectedDay.toString().padStart(2, '0')}`);
                                       }
                                     }}
+                                    disabled={!selectedDay || !selectedMonth}
                                   >
-                                    <SelectTrigger>
+                                    <SelectTrigger className={(!selectedDay || !selectedMonth) ? "opacity-50" : ""}>
                                       <SelectValue placeholder="Year" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -1754,7 +1729,7 @@ export function VisaForm() {
                                   </Select>
                                 </div>
                                 <div className="text-xs text-muted-foreground">
-                                  📅 Bugünden önce tarih seçilemez
+                                  📅 Önce gün, sonra ay, sonra yıl seçiniz
                                 </div>
                               </div>
                             </FormControl>
@@ -1764,49 +1739,74 @@ export function VisaForm() {
                       }}
                     />
                     
-                    {/* Processing Type - Available for all scenarios */}
-                    <div className="space-y-4">
-                      <Label htmlFor="processingType">Processing Type *</Label>
-                      <Select value={documentProcessingType} onValueChange={setDocumentProcessingType}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select processing type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {availableSupportingDocTypes.map((type) => (
-                            <SelectItem key={type.value} value={type.value}>
-                              {type.label} - ${type.price}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                    {/* Processing Type - Only show when complete date is selected */}
+                    {(() => {
+                      const arrivalDateValue = form.watch("arrivalDate");
+                      const isCompleteDateSelected = arrivalDateValue && 
+                        arrivalDateValue !== "0000-00-01" && 
+                        arrivalDateValue !== "0000-01-01" && 
+                        arrivalDateValue.split('-').every((part, index) => 
+                          index === 0 ? parseInt(part) > 0 : parseInt(part) > 0
+                        );
                       
-                      {availableSupportingDocTypes.length === 0 && (
-                        <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                          <p className="text-orange-800 text-sm">
-                            <strong>Dikkat:</strong> Seçilen varış tarihi için işlem seçeneği mevcut değil. Lütfen daha ileri bir tarih seçiniz.
-                          </p>
-                        </div>
-                      )}
-                        
-                        {documentProcessingType && (
-                          <div className="bg-blue-50 p-4 rounded-lg">
-                            <h4 className="font-medium text-blue-900 mb-2">Processing Fee Summary:</h4>
-                            <div className="text-sm text-blue-800">
-                              {(() => {
-                                const selectedType = supportingDocProcessingTypes.find(type => type.value === documentProcessingType);
-                                return (
-                                  <>
-                                    <p>• Selected: {selectedType?.label || documentProcessingType}</p>
-                                    <p>• Processing Fee: ${selectedType?.price || 0}</p>
-                                    <p>• E-Visa Fee: $69</p>
-                                    <p className="font-bold text-lg">• Total Amount: ${calculateTotal()}</p>
-                                  </>
-                                );
-                              })()}
+                      if (!isCompleteDateSelected) {
+                        return (
+                          <div className="space-y-4 opacity-50">
+                            <Label htmlFor="processingType">Processing Fee *</Label>
+                            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                              <p className="text-gray-600 text-sm">
+                                📅 Önce tam tarih seçimi yapınız (Gün + Ay + Yıl) processing fee seçeneklerini görmek için.
+                              </p>
                             </div>
                           </div>
-                        )}
-                      </div>
+                        );
+                      }
+
+                      return (
+                        <div className="space-y-4">
+                          <Label htmlFor="processingType">Processing Fee *</Label>
+                          <Select value={documentProcessingType} onValueChange={setDocumentProcessingType}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select processing fee" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {availableSupportingDocTypes.map((type) => (
+                                <SelectItem key={type.value} value={type.value}>
+                                  {type.label} - ${type.price}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          
+                          {availableSupportingDocTypes.length === 0 && (
+                            <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                              <p className="text-orange-800 text-sm">
+                                <strong>Dikkat:</strong> Seçilen varış tarihi için işlem seçeneği mevcut değil. Lütfen daha ileri bir tarih seçiniz.
+                              </p>
+                            </div>
+                          )}
+                            
+                          {documentProcessingType && (
+                            <div className="bg-blue-50 p-4 rounded-lg">
+                              <h4 className="font-medium text-blue-900 mb-2">Processing Fee Summary:</h4>
+                              <div className="text-sm text-blue-800">
+                                {(() => {
+                                  const selectedType = supportingDocProcessingTypes.find(type => type.value === documentProcessingType);
+                                  return (
+                                    <>
+                                      <p>• Selected: {selectedType?.label || documentProcessingType}</p>
+                                      <p>• Processing Fee: ${selectedType?.price || 0}</p>
+                                      <p>• E-Visa Fee: $69</p>
+                                      <p className="font-bold text-lg">• Total Amount: ${calculateTotal()}</p>
+                                    </>
+                                  );
+                                })()}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                     
                   </div>
                 </div>
