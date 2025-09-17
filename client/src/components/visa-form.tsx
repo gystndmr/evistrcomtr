@@ -1866,6 +1866,227 @@ export function VisaForm() {
                     )}
                     
                   </div>
+                  
+                  {/* Supporting Documents Section - Consolidated in Travel Information */}
+                  <div className="md:col-span-2 mt-8">
+                    <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Supporting Documents</h4>
+                    
+                    {/* Supporting Document Check */}
+                    {(() => {
+                      const dob = form.getValues('dateOfBirth');
+                      const effectiveScenario = getEffectiveScenario(selectedCountry, dob);
+                      
+                      // Egypt Scenario 1 (age <15 or >45): Show green message, no supporting docs needed
+                      if (selectedCountry?.code === 'EGY' && effectiveScenario === 1) {
+                        return (
+                          <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                            <div className="flex items-center gap-3">
+                              <CheckCircle className="h-5 w-5 text-green-600" />
+                              <div>
+                                <h4 className="text-sm font-semibold text-green-800">No Supporting Documents Required</h4>
+                                <p className="text-sm text-green-700 mt-1">Based on your age, no supporting documents are needed for your application.</p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      }
+                      
+                      // Egypt Scenario 2 (age 15-45) or other countries: Show supporting document check
+                      return (
+                        <SupportingDocumentCheck
+                          onHasSupportingDocument={setHasSupportingDocument}
+                          onDocumentDetailsChange={setSupportingDocumentDetails}
+                          onValidationChange={setIsSupportingDocumentValid}
+                          onSupportingDocTypeChange={setSelectedSupportingDocType}
+                          onProcessingTypeChange={setDocumentProcessingType}
+                        />
+                      );
+                    })()}
+                    
+                    {/* Supporting Document Details Form Fields */}
+                    {hasSupportingDocument === true && (
+                      <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <h5 className="text-md font-semibold mb-4 text-blue-900">Document Details</h5>
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <FormField
+                            control={form.control}
+                            name="supportingDocumentNumber"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Document Number *</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Enter document number" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={form.control}
+                            name="supportingDocumentStartDate"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Document Start Date *</FormLabel>
+                                <FormControl>
+                                  <div className="grid grid-cols-3 gap-2">
+                                    <Select
+                                      value={field.value ? field.value.split('-')[2] : ''}
+                                      onValueChange={(day) => {
+                                        const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                        const year = parts[0]; const month = parts[1];
+                                        field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                      }}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Day" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                                          <SelectItem key={d} value={d}>{d}</SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+
+                                    <Select
+                                      value={field.value ? field.value.split('-')[1] : ''}
+                                      onValueChange={(month) => {
+                                        const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                        const year = parts[0]; const day = parts[2];
+                                        field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                      }}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Month" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {[
+                                          { value: '01', label: 'January' },
+                                          { value: '02', label: 'February' },
+                                          { value: '03', label: 'March' },
+                                          { value: '04', label: 'April' },
+                                          { value: '05', label: 'May' },
+                                          { value: '06', label: 'June' },
+                                          { value: '07', label: 'July' },
+                                          { value: '08', label: 'August' },
+                                          { value: '09', label: 'September' },
+                                          { value: '10', label: 'October' },
+                                          { value: '11', label: 'November' },
+                                          { value: '12', label: 'December' }
+                                        ].map((m) => (
+                                          <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+
+                                    <Select
+                                      value={field.value ? field.value.split('-')[0] : ''}
+                                      onValueChange={(year) => {
+                                        const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                        const month = parts[1]; const day = parts[2];
+                                        field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                      }}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Year" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {Array.from({ length: 30 }, (_, i) => (new Date().getFullYear() - i + 10).toString()).map((y) => (
+                                          <SelectItem key={y} value={y}>{y}</SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <FormField
+                            control={form.control}
+                            name="supportingDocumentEndDate"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Document End Date *</FormLabel>
+                                <FormControl>
+                                  <div className="grid grid-cols-3 gap-2">
+                                    <Select
+                                      value={field.value ? field.value.split('-')[2] : ''}
+                                      onValueChange={(day) => {
+                                        const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                        const year = parts[0]; const month = parts[1];
+                                        field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                      }}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Day" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                                          <SelectItem key={d} value={d}>{d}</SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+
+                                    <Select
+                                      value={field.value ? field.value.split('-')[1] : ''}
+                                      onValueChange={(month) => {
+                                        const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                        const year = parts[0]; const day = parts[2];
+                                        field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                      }}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Month" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {[
+                                          { value: '01', label: 'January' },
+                                          { value: '02', label: 'February' },
+                                          { value: '03', label: 'March' },
+                                          { value: '04', label: 'April' },
+                                          { value: '05', label: 'May' },
+                                          { value: '06', label: 'June' },
+                                          { value: '07', label: 'July' },
+                                          { value: '08', label: 'August' },
+                                          { value: '09', label: 'September' },
+                                          { value: '10', label: 'October' },
+                                          { value: '11', label: 'November' },
+                                          { value: '12', label: 'December' }
+                                        ].map((m) => (
+                                          <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+
+                                    <Select
+                                      value={field.value ? field.value.split('-')[0] : ''}
+                                      onValueChange={(year) => {
+                                        const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                        const month = parts[1]; const day = parts[2];
+                                        field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                      }}
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Year" />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        {Array.from({ length: 20 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
+                                          <SelectItem key={y} value={y}>{y}</SelectItem>
+                                        ))}
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -2289,188 +2510,6 @@ export function VisaForm() {
                         )}
                       />
                     </div>
-                    
-                    {/* Supporting Document Details */}
-                    {hasSupportingDocument === true && (
-                      <>
-                        <div className="md:col-span-2">
-                          <h4 className="text-md font-semibold mb-3 text-blue-900">Supporting Document Details</h4>
-                        </div>
-                        <FormField
-                          control={form.control}
-                          name="supportingDocumentNumber"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Document Number</FormLabel>
-                              <FormControl>
-                                <Input placeholder="Enter document number" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="supportingDocumentStartDate"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Document Start Date</FormLabel>
-                              <FormControl>
-                                <div className="grid grid-cols-3 gap-2">
-                                  <Select
-                                    value={field.value ? field.value.split('-')[2] : ''}
-                                    onValueChange={(day) => {
-                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                                      const year = parts[0]; const month = parts[1];
-                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                                    }}
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Day" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
-                                        <SelectItem key={d} value={d}>{d}</SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-
-                                  <Select
-                                    value={field.value ? field.value.split('-')[1] : ''}
-                                    onValueChange={(month) => {
-                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                                      const year = parts[0]; const day = parts[2];
-                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                                    }}
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Month" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {[
-                                        { value: '01', label: 'January' },
-                                        { value: '02', label: 'February' },
-                                        { value: '03', label: 'March' },
-                                        { value: '04', label: 'April' },
-                                        { value: '05', label: 'May' },
-                                        { value: '06', label: 'June' },
-                                        { value: '07', label: 'July' },
-                                        { value: '08', label: 'August' },
-                                        { value: '09', label: 'September' },
-                                        { value: '10', label: 'October' },
-                                        { value: '11', label: 'November' },
-                                        { value: '12', label: 'December' }
-                                      ].map((m) => (
-                                        <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-
-                                  <Select
-                                    value={field.value ? field.value.split('-')[0] : ''}
-                                    onValueChange={(year) => {
-                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                                      const month = parts[1]; const day = parts[2];
-                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                                    }}
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Year" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {Array.from({ length: 30 }, (_, i) => (new Date().getFullYear() - i + 10).toString()).map((y) => (
-                                        <SelectItem key={y} value={y}>{y}</SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="supportingDocumentEndDate"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Document End Date</FormLabel>
-                              <FormControl>
-                                <div className="grid grid-cols-3 gap-2">
-                                  <Select
-                                    value={field.value ? field.value.split('-')[2] : ''}
-                                    onValueChange={(day) => {
-                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                                      const year = parts[0]; const month = parts[1];
-                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                                    }}
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Day" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
-                                        <SelectItem key={d} value={d}>{d}</SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-
-                                  <Select
-                                    value={field.value ? field.value.split('-')[1] : ''}
-                                    onValueChange={(month) => {
-                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                                      const year = parts[0]; const day = parts[2];
-                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                                    }}
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Month" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {[
-                                        { value: '01', label: 'January' },
-                                        { value: '02', label: 'February' },
-                                        { value: '03', label: 'March' },
-                                        { value: '04', label: 'April' },
-                                        { value: '05', label: 'May' },
-                                        { value: '06', label: 'June' },
-                                        { value: '07', label: 'July' },
-                                        { value: '08', label: 'August' },
-                                        { value: '09', label: 'September' },
-                                        { value: '10', label: 'October' },
-                                        { value: '11', label: 'November' },
-                                        { value: '12', label: 'December' }
-                                      ].map((m) => (
-                                        <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-
-                                  <Select
-                                    value={field.value ? field.value.split('-')[0] : ''}
-                                    onValueChange={(year) => {
-                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                                      const month = parts[1]; const day = parts[2];
-                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                                    }}
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Year" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      {Array.from({ length: 30 }, (_, i) => (new Date().getFullYear() - i + 20).toString()).map((y) => (
-                                        <SelectItem key={y} value={y}>{y}</SelectItem>
-                                      ))}
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </>
-                    )}
                   </div>
                 </div>
               )}
