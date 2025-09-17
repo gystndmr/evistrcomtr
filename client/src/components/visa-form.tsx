@@ -1162,6 +1162,18 @@ export function VisaForm() {
   const steps = getDynamicSteps();
   const totalSteps = steps.length;
 
+  // Scroll to top whenever step changes (especially important for payment step)
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Extra scroll for payment step after a short delay to ensure content is loaded
+    if (currentStep === totalSteps) {
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
+    }
+  }, [currentStep, totalSteps]);
+
   return (
     <div className="max-w-4xl mx-auto px-2 sm:px-0">
       <Card>
