@@ -2422,16 +2422,8 @@ export function VisaForm() {
                         <div className="flex justify-between">
                           <span>{t('form.payment.processing.document.fee')}</span>
                           <span>${(() => {
-                            const documentProcessingTypes = [
-                              { value: "slow", price: 159 },
-                              { value: "standard", price: 224 },
-                              { value: "fast", price: 274 },
-                              { value: "urgent_24", price: 389 },
-                              { value: "urgent_12", price: 439 },
-                              { value: "urgent_4", price: 519 },
-                              { value: "urgent_1", price: 754 }
-                            ];
-                            return documentProcessingTypes.find(p => p.value === documentProcessingType)?.price || 119;
+                            const processingFee = supportingDocProcessingTypes.find(type => type.value === documentProcessingType)?.price || 0;
+                            return processingFee.toFixed(2);
                           })()}</span>
                         </div>
                       )}
