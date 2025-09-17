@@ -1093,7 +1093,7 @@ export default function Admin() {
                                         <div><strong>Hedef:</strong> {selectedInsuranceApp.destination}</div>
                                         
                                         {/* Parent ID Photos Display for Under 18 */}
-                                        {selectedInsuranceApp.parentIdPhotos && selectedInsuranceApp.parentIdPhotos.length > 0 ? (
+                                        {selectedInsuranceApp.parentIdPhotos && Array.isArray(selectedInsuranceApp.parentIdPhotos) && (selectedInsuranceApp.parentIdPhotos as any[]).length > 0 ? (
                                           <div className="space-y-3">
                                             <div><strong>Ebeveyn Kimlik Fotoğrafları:</strong> (18 yaş altı)</div>
                                             
