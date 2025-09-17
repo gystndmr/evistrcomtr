@@ -2366,7 +2366,9 @@ export function VisaForm() {
                         console.log("✅ Form validation passed - proceeding with payment");
                         createApplicationMutation.mutate(validatedData);
                       }, (errors) => {
+                        const currentFormData = form.getValues();
                         console.log("❌ Form validation failed:", errors);
+                        console.log("🔍 Current form data:", currentFormData);
                         toast({
                           title: "Form Validation Error",
                           description: "Please check all required fields are filled correctly",
