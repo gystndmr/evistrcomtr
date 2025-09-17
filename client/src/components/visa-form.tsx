@@ -640,17 +640,35 @@ export function VisaForm() {
   }, [selectedCountry]); // Removed form.watch dependency to prevent early triggers
 
   const handleNextStep = () => {
+    console.log("🚨 VALIDATION CHECK - Current Step:", currentStep);
+    
     // Step 1: Country and Document Type Selection
     if (currentStep === 1) {
-      if (!selectedCountry || !selectedDocumentType) {
+      console.log("🔍 Step 1 Validation - Country:", selectedCountry?.name, "Document Type:", selectedDocumentType);
+      
+      if (!selectedCountry) {
         toast({
-          title: "Required Fields Missing",
-          description: "Please select both country and document type before proceeding",
+          title: "Country Required",
+          description: "Please select your country of citizenship",
           variant: "destructive",
           duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: No country selected");
         return;
       }
+      
+      if (!selectedDocumentType) {
+        toast({
+          title: "Document Type Required",
+          description: "Please select your document type (passport or national ID)",
+          variant: "destructive",
+          duration: 5000,
+        });
+        console.log("❌ VALIDATION FAILED: No document type selected");
+        return;
+      }
+      
+      console.log("✅ Step 1 validation passed");
       // Handle different scenarios using effective scenario (includes Egypt age-based logic)
       const effectiveScenario = getEffectiveScenario(selectedCountry, form.getValues("dateOfBirth"));
       
@@ -693,14 +711,20 @@ export function VisaForm() {
     
     // Step 2: Supporting Document Check
     if (currentStep === 2) {
+      console.log("🔍 Step 2 Validation - Country:", selectedCountry?.code);
+      
       // Egypt special case: If Egypt is selected but no dateOfBirth yet, require DOB first
       const dob = form.getValues('dateOfBirth');
+      console.log("🔍 Step 2 DOB check:", dob);
+      
       if (selectedCountry?.code === 'EGY' && !dob) {
         toast({
           title: "Date of Birth Required",
           description: "Please enter your date of birth to determine document requirements",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: Egypt - No DOB");
         return;
       }
 
@@ -718,10 +742,12 @@ export function VisaForm() {
         // Scenario 2: E-visa eligible + supporting document required
         if (hasSupportingDocument === null) {
           toast({
-            title: "Required Selection",
+            title: "Supporting Document Selection Required",
             description: "Please indicate if you have supporting documents",
             variant: "destructive",
+            duration: 5000,
           });
+          console.log("❌ VALIDATION FAILED: No supporting document selection");
           return;
         }
         if (hasSupportingDocument === false) {
@@ -732,16 +758,19 @@ export function VisaForm() {
             duration: 8000,
             variant: "destructive",
           });
+          console.log("❌ VALIDATION FAILED: Supporting document required but not available");
           return;
         }
         if (hasSupportingDocument === true) {
           // Check if supporting document details are valid
           if (!isSupportingDocumentValid) {
             toast({
-              title: "Missing Information",
+              title: "Supporting Document Information Missing",
               description: "Please complete all required supporting document fields",
               variant: "destructive",
+              duration: 5000,
             });
+            console.log("❌ VALIDATION FAILED: Supporting document details incomplete");
             return;
           }
         }
@@ -750,7 +779,10 @@ export function VisaForm() {
     
     // Step 3: Arrival Information
     if (currentStep === 3) {
+      console.log("🔍 Step 3 Validation - Arrival Information");
       const arrivalDate = form.getValues("arrivalDate");
+      console.log("🔍 Arrival Date:", arrivalDate);
+      console.log("🔍 Processing Type:", documentProcessingType);
       
       // Check if arrival date exists and is properly formatted
       if (!arrivalDate || !arrivalDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
@@ -758,7 +790,9 @@ export function VisaForm() {
           title: "Arrival Date Required",
           description: "Please select a complete arrival date (day, month, year)",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: No arrival date or invalid format");
         return;
       }
       
@@ -777,7 +811,9 @@ export function VisaForm() {
           title: "Complete Date Selection Required",
           description: "Please select day, month AND year for your arrival date",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: Incomplete date selection");
         return;
       }
       
@@ -792,7 +828,9 @@ export function VisaForm() {
           title: "Invalid Arrival Date",
           description: "Arrival date must be today or in the future",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: Past arrival date");
         return;
       }
       
@@ -802,9 +840,13 @@ export function VisaForm() {
           title: "Processing Fee Required",
           description: "Please select a processing fee option after completing date selection",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: No processing fee selected");
         return;
       }
+      
+      console.log("✅ Step 3 validation passed");
       
       // All Step 3 validation passed - advance to next step
       setCurrentStep(currentStep + 1);
@@ -813,21 +855,31 @@ export function VisaForm() {
     
     // Step 4: Prerequisites (only if supporting document exists)
     if (currentStep === 4 && selectedCountry?.isEligible && hasSupportingDocument === true) {
+      console.log("🔍 Step 4 Validation - Prerequisites");
       const countryCode = selectedCountry?.code || '';
       const requiredPrerequisites = getCountryPrerequisites(countryCode);
+      console.log("🔍 Required Prerequisites:", requiredPrerequisites);
+      console.log("🔍 Current Prerequisites:", prerequisites);
       
       const allPrerequisitesMet = requiredPrerequisites.every(req => 
         prerequisites[req.key] === true
       );
-                                  
+      
       if (!allPrerequisitesMet) {
+        const missingPrerequisites = requiredPrerequisites.filter(req => 
+          prerequisites[req.key] !== true
+        );
         toast({
           title: "Prerequisites Required",
-          description: "Please confirm all prerequisites are met to continue",
+          description: `Please confirm all prerequisites are met to continue (${missingPrerequisites.length} remaining)`,
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: Missing prerequisites:", missingPrerequisites);
         return;
       }
+      
+      console.log("✅ Step 4 (Prerequisites) validation passed");
       
       // All Step 4 (Prerequisites) validation passed - advance to next step
       setCurrentStep(currentStep + 1);
@@ -837,34 +889,40 @@ export function VisaForm() {
     // Step 5: Personal Information (with supporting document) OR Step 4 (without)
     const personalInfoStep = (selectedCountry?.isEligible && hasSupportingDocument === true) ? 5 : 4;
     if (currentStep === personalInfoStep) {
+      console.log("🔍 Personal Information Step Validation - Step:", currentStep, "Expected:", personalInfoStep);
       const formData = form.getValues();
-      console.log("🔍 Personal Info Step Validation - Form Data:", formData);
-      console.log("🔍 Current Step:", currentStep, "Personal Info Step:", personalInfoStep);
+      console.log("🔍 Personal Info Form Data:", formData);
       
-      if (!formData.firstName.trim()) {
+      if (!formData.firstName?.trim()) {
         toast({
-          title: t('form.error.first.name'),
-          description: t('form.error.first.name.desc'),
+          title: "First Name Required",
+          description: "Please enter your first name",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: No first name");
         return;
       }
       
-      if (!formData.lastName.trim()) {
+      if (!formData.lastName?.trim()) {
         toast({
-          title: t('form.error.last.name'), 
-          description: t('form.error.last.name.desc'),
+          title: "Last Name Required",
+          description: "Please enter your last name",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: No last name");
         return;
       }
       
-      if (!formData.email.trim()) {
+      if (!formData.email?.trim()) {
         toast({
-          title: t('form.error.email'),
-          description: t('form.error.email.desc'),
+          title: "Email Required",
+          description: "Please enter your email address",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: No email");
         return;
       }
       
@@ -872,47 +930,46 @@ export function VisaForm() {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(formData.email)) {
         toast({
-          title: t('form.error.email.invalid'),
-          description: t('form.error.email.invalid.desc'),
+          title: "Invalid Email Format",
+          description: "Please enter a valid email address (example@domain.com)",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: Invalid email format");
         return;
       }
       
-      if (!formData.phone.trim()) {
+      if (!formData.phone?.trim()) {
         toast({
-          title: t('form.error.phone'),
-          description: t('form.error.phone.desc'),
+          title: "Phone Number Required",
+          description: "Please enter your phone number",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: No phone number");
         return;
       }
       
-      if (!formData.passportNumber.trim()) {
+      if (!formData.passportNumber?.trim()) {
         toast({
-          title: t('form.error.passport'),
-          description: t('form.error.passport.desc'),
+          title: "Passport Number Required",
+          description: "Please enter your passport number",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: No passport number");
         return;
       }
       
       // Date of birth validation - Egypt special case handled
       if (!formData.dateOfBirth) {
-        // For Egypt, date of birth might be entered in Step 2 for age-based scenario determination
-        if (selectedCountry?.code === 'EGY') {
-          toast({
-            title: "Date of Birth Required",
-            description: "Please enter your date of birth to determine document requirements",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: t('form.error.birth.date'),
-            description: t('form.error.birth.date.desc'),
-            variant: "destructive",
-          });
-        }
+        toast({
+          title: "Date of Birth Required",
+          description: "Please enter your date of birth",
+          variant: "destructive",
+          duration: 5000,
+        });
+        console.log("❌ VALIDATION FAILED: No date of birth");
         return;
       }
       
@@ -921,7 +978,9 @@ export function VisaForm() {
           title: "Passport Issue Date Required",
           description: "Please enter your passport issue date",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: No passport issue date");
         return;
       }
       
@@ -930,43 +989,53 @@ export function VisaForm() {
           title: "Passport Expiry Date Required",
           description: "Please enter your passport expiry date",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: No passport expiry date");
         return;
       }
       
       if (!formData.placeOfBirth?.trim() || formData.placeOfBirth.length < 2) {
         toast({
-          title: t('form.error.place.birth'),
-          description: t('form.error.place.birth.desc'),
+          title: "Place of Birth Required",
+          description: "Please enter your place of birth (at least 2 characters)",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: No place of birth");
         return;
       }
       
       if (!formData.motherName?.trim() || formData.motherName.length < 2) {
         toast({
-          title: t('form.error.mother.name'), 
-          description: t('form.error.mother.name.desc'),
+          title: "Mother's Name Required",
+          description: "Please enter your mother's name (at least 2 characters)",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: No mother name");
         return;
       }
       
       if (!formData.fatherName?.trim() || formData.fatherName.length < 2) {
         toast({
-          title: t('form.error.father.name'),
-          description: t('form.error.father.name.desc'),
+          title: "Father's Name Required",
+          description: "Please enter your father's name (at least 2 characters)",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: No father name");
         return;
       }
       
       if (!formData.address?.trim() || formData.address.length < 10) {
         toast({
-          title: t('form.error.address'),
-          description: t('form.error.address.desc'),
+          title: "Address Required",
+          description: "Please enter your full address (at least 10 characters)",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: No address or too short");
         return;
       }
       
@@ -980,7 +1049,9 @@ export function VisaForm() {
           title: "Passport Expired",
           description: "Your passport expiry date must be in the future",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: Passport expired");
         return;
       }
       
@@ -989,19 +1060,23 @@ export function VisaForm() {
           title: "Invalid Passport Dates",
           description: "Passport issue date must be before expiry date",
           variant: "destructive",
+          duration: 5000,
         });
+        console.log("❌ VALIDATION FAILED: Invalid passport dates");
         return;
       }
       
       // Supporting document validation removed - now handled in travel information step via dynamic forms
       
       // All Personal Information validation passed - advance to payment step
+      console.log("✅ Personal Information validation passed");
       setCurrentStep(currentStep + 1);
       return;
     }
     
-    // All step progression is handled within each step's validation logic above
-    // No generic step increment needed here to prevent double advancement
+    // If we reach here, all validations passed for non-handled steps
+    console.log("❗ WARNING: Unhandled step in validation:", currentStep);
+    console.log("⚠️ This might indicate a missing validation case");
     
     // Scroll to top of page for better user experience
     window.scrollTo({ top: 0, behavior: 'smooth' });
