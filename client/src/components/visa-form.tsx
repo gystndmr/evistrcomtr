@@ -311,21 +311,39 @@ export function VisaForm() {
       // Reset processing type if current selection is no longer available
       const currentProcessingType = form.getValues("processingType");
       if (currentProcessingType && !standardTypes.some(type => type.value === currentProcessingType)) {
-        form.setValue("processingType", standardTypes.length > 0 ? standardTypes[0].value : "");
+        // Find the closest matching option by price (preserve user intent)
+        const currentType = supportingDocProcessingTypes.find(type => type.value === currentProcessingType);
+        const bestMatch = standardTypes.length > 0 ? 
+          standardTypes.reduce((best, current) => 
+            Math.abs(current.price - (currentType?.price || 0)) < Math.abs(best.price - (currentType?.price || 0)) 
+            ? current : best
+          ) : null;
+
+        form.setValue("processingType", bestMatch?.value || "");
+        
         toast({
-          title: "İşlem Türü Güncellendi",
-          description: "Varış tarihinize göre işlem türü otomatik olarak ayarlandı.",
-          duration: 3000,
+          title: "⚠️ İşlem Türü Değiştirildi",
+          description: `"${currentType?.label || currentProcessingType}" seçeneği varış tarihiniz için mevcut değil. En yakın seçenek "${bestMatch?.label}" otomatik seçildi.`,
+          duration: 8000,
         });
       }
       
       // Reset supporting document processing type if no longer available
       if (documentProcessingType && !supportingTypes.some(type => type.value === documentProcessingType)) {
-        setDocumentProcessingType(supportingTypes.length > 0 ? supportingTypes[0].value : "");
+        // Find the closest matching option by price (preserve user intent)
+        const currentType = supportingDocProcessingTypes.find(type => type.value === documentProcessingType);
+        const bestMatch = supportingTypes.length > 0 ? 
+          supportingTypes.reduce((best, current) => 
+            Math.abs(current.price - (currentType?.price || 0)) < Math.abs(best.price - (currentType?.price || 0)) 
+            ? current : best
+          ) : null;
+
+        setDocumentProcessingType(bestMatch?.value || "");
+        
         toast({
-          title: "İşlem Türü Güncellendi", 
-          description: "Varış tarihinize göre işlem türü otomatik olarak ayarlandı.",
-          duration: 3000,
+          title: "⚠️ Destekleyici Belge İşlem Türü Değiştirildi",
+          description: `"${currentType?.label || documentProcessingType}" seçeneği varış tarihiniz için mevcut değil. En yakın seçenek "${bestMatch?.label}" otomatik seçildi.`,
+          duration: 8000,
         });
       }
     } else {
