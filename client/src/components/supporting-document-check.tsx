@@ -261,7 +261,8 @@ export function SupportingDocumentCheck({
                     />
                   </div>
 
-                  {/* Start Date for all visa types */}
+
+                  {/* Single universal date section for all visa types */}
                   <div>
                     <Label htmlFor="startDate">Start Date *</Label>
                     <div className="grid grid-cols-3 gap-2">
@@ -271,7 +272,7 @@ export function SupportingDocumentCheck({
                           const parts = startDate ? startDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                           const year = parts[0];
                           const month = parts[1];
-                          setStartDate(`${year}-${month}-${day.padStart(2, '0')}`);
+                          setStartDate(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                         }}
                       >
                         <SelectTrigger>
@@ -337,7 +338,6 @@ export function SupportingDocumentCheck({
                     </div>
                   </div>
 
-                  {/* End Date for all visa types */}
                   <div>
                     <Label htmlFor="endDate">Expiry Date *</Label>
                     <div className="grid grid-cols-3 gap-2">
@@ -347,7 +347,7 @@ export function SupportingDocumentCheck({
                           const parts = endDate ? endDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
                           const year = parts[0];
                           const month = parts[1];
-                          setEndDate(`${year}-${month}-${day.padStart(2, '0')}`);
+                          setEndDate(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                         }}
                         disabled={isUnlimited}
                       >
@@ -424,260 +424,6 @@ export function SupportingDocumentCheck({
                       <span className="text-sm">Unlimited</span>
                     </label>
                   </div>
-
-                  {visaCountry === "SCHENGEN" && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="startDate">Start Date *</Label>
-                        <div className="grid grid-cols-3 gap-2">
-                          <Select
-                            value={startDate ? startDate.split('-')[2] : ''}
-                            onValueChange={(day) => {
-                              const parts = startDate ? startDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                              const year = parts[0];
-                              const month = parts[1];
-                              setStartDate(`${year}-${month}-${day.padStart(2, '0')}`);
-                            }}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Day" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
-                                <SelectItem key={d} value={d}>{d}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-
-                          <Select
-                            value={startDate ? startDate.split('-')[1] : ''}
-                            onValueChange={(month) => {
-                              const parts = startDate ? startDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                              const year = parts[0];
-                              const day = parts[2];
-                              setStartDate(`${year}-${month.padStart(2, '0')}-${day}`);
-                            }}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Month" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {[
-                                { value: '01', label: 'Ocak' },
-                                { value: '02', label: 'Şubat' },
-                                { value: '03', label: 'Mart' },
-                                { value: '04', label: 'Nisan' },
-                                { value: '05', label: 'Mayıs' },
-                                { value: '06', label: 'Haziran' },
-                                { value: '07', label: 'Temmuz' },
-                                { value: '08', label: 'Ağustos' },
-                                { value: '09', label: 'Eylül' },
-                                { value: '10', label: 'Ekim' },
-                                { value: '11', label: 'Kasım' },
-                                { value: '12', label: 'Aralık' }
-                              ].map((m) => (
-                                <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-
-                          <Select
-                            value={startDate ? startDate.split('-')[0] : ''}
-                            onValueChange={(year) => {
-                              const parts = startDate ? startDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                              const month = parts[1];
-                              const day = parts[2];
-                              setStartDate(`${year}-${month}-${day}`);
-                            }}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Year" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {Array.from({ length: 10 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
-                                <SelectItem key={y} value={y}>{y}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                      <div>
-                        <Label htmlFor="endDate">End Date *</Label>
-                        <div className="grid grid-cols-3 gap-2">
-                          <Select
-                            value={endDate ? endDate.split('-')[2] : ''}
-                            onValueChange={(day) => {
-                              const parts = endDate ? endDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                              const year = parts[0];
-                              const month = parts[1];
-                              setEndDate(`${year}-${month}-${day.padStart(2, '0')}`);
-                            }}
-                            disabled={isUnlimited}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Day" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
-                                <SelectItem key={d} value={d}>{d}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-
-                          <Select
-                            value={endDate ? endDate.split('-')[1] : ''}
-                            onValueChange={(month) => {
-                              const parts = endDate ? endDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                              const year = parts[0];
-                              const day = parts[2];
-                              setEndDate(`${year}-${month.padStart(2, '0')}-${day}`);
-                            }}
-                            disabled={isUnlimited}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Month" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {[
-                                { value: '01', label: 'Ocak' },
-                                { value: '02', label: 'Şubat' },
-                                { value: '03', label: 'Mart' },
-                                { value: '04', label: 'Nisan' },
-                                { value: '05', label: 'Mayıs' },
-                                { value: '06', label: 'Haziran' },
-                                { value: '07', label: 'Temmuz' },
-                                { value: '08', label: 'Ağustos' },
-                                { value: '09', label: 'Eylül' },
-                                { value: '10', label: 'Ekim' },
-                                { value: '11', label: 'Kasım' },
-                                { value: '12', label: 'Aralık' }
-                              ].map((m) => (
-                                <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-
-                          <Select
-                            value={endDate ? endDate.split('-')[0] : ''}
-                            onValueChange={(year) => {
-                              const parts = endDate ? endDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                              const month = parts[1];
-                              const day = parts[2];
-                              setEndDate(`${year}-${month}-${day}`);
-                            }}
-                            disabled={isUnlimited}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Year" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {Array.from({ length: 10 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
-                                <SelectItem key={y} value={y}>{y}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <label className="flex items-center mt-2">
-                          <input
-                            type="checkbox"
-                            checked={isUnlimited}
-                            onChange={(e) => setIsUnlimited(e.target.checked)}
-                            className="mr-2"
-                          />
-                          <span className="text-sm">Unlimited</span>
-                        </label>
-                      </div>
-                    </div>
-                  )}
-
-                  {(visaCountry === "IRL" || visaCountry === "USA" || visaCountry === "GBR") && (
-                    <div>
-                      <Label htmlFor="endDate">Expiry Date *</Label>
-                      <div className="grid grid-cols-3 gap-2">
-                        <Select
-                          value={endDate ? endDate.split('-')[2] : ''}
-                          onValueChange={(day) => {
-                            const parts = endDate ? endDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                            const year = parts[0];
-                            const month = parts[1];
-                            setEndDate(`${year}-${month}-${day.padStart(2, '0')}`);
-                          }}
-                          disabled={isUnlimited}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Day" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
-                              <SelectItem key={d} value={d}>{d}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-
-                        <Select
-                          value={endDate ? endDate.split('-')[1] : ''}
-                          onValueChange={(month) => {
-                            const parts = endDate ? endDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                            const year = parts[0];
-                            const day = parts[2];
-                            setEndDate(`${year}-${month.padStart(2, '0')}-${day}`);
-                          }}
-                          disabled={isUnlimited}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Month" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {[
-                              { value: '01', label: 'Ocak' },
-                              { value: '02', label: 'Şubat' },
-                              { value: '03', label: 'Mart' },
-                              { value: '04', label: 'Nisan' },
-                              { value: '05', label: 'Mayıs' },
-                              { value: '06', label: 'Haziran' },
-                              { value: '07', label: 'Temmuz' },
-                              { value: '08', label: 'Ağustos' },
-                              { value: '09', label: 'Eylül' },
-                              { value: '10', label: 'Ekim' },
-                              { value: '11', label: 'Kasım' },
-                              { value: '12', label: 'Aralık' }
-                            ].map((m) => (
-                              <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-
-                        <Select
-                          value={endDate ? endDate.split('-')[0] : ''}
-                          onValueChange={(year) => {
-                            const parts = endDate ? endDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                            const month = parts[1];
-                            const day = parts[2];
-                            setEndDate(`${year}-${month}-${day}`);
-                          }}
-                          disabled={isUnlimited}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Year" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {Array.from({ length: 10 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
-                              <SelectItem key={y} value={y}>{y}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <label className="flex items-center mt-2">
-                        <input
-                          type="checkbox"
-                          checked={isUnlimited}
-                          onChange={(e) => setIsUnlimited(e.target.checked)}
-                          className="mr-2"
-                        />
-                        <span className="text-sm">Unlimited</span>
-                      </label>
-                    </div>
-                  )}
                 </div>
               )}
 
@@ -825,18 +571,18 @@ export function SupportingDocumentCheck({
                         </SelectTrigger>
                         <SelectContent>
                           {[
-                            { value: '01', label: 'Ocak' },
-                            { value: '02', label: 'Şubat' },
-                            { value: '03', label: 'Mart' },
-                            { value: '04', label: 'Nisan' },
-                            { value: '05', label: 'Mayıs' },
-                            { value: '06', label: 'Haziran' },
-                            { value: '07', label: 'Temmuz' },
-                            { value: '08', label: 'Ağustos' },
-                            { value: '09', label: 'Eylül' },
-                            { value: '10', label: 'Ekim' },
-                            { value: '11', label: 'Kasım' },
-                            { value: '12', label: 'Aralık' }
+                            { value: '01', label: 'January' },
+                            { value: '02', label: 'February' },
+                            { value: '03', label: 'March' },
+                            { value: '04', label: 'April' },
+                            { value: '05', label: 'May' },
+                            { value: '06', label: 'June' },
+                            { value: '07', label: 'July' },
+                            { value: '08', label: 'August' },
+                            { value: '09', label: 'September' },
+                            { value: '10', label: 'October' },
+                            { value: '11', label: 'November' },
+                            { value: '12', label: 'December' }
                           ].map((m) => (
                             <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
                           ))}
