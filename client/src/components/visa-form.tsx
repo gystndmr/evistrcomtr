@@ -37,6 +37,9 @@ const applicationSchema = z.object({
   arrivalDate: z.string().min(1, "Arrival date is required").regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format"),
   processingType: z.string().min(1, "Processing type is required"),
   documentType: z.string().min(1, "Document type is required"),
+  supportingDocumentNumber: z.string().optional(),
+  supportingDocumentStartDate: z.string().optional().refine((val) => !val || /^\d{4}-\d{2}-\d{2}$/.test(val), "Invalid date format"),
+  supportingDocumentEndDate: z.string().optional().refine((val) => !val || /^\d{4}-\d{2}-\d{2}$/.test(val), "Invalid date format"),
 });
 
 type ApplicationFormData = z.infer<typeof applicationSchema>;
@@ -287,6 +290,9 @@ export function VisaForm() {
       arrivalDate: "",
       processingType: "standard",
       documentType: "",
+      supportingDocumentNumber: "",
+      supportingDocumentStartDate: "",
+      supportingDocumentEndDate: "",
     },
   });
 
@@ -346,9 +352,9 @@ export function VisaForm() {
         totalAmount: calculateTotal().toString(),
         supportingDocumentType: selectedSupportingDocType || null,
         supportingDocumentCountry: supportingDocumentDetails?.visaCountry || supportingDocumentDetails?.residenceCountry || null,
-        supportingDocumentNumber: supportingDocumentDetails?.documentNumber || null,
-        supportingDocumentStartDate: supportingDocumentDetails?.startDate || null,
-        supportingDocumentEndDate: supportingDocumentDetails?.endDate === "unlimited" ? null : supportingDocumentDetails?.endDate || null,
+        supportingDocumentNumber: data.supportingDocumentNumber || null,
+        supportingDocumentStartDate: data.supportingDocumentStartDate || null,
+        supportingDocumentEndDate: data.supportingDocumentEndDate || null,
       });
       const applicationData = await applicationResponse.json();
       
@@ -965,8 +971,48 @@ export function VisaForm() {
         return;
       }
       
-      // Supporting document validation is handled by SupportingDocumentCheck component in Travel Information
-      // No additional validation needed here as supportingDocumentDetails contains all validated data
+      // Supporting document validation (only for users with supporting documents)
+      if (hasSupportingDocument === true) {
+        if (!formData.supportingDocumentNumber?.trim()) {
+          toast({
+            title: "Supporting Document Number Required",
+            description: "Please enter your supporting document number",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        if (!formData.supportingDocumentStartDate) {
+          toast({
+            title: "Supporting Document Start Date Required",
+            description: "Please enter your supporting document start date",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        if (!formData.supportingDocumentEndDate) {
+          toast({
+            title: "Supporting Document End Date Required",
+            description: "Please enter your supporting document end date",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        // Validate supporting document date logic
+        const supportingStartDate = new Date(formData.supportingDocumentStartDate);
+        const supportingEndDate = new Date(formData.supportingDocumentEndDate);
+        
+        if (supportingStartDate >= supportingEndDate) {
+          toast({
+            title: "Invalid Document Dates",
+            description: "Supporting document start date must be before end date",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
     }
     
     setCurrentStep(currentStep + 1);
@@ -1709,16 +1755,7 @@ export function VisaForm() {
                     {/* Processing Type - Available for all scenarios */}
                     <div className="space-y-4">
                       <Label htmlFor="processingType">Processing Type *</Label>
-                      <Select 
-                        value={hasSupportingDocument === true ? documentProcessingType : form.getValues("processingType")} 
-                        onValueChange={(value) => {
-                          if (hasSupportingDocument === true) {
-                            setDocumentProcessingType(value);
-                          } else {
-                            form.setValue("processingType", value);
-                          }
-                        }}
-                      >
+                      <Select value={documentProcessingType} onValueChange={setDocumentProcessingType}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select processing type" />
                         </SelectTrigger>
@@ -2183,6 +2220,188 @@ export function VisaForm() {
                         )}
                       />
                     </div>
+                    
+                    {/* Supporting Document Details */}
+                    {hasSupportingDocument === true && (
+                      <>
+                        <div className="md:col-span-2">
+                          <h4 className="text-md font-semibold mb-3 text-blue-900">Supporting Document Details</h4>
+                        </div>
+                        <FormField
+                          control={form.control}
+                          name="supportingDocumentNumber"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Document Number</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Enter document number" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="supportingDocumentStartDate"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Document Start Date</FormLabel>
+                              <FormControl>
+                                <div className="grid grid-cols-3 gap-2">
+                                  <Select
+                                    value={field.value ? field.value.split('-')[2] : ''}
+                                    onValueChange={(day) => {
+                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                      const year = parts[0]; const month = parts[1];
+                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Day" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                                        <SelectItem key={d} value={d}>{d}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+
+                                  <Select
+                                    value={field.value ? field.value.split('-')[1] : ''}
+                                    onValueChange={(month) => {
+                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                      const year = parts[0]; const day = parts[2];
+                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Month" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {[
+                                        { value: '01', label: 'January' },
+                                        { value: '02', label: 'February' },
+                                        { value: '03', label: 'March' },
+                                        { value: '04', label: 'April' },
+                                        { value: '05', label: 'May' },
+                                        { value: '06', label: 'June' },
+                                        { value: '07', label: 'July' },
+                                        { value: '08', label: 'August' },
+                                        { value: '09', label: 'September' },
+                                        { value: '10', label: 'October' },
+                                        { value: '11', label: 'November' },
+                                        { value: '12', label: 'December' }
+                                      ].map((m) => (
+                                        <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+
+                                  <Select
+                                    value={field.value ? field.value.split('-')[0] : ''}
+                                    onValueChange={(year) => {
+                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                      const month = parts[1]; const day = parts[2];
+                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Year" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {Array.from({ length: 30 }, (_, i) => (new Date().getFullYear() - i + 10).toString()).map((y) => (
+                                        <SelectItem key={y} value={y}>{y}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="supportingDocumentEndDate"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Document End Date</FormLabel>
+                              <FormControl>
+                                <div className="grid grid-cols-3 gap-2">
+                                  <Select
+                                    value={field.value ? field.value.split('-')[2] : ''}
+                                    onValueChange={(day) => {
+                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                      const year = parts[0]; const month = parts[1];
+                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Day" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
+                                        <SelectItem key={d} value={d}>{d}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+
+                                  <Select
+                                    value={field.value ? field.value.split('-')[1] : ''}
+                                    onValueChange={(month) => {
+                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                      const year = parts[0]; const day = parts[2];
+                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Month" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {[
+                                        { value: '01', label: 'January' },
+                                        { value: '02', label: 'February' },
+                                        { value: '03', label: 'March' },
+                                        { value: '04', label: 'April' },
+                                        { value: '05', label: 'May' },
+                                        { value: '06', label: 'June' },
+                                        { value: '07', label: 'July' },
+                                        { value: '08', label: 'August' },
+                                        { value: '09', label: 'September' },
+                                        { value: '10', label: 'October' },
+                                        { value: '11', label: 'November' },
+                                        { value: '12', label: 'December' }
+                                      ].map((m) => (
+                                        <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+
+                                  <Select
+                                    value={field.value ? field.value.split('-')[0] : ''}
+                                    onValueChange={(year) => {
+                                      const parts = field.value ? field.value.split('-') : [new Date().getFullYear().toString(), '01', '01'];
+                                      const month = parts[1]; const day = parts[2];
+                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+                                    }}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Year" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {Array.from({ length: 30 }, (_, i) => (new Date().getFullYear() - i + 20).toString()).map((y) => (
+                                        <SelectItem key={y} value={y}>{y}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </>
+                    )}
                   </div>
                 </div>
               )}
