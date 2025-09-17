@@ -271,6 +271,11 @@ export function VisaForm() {
   const [egyptLocalMonth, setEgyptLocalMonth] = useState('');
   const [egyptLocalYear, setEgyptLocalYear] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
+  
+  // Arrival date components (Day → Month → Year flow)
+  const [arrivalDay, setArrivalDay] = useState('');
+  const [arrivalMonth, setArrivalMonth] = useState('');
+  const [arrivalYear, setArrivalYear] = useState('');
   const { toast } = useToast();
 
   const form = useForm<ApplicationFormData>({
@@ -289,7 +294,7 @@ export function VisaForm() {
       fatherName: "",
       address: "",
       arrivalDate: "",
-      processingType: "standard",
+      processingType: "", // No default - user must select after completing date
       documentType: "",
       supportingDocumentNumber: "",
       supportingDocumentStartDate: "",
@@ -299,6 +304,16 @@ export function VisaForm() {
 
   // Watch arrival date changes and update available processing types
   const watchedArrivalDate = form.watch("arrivalDate");
+  
+  // Update form arrivalDate when day/month/year components change
+  useEffect(() => {
+    if (arrivalDay && arrivalMonth && arrivalYear) {
+      const fullDate = `${arrivalYear}-${arrivalMonth.padStart(2, '0')}-${arrivalDay.padStart(2, '0')}`;
+      form.setValue('arrivalDate', fullDate);
+    } else {
+      form.setValue('arrivalDate', '');
+    }
+  }, [arrivalDay, arrivalMonth, arrivalYear, form]);
   
   useEffect(() => {
     if (watchedArrivalDate) {
@@ -1494,10 +1509,10 @@ export function VisaForm() {
                     </div>
                   )}
                   
-                  {/* Egypt Scenario 1: Show Processing Type after Arrival Date */}
+                  {/* Egypt Scenario 1: Show Processing Type only after complete date selection */}
                   {selectedCountry?.code === 'EGY' && 
                    form.getValues('dateOfBirth') && 
-                   form.getValues('arrivalDate') &&
+                   (arrivalDay && arrivalMonth && arrivalYear) &&
                    getEffectiveScenario(selectedCountry, form.getValues('dateOfBirth')) === 1 && (
                     <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                       <h4 className="text-sm font-semibold text-blue-800 mb-3">Select Processing Type</h4>
@@ -1556,6 +1571,19 @@ export function VisaForm() {
                           );
                         }}
                       />
+                    </div>
+                  )}
+
+                  {/* Show placeholder when date is incomplete for Egypt scenario */}
+                  {selectedCountry?.code === 'EGY' && 
+                   form.getValues('dateOfBirth') && 
+                   getEffectiveScenario(selectedCountry, form.getValues('dateOfBirth')) === 1 && 
+                   (!arrivalDay || !arrivalMonth || !arrivalYear) && (
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <Label className="text-gray-500">Processing Type *</Label>
+                      <p className="text-sm text-gray-500 mt-2">
+                        Please complete the arrival date selection (Day → Month → Year) to see processing options.
+                      </p>
                     </div>
                   )}
                   
@@ -1674,81 +1702,93 @@ export function VisaForm() {
                             <FormControl>
                               <div className="space-y-2">
                                 <div className="grid grid-cols-3 gap-2">
+                                  {/* Step 1: Day selection (first priority) */}
                                   <Select
-                                    value={field.value ? field.value.split('-')[2] : ''}
+                                    value={arrivalDay}
                                     onValueChange={(day) => {
-                                      const parts = field.value ? field.value.split('-') : [currentYear.toString(), currentMonth.toString().padStart(2, '0'), '01'];
-                                      const year = parts[0];
-                                      const month = parts[1];
-                                      field.onChange(`${year}-${month}-${day.padStart(2, '0')}`);
+                                      setArrivalDay(day);
+                                      // Reset month and year when day changes
+                                      setArrivalMonth('');
+                                      setArrivalYear('');
                                     }}
                                   >
                                     <SelectTrigger>
                                       <SelectValue placeholder="Day" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      {getAvailableDays().map((d) => (
+                                      {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
                                         <SelectItem key={d} value={d}>{d}</SelectItem>
                                       ))}
                                     </SelectContent>
                                   </Select>
 
+                                  {/* Step 2: Month selection (only enabled after day) */}
                                   <Select
-                                    value={field.value ? field.value.split('-')[1] : ''}
+                                    value={arrivalMonth}
                                     onValueChange={(month) => {
-                                      const parts = field.value ? field.value.split('-') : [currentYear.toString(), '01', '01'];
-                                      const year = parts[0];
-                                      const day = parts[2];
-                                      
-                                      // Update the form value
-                                      field.onChange(`${year}-${month.padStart(2, '0')}-${day}`);
-                                      
-                                      // If selected day is not available in new month, reset to first available day
-                                      const daysInNewMonth = new Date(parseInt(year), parseInt(month), 0).getDate();
-                                      const dayInt = parseInt(day);
-                                      if (dayInt > daysInNewMonth) {
-                                        const firstAvailableDay = (parseInt(year) === currentYear && parseInt(month) === currentMonth) ? currentDay : 1;
-                                        field.onChange(`${year}-${month.padStart(2, '0')}-${firstAvailableDay.toString().padStart(2, '0')}`);
-                                      }
+                                      setArrivalMonth(month);
+                                      // Reset year when month changes
+                                      setArrivalYear('');
                                     }}
+                                    disabled={!arrivalDay}
                                   >
-                                    <SelectTrigger className={`${
-                                      field.value && field.value.split('-')[1] ? '' : 'text-muted-foreground'
-                                    }`}>
-                                      <SelectValue placeholder="Month">
-                                        {field.value && field.value.split('-')[1] ? 
-                                          getAvailableMonths().find(m => m.value === field.value.split('-')[1])?.label || "Month"
-                                          : "Month"
-                                        }
-                                      </SelectValue>
+                                    <SelectTrigger className={!arrivalDay ? 'opacity-50' : ''}>
+                                      <SelectValue placeholder="Month" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      {getAvailableMonths().map((m) => (
+                                      {arrivalDay && [
+                                        { value: '01', label: 'January' },
+                                        { value: '02', label: 'February' },
+                                        { value: '03', label: 'March' },
+                                        { value: '04', label: 'April' },
+                                        { value: '05', label: 'May' },
+                                        { value: '06', label: 'June' },
+                                        { value: '07', label: 'July' },
+                                        { value: '08', label: 'August' },
+                                        { value: '09', label: 'September' },
+                                        { value: '10', label: 'October' },
+                                        { value: '11', label: 'November' },
+                                        { value: '12', label: 'December' }
+                                      ].filter((m) => {
+                                        // If current year is selected, disable past months
+                                        const monthNum = parseInt(m.value);
+                                        const dayNum = parseInt(arrivalDay);
+                                        const today = new Date();
+                                        const currentYear = today.getFullYear();
+                                        const currentMonth = today.getMonth() + 1;
+                                        const currentDay = today.getDate();
+                                        
+                                        // For all months, check if the selected day exists in that month
+                                        const daysInMonth = new Date(currentYear, monthNum, 0).getDate();
+                                        return dayNum <= daysInMonth;
+                                      }).map((m) => (
                                         <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
                                       ))}
                                     </SelectContent>
                                   </Select>
 
+                                  {/* Step 3: Year selection (only enabled after month, NO default) */}
                                   <Select
-                                    value={field.value ? field.value.split('-')[0] : ''}
-                                    onValueChange={(year) => {
-                                      const parts = field.value ? field.value.split('-') : [currentYear.toString(), currentMonth.toString().padStart(2, '0'), '01'];
-                                      const month = parts[1];
-                                      const day = parts[2];
-                                      
-                                      // If switching to current year and month is not available, reset to current month
-                                      if (parseInt(year) === currentYear && parseInt(month) < currentMonth) {
-                                        field.onChange(`${year}-${currentMonth.toString().padStart(2, '0')}-${currentDay.toString().padStart(2, '0')}`);
-                                      } else {
-                                        field.onChange(`${year}-${month}-${day}`);
-                                      }
-                                    }}
+                                    value={arrivalYear}
+                                    onValueChange={setArrivalYear}
+                                    disabled={!arrivalDay || !arrivalMonth}
                                   >
-                                    <SelectTrigger>
+                                    <SelectTrigger className={(!arrivalDay || !arrivalMonth) ? 'opacity-50' : ''}>
                                       <SelectValue placeholder="Year" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                      {getAvailableYears().map((y) => (
+                                      {(arrivalDay && arrivalMonth) && Array.from({ length: 11 }, (_, i) => {
+                                        const year = new Date().getFullYear() + i;
+                                        const monthNum = parseInt(arrivalMonth);
+                                        const dayNum = parseInt(arrivalDay);
+                                        const today = new Date();
+                                        
+                                        // Check if this year/month/day combination is in the future
+                                        const selectedDate = new Date(year, monthNum - 1, dayNum);
+                                        const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+                                        
+                                        return selectedDate >= todayStart ? year.toString() : null;
+                                      }).filter((y): y is string => y !== null).map((y) => (
                                         <SelectItem key={y} value={y}>{y}</SelectItem>
                                       ))}
                                     </SelectContent>
@@ -1765,49 +1805,58 @@ export function VisaForm() {
                       }}
                     />
                     
-                    {/* Processing Type - Available for all scenarios */}
-                    <div className="space-y-4">
-                      <Label htmlFor="processingType">Processing Type *</Label>
-                      <Select value={documentProcessingType} onValueChange={setDocumentProcessingType}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select processing type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {availableSupportingDocTypes.map((type) => (
-                            <SelectItem key={type.value} value={type.value}>
-                              {type.label} - ${type.price}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      
-                      {availableSupportingDocTypes.length === 0 && (
-                        <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                          <p className="text-orange-800 text-sm">
-                            <strong>Dikkat:</strong> Seçilen varış tarihi için işlem seçeneği mevcut değil. Lütfen daha ileri bir tarih seçiniz.
-                          </p>
-                        </div>
-                      )}
+                    {/* Processing Type - Only shown after complete date selection (Day + Month + Year) */}
+                    {(arrivalDay && arrivalMonth && arrivalYear) ? (
+                      <div className="space-y-4">
+                        <Label htmlFor="processingType">Processing Type *</Label>
+                        <Select value={documentProcessingType} onValueChange={setDocumentProcessingType}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select processing type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {availableSupportingDocTypes.map((type) => (
+                              <SelectItem key={type.value} value={type.value}>
+                                {type.label} - ${type.price}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         
-                        {documentProcessingType && (
-                          <div className="bg-blue-50 p-4 rounded-lg">
-                            <h4 className="font-medium text-blue-900 mb-2">Processing Fee Summary:</h4>
-                            <div className="text-sm text-blue-800">
-                              {(() => {
-                                const selectedType = supportingDocProcessingTypes.find(type => type.value === documentProcessingType);
-                                return (
-                                  <>
-                                    <p>• Selected: {selectedType?.label || documentProcessingType}</p>
-                                    <p>• Processing Fee: ${selectedType?.price || 0}</p>
-                                    <p>• E-Visa Fee: $69</p>
-                                    <p className="font-bold text-lg">• Total Amount: ${calculateTotal()}</p>
-                                  </>
-                                );
-                              })()}
-                            </div>
+                        {availableSupportingDocTypes.length === 0 && (
+                          <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                            <p className="text-orange-800 text-sm">
+                              <strong>Dikkat:</strong> Seçilen varış tarihi için işlem seçeneği mevcut değil. Lütfen daha ileri bir tarih seçiniz.
+                            </p>
                           </div>
                         )}
+                          
+                          {documentProcessingType && (
+                            <div className="bg-blue-50 p-4 rounded-lg">
+                              <h4 className="font-medium text-blue-900 mb-2">Processing Fee Summary:</h4>
+                              <div className="text-sm text-blue-800">
+                                {(() => {
+                                  const selectedType = supportingDocProcessingTypes.find(type => type.value === documentProcessingType);
+                                  return (
+                                    <>
+                                      <p>• Selected: {selectedType?.label || documentProcessingType}</p>
+                                      <p>• Processing Fee: ${selectedType?.price || 0}</p>
+                                      <p>• E-Visa Fee: $69</p>
+                                      <p className="font-bold text-lg">• Total Amount: ${calculateTotal()}</p>
+                                    </>
+                                  );
+                                })()}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                    ) : (
+                      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <Label className="text-gray-500">Processing Type *</Label>
+                        <p className="text-sm text-gray-500 mt-2">
+                          Please complete the arrival date selection (Day → Month → Year) to see processing options.
+                        </p>
                       </div>
+                    )}
                     
                   </div>
                 </div>
