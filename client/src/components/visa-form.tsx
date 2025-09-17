@@ -847,32 +847,24 @@ export function VisaForm() {
         return;
       }
       
-      // Check if processing fee is selected after date completion
-      if (!documentProcessingType) {
-        toast({
-          title: "Processing Fee Required",
-          description: "Please select a processing fee option to continue",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      // Additional validation: Check if processing type based on supporting document status
+      // Check processing fee selection based on user type
       if (hasSupportingDocument === true) {
+        // Supporting document users: require documentProcessingType
         if (!documentProcessingType) {
           toast({
-            title: "Processing Type Required",
-            description: "Please select a processing type",
+            title: "Processing Fee Required",
+            description: "Please select a processing fee option to continue",
             variant: "destructive",
           });
           return;
         }
-      } else if (hasSupportingDocument === false) {
+      } else {
+        // Standard users: require form.processingType OR documentProcessingType
         const processingType = form.getValues("processingType");
         if (!processingType && !documentProcessingType) {
           toast({
-            title: "Processing Type Required",
-            description: "Please select a processing type",
+            title: "Processing Fee Required",
+            description: "Please select a processing fee option to continue",
             variant: "destructive",
           });
           return;
