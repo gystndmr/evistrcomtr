@@ -61,10 +61,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         supportingDocumentEndDate: req.body.supportingDocumentEndDate ? new Date(req.body.supportingDocumentEndDate) : undefined,
       };
 
-      // Use totalAmount from frontend (already calculated correctly in payment step)
+      // Parse initial data WITHOUT totalAmount (will calculate after scenario normalization)
       const validatedData = insertApplicationSchema.parse({
         ...bodyWithDates,
-        totalAmount: req.body.totalAmount // Use frontend's correct calculation from payment step
+        totalAmount: "0" // Temporary value, will be recalculated after scenario normalization
       });
 
       // BACKEND SCENARIO VALIDATION - Enforce scenario rules
@@ -132,8 +132,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         console.log(`✅ Scenario validation passed: Country=${country.code}, Scenario=${effectiveScenario}, HasSupporting=${hasSupporting}`);
         
-        // ✅ FIXED: Use frontend's totalAmount (already calculated correctly in payment step)
-        console.log(`💰 Using frontend totalAmount: $${validatedData.totalAmount} (no backend recalculation)`);
+        // CALCULATE TOTAL AMOUNT AFTER SCENARIO NORMALIZATION
+        // Processing types (matching frontend exactly)
+        const processingTypes = {
+          'slow': 90,      // Ready in 7 days
+          'standard': 155, // Ready in 4 days  
+          'fast': 205,     // Ready in 2 days
+          'urgent_24': 320, // Ready in 24 hours
+          'urgent_12': 370, // Ready in 12 hours
+          'urgent_4': 450,  // Ready in 4 hours
+          'urgent_1': 685   // Ready in 1 hour
+        };
+        
+        // Use NORMALIZED data for pricing calculation
+        const finalHasSupporting = validatedData.supportingDocumentType && validatedData.supportingDocumentType !== '';
+        const finalProcessingType = validatedData.processingType || 'slow';
+        
+        let calculatedTotalAmount = 90; // Default fallback
+        
+        const eVisaFee = 69; // Base e-visa application fee (same as frontend)
+        const processingFee = processingTypes[finalProcessingType as keyof typeof processingTypes] || 90;
+        
+        // All applications: processing fee + e-visa fee (same calculation regardless of supporting docs)
+        calculatedTotalAmount = processingFee + eVisaFee;
+        
+        // Update the validated data with correct total amount
+        validatedData.totalAmount = calculatedTotalAmount.toString();
+        
+        console.log(`💰 Final pricing calculation: ProcessingType=${finalProcessingType}, HasSupporting=${finalHasSupporting}, TotalAmount=$${calculatedTotalAmount}`);
         
       } catch (validationError) {
         console.error("Scenario validation error:", validationError);

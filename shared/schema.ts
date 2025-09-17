@@ -130,31 +130,6 @@ export const insertCountrySchema = createInsertSchema(countries);
 export const insertApplicationSchema = createInsertSchema(applications).extend({
   // Make totalAmount optional since it's calculated on the backend based on processing type
   totalAmount: z.string().optional(),
-}).superRefine((data, ctx) => {
-  // If user has supporting documents, validate that all supporting document fields are provided
-  if (data.supportingDocumentType && data.supportingDocumentType !== '') {
-    if (!data.supportingDocumentNumber || data.supportingDocumentNumber.trim() === '') {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Document number is required when you have supporting documents",
-        path: ["supportingDocumentNumber"],
-      });
-    }
-    if (!data.supportingDocumentStartDate) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Document start date is required when you have supporting documents",
-        path: ["supportingDocumentStartDate"],
-      });
-    }
-    if (!data.supportingDocumentEndDate) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Document end date is required when you have supporting documents",
-        path: ["supportingDocumentEndDate"],
-      });
-    }
-  }
 });
 export const insertInsuranceProductSchema = createInsertSchema(insuranceProducts);
 export const insertInsuranceApplicationSchema = createInsertSchema(insuranceApplications).omit({ 
