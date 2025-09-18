@@ -1711,7 +1711,7 @@ export function VisaForm() {
                                   </Select>
                                 </div>
                                 <div className="text-xs text-muted-foreground">
-                                  📅 Önce gün, sonra ay, sonra yıl seçiniz
+                                  📅 Select day, then month, then year
                                 </div>
                               </div>
                             </FormControl>
@@ -1737,7 +1737,7 @@ export function VisaForm() {
                             <Label htmlFor="processingType">Processing Fee *</Label>
                             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                               <p className="text-gray-600 text-sm">
-                                📅 Önce tam tarih seçimi yapınız (Gün + Ay + Yıl) processing fee seçeneklerini görmek için.
+                                📅 Complete date selection first (Day + Month + Year) to view processing fee options.
                               </p>
                             </div>
                           </div>
