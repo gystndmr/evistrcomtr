@@ -321,7 +321,10 @@ export function VisaForm() {
       
       // Reset supporting document processing type if no longer available
       if (documentProcessingType && !supportingTypes.some(type => type.value === documentProcessingType)) {
-        setDocumentProcessingType(supportingTypes.length > 0 ? supportingTypes[0].value : "");
+        const newValue = supportingTypes.length > 0 ? supportingTypes[0].value : "";
+        setDocumentProcessingType(newValue);
+        // FIXED: Also update form field for validation
+        form.setValue("processingType", newValue);
         toast({
           title: "İşlem Türü Güncellendi", 
           description: "Varış tarihinize göre işlem türü otomatik olarak ayarlandı.",
@@ -333,6 +336,13 @@ export function VisaForm() {
       setAvailableSupportingDocTypes(supportingDocProcessingTypes);
     }
   }, [watchedArrivalDate, form, documentProcessingType, toast]);
+
+  // Sync documentProcessingType to form field for validation
+  useEffect(() => {
+    if (documentProcessingType) {
+      form.setValue("processingType", documentProcessingType);
+    }
+  }, [documentProcessingType, form]);
 
   // Sync supporting document details to form fields when they change
   useEffect(() => {
