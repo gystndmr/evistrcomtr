@@ -797,7 +797,8 @@ export function VisaForm() {
       }
       
       // Check if processing fee is selected (REQUIRED for all cases when complete date is selected)
-      if (!documentProcessingType) {
+      const currentProcessingType = form.getValues("processingType");
+      if (!currentProcessingType) {
         toast({
           title: "Processing Fee Required",
           description: "Please select a processing fee option after completing date selection",
