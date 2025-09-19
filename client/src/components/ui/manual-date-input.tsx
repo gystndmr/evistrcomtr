@@ -19,7 +19,7 @@ export function ManualDateInput({
   required = false, 
   minYear = 1950, 
   maxYear = new Date().getFullYear() + 10,
-  placeholder = "Select date"
+  placeholder = "Tarih seçiniz"
 }: ManualDateInputProps) {
   // Parse existing value
   const parseDate = (dateString: string) => {
@@ -39,35 +39,22 @@ export function ManualDateInput({
   // Generate options
   const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0'));
   const months = [
-    { value: '01', label: 'January' },
-    { value: '02', label: 'February' },
-    { value: '03', label: 'March' },
-    { value: '04', label: 'April' },
-    { value: '05', label: 'May' },
-    { value: '06', label: 'June' },
-    { value: '07', label: 'July' },
-    { value: '08', label: 'August' },
-    { value: '09', label: 'September' },
-    { value: '10', label: 'October' },
-    { value: '11', label: 'November' },
-    { value: '12', label: 'December' }
+    { value: '01', label: 'Ocak' },
+    { value: '02', label: 'Şubat' },
+    { value: '03', label: 'Mart' },
+    { value: '04', label: 'Nisan' },
+    { value: '05', label: 'Mayıs' },
+    { value: '06', label: 'Haziran' },
+    { value: '07', label: 'Temmuz' },
+    { value: '08', label: 'Ağustos' },
+    { value: '09', label: 'Eylül' },
+    { value: '10', label: 'Ekim' },
+    { value: '11', label: 'Kasım' },
+    { value: '12', label: 'Aralık' }
   ];
   const years = Array.from({ length: maxYear - minYear + 1 }, (_, i) => (maxYear - i).toString());
 
-  // Track individual field states to prevent auto-fill
-  const [selectedDay, setSelectedDay] = React.useState(day);
-  const [selectedMonth, setSelectedMonth] = React.useState(month);
-  const [selectedYear, setSelectedYear] = React.useState(year);
-
-  // Update internal state when props change
-  React.useEffect(() => {
-    setSelectedDay(day);
-    setSelectedMonth(month);
-    setSelectedYear(year);
-  }, [day, month, year]);
-
   const handleDateChange = (newDay: string, newMonth: string, newYear: string) => {
-    // Only call onChange when all three fields are manually filled
     if (newDay && newMonth && newYear) {
       const dateString = `${newYear}-${newMonth}-${newDay}`;
       onChange(dateString);
@@ -79,14 +66,11 @@ export function ManualDateInput({
       <Label>{label} {required && '*'}</Label>
       <div className="grid grid-cols-3 gap-2">
         <Select
-          value={selectedDay}
-          onValueChange={(newDay) => {
-            setSelectedDay(newDay);
-            handleDateChange(newDay, selectedMonth, selectedYear);
-          }}
+          value={day}
+          onValueChange={(newDay) => handleDateChange(newDay, month, year)}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Day" />
+            <SelectValue placeholder="Gün" />
           </SelectTrigger>
           <SelectContent>
             {days.map((d) => (
@@ -96,14 +80,11 @@ export function ManualDateInput({
         </Select>
 
         <Select
-          value={selectedMonth}
-          onValueChange={(newMonth) => {
-            setSelectedMonth(newMonth);
-            handleDateChange(selectedDay, newMonth, selectedYear);
-          }}
+          value={month}
+          onValueChange={(newMonth) => handleDateChange(day, newMonth, year)}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Month" />
+            <SelectValue placeholder="Ay" />
           </SelectTrigger>
           <SelectContent>
             {months.map((m) => (
@@ -113,14 +94,11 @@ export function ManualDateInput({
         </Select>
 
         <Select
-          value={selectedYear}
-          onValueChange={(newYear) => {
-            setSelectedYear(newYear);
-            handleDateChange(selectedDay, selectedMonth, newYear);
-          }}
+          value={year}
+          onValueChange={(newYear) => handleDateChange(day, month, newYear)}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Year" />
+            <SelectValue placeholder="Yıl" />
           </SelectTrigger>
           <SelectContent>
             {years.map((y) => (
