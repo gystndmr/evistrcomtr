@@ -12,6 +12,7 @@ import { Shield, CheckCircle, Calendar, MapPin, Star, Crown } from "lucide-react
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { PaymentRetry } from "@/components/payment-retry";
+import { ManualDateInput } from "@/components/ui/manual-date-input";
 import teamPhoto from "@/assets/team-photo-new.png";
 import type { InsuranceProduct } from "@shared/schema";
 
@@ -561,277 +562,57 @@ export default function Insurance() {
               {/* Travel Dates */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div>
-                  <Label>Travel Date * (Cannot be in the past)</Label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    <Select
-                      value={applicationData.travelDate ? applicationData.travelDate.split('-')[2] : ''}
-                      onValueChange={(day) => {
-                        const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const year = parts[0] || new Date().getFullYear().toString();
-                        const month = parts[1] || '01';
-                        const newDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-                        
-                        // Only validate after all parts are selected (day, month, year)
-                        const dateparts = newDate.split('-');
-                        const hasValidYear = dateparts[0] && dateparts[0].length === 4 && dateparts[0] !== new Date().getFullYear().toString();
-                        const hasValidMonth = dateparts[1] && dateparts[1] !== '01';
-                        const hasValidDay = dateparts[2] && dateparts[2] !== '01';
-                        const isCompleteDate = hasValidYear && hasValidMonth && hasValidDay;
-                        
-                        if (isCompleteDate) {
-                          const selectedDate = new Date(newDate);
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0);
-                          
-                          if (selectedDate.getTime() < today.getTime()) {
-                            toast({
-                              title: "❌ Past Date Not Allowed",
-                              description: "Travel date must be today or in the future!",
-                              variant: "destructive",
-                            });
-                            return;
-                          }
-                        }
-                        
-                        handleInputChange("travelDate", newDate);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Day" />
-                      </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
-                        {(() => {
-                          // Smart day filtering based on current month/year selection
-                          const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [];
-                          const selectedYear = parseInt(parts[0] || new Date().getFullYear().toString());
-                          const selectedMonth = parseInt(parts[1] || '01');
-                          const today = new Date();
-                          const currentYear = today.getFullYear();
-                          const currentMonth = today.getMonth() + 1;
-                          const currentDay = today.getDate();
-                          
-                          let availableDays = Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0'));
-                          
-                          // If it's current year and current month, filter out past days
-                          if (selectedYear === currentYear && selectedMonth === currentMonth) {
-                            availableDays = availableDays.filter(d => parseInt(d) >= currentDay);
-                          }
-                          
-                          return availableDays.map((d) => (
-                            <SelectItem key={d} value={d}>{d}</SelectItem>
-                          ));
-                        })()}
-                      </SelectContent>
-                    </Select>
-
-                    <Select
-                      value={applicationData.travelDate ? applicationData.travelDate.split('-')[1] : ''}
-                      onValueChange={(month) => {
-                        const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const year = parts[0] || new Date().getFullYear().toString();
-                        const day = parts[2] || '01';
-                        const newDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-                        
-                        // Only validate after all parts are selected (day, month, year)
-                        const dateparts = newDate.split('-');
-                        const hasValidYear = dateparts[0] && dateparts[0].length === 4 && dateparts[0] !== new Date().getFullYear().toString();
-                        const hasValidMonth = dateparts[1] && dateparts[1] !== '01';
-                        const hasValidDay = dateparts[2] && dateparts[2] !== '01';
-                        const isCompleteDate = hasValidYear && hasValidMonth && hasValidDay;
-                        
-                        if (isCompleteDate) {
-                          const selectedDate = new Date(newDate);
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0);
-                          
-                          if (selectedDate.getTime() < today.getTime()) {
-                            toast({
-                              title: "❌ Past Date Not Allowed",
-                              description: "Travel date must be today or in the future!",
-                              variant: "destructive",
-                            });
-                            return;
-                          }
-                        }
-                        
-                        handleInputChange("travelDate", newDate);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Month" />
-                      </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
-                        {(() => {
-                          const months = [
-                            { value: '01', label: 'January' },
-                            { value: '02', label: 'February' },
-                            { value: '03', label: 'March' },
-                            { value: '04', label: 'April' },
-                            { value: '05', label: 'May' },
-                            { value: '06', label: 'June' },
-                            { value: '07', label: 'July' },
-                            { value: '08', label: 'August' },
-                            { value: '09', label: 'September' },
-                            { value: '10', label: 'October' },
-                            { value: '11', label: 'November' },
-                            { value: '12', label: 'December' }
-                          ];
-                          
-                          // Smart month filtering for current year
-                          const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [];
-                          const selectedYear = parseInt(parts[0] || new Date().getFullYear().toString());
-                          const today = new Date();
-                          const currentYear = today.getFullYear();
-                          const currentMonth = today.getMonth() + 1;
-                          
-                          let availableMonths = months;
-                          
-                          // If current year, filter out past months
-                          // If past year, show no months
-                          if (selectedYear < currentYear) {
-                            availableMonths = [];
-                          } else if (selectedYear === currentYear) {
-                            availableMonths = months.filter(m => parseInt(m.value) >= currentMonth);
-                          }
-                          
-                          return availableMonths.map((m) => (
-                            <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                          ));
-                        })()}
-                      </SelectContent>
-                    </Select>
-
-                    <Select
-                      value={applicationData.travelDate ? applicationData.travelDate.split('-')[0] : ''}
-                      onValueChange={(year) => {
-                        const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const month = parts[1] || '01';
-                        const day = parts[2] || '01';
-                        const newDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-                        
-                        // Only validate after all parts are selected (day, month, year)
-                        const dateparts = newDate.split('-');
-                        const hasValidYear = dateparts[0] && dateparts[0].length === 4 && dateparts[0] !== new Date().getFullYear().toString();
-                        const hasValidMonth = dateparts[1] && dateparts[1] !== '01';
-                        const hasValidDay = dateparts[2] && dateparts[2] !== '01';
-                        const isCompleteDate = hasValidYear && hasValidMonth && hasValidDay;
-                        
-                        if (isCompleteDate) {
-                          const selectedDate = new Date(newDate);
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0);
-                          
-                          if (selectedDate.getTime() < today.getTime()) {
-                            toast({
-                              title: "❌ Past Date Not Allowed",
-                              description: "Travel date must be today or in the future!",
-                              variant: "destructive",
-                            });
-                            return;
-                          }
-                        }
-                        
-                        handleInputChange("travelDate", newDate);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Year" />
-                      </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
-                        {/* Only show current year and future years */}
-                        {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
-                          <SelectItem key={y} value={y}>{y}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <ManualDateInput
+                    label="Travel Date * (Cannot be in the past)"
+                    value={applicationData.travelDate}
+                    onChange={(date) => {
+                      // Validate that travel date is not in the past
+                      const selectedDate = new Date(date);
+                      const today = new Date();
+                      today.setHours(0, 0, 0, 0);
+                      
+                      if (selectedDate.getTime() < today.getTime()) {
+                        toast({
+                          title: "❌ Past Date Not Allowed",
+                          description: "Travel date must be today or in the future!",
+                          variant: "destructive",
+                        });
+                        return;
+                      }
+                      
+                      handleInputChange("travelDate", date);
+                    }}
+                    minYear={new Date().getFullYear()}
+                    maxYear={new Date().getFullYear() + 10}
+                  />
                 </div>
                 <div>
-                  <Label>Return Date *</Label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    <Select
-                      value={applicationData.returnDate ? applicationData.returnDate.split('-')[2] : ''}
-                      onValueChange={(day) => {
-                        const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const year = parts[0] || new Date().getFullYear().toString();
-                        const month = parts[1] || '01';
-                        handleInputChange("returnDate", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Day" />
-                      </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
-                        {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
-                          <SelectItem key={d} value={d}>{d}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Select
-                      value={applicationData.returnDate ? applicationData.returnDate.split('-')[1] : ''}
-                      onValueChange={(month) => {
-                        const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const year = parts[0] || new Date().getFullYear().toString();
-                        const day = parts[2] || '01';
-                        handleInputChange("returnDate", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Month" />
-                      </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
-                        {[
-                          { value: '01', label: 'January' },
-                          { value: '02', label: 'February' },
-                          { value: '03', label: 'March' },
-                          { value: '04', label: 'April' },
-                          { value: '05', label: 'May' },
-                          { value: '06', label: 'June' },
-                          { value: '07', label: 'July' },
-                          { value: '08', label: 'August' },
-                          { value: '09', label: 'September' },
-                          { value: '10', label: 'October' },
-                          { value: '11', label: 'November' },
-                          { value: '12', label: 'December' }
-                        ].map((m) => (
-                          <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Select
-                      value={applicationData.returnDate ? applicationData.returnDate.split('-')[0] : ''}
-                      onValueChange={(year) => {
-                        const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const month = parts[1] || '01';
-                        const day = parts[2] || '01';
-                        handleInputChange("returnDate", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Year" />
-                      </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
-                        {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
-                          <SelectItem key={y} value={y}>{y}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <ManualDateInput
+                    label="Return Date *"
+                    value={applicationData.returnDate}
+                    onChange={(date) => handleInputChange("returnDate", date)}
+                    minYear={new Date().getFullYear()}
+                    maxYear={new Date().getFullYear() + 10}
+                  />
                 </div>
               </div>
 
               {/* Date of Birth */}
               <div>
-                <Label>Date of Birth *</Label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <ManualDateInput
+                  label="Date of Birth *"
+                  value={applicationData.dateOfBirth}
+                  onChange={(date) => handleInputChange("dateOfBirth", date)}
+                  minYear={1950}
+                  maxYear={new Date().getFullYear() - 10}
+                />
                   <Select
                     value={applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-')[2] : ''}
                     onValueChange={(day) => {
-                      const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : ['1990', '01', '01'];
-                      const year = parts[0] || '1990';
-                      const month = parts[1] || '01';
+                      const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : ['', '', ''];
+                      const year = parts[0];
+                      const month = parts[1];
+                      if (!day || !month || !year) return;
                       handleInputChange("dateOfBirth", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                     }}
                   >
@@ -848,9 +629,10 @@ export default function Insurance() {
                   <Select
                     value={applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-')[1] : ''}
                     onValueChange={(month) => {
-                      const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : ['1990', '01', '01'];
-                      const year = parts[0] || '1990';
-                      const day = parts[2] || '01';
+                      const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : ['', '', ''];
+                      const year = parts[0];
+                      const day = parts[2];
+                      if (!day || !month || !year) return;
                       handleInputChange("dateOfBirth", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                     }}
                   >
@@ -880,9 +662,10 @@ export default function Insurance() {
                   <Select
                     value={applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-')[0] : ''}
                     onValueChange={(year) => {
-                      const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : ['1990', '01', '01'];
-                      const month = parts[1] || '01';
-                      const day = parts[2] || '01';
+                      const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : ['', '', ''];
+                      const month = parts[1];
+                      const day = parts[2];
+                      if (!day || !month || !year) return;
                       handleInputChange("dateOfBirth", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
                     }}
                   >
