@@ -2291,8 +2291,8 @@ export function VisaForm() {
                       className="mt-1 mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                       data-testid="terms-checkbox"
                     />
-                    <span className="text-sm text-gray-700 leading-relaxed">
-                      I have read and agree to the{' '}
+                    <span className="text-sm text-gray-700">
+                      I have read and agree the{' '}
                       <a 
                         href="/privacy-policy" 
                         target="_blank" 
@@ -2308,9 +2308,8 @@ export function VisaForm() {
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:text-blue-800 underline font-medium"
                       >
-                        Terms and Conditions
+                        Terms & Conditions
                       </a>
-                      . I understand that my personal information will be processed in accordance with these policies.
                     </span>
                   </label>
                 </div>
