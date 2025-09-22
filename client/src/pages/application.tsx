@@ -35,7 +35,7 @@ export default function Application() {
       <section className="relative bg-gradient-to-br from-blue-50 to-red-50">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?q=80&w=2071&auto=format&fit=crop')] bg-cover bg-center opacity-5"></div>
         
-        <div className="relative max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-6 lg:pt-8">
+        <div className="relative max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
           <VisaForm />
         </div>
       </section>
