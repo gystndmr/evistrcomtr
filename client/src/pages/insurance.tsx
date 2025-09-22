@@ -12,7 +12,8 @@ import { Shield, CheckCircle, Calendar, MapPin, Star, Crown } from "lucide-react
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { PaymentRetry } from "@/components/payment-retry";
-import teamPhoto from "@/assets/team-photo-new.png";
+import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
+import turkeyLogo from "@/assets/turkey-logo.png";
 import type { InsuranceProduct } from "@shared/schema";
 
 export default function Insurance() {
@@ -457,24 +458,36 @@ export default function Insurance() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      {/* Simple Header */}
-      <section className="bg-white py-4 sm:py-6 lg:py-8 border-b border-gray-200">
+      {/* Professional Turkish Header with Flag */}
+      <section className="bg-gradient-to-r from-red-600 to-red-700 py-6 sm:py-8 lg:py-10 border-b-4 border-gold-400">
         <div className="max-w-4xl mx-auto px-2 sm:px-4 lg:px-8">
+          <div className="flex items-center justify-center space-x-4 mb-4">
+            <img 
+              src={turkeyFlag} 
+              alt="Republic of Turkey Flag" 
+              className="w-12 h-8 sm:w-16 sm:h-10 object-cover rounded shadow-md"
+            />
+            <div className="text-center">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-1">Republic of Turkey</h1>
+              <h2 className="text-lg sm:text-xl font-semibold text-red-100">Travel Insurance Application</h2>
+            </div>
+            <img 
+              src={turkeyFlag} 
+              alt="Republic of Turkey Flag" 
+              className="w-12 h-8 sm:w-16 sm:h-10 object-cover rounded shadow-md"
+            />
+          </div>
           <div className="text-center">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">Turkey Travel Insurance</h1>
-            <p className="text-sm sm:text-base text-gray-600">Complete your application below</p>
+            <p className="text-sm sm:text-base text-red-100 font-medium">Official Travel Insurance Services</p>
+            <div className="flex items-center justify-center space-x-2 mt-2">
+              <Shield className="w-4 h-4 text-yellow-300" />
+              <span className="text-xs text-yellow-100">Secure • Professional • Government-Style</span>
+              <Shield className="w-4 h-4 text-yellow-300" />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Team Photo - Full Width & Short */}
-      <div className="w-full mb-2 sm:mb-4">
-        <img 
-          src={teamPhoto}
-          alt="Our Professional Team"
-          className="w-full h-24 sm:h-32 md:h-36 lg:h-40 object-cover object-center"
-        />
-      </div>
 
       {/* Main Form */}
       <main className="max-w-4xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
