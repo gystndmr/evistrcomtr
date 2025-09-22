@@ -38,7 +38,7 @@ function Router() {
       <Route path="/admin" component={Admin} />
       <Route path="/chat-admin" component={ChatAdmin} />
       <Route path="/debug-payment" component={DebugPayment} />
-      <Route path="/payment-success" component={PaymentSuccess} />
+      <Route path="/payment/success" component={PaymentSuccess} />
       <Route path="/payment/cancel" component={PaymentCancel} />
       <Route path="/payment/error" component={PaymentError} />
       <Route path="/gpay-status" component={GPayStatus} />

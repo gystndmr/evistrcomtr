@@ -7,13 +7,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-// TypeScript declaration for gtag function
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
-
 export default function PaymentSuccess() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
@@ -41,24 +34,6 @@ export default function PaymentSuccess() {
             setApplicationData(data);
             if (data.paymentStatus === 'succeeded' || data.paymentStatus === 'completed') {
               setPaymentVerified(true);
-              
-              // Fire Google Ads conversion event for successful payments
-              if (window.gtag && paymentStatus === 'success') {
-                const conversionValue = parseFloat(data.totalAmount) || 0;
-                console.log('🎯 Firing Google Ads conversion event:', {
-                  orderId,
-                  value: conversionValue,
-                  transactionId
-                });
-                
-                // Fire the conversion event
-                window.gtag('event', 'conversion', {
-                  send_to: 'AW-11464378439', // Add your conversion label after this: /CONVERSION_LABEL
-                  value: conversionValue,
-                  currency: 'USD',
-                  transaction_id: orderId
-                });
-              }
             } else {
               setPaymentVerified(false);
             }
