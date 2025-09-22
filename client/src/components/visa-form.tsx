@@ -2294,7 +2294,7 @@ export function VisaForm() {
                     <span className="text-sm text-gray-700">
                       I have read and agree the{' '}
                       <a 
-                        href="/privacy-policy" 
+                        href="/privacy" 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:text-blue-800 underline font-medium"
@@ -2303,7 +2303,7 @@ export function VisaForm() {
                       </a>
                       {' '}and{' '}
                       <a 
-                        href="/terms-and-conditions" 
+                        href="/terms" 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="text-blue-600 hover:text-blue-800 underline font-medium"
