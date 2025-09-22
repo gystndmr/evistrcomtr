@@ -1150,7 +1150,7 @@ export function VisaForm() {
 
   return (
     <div className="max-w-4xl mx-auto px-2 sm:px-0">
-      <Card>
+      <Card className="mb-0">
         <CardHeader>
           <CardTitle>{t("app.form.title")}</CardTitle>
           
