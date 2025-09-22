@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,9 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Shield, CheckCircle, Calendar, MapPin, Star, Crown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+// PaymentForm removed - now using direct redirects
 import { PaymentRetry } from "@/components/payment-retry";
-import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
-import turkeyLogo from "@/assets/turkey-logo.png";
 import type { InsuranceProduct } from "@shared/schema";
 
 export default function Insurance() {
@@ -28,16 +27,12 @@ export default function Insurance() {
     lastName: "",
     email: "",
     phone: "",
-    nationality: "",
-    passportNumber: "",
-    travelDate: "", // Empty to force user selection
-    returnDate: "", // Empty to force user selection
+    travelDate: "",
+    returnDate: "",
     destination: "Turkey",
-    dateOfBirth: "", // Empty to force user selection
+    dateOfBirth: "",
   });
   const [parentIdPhotos, setParentIdPhotos] = useState<File[]>([]);
-  const [motherIdPhotos, setMotherIdPhotos] = useState<File[]>([]);
-  const [fatherIdPhotos, setFatherIdPhotos] = useState<File[]>([]);
   const [showRetry, setShowRetry] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState<string>("");
   const [paymentRedirectUrl, setPaymentRedirectUrl] = useState<string>("");
@@ -45,17 +40,8 @@ export default function Insurance() {
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["/api/insurance/products"],
-    staleTime: 5 * 60 * 1000,
+    staleTime: 5 * 60 * 1000, // 5 minutes cache
   }) as { data: InsuranceProduct[], isLoading: boolean };
-
-  // Load countries for nationality dropdown
-  const { data: countries = [] } = useQuery({
-    queryKey: ["/api/countries"],
-    staleTime: 10 * 60 * 1000, // 10 minutes cache
-  }) as { data: any[], isLoading: boolean };
-
-  // Sort countries alphabetically by name
-  const sortedCountries = [...countries].sort((a, b) => a.name.localeCompare(b.name));
 
   // Sort products in the order: 7, 14, 30, 60, 90, 180, 1 year
   const sortedProducts = [...products].sort((a, b) => {
@@ -82,103 +68,38 @@ export default function Insurance() {
       const diffTime = Math.abs(returnDate.getTime() - travelDate.getTime());
       const tripDurationDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       
-      // Prepare parent ID photos data for under 18 (combine mother and father photos)
-      const allParentPhotos = [...motherIdPhotos, ...fatherIdPhotos, ...parentIdPhotos];
-      const parentIdPhotosData = allParentPhotos.length > 0 ? 
-        await Promise.all(allParentPhotos.map(async (file) => {
+      // Prepare parent ID photos data for under 18
+      const parentIdPhotosData = parentIdPhotos.length > 0 ? 
+        await Promise.all(parentIdPhotos.map(async (file) => {
           const base64 = await new Promise<string>((resolve) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result as string);
             reader.readAsDataURL(file);
           });
-          return { 
-            name: file.name, 
-            data: base64,
-            type: motherIdPhotos.includes(file) ? 'mother' : fatherIdPhotos.includes(file) ? 'father' : 'parent'
-          };
+          return { name: file.name, data: base64 };
         })) : null;
 
-      // First create the insurance application with mapped field names
-      console.log('Making insurance application request...');
-      console.log('🔍 Frontend URL being used:', "/api/insurance-applications");
-      const applicationPayload = {
-        firstName: applicationData.firstName,
-        lastName: applicationData.lastName,
-        email: applicationData.email,
-        phone: applicationData.phone,
-        travelDate: applicationData.travelDate,
-        returnDate: applicationData.returnDate,
-        destination: applicationData.destination,
+      // First create the insurance application
+      const applicationResponse = await apiRequest("POST", "/api/insurance/applications", {
+        ...applicationData,
         productId: selectedProduct.id,
         totalAmount: selectedProduct.price,
         tripDurationDays: tripDurationDays,
         dateOfBirth: applicationData.dateOfBirth,
-        nationality: applicationData.nationality,
-        passportNumber: applicationData.passportNumber,
         parentIdPhotos: parentIdPhotosData,
-        countryOfOrigin: applicationData.nationality || countryFromUrl,
-      };
-      console.log('Application payload:', applicationPayload);
-      
-      const applicationResponse = await fetch("/api/insurance/applications", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify(applicationPayload),
+        countryOfOrigin: countryFromUrl,
       });
-      
-      console.log('Application response status:', applicationResponse.status);
-      console.log('Application response headers:', Object.fromEntries(applicationResponse.headers));
-      
-      if (!applicationResponse.ok) {
-        const errorText = await applicationResponse.text();
-        console.error('Application response error:', errorText);
-        console.error('Application response URL:', applicationResponse.url);
-        console.error('Application response type:', applicationResponse.type);
-        throw new Error(`Application failed: ${applicationResponse.status} - ${errorText}`);
-      }
-      
-      // Check if response is actually JSON
-      const contentType = applicationResponse.headers.get('content-type');
-      console.log('Application response content-type:', contentType);
-      if (!contentType || !contentType.includes('application/json')) {
-        const responseText = await applicationResponse.text();
-        console.error('Expected JSON but got:', responseText);
-        throw new Error(`Server returned non-JSON response: ${contentType}`);
-      }
-      
       const applicationData2 = await applicationResponse.json();
       
-      // Then create payment
-      console.log('Making payment request...');
-      const paymentPayload = {
+      // Then create payment - let server generate unique orderRef
+      const paymentResponse = await apiRequest("POST", "/api/payment/create", {
         amount: selectedProduct.price,
         currency: "USD",
         description: `Turkey Travel Insurance - ${selectedProduct.name}`,
         customerEmail: applicationData.email,
         customerName: `${applicationData.firstName} ${applicationData.lastName}`
-      };
-      console.log('Payment payload:', paymentPayload);
-      
-      const paymentResponse = await fetch("/api/payment/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify(paymentPayload),
+        // Removed orderId - server will generate unique orderRef automatically
       });
-      
-      console.log('Payment response status:', paymentResponse.status);
-      console.log('Payment response headers:', Object.fromEntries(paymentResponse.headers));
-      
-      if (!paymentResponse.ok) {
-        const errorText = await paymentResponse.text();
-        console.error('Payment response error:', errorText);
-        throw new Error(`Payment failed: ${paymentResponse.status} - ${errorText}`);
-      }
       
       const paymentData = await paymentResponse.json();
       
@@ -186,61 +107,59 @@ export default function Insurance() {
         setCurrentOrderId(applicationData2.applicationNumber);
         setPaymentRedirectUrl(paymentData.paymentUrl);
         
-        // Enhanced redirect approach for mobile compatibility
+        // Enhanced redirect approach for mobile compatibility with debugging
         const redirectToPayment = () => {
           try {
             console.log('[Insurance Payment Debug] Starting redirect process');
             console.log('[Insurance Payment Debug] Payment URL:', paymentData.paymentUrl);
+            console.log('[Insurance Payment Debug] User Agent:', navigator.userAgent);
             
             // Always show success toast first
             toast({
-              title: "Application Submitted Successfully!",
-              description: `Application ${applicationData2.applicationNumber} created. Redirecting to payment...`,
-              duration: 5000,
+              title: "Insurance Payment Created",
+              description: "Redirecting to secure payment page...",
+              duration: 3000,
             });
-            
-            // Enhanced redirect with multiple fallbacks for mobile
+
+            // Small delay to ensure toast is shown, then redirect
             setTimeout(() => {
-              try {
-                // For mobile devices - try window.open first, then fallback
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                
-                if (isMobile) {
-                  console.log('[Insurance Payment Debug] Mobile device detected');
-                  // Try window.open first for mobile
-                  const newWindow = window.open(paymentData.paymentUrl, '_blank');
-                  if (!newWindow) {
-                    console.log('[Insurance Payment Debug] Pop-up blocked, using location.href');
-                    window.location.href = paymentData.paymentUrl;
-                  }
-                } else {
-                  console.log('[Insurance Payment Debug] Desktop device, using location.href');
-                  window.location.href = paymentData.paymentUrl;
-                }
-              } catch (redirectError) {
-                console.error('[Insurance Payment Debug] Redirect failed:', redirectError);
-                // Ultimate fallback - just set the location
-                window.location.replace(paymentData.paymentUrl);
-              }
-            }, 300); // Reduced timeout for better mobile experience
-            
+              console.log('[Insurance Payment Debug] Executing redirect');
+              window.location.href = paymentData.paymentUrl;
+            }, 1500);
+
           } catch (error) {
-            console.error('[Insurance Payment Debug] Payment redirect error:', error);
-            setShowRetry(true);
+            console.error('[Insurance Payment Debug] Error during redirect:', error);
+            
+            // Fallback: Show manual button
+            toast({
+              title: "Payment Ready", 
+              description: "If redirect doesn't work, click the button below",
+              action: (
+                <Button 
+                  size="sm" 
+                  onClick={() => window.location.href = paymentData.paymentUrl}
+                  className="bg-green-600 hover:bg-green-700"
+                >
+                  Complete Payment
+                </Button>
+              ),
+              duration: 30000,
+            });
           }
         };
-        
+
+        // Execute redirect
         redirectToPayment();
-        return applicationData2;
+        
       } else {
-        throw new Error("Failed to create payment link");
+        throw new Error(paymentData.message || "Payment creation failed");
       }
     },
     onError: (error) => {
-      console.error("Insurance application error:", error);
+      console.error("Application submission error:", error);
       toast({
-        title: "Application Failed",
-        description: error instanceof Error ? error.message : "Please try again",
+        title: "Submission Failed",
+        description: error.message || "Please try again later",
         variant: "destructive",
       });
       setShowRetry(true);
@@ -254,194 +173,50 @@ export default function Insurance() {
     }));
   };
 
+  const handleParentIdPhotoUpload = (files: File[]) => {
+    setParentIdPhotos(files);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    console.log('=== FORM SUBMISSION DEBUG V3 ===');
-    console.log('Current applicationData:', applicationData);
-    console.log('selectedProduct:', selectedProduct);
-    console.log('Form validation starting...');
-    
-    // Form validation
     if (!selectedProduct) {
       toast({
-        title: "Insurance Plan Required",
+        title: "Selection Required",
         description: "Please select an insurance plan",
         variant: "destructive",
       });
       return;
     }
 
-    if (!applicationData.firstName.trim()) {
+    // Validate required fields
+    if (!applicationData.firstName || !applicationData.lastName || !applicationData.email || !applicationData.phone || !applicationData.travelDate || !applicationData.returnDate || !applicationData.dateOfBirth) {
       toast({
-        title: "First Name Required",
-        description: "Please enter your first name",
+        title: "Missing Information",
+        description: "Please fill in all required fields",
         variant: "destructive",
       });
       return;
     }
 
-    if (!applicationData.lastName.trim()) {
-      toast({
-        title: "Last Name Required", 
-        description: "Please enter your last name",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!applicationData.email.trim()) {
-      toast({
-        title: "Email Required",
-        description: "Please enter your email address",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!applicationData.phone.trim()) {
-      toast({
-        title: "Phone Required",
-        description: "Please enter your phone number",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!applicationData.nationality.trim()) {
-      toast({
-        title: "Nationality Required",
-        description: "Please select your nationality",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!applicationData.passportNumber.trim()) {
-      toast({
-        title: "Passport Number Required",
-        description: "Please enter your passport number",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    // Validate date completeness - check for valid YYYY-MM-DD format
-    const isValidDate = (dateStr: string) => {
-      if (!dateStr) return false;
-      const parts = dateStr.split('-');
-      if (parts.length !== 3) return false;
-      const [year, month, day] = parts;
-      return year && year.length === 4 && month && month.length === 2 && day && day.length === 2;
-    };
-
-    if (!isValidDate(applicationData.travelDate)) {
-      console.log('VALIDATION FAILED: Travel date invalid:', applicationData.travelDate);
-      toast({
-        title: "Travel Date Required",
-        description: "Please select all travel date fields (day, month, year)",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (!isValidDate(applicationData.returnDate)) {
-      console.log('VALIDATION FAILED: Return date invalid:', applicationData.returnDate);
-      toast({
-        title: "Return Date Required", 
-        description: "Please select all return date fields (day, month, year)",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    // Date validation - return date must be after travel date
-    const travelDate = new Date(applicationData.travelDate);
-    const returnDate = new Date(applicationData.returnDate);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Set to start of today for accurate comparison
-    
-    console.log('=== DATE VALIDATION DEBUG ===');
-    console.log('Travel Date String:', applicationData.travelDate);
-    console.log('Travel Date Object:', travelDate);
-    console.log('Today:', today);
-    console.log('travelDate < today:', travelDate < today);
-    console.log('travelDate.getTime():', travelDate.getTime());
-    console.log('today.getTime():', today.getTime());
-    
-    if (isNaN(travelDate.getTime()) || isNaN(returnDate.getTime())) {
-      console.log('VALIDATION FAILED: Invalid date parsing');
-      toast({
-        title: "Invalid Date Format",
-        description: "Please check your date selections",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // CRITICAL: Check if travel date is in the past - MUST BE STRICTLY ENFORCED
-    if (travelDate.getTime() < today.getTime()) {
-      console.log('🚨 VALIDATION FAILED: Travel date is in the past');
-      console.log('Travel date:', travelDate.toDateString(), '(' + travelDate.getTime() + ')');
-      console.log('Today:', today.toDateString(), '(' + today.getTime() + ')');
-      console.log('Difference in ms:', travelDate.getTime() - today.getTime());
-      toast({
-        title: "❌ Past Date Not Allowed",
-        description: "Travel date cannot be in the past! Please select today or a future date.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (returnDate <= travelDate) {
-      console.log('VALIDATION FAILED: Date range invalid');
-      console.log('Travel date:', applicationData.travelDate, 'Parsed:', travelDate);
-      console.log('Return date:', applicationData.returnDate, 'Parsed:', returnDate);
-      toast({
-        title: "Invalid Return Date",
-        description: "Return date must be after travel date",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!isValidDate(applicationData.dateOfBirth)) {
-      console.log('VALIDATION FAILED: Date of birth invalid:', applicationData.dateOfBirth);
-      toast({
-        title: "Date of Birth Required",
-        description: "Please select all birth date fields (day, month, year)",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Check if user is under 18 and parent ID photos are required
+    // Age validation for under 18 - require parent ID photos
     const birthDate = new Date(applicationData.dateOfBirth);
-    const currentDate = new Date();
-    const age = currentDate.getFullYear() - birthDate.getFullYear();
-    const monthDiff = currentDate.getMonth() - birthDate.getMonth();
-    
-    let actualAge = age;
-    if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())) {
-      actualAge--;
-    }
-    
-    if (actualAge < 18 && motherIdPhotos.length === 0 && fatherIdPhotos.length === 0 && parentIdPhotos.length === 0) {
+    const age = new Date().getFullYear() - birthDate.getFullYear();
+    if (age < 18 && parentIdPhotos.length === 0) {
       toast({
-        title: "Parent ID Photos Required",
-        description: "Applicants under 18 must upload at least one parent's ID photos",
+        title: "Ebeveyn Kimlik Belgesi Gerekli",
+        description: "18 yaşından küçük başvuranlar için ebeveyn kimlik belgesi yüklenmesi zorunludur.",
         variant: "destructive",
       });
       return;
     }
 
-    console.log('ALL VALIDATIONS PASSED - SUBMITTING FORM');
     createApplicationMutation.mutate();
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <Header />
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
@@ -458,643 +233,364 @@ export default function Insurance() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      {/* Professional Turkish Header with Flag */}
-      <section className="bg-gradient-to-r from-red-600 to-red-700 py-6 sm:py-8 lg:py-10 border-b-4 border-gold-400">
-        <div className="max-w-4xl mx-auto px-2 sm:px-4 lg:px-8">
-          <div className="flex items-center justify-center space-x-4 mb-4">
-            <img 
-              src={turkeyFlag} 
-              alt="Republic of Turkey Flag" 
-              className="w-12 h-8 sm:w-16 sm:h-10 object-cover rounded shadow-md"
-            />
-            <div className="text-center">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-1">Republic of Turkey</h1>
-              <h2 className="text-lg sm:text-xl font-semibold text-red-100">Travel Insurance Application</h2>
-            </div>
-            <img 
-              src={turkeyFlag} 
-              alt="Republic of Turkey Flag" 
-              className="w-12 h-8 sm:w-16 sm:h-10 object-cover rounded shadow-md"
-            />
-          </div>
+      {/* Simple Header */}
+      <section className="bg-white py-8 border-b border-gray-200">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <p className="text-sm sm:text-base text-red-100 font-medium">Official Travel Insurance Services</p>
-            <div className="flex items-center justify-center space-x-2 mt-2">
-              <Shield className="w-4 h-4 text-yellow-300" />
-              <span className="text-xs text-yellow-100">Secure • Professional • Government-Style</span>
-              <Shield className="w-4 h-4 text-yellow-300" />
-            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Turkey Travel Insurance</h1>
+            <p className="text-gray-600">Complete your application below</p>
           </div>
         </div>
       </section>
 
-
       {/* Main Form */}
-      <main className="max-w-4xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-xl shadow-lg border border-gray-200">
-          <div className="p-4 sm:p-6 lg:p-8">
-            <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8" noValidate key="insurance-form-v2">
+          <div className="p-8">
+            <form onSubmit={handleSubmit} className="space-y-8">
               
+              {/* Insurance Plan Selection */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Policy Period</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {sortedProducts.map((product: InsuranceProduct) => (
+                    <div key={product.id} className="relative">
+                      <input
+                        type="radio"
+                        name="insurance-product"
+                        id={`product-${product.id}`}
+                        checked={selectedProduct?.id === product.id}
+                        onChange={() => setSelectedProduct(product)}
+                        className="sr-only"
+                      />
+                      <label
+                        htmlFor={`product-${product.id}`}
+                        className={`block p-4 border rounded-lg cursor-pointer text-center transition-all ${
+                          selectedProduct?.id === product.id
+                            ? "border-blue-600 bg-blue-50"
+                            : "border-gray-300 hover:border-gray-400"
+                        }`}
+                      >
+                        <div className="font-semibold text-gray-900">{product.name.replace(" Coverage", "")}</div>
+                        <div className="text-lg font-bold text-blue-600">${product.price}</div>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
               {/* Personal Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                <div>
-                  <Label htmlFor="firstName">First Name *</Label>
-                  <Input
-                    id="firstName"
-                    type="text"
-                    value={applicationData.firstName}
-                    onChange={(e) => handleInputChange("firstName", e.target.value)}
-                    placeholder="Enter your first name"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="lastName">Last Name *</Label>
-                  <Input
-                    id="lastName"  
-                    type="text"
-                    value={applicationData.lastName}
-                    onChange={(e) => handleInputChange("lastName", e.target.value)}
-                    placeholder="Enter your last name"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email">Email Address *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={applicationData.email}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
-                    placeholder="Enter your email"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="phone">Phone Number *</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={applicationData.phone}
-                    onChange={(e) => handleInputChange("phone", e.target.value)}
-                    placeholder="Enter your phone number"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="nationality">Nationality *</Label>
-                  <Select
-                    value={applicationData.nationality}
-                    onValueChange={(value) => handleInputChange("nationality", value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your nationality" />
-                    </SelectTrigger>
-                    <SelectContent position="popper" side="bottom" align="start">
-                      {sortedCountries.map((country) => (
-                        <SelectItem key={country.id} value={country.name}>
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg">{country.flag}</span>
-                            <span>{country.name}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="passportNumber">Passport Number *</Label>
-                  <Input
-                    id="passportNumber"
-                    type="text"
-                    value={applicationData.passportNumber}
-                    onChange={(e) => handleInputChange("passportNumber", e.target.value)}
-                    placeholder="Enter your passport number"
-                  />
-                </div>
-              </div>
-
-              {/* Travel Dates */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                <div>
-                  <Label>Travel Date * (Cannot be in the past)</Label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    <Select
-                      value={applicationData.travelDate ? applicationData.travelDate.split('-')[2] : ''}
-                      onValueChange={(day) => {
-                        const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const year = parts[0] || new Date().getFullYear().toString();
-                        const month = parts[1] || '01';
-                        const newDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-                        
-                        // Only validate after all parts are selected (day, month, year)
-                        const dateparts = newDate.split('-');
-                        const hasValidYear = dateparts[0] && dateparts[0].length === 4 && dateparts[0] !== new Date().getFullYear().toString();
-                        const hasValidMonth = dateparts[1] && dateparts[1] !== '01';
-                        const hasValidDay = dateparts[2] && dateparts[2] !== '01';
-                        const isCompleteDate = hasValidYear && hasValidMonth && hasValidDay;
-                        
-                        if (isCompleteDate) {
-                          const selectedDate = new Date(newDate);
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0);
-                          
-                          if (selectedDate.getTime() < today.getTime()) {
-                            toast({
-                              title: "❌ Past Date Not Allowed",
-                              description: "Travel date must be today or in the future!",
-                              variant: "destructive",
-                            });
-                            return;
-                          }
-                        }
-                        
-                        handleInputChange("travelDate", newDate);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Day" />
-                      </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
-                        {(() => {
-                          // Smart day filtering based on current month/year selection
-                          const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [];
-                          const selectedYear = parseInt(parts[0] || new Date().getFullYear().toString());
-                          const selectedMonth = parseInt(parts[1] || '01');
-                          const today = new Date();
-                          const currentYear = today.getFullYear();
-                          const currentMonth = today.getMonth() + 1;
-                          const currentDay = today.getDate();
-                          
-                          let availableDays = Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0'));
-                          
-                          // If it's current year and current month, filter out past days
-                          if (selectedYear === currentYear && selectedMonth === currentMonth) {
-                            availableDays = availableDays.filter(d => parseInt(d) >= currentDay);
-                          }
-                          
-                          return availableDays.map((d) => (
-                            <SelectItem key={d} value={d}>{d}</SelectItem>
-                          ));
-                        })()}
-                      </SelectContent>
-                    </Select>
-
-                    <Select
-                      value={applicationData.travelDate ? applicationData.travelDate.split('-')[1] : ''}
-                      onValueChange={(month) => {
-                        const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const year = parts[0] || new Date().getFullYear().toString();
-                        const day = parts[2] || '01';
-                        const newDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-                        
-                        // Only validate after all parts are selected (day, month, year)
-                        const dateparts = newDate.split('-');
-                        const hasValidYear = dateparts[0] && dateparts[0].length === 4 && dateparts[0] !== new Date().getFullYear().toString();
-                        const hasValidMonth = dateparts[1] && dateparts[1] !== '01';
-                        const hasValidDay = dateparts[2] && dateparts[2] !== '01';
-                        const isCompleteDate = hasValidYear && hasValidMonth && hasValidDay;
-                        
-                        if (isCompleteDate) {
-                          const selectedDate = new Date(newDate);
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0);
-                          
-                          if (selectedDate.getTime() < today.getTime()) {
-                            toast({
-                              title: "❌ Past Date Not Allowed",
-                              description: "Travel date must be today or in the future!",
-                              variant: "destructive",
-                            });
-                            return;
-                          }
-                        }
-                        
-                        handleInputChange("travelDate", newDate);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Month" />
-                      </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
-                        {(() => {
-                          const months = [
-                            { value: '01', label: 'January' },
-                            { value: '02', label: 'February' },
-                            { value: '03', label: 'March' },
-                            { value: '04', label: 'April' },
-                            { value: '05', label: 'May' },
-                            { value: '06', label: 'June' },
-                            { value: '07', label: 'July' },
-                            { value: '08', label: 'August' },
-                            { value: '09', label: 'September' },
-                            { value: '10', label: 'October' },
-                            { value: '11', label: 'November' },
-                            { value: '12', label: 'December' }
-                          ];
-                          
-                          // Smart month filtering for current year
-                          const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [];
-                          const selectedYear = parseInt(parts[0] || new Date().getFullYear().toString());
-                          const today = new Date();
-                          const currentYear = today.getFullYear();
-                          const currentMonth = today.getMonth() + 1;
-                          
-                          let availableMonths = months;
-                          
-                          // If current year, filter out past months
-                          // If past year, show no months
-                          if (selectedYear < currentYear) {
-                            availableMonths = [];
-                          } else if (selectedYear === currentYear) {
-                            availableMonths = months.filter(m => parseInt(m.value) >= currentMonth);
-                          }
-                          
-                          return availableMonths.map((m) => (
-                            <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                          ));
-                        })()}
-                      </SelectContent>
-                    </Select>
-
-                    <Select
-                      value={applicationData.travelDate ? applicationData.travelDate.split('-')[0] : ''}
-                      onValueChange={(year) => {
-                        const parts = applicationData.travelDate ? applicationData.travelDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const month = parts[1] || '01';
-                        const day = parts[2] || '01';
-                        const newDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-                        
-                        // Only validate after all parts are selected (day, month, year)
-                        const dateparts = newDate.split('-');
-                        const hasValidYear = dateparts[0] && dateparts[0].length === 4 && dateparts[0] !== new Date().getFullYear().toString();
-                        const hasValidMonth = dateparts[1] && dateparts[1] !== '01';
-                        const hasValidDay = dateparts[2] && dateparts[2] !== '01';
-                        const isCompleteDate = hasValidYear && hasValidMonth && hasValidDay;
-                        
-                        if (isCompleteDate) {
-                          const selectedDate = new Date(newDate);
-                          const today = new Date();
-                          today.setHours(0, 0, 0, 0);
-                          
-                          if (selectedDate.getTime() < today.getTime()) {
-                            toast({
-                              title: "❌ Past Date Not Allowed",
-                              description: "Travel date must be today or in the future!",
-                              variant: "destructive",
-                            });
-                            return;
-                          }
-                        }
-                        
-                        handleInputChange("travelDate", newDate);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Year" />
-                      </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
-                        {/* Only show current year and future years */}
-                        {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
-                          <SelectItem key={y} value={y}>{y}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                <div>
-                  <Label>Return Date *</Label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    <Select
-                      value={applicationData.returnDate ? applicationData.returnDate.split('-')[2] : ''}
-                      onValueChange={(day) => {
-                        const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const year = parts[0] || new Date().getFullYear().toString();
-                        const month = parts[1] || '01';
-                        handleInputChange("returnDate", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Day" />
-                      </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
-                        {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
-                          <SelectItem key={d} value={d}>{d}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Select
-                      value={applicationData.returnDate ? applicationData.returnDate.split('-')[1] : ''}
-                      onValueChange={(month) => {
-                        const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const year = parts[0] || new Date().getFullYear().toString();
-                        const day = parts[2] || '01';
-                        handleInputChange("returnDate", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Month" />
-                      </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
-                        {[
-                          { value: '01', label: 'January' },
-                          { value: '02', label: 'February' },
-                          { value: '03', label: 'March' },
-                          { value: '04', label: 'April' },
-                          { value: '05', label: 'May' },
-                          { value: '06', label: 'June' },
-                          { value: '07', label: 'July' },
-                          { value: '08', label: 'August' },
-                          { value: '09', label: 'September' },
-                          { value: '10', label: 'October' },
-                          { value: '11', label: 'November' },
-                          { value: '12', label: 'December' }
-                        ].map((m) => (
-                          <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Select
-                      value={applicationData.returnDate ? applicationData.returnDate.split('-')[0] : ''}
-                      onValueChange={(year) => {
-                        const parts = applicationData.returnDate ? applicationData.returnDate.split('-') : [new Date().getFullYear().toString(), '01', '01'];
-                        const month = parts[1] || '01';
-                        const day = parts[2] || '01';
-                        handleInputChange("returnDate", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Year" />
-                      </SelectTrigger>
-                      <SelectContent position="popper" side="bottom" align="start">
-                        {Array.from({ length: 11 }, (_, i) => (new Date().getFullYear() + i).toString()).map((y) => (
-                          <SelectItem key={y} value={y}>{y}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
-
-              {/* Date of Birth */}
-              <div>
-                <Label>Date of Birth *</Label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  <Select
-                    value={applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-')[2] : ''}
-                    onValueChange={(day) => {
-                      const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : ['1990', '01', '01'];
-                      const year = parts[0] || '1990';
-                      const month = parts[1] || '01';
-                      handleInputChange("dateOfBirth", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Day" />
-                    </SelectTrigger>
-                    <SelectContent position="popper" side="bottom" align="start">
-                      {Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0')).map((d) => (
-                        <SelectItem key={d} value={d}>{d}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-
-                  <Select
-                    value={applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-')[1] : ''}
-                    onValueChange={(month) => {
-                      const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : ['1990', '01', '01'];
-                      const year = parts[0] || '1990';
-                      const day = parts[2] || '01';
-                      handleInputChange("dateOfBirth", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Month" />
-                    </SelectTrigger>
-                    <SelectContent position="popper" side="bottom" align="start">
-                      {[
-                        { value: '01', label: 'January' },
-                        { value: '02', label: 'February' },
-                        { value: '03', label: 'March' },
-                        { value: '04', label: 'April' },
-                        { value: '05', label: 'May' },
-                        { value: '06', label: 'June' },
-                        { value: '07', label: 'July' },
-                        { value: '08', label: 'August' },
-                        { value: '09', label: 'September' },
-                        { value: '10', label: 'October' },
-                        { value: '11', label: 'November' },
-                        { value: '12', label: 'December' }
-                      ].map((m) => (
-                        <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-
-                  <Select
-                    value={applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-')[0] : ''}
-                    onValueChange={(year) => {
-                      const parts = applicationData.dateOfBirth ? applicationData.dateOfBirth.split('-') : ['1990', '01', '01'];
-                      const month = parts[1] || '01';
-                      const day = parts[2] || '01';
-                      handleInputChange("dateOfBirth", `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Year" />
-                    </SelectTrigger>
-                    <SelectContent position="popper" side="bottom" align="start">
-                      {Array.from({ length: 80 }, (_, i) => (new Date().getFullYear() - i).toString()).map((y) => (
-                        <SelectItem key={y} value={y}>{y}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* Parent ID Photos for under 18 */}
-              {(() => {
-                if (!applicationData.dateOfBirth) return null;
-                
-                const birthDate = new Date(applicationData.dateOfBirth);
-                const today = new Date();
-                const age = today.getFullYear() - birthDate.getFullYear();
-                const monthDiff = today.getMonth() - birthDate.getMonth();
-                
-                let actualAge = age;
-                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                  actualAge--;
-                }
-                
-                if (actualAge < 18) {
-                  return (
-                    <div className="border border-orange-200 bg-orange-50 rounded-lg p-6">
-                      <Label className="text-orange-800 font-semibold text-lg mb-4 block">
-                        🔒 Parent ID Photos Required (Under 18) *
-                      </Label>
-                      <p className="text-sm text-orange-700 mb-6">
-                        Since you are under 18, please upload photos of your parents' ID documents. You can upload for mother, father, or both.
-                      </p>
-                      
-                      <div className="grid md:grid-cols-2 gap-6">
-                        {/* Mother's ID Photos */}
-                        <div className="border border-pink-200 bg-pink-50 rounded-lg p-4">
-                          <Label className="text-pink-800 font-semibold">👩 Mother's ID Photos</Label>
-                          <p className="text-xs text-pink-700 mb-3">
-                            Upload front and back sides of mother's ID
-                          </p>
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={(e) => {
-                              const files = Array.from(e.target.files || []);
-                              if (files.length > 2) {
-                                toast({
-                                  title: "Too Many Files",
-                                  description: "Please upload maximum 2 photos for mother's ID (front and back)",
-                                  variant: "destructive",
-                                });
-                                return;
-                              }
-                              setMotherIdPhotos(files);
-                            }}
-                            className="border-pink-300 bg-white text-sm"
-                          />
-                          {motherIdPhotos.length > 0 && (
-                            <div className="mt-2">
-                              <p className="text-sm text-green-600">
-                                ✓ {motherIdPhotos.length} file(s) selected
-                              </p>
-                              <div className="text-xs text-gray-500 mt-1">
-                                {motherIdPhotos.map((file, idx) => (
-                                  <div key={idx}>• {file.name}</div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Father's ID Photos */}
-                        <div className="border border-blue-200 bg-blue-50 rounded-lg p-4">
-                          <Label className="text-blue-800 font-semibold">👨 Father's ID Photos</Label>
-                          <p className="text-xs text-blue-700 mb-3">
-                            Upload front and back sides of father's ID
-                          </p>
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={(e) => {
-                              const files = Array.from(e.target.files || []);
-                              if (files.length > 2) {
-                                toast({
-                                  title: "Too Many Files",
-                                  description: "Please upload maximum 2 photos for father's ID (front and back)",
-                                  variant: "destructive",
-                                });
-                                return;
-                              }
-                              setFatherIdPhotos(files);
-                            }}
-                            className="border-blue-300 bg-white text-sm"
-                          />
-                          {fatherIdPhotos.length > 0 && (
-                            <div className="mt-2">
-                              <p className="text-sm text-green-600">
-                                ✓ {fatherIdPhotos.length} file(s) selected
-                              </p>
-                              <div className="text-xs text-gray-500 mt-1">
-                                {fatherIdPhotos.map((file, idx) => (
-                                  <div key={idx}>• {file.name}</div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Overall Status */}
-                      {(motherIdPhotos.length > 0 || fatherIdPhotos.length > 0) && (
-                        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                          <p className="text-sm text-green-800 font-semibold">
-                            ✓ Parent ID Documentation Status:
-                          </p>
-                          <div className="text-xs text-green-700 mt-1">
-                            {motherIdPhotos.length > 0 && <div>• Mother's ID: {motherIdPhotos.length} photo(s) uploaded</div>}
-                            {fatherIdPhotos.length > 0 && <div>• Father's ID: {fatherIdPhotos.length} photo(s) uploaded</div>}
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="mt-4 text-xs text-orange-600 bg-orange-100 p-2 rounded">
-                        <strong>Note:</strong> You must upload at least one parent's ID documents to proceed. Both front and back sides are recommended for faster processing.
-                      </div>
-                    </div>
-                  );
-                }
-                return null;
-              })()}
-
-              {/* Insurance Plan Selection - Dropdown */}
-              <div>
-                <Label htmlFor="insurancePlan">Select Insurance Plan *</Label>
-                <Select
-                  value={selectedProduct?.id?.toString() || ""}
-                  onValueChange={(value) => {
-                    const product = sortedProducts.find(p => p.id.toString() === value);
-                    setSelectedProduct(product || null);
-                  }}
-                >
-                  <SelectTrigger data-testid="select-insurance-plan">
-                    <SelectValue placeholder="Choose insurance duration and price" />
-                  </SelectTrigger>
-                  <SelectContent position="popper" side="bottom" align="start">
-                    {sortedProducts.map((product: InsuranceProduct) => (
-                      <SelectItem key={product.id} value={product.id.toString()}>
-                        {product.name.replace(" Coverage", "")} - ${product.price} USD
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Payment Summary */}
               {selectedProduct && (
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Summary</h3>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>Selected Plan:</span>
-                      <span className="font-semibold">{selectedProduct.name}</span>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <Label htmlFor="firstName">Given/First Name(s) *</Label>
+                      <Input
+                        id="firstName"
+                        value={applicationData.firstName}
+                        onChange={(e) => handleInputChange("firstName", e.target.value)}
+                        required
+                      />
                     </div>
-                    <div className="flex justify-between text-xl font-bold text-blue-600">
-                      <span>Total Amount:</span>
-                      <span>${selectedProduct.price} USD</span>
+                    
+                    <div>
+                      <Label htmlFor="lastName">Surname(s) *</Label>
+                      <Input
+                        id="lastName"
+                        value={applicationData.lastName}
+                        onChange={(e) => handleInputChange("lastName", e.target.value)}
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="email">Email Address *</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={applicationData.email}
+                        onChange={(e) => handleInputChange("email", e.target.value)}
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="phone">Phone Number *</Label>
+                      <Input
+                        id="phone"
+                        type="tel"
+                        value={applicationData.phone}
+                        onChange={(e) => handleInputChange("phone", e.target.value)}
+                        required
+                      />
+                    </div>
+
+                    {/* Date of Birth - using three separate selects */}
+                    <div>
+                      <Label>Date of Birth *</Label>
+                      <div className="grid grid-cols-3 gap-2 mt-1">
+                        <Select onValueChange={(value) => {
+                          const [year, month, day] = (applicationData.dateOfBirth || "--").split("-");
+                          handleInputChange("dateOfBirth", `${year || new Date().getFullYear()}-${month || "01"}-${value.padStart(2, "0")}`);
+                        }}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Day" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Array.from({ length: 31 }, (_, i) => (
+                              <SelectItem key={i + 1} value={(i + 1).toString()}>
+                                {i + 1}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <Select onValueChange={(value) => {
+                          const [year, , day] = (applicationData.dateOfBirth || "--").split("-");
+                          handleInputChange("dateOfBirth", `${year || new Date().getFullYear()}-${value.padStart(2, "0")}-${day || "01"}`);
+                        }}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Month" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {[
+                              "January", "February", "March", "April", "May", "June",
+                              "July", "August", "September", "October", "November", "December"
+                            ].map((month, i) => (
+                              <SelectItem key={i + 1} value={(i + 1).toString()}>
+                                {month}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <Select onValueChange={(value) => {
+                          const [, month, day] = (applicationData.dateOfBirth || "--").split("-");
+                          handleInputChange("dateOfBirth", `${value}-${month || "01"}-${day || "01"}`);
+                        }}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Year" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Array.from({ length: 100 }, (_, i) => {
+                              const year = new Date().getFullYear() - i;
+                              return (
+                                <SelectItem key={year} value={year.toString()}>
+                                  {year}
+                                </SelectItem>
+                              );
+                            })}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    {/* Travel Dates */}
+                    <div>
+                      <Label>Travel Dates *</Label>
+                      <div className="space-y-2 mt-1">
+                        <div>
+                          <Label htmlFor="travelDate" className="text-sm text-gray-600">Departure Date</Label>
+                          <div className="grid grid-cols-3 gap-2">
+                            <Select onValueChange={(value) => {
+                              const [year, month, day] = (applicationData.travelDate || "--").split("-");
+                              handleInputChange("travelDate", `${year || new Date().getFullYear()}-${month || "01"}-${value.padStart(2, "0")}`);
+                            }}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Day" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {Array.from({ length: 31 }, (_, i) => (
+                                  <SelectItem key={i + 1} value={(i + 1).toString()}>
+                                    {i + 1}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+
+                            <Select onValueChange={(value) => {
+                              const [year, , day] = (applicationData.travelDate || "--").split("-");
+                              handleInputChange("travelDate", `${year || new Date().getFullYear()}-${value.padStart(2, "0")}-${day || "01"}`);
+                            }}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Month" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {[
+                                  "January", "February", "March", "April", "May", "June",
+                                  "July", "August", "September", "October", "November", "December"
+                                ].map((month, i) => (
+                                  <SelectItem key={i + 1} value={(i + 1).toString()}>
+                                    {month}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+
+                            <Select onValueChange={(value) => {
+                              const [, month, day] = (applicationData.travelDate || "--").split("-");
+                              handleInputChange("travelDate", `${value}-${month || "01"}-${day || "01"}`);
+                            }}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Year" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {Array.from({ length: 5 }, (_, i) => {
+                                  const year = new Date().getFullYear() + i;
+                                  return (
+                                    <SelectItem key={year} value={year.toString()}>
+                                      {year}
+                                    </SelectItem>
+                                  );
+                                })}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+
+                        <div>
+                          <Label htmlFor="returnDate" className="text-sm text-gray-600">Return Date</Label>
+                          <div className="grid grid-cols-3 gap-2">
+                            <Select onValueChange={(value) => {
+                              const [year, month, day] = (applicationData.returnDate || "--").split("-");
+                              handleInputChange("returnDate", `${year || new Date().getFullYear()}-${month || "01"}-${value.padStart(2, "0")}`);
+                            }}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Day" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {Array.from({ length: 31 }, (_, i) => (
+                                  <SelectItem key={i + 1} value={(i + 1).toString()}>
+                                    {i + 1}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+
+                            <Select onValueChange={(value) => {
+                              const [year, , day] = (applicationData.returnDate || "--").split("-");
+                              handleInputChange("returnDate", `${year || new Date().getFullYear()}-${value.padStart(2, "0")}-${day || "01"}`);
+                            }}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Month" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {[
+                                  "January", "February", "March", "April", "May", "June",
+                                  "July", "August", "September", "October", "November", "December"
+                                ].map((month, i) => (
+                                  <SelectItem key={i + 1} value={(i + 1).toString()}>
+                                    {month}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+
+                            <Select onValueChange={(value) => {
+                              const [, month, day] = (applicationData.returnDate || "--").split("-");
+                              handleInputChange("returnDate", `${value}-${month || "01"}-${day || "01"}`);
+                            }}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Year" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {Array.from({ length: 5 }, (_, i) => {
+                                  const year = new Date().getFullYear() + i;
+                                  return (
+                                    <SelectItem key={year} value={year.toString()}>
+                                      {year}
+                                    </SelectItem>
+                                  );
+                                })}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="mt-4 text-xs text-gray-500 space-y-1">
-                    <p>• Medical coverage up to $100,000</p>
-                    <p>• 24/7 emergency assistance</p>
-                    <p>• Trip cancellation protection</p>
-                    <p>• Lost baggage coverage</p>
+
+                  {/* Under 18 - Parent ID Upload */}
+                  {(() => {
+                    if (!applicationData.dateOfBirth) return null;
+                    
+                    const birthDate = new Date(applicationData.dateOfBirth);
+                    const age = new Date().getFullYear() - birthDate.getFullYear();
+                    
+                    if (age >= 18) return null;
+                    
+                    return (
+                      <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <h4 className="font-semibold text-gray-900 mb-2">
+                          <Shield className="inline-block w-4 h-4 mr-2 text-yellow-600" />
+                          Ebeveyn Kimlik Belgesi Gerekli
+                        </h4>
+                        <p className="text-sm text-gray-700 mb-3">
+                          18 yaşından küçük olduğunuz için ebeveyn kimlik belgenizi yüklemeniz gerekmektedir.
+                        </p>
+                        <input
+                          type="file"
+                          multiple
+                          accept="image/*,.pdf"
+                          onChange={(e) => handleParentIdPhotoUpload(Array.from(e.target.files || []))}
+                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                        />
+                        {parentIdPhotos.length > 0 && (
+                          <div className="mt-2">
+                            <p className="text-sm text-green-600">
+                              ✓ {parentIdPhotos.length} dosya yüklendi
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+
+                  {/* Summary Section */}
+                  <div className="bg-gray-50 rounded-lg p-6 border">
+                    <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
+                      <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
+                      Insurance Summary
+                    </h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Plan:</span>
+                        <span className="font-medium">{selectedProduct.name}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Coverage Period:</span>
+                        <span className="font-medium">{selectedProduct.name.replace(" Coverage", "")}</span>
+                      </div>
+                      <div className="border-t pt-2 flex justify-between font-bold">
+                        <span className="text-gray-900">Total Premium</span>
+                        <span className="text-red-600 text-lg">${selectedProduct.price}</span>
+                      </div>
+                      <div className="mt-2 text-xs text-gray-500 space-y-1">
+                        <p>• Medical coverage up to $100,000</p>
+                        <p>• 24/7 emergency assistance</p>
+                        <p>• Trip cancellation protection</p>
+                        <p>• Lost baggage coverage</p>
+                      </div>
+                    </div>
                   </div>
+                  
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-red-600 hover:bg-red-700 text-white py-4 text-lg font-semibold transition-all duration-200 hover:shadow-lg disabled:opacity-50"
+                    disabled={createApplicationMutation.isPending}
+                  >
+                    {createApplicationMutation.isPending ? (
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
+                        <span>Processing...</span>
+                      </div>
+                    ) : (
+                      "Complete Insurance Purchase"
+                    )}
+                  </Button>
                 </div>
               )}
-              
-              <Button 
-                type="submit" 
-                className="w-full bg-red-600 hover:bg-red-700 text-white py-4 text-base md:text-lg font-semibold transition-all duration-200 hover:shadow-lg disabled:opacity-50"
-                disabled={createApplicationMutation.isPending}
-              >
-                {createApplicationMutation.isPending ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
-                    <span>Processing...</span>
-                  </div>
-                ) : (
-                  `Pay $${selectedProduct?.price || '0'}.00 - Complete Purchase`
-                )}
-              </Button>
             </form>
           </div>
         </div>
@@ -1109,6 +605,7 @@ export default function Insurance() {
           orderId={currentOrderId}
           onRetry={() => {
             setShowRetry(false);
+            // Retry the payment creation
             createApplicationMutation.mutate();
           }}
         />
