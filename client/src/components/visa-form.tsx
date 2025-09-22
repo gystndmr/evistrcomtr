@@ -1150,7 +1150,7 @@ export function VisaForm() {
 
   return (
     <div className="max-w-4xl mx-auto px-2 sm:px-0">
-      <Card className="mb-6">
+      <Card>
         <CardHeader>
           <CardTitle>{t("app.form.title")}</CardTitle>
           
@@ -1205,7 +1205,7 @@ export function VisaForm() {
           </div>
         </CardHeader>
 
-        <CardContent className="pb-6">
+        <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
               {/* Step 1: Country Selection */}
