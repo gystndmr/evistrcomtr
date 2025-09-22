@@ -17,7 +17,6 @@ import type { InsuranceProduct } from "@shared/schema";
 import turkeyFlag from "@/assets/turkey-flag_1752583610847.png";
 import turkeyLogo from "@/assets/turkey-logo.png";
 import newTurkeyLogo from "@assets/ChatGPT Image 18 Tem 2025 01_37_34_1752880645933.png";
-import diverseTravelersBg from "@assets/ChatGPT Image 23 Tem 2025 15_14_53_1753272924608.png";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 // Country flag mapping function
@@ -511,28 +510,16 @@ export default function Insurance() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      {/* Professional Header with Clear Background */}
-      <section className="relative py-8 sm:py-12 lg:py-16 border-b border-gray-200 overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-no-repeat opacity-95"
-          style={{
-            backgroundImage: `url('${diverseTravelersBg}')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center 30%'
-          }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-red-600/10" />
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Simple Header */}
+      <section className="py-8 sm:py-12 lg:py-16 bg-white border-b border-gray-200">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            {/* Transparent styled boxes for header text */}
-            <div className="inline-block mb-4">
-              <div className="bg-black/70 text-white px-8 py-4 text-2xl sm:text-3xl lg:text-4xl font-bold mb-2">
-                {t('insurance.header.new')}
-              </div>
-              <div className="bg-blue-500/80 text-white px-6 py-3 text-lg sm:text-xl lg:text-2xl font-semibold">
-                {t('insurance.header.covid19')}
-              </div>
-            </div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              {t('insurance.header.new')}
+            </h1>
+            <p className="text-lg sm:text-xl text-gray-600">
+              {t('insurance.header.covid19')}
+            </p>
           </div>
         </div>
       </section>
