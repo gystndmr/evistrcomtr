@@ -207,15 +207,18 @@ const getCountryPrerequisites = (countryCode: string): PrerequisiteItem[] => {
   return countryPrerequisites[countryCode] || countryPrerequisites['default'];
 };
 
-// Processing types for all applications
+// E-visa application fee (constant across all applications)
+const E_VISA_FEE = 69;
+
+// Processing types for all applications - labels now show complete pricing breakdown
 const supportingDocProcessingTypes = [
-  { value: "slow", label: "Ready in 7 days", price: 90, minDays: 7 },
-  { value: "standard", label: "Ready in 4 days", price: 155, minDays: 4 },
-  { value: "fast", label: "Ready in 2 days", price: 205, minDays: 2 },
-  { value: "urgent_24", label: "Ready in 24 hours", price: 320, minDays: 1 },
-  { value: "urgent_12", label: "Ready in 12 hours", price: 370, minDays: 1 },
-  { value: "urgent_4", label: "Ready in 4 hours", price: 450, minDays: 1 },
-  { value: "urgent_1", label: "Ready in 1 hour", price: 685, minDays: 1 },
+  { value: "slow", label: "Ready in 7 days", price: 90, minDays: 7, displayLabel: "Ready in 7 days - $90 processing + $69 e-visa = $159 total" },
+  { value: "standard", label: "Ready in 4 days", price: 155, minDays: 4, displayLabel: "Ready in 4 days - $155 processing + $69 e-visa = $224 total" },
+  { value: "fast", label: "Ready in 2 days", price: 205, minDays: 2, displayLabel: "Ready in 2 days - $205 processing + $69 e-visa = $274 total" },
+  { value: "urgent_24", label: "Ready in 24 hours", price: 320, minDays: 1, displayLabel: "Ready in 24 hours - $320 processing + $69 e-visa = $389 total" },
+  { value: "urgent_12", label: "Ready in 12 hours", price: 370, minDays: 1, displayLabel: "Ready in 12 hours - $370 processing + $69 e-visa = $439 total" },
+  { value: "urgent_4", label: "Ready in 4 hours", price: 450, minDays: 1, displayLabel: "Ready in 4 hours - $450 processing + $69 e-visa = $519 total" },
+  { value: "urgent_1", label: "Ready in 1 hour", price: 685, minDays: 1, displayLabel: "Ready in 1 hour - $685 processing + $69 e-visa = $754 total" },
 ];
 
 // Helper function to calculate days between two dates
@@ -1504,8 +1507,8 @@ export function VisaForm() {
                                   </SelectTrigger>
                                   <SelectContent position="popper" side="bottom" align="start">
                                     {availableTypes.map((type) => (
-                                      <SelectItem key={type.value} value={type.value}>
-                                        {type.label} - ${type.price}
+                                      <SelectItem key={type.value} value={type.value} data-testid={`option-processing-${type.value}`}>
+                                        {type.displayLabel}
                                       </SelectItem>
                                     ))}
                                   </SelectContent>
@@ -1771,8 +1774,8 @@ export function VisaForm() {
                             </SelectTrigger>
                             <SelectContent>
                               {availableSupportingDocTypes.map((type) => (
-                                <SelectItem key={type.value} value={type.value}>
-                                  {type.label} - ${type.price}
+                                <SelectItem key={type.value} value={type.value} data-testid={`option-supporting-${type.value}`}>
+                                  {type.displayLabel}
                                 </SelectItem>
                               ))}
                             </SelectContent>
