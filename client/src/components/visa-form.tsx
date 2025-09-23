@@ -991,15 +991,21 @@ export function VisaForm() {
     
     setCurrentStep(currentStep + 1);
     
-    // Scroll to top of page for better user experience
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Scroll to top of page for better user experience (except for supporting document check)
+    const nextStepName = getDynamicSteps()[currentStep]; // currentStep + 1 - 1 = currentStep
+    if (nextStepName !== 'supporting-document-check') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const handlePrevStep = () => {
     setCurrentStep(currentStep - 1);
     
-    // Scroll to top of page for better user experience
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Scroll to top of page for better user experience (except for supporting document check)
+    const prevStepName = getDynamicSteps()[currentStep - 2]; // currentStep - 1 - 1 = currentStep - 2
+    if (prevStepName !== 'supporting-document-check') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
 
@@ -1138,6 +1144,14 @@ export function VisaForm() {
 
   // Scroll to top whenever step changes (especially important for payment step)
   useEffect(() => {
+    const steps = getDynamicSteps();
+    const currentStepName = steps[currentStep - 1];
+    
+    // Don't auto-scroll for supporting document check step to avoid UX issues
+    if (currentStepName === 'supporting-document-check') {
+      return;
+    }
+    
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     // Extra scroll for payment step after a short delay to ensure content is loaded
