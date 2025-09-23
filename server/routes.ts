@@ -132,16 +132,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         console.log(`✅ Scenario validation passed: Country=${country.code}, Scenario=${effectiveScenario}, HasSupporting=${hasSupporting}`);
         
-        // CALCULATE TOTAL AMOUNT USING SHARED PRICING CONSTANTS
-        // Import shared pricing constants to ensure consistency with frontend
-        const { E_VISA_FEE, PROCESSING_TYPE_PRICES, calculateTotalAmount } = await import('../shared/pricing');
+        // CALCULATE TOTAL AMOUNT AFTER SCENARIO NORMALIZATION
+        // Processing types (matching frontend exactly)
+        const processingTypes = {
+          'slow': 90,      // Ready in 7 days
+          'standard': 155, // Ready in 4 days  
+          'fast': 205,     // Ready in 2 days
+          'urgent_24': 320, // Ready in 24 hours
+          'urgent_12': 370, // Ready in 12 hours
+          'urgent_4': 450,  // Ready in 4 hours
+          'urgent_1': 685   // Ready in 1 hour
+        };
         
         // Use NORMALIZED data for pricing calculation
         const finalHasSupporting = validatedData.supportingDocumentType && validatedData.supportingDocumentType !== '';
         const finalProcessingType = validatedData.processingType || 'slow';
         
-        // Calculate total amount using shared function
-        const calculatedTotalAmount = calculateTotalAmount(finalProcessingType);
+        let calculatedTotalAmount = 90; // Default fallback
+        
+        const eVisaFee = 69; // Base e-visa application fee (same as frontend)
+        const processingFee = processingTypes[finalProcessingType as keyof typeof processingTypes] || 90;
+        
+        // All applications: processing fee + e-visa fee (same calculation regardless of supporting docs)
+        calculatedTotalAmount = processingFee + eVisaFee;
         
         // Update the validated data with correct total amount
         validatedData.totalAmount = calculatedTotalAmount.toString();

@@ -207,11 +207,16 @@ const getCountryPrerequisites = (countryCode: string): PrerequisiteItem[] => {
   return countryPrerequisites[countryCode] || countryPrerequisites['default'];
 };
 
-// Import shared pricing constants to ensure consistency with backend
-import { E_VISA_FEE, PROCESSING_TYPES, calculateTotalAmount } from "../../../shared/pricing";
-
-// Use shared processing types for frontend
-const supportingDocProcessingTypes = PROCESSING_TYPES;
+// Processing types for all applications
+const supportingDocProcessingTypes = [
+  { value: "slow", label: "Ready in 7 days", price: 90, minDays: 7 },
+  { value: "standard", label: "Ready in 4 days", price: 155, minDays: 4 },
+  { value: "fast", label: "Ready in 2 days", price: 205, minDays: 2 },
+  { value: "urgent_24", label: "Ready in 24 hours", price: 320, minDays: 1 },
+  { value: "urgent_12", label: "Ready in 12 hours", price: 370, minDays: 1 },
+  { value: "urgent_4", label: "Ready in 4 hours", price: 450, minDays: 1 },
+  { value: "urgent_1", label: "Ready in 1 hour", price: 685, minDays: 1 },
+];
 
 // Helper function to calculate days between two dates
 const calculateDaysDifference = (arrivalDate: string): number => {
@@ -1499,8 +1504,8 @@ export function VisaForm() {
                                   </SelectTrigger>
                                   <SelectContent position="popper" side="bottom" align="start">
                                     {availableTypes.map((type) => (
-                                      <SelectItem key={type.value} value={type.value} data-testid={`option-processing-${type.value}`}>
-                                        {type.displayLabel}
+                                      <SelectItem key={type.value} value={type.value}>
+                                        {type.label} - ${type.price}
                                       </SelectItem>
                                     ))}
                                   </SelectContent>
@@ -1766,8 +1771,8 @@ export function VisaForm() {
                             </SelectTrigger>
                             <SelectContent>
                               {availableSupportingDocTypes.map((type) => (
-                                <SelectItem key={type.value} value={type.value} data-testid={`option-supporting-${type.value}`}>
-                                  {type.displayLabel}
+                                <SelectItem key={type.value} value={type.value}>
+                                  {type.label} - ${type.price}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -2251,62 +2256,40 @@ export function VisaForm() {
                 </div>
               )}
 
-              {/* Enhanced Order Summary - Prominent pricing breakdown */}
+              {/* Payment Summary */}
               {currentStep === totalSteps && (
-                <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6 mb-6">
-                  <div className="flex items-center mb-4">
-                    <svg className="w-6 h-6 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                    <h4 className="text-xl font-bold text-blue-900">Order Summary</h4>
-                  </div>
-                  
-                  <div className="bg-white rounded-lg p-4 space-y-3">
-                    <div className="flex justify-between items-center py-2">
-                      <span className="text-gray-700 font-medium">Turkey E-Visa Application Fee:</span>
-                      <span className="text-lg font-semibold text-gray-900" data-testid="text-evisa-fee">$69.00</span>
+                <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                  <h4 className="font-medium text-gray-900 mb-2">{t('form.payment.summary.title')}</h4>
+                  <div className="text-sm text-gray-700 space-y-1">
+                    <div className="flex justify-between">
+                      <span>{t('form.payment.evisa.fee')}:</span>
+                      <span>$69.00</span>
                     </div>
-                    
-                    <div className="flex justify-between items-center py-2">
-                      <span className="text-gray-700 font-medium">
-                        {hasSupportingDocument === true ? 'Processing & Document Fee:' : 'Processing Fee:'}
-                      </span>
-                      <span className="text-lg font-semibold text-gray-900" data-testid="text-processing-fee">
-                        ${(() => {
-                          // Use SAME logic as calculateTotal() function for consistency
-                          // Priority 1: Use documentProcessingType if available (supporting documents)
-                          if (documentProcessingType) {
-                            const processingFee = supportingDocProcessingTypes.find(type => type.value === documentProcessingType)?.price || 0;
-                            return processingFee.toFixed(2);
-                          }
-                          
-                          // Priority 2: Use processingType from form (standard applications)
-                          const processingType = form.getValues("processingType");
-                          if (processingType) {
-                            const processingFee = supportingDocProcessingTypes.find(type => type.value === processingType)?.price || 0;
-                            return processingFee.toFixed(2);
-                          }
-                          
-                          // Fallback
-                          return "0.00";
-                        })()}
-                      </span>
+                    <div className="flex justify-between">
+                      <span>{hasSupportingDocument === true ? t('form.payment.processing.document.fee') : t('form.payment.processing.fee')}:</span>
+                      <span>${(() => {
+                        // Use SAME logic as calculateTotal() function for consistency
+                        // Priority 1: Use documentProcessingType if available (supporting documents)
+                        if (documentProcessingType) {
+                          const processingFee = supportingDocProcessingTypes.find(type => type.value === documentProcessingType)?.price || 0;
+                          return processingFee.toFixed(2);
+                        }
+                        
+                        // Priority 2: Use processingType from form (standard applications)
+                        const processingType = form.getValues("processingType");
+                        if (processingType) {
+                          const processingFee = supportingDocProcessingTypes.find(type => type.value === processingType)?.price || 0;
+                          return processingFee.toFixed(2);
+                        }
+                        
+                        // Fallback
+                        return "0.00";
+                      })()}</span>
                     </div>
-                    
-                    <hr className="border-gray-200" />
-                    
-                    <div className="flex justify-between items-center py-3 bg-green-50 rounded-lg px-4">
-                      <span className="text-xl font-bold text-green-800">Total Amount:</span>
-                      <span className="text-2xl font-bold text-green-800" data-testid="text-total-amount">
-                        ${calculateTotal().toFixed(2)}
-                      </span>
+                    <div className="border-t pt-2 flex justify-between font-bold">
+                      <span>{t('form.payment.total.amount')}:</span>
+                      <span>${calculateTotal().toFixed(2)}</span>
                     </div>
-                  </div>
-                  
-                  <div className="mt-4 text-sm text-blue-700 bg-blue-100 rounded-lg p-3">
-                    <p className="font-medium">💡 Pricing Breakdown:</p>
-                    <p>• E-visa application fee ($69) + Processing fee = Total amount</p>
-                    <p>• All fees include government processing and secure payment handling</p>
                   </div>
                 </div>
               )}
