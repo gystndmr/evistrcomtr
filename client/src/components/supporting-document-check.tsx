@@ -213,7 +213,20 @@ export function SupportingDocumentCheck({
             <Alert className="border-red-200 bg-red-50">
               <AlertTriangle className="h-4 w-4 text-red-600" />
               <AlertDescription className="text-red-800">
-                Without supporting documents, you can visit the nearest consulate to apply for a visa.
+                <div className="space-y-3">
+                  <div>
+                    <strong className="block text-red-900 mb-2">Important Notice:</strong>
+                    <p>Without supporting documents, you must apply for a visa at the nearest Turkish consulate. However, according to Turkish immigration law, travel insurance is mandatory for all visitors to Turkey regardless of visa type.</p>
+                  </div>
+                  <div className="mt-4">
+                    <button 
+                      onClick={() => window.location.href = '/insurance'}
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                    >
+                      Get Insurance
+                    </button>
+                  </div>
+                </div>
               </AlertDescription>
             </Alert>
           )}

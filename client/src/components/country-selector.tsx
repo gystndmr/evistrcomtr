@@ -139,20 +139,19 @@ export function CountrySelector({
         <Alert className="border-red-200 bg-red-50">
           <XCircle className="h-4 w-4 text-red-600" />
           <AlertDescription className="text-red-800">
-            An e‑Visa cannot be issued for citizens of the country you selected. Please apply for a visa at your nearest Turkish mission or consulate.
-            <div className="mt-3 flex gap-2">
-              <button 
-                onClick={() => window.history.back()}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded font-medium text-sm"
-              >
-                Go Back
-              </button>
-              <button 
-                onClick={() => window.location.href = '/'}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium text-sm"
-              >
-                Return to Homepage
-              </button>
+            <div className="space-y-3">
+              <div>
+                <strong className="block text-red-900 mb-2">Important Notice:</strong>
+                <p>An e‑Visa cannot be issued for citizens of the country you selected. You must apply for a visa at your nearest Turkish mission or consulate. However, according to Turkish immigration law, travel insurance is mandatory for all visitors to Turkey regardless of visa type.</p>
+              </div>
+              <div className="mt-4">
+                <button 
+                  onClick={() => window.location.href = '/insurance'}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                >
+                  Get Insurance
+                </button>
+              </div>
             </div>
           </AlertDescription>
         </Alert>
