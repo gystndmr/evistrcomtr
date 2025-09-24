@@ -270,7 +270,7 @@ export function VisaForm() {
   const [egyptLocalDay, setEgyptLocalDay] = useState('');
   const [egyptLocalMonth, setEgyptLocalMonth] = useState('');
   const [egyptLocalYear, setEgyptLocalYear] = useState('');
-  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(true);
   const { toast } = useToast();
 
   const form = useForm<ApplicationFormData>({
