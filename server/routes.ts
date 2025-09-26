@@ -1419,7 +1419,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 insuranceApplication.firstName, 
                 insuranceApplication.lastName, 
                 insuranceApplication.applicationNumber,
-                insuranceApplication,
+                insuranceApplication.insuranceProduct,
                 'en'
               );
               
