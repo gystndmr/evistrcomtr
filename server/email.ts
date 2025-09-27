@@ -224,44 +224,56 @@ export function generateVisaReceivedEmail(
       </head>
       <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
         <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 0;">
-          <!-- Header -->
-          <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
-            ${turkeyFlagSvg}
-            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY E VISA</h1>
-            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
-            <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">getvisa.tr</p>
-          </div>
+          <!-- Header - SIMPLIFIED -->
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td style="background-color: #DC2626; color: white; padding: 30px; text-align: center;">
+                <div style="margin-bottom: 15px;">🇹🇷</div>
+                <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px; color: white;">TURKEY E VISA</h1>
+                <p style="margin: 0; font-size: 16px; color: white; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
+                <p style="margin: 5px 0 0 0; font-size: 12px; color: white;">getvisa.tr</p>
+              </td>
+            </tr>
+          </table>
           
           <!-- Content -->
           <div style="padding: 40px 30px;">
             <h2 style="color: #1a1a1a; margin-bottom: 20px; font-size: 22px;">Dear ${firstName} ${lastName},</h2>
             
-            <!-- Payment Success Confirmation -->
-            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 25px; border-radius: 10px; margin: 20px 0; text-align: center;">
-              <div style="display: inline-block; background: rgba(255,255,255,0.2); border-radius: 50%; padding: 15px; margin-bottom: 15px;">
-                <div style="width: 30px; height: 30px; border: 3px solid white; border-radius: 50%; position: relative; margin: 0 auto;">
-                  <div style="position: absolute; top: 8px; left: 6px; width: 8px; height: 14px; border: solid white; border-width: 0 3px 3px 0; transform: rotate(45deg);"></div>
-                </div>
-              </div>
-              <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: bold;">💳 PAYMENT SUCCESSFUL!</h2>
-              <p style="margin: 0; font-size: 16px; opacity: 0.95;">Your payment has been successfully processed and confirmed.</p>
-            </div>
+            <!-- Payment Success Confirmation - SIMPLIFIED -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin: 20px 0;">
+              <tr>
+                <td style="background-color: #10b981; color: white; padding: 25px; text-align: center; border-radius: 8px;">
+                  <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: bold; color: white;">✅ PAYMENT SUCCESSFUL!</h2>
+                  <p style="margin: 0; font-size: 16px; color: white;">Your payment has been successfully processed and confirmed.</p>
+                </td>
+              </tr>
+            </table>
             
-            <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 10px; margin: 20px 0; border: 1px solid #dee2e6;">
-              <p style="color: #1a1a1a; line-height: 1.7; margin: 0; font-size: 16px; text-align: center;">
-                <strong>Your Turkey Visa application has been successfully received and recorded.</strong><br>
-                <span style="color: #666; font-size: 14px;">Your application has been forwarded for evaluation.</span>
-              </p>
-            </div>
+            <!-- Application Status - SIMPLIFIED -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin: 20px 0;">
+              <tr>
+                <td style="background-color: #f8f9fa; padding: 25px; text-align: center; border: 1px solid #dee2e6; border-radius: 8px;">
+                  <p style="color: #1a1a1a; line-height: 1.7; margin: 0; font-size: 16px;">
+                    <strong>Your Turkey Visa application has been successfully received and recorded.</strong><br>
+                    <span style="color: #666; font-size: 14px;">Your application has been forwarded for evaluation.</span>
+                  </p>
+                </td>
+              </tr>
+            </table>
             
-            <!-- Application Summary -->
-            <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 20px; border-radius: 10px; margin: 25px 0; text-align: center;">
-              <h3 style="margin: 0 0 10px 0; font-size: 20px; font-weight: bold;">📋 APPLICATION SUMMARY</h3>
-              <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-top: 15px;">
-                <p style="margin: 0; font-size: 18px; font-weight: bold; letter-spacing: 2px;">${applicationNumber}</p>
-                <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Application Reference Number</p>
-              </div>
-            </div>
+            <!-- Application Summary - SIMPLIFIED -->
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin: 25px 0;">
+              <tr>
+                <td style="background-color: #DC2626; color: white; padding: 20px; text-align: center; border-radius: 8px;">
+                  <h3 style="margin: 0 0 15px 0; font-size: 20px; font-weight: bold; color: white;">📋 APPLICATION SUMMARY</h3>
+                  <div style="background-color: rgba(255,255,255,0.1); padding: 15px; border-radius: 6px;">
+                    <p style="margin: 0; font-size: 18px; font-weight: bold; letter-spacing: 2px; color: white;">${applicationNumber}</p>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; color: rgba(255,255,255,0.9);">Application Reference Number</p>
+                  </div>
+                </td>
+              </tr>
+            </table>
 
             <!-- Visa Information -->
             <div style="background-color: #fef2f2; padding: 25px; border-radius: 10px; margin: 25px 0; border: 1px solid #DC2626;">
@@ -494,13 +506,17 @@ export function generateVisaRejectionEmail(
       </head>
       <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
         <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 0;">
-          <!-- Header -->
-          <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
-            ${turkeyFlagSvg}
-            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY E VISA</h1>
-            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
-            <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">getvisa.tr</p>
-          </div>
+          <!-- Header - SIMPLIFIED -->
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td style="background-color: #DC2626; color: white; padding: 30px; text-align: center;">
+                <div style="margin-bottom: 15px;">🇹🇷</div>
+                <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px; color: white;">TURKEY E VISA</h1>
+                <p style="margin: 0; font-size: 16px; color: white; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
+                <p style="margin: 5px 0 0 0; font-size: 12px; color: white;">getvisa.tr</p>
+              </td>
+            </tr>
+          </table>
           
           <!-- Content -->
           <div style="padding: 40px 30px;">
@@ -626,13 +642,17 @@ export function generateVisaApprovalEmail(
       </head>
       <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
         <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 0;">
-          <!-- Header -->
-          <div style="background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%); color: white; padding: 30px; text-align: center;">
-            ${turkeyFlagSvg}
-            <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px;">TURKEY E VISA</h1>
-            <p style="margin: 0; font-size: 16px; opacity: 0.95; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
-            <p style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">getvisa.tr</p>
-          </div>
+          <!-- Header - SIMPLIFIED -->
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr>
+              <td style="background-color: #DC2626; color: white; padding: 30px; text-align: center;">
+                <div style="margin-bottom: 15px;">🇹🇷</div>
+                <h1 style="margin: 15px 0 5px 0; font-size: 26px; font-weight: bold; letter-spacing: 1px; color: white;">TURKEY E VISA</h1>
+                <p style="margin: 0; font-size: 16px; color: white; font-weight: 500;">ELECTRONIC VISA APPLICATION SYSTEM</p>
+                <p style="margin: 5px 0 0 0; font-size: 12px; color: white;">getvisa.tr</p>
+              </td>
+            </tr>
+          </table>
           
           <!-- Success Banner -->
           <div style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; padding: 25px; text-align: center; border-bottom: 3px solid #047857;">
