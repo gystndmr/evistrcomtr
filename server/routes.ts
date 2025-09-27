@@ -1259,12 +1259,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       console.log("🔔 GPay GET callback received with payload");
+      console.log("🔍 RAW PAYLOAD LENGTH:", payload.length);
+      console.log("🔍 RAW PAYLOAD PREVIEW:", payload.substring(0, 100));
       
       // Parse callback payload
       const paymentData = gPayService.parseCallback(payload);
       
       if (!paymentData) {
         console.log("❌ GPay GET callback: Invalid payload format");
+        console.log("❌ FAILED PAYLOAD:", payload);
         return res.redirect('/payment/cancel?error=Invalid payment data');
       }
 
@@ -1273,7 +1276,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { status, transactionId, amount, orderRef } = paymentData;
       
       // Update application status based on payment result
-      if (status === 'succeeded' || status === 'completed' || status === 'successful' || status === 'approved') {
+      if (status === 'succeeded' || status === 'completed' || status === 'successful' || status === 'approved' || status === 'success') {
         console.log(`✅ Payment successful for order ${orderRef}: ${transactionId}`);
         
         // Try to find visa application first
@@ -1414,20 +1417,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // GPay callback handler for POST requests (webhook notifications)
   app.post("/api/payment/callback", async (req, res) => {
     try {
-      console.log("🔔 GPay callback received:", JSON.stringify(req.body, null, 2));
-      console.log("🔔 GPay callback headers:", JSON.stringify(req.headers, null, 2));
+      console.log("🔔 GPay POST callback received:", JSON.stringify(req.body, null, 2));
+      console.log("🔔 GPay POST callback headers:", JSON.stringify(req.headers, null, 2));
       const { payload } = req.body;
       
       if (!payload) {
-        console.log("❌ GPay callback: Missing payload");
+        console.log("❌ GPay POST callback: Missing payload");
         return res.status(400).json({ message: "Missing payload" });
       }
+
+      console.log("🔍 POST RAW PAYLOAD LENGTH:", payload.length);
+      console.log("🔍 POST RAW PAYLOAD PREVIEW:", payload.substring(0, 100));
 
       // Parse callback payload
       const paymentData = gPayService.parseCallback(payload);
       
       if (!paymentData) {
-        console.log("❌ GPay callback: Invalid payload format");
+        console.log("❌ GPay POST callback: Invalid payload format");
+        console.log("❌ POST FAILED PAYLOAD:", payload);
         return res.status(400).json({ message: "Invalid payload format" });
       }
 
@@ -1445,7 +1452,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { status, transactionId, amount, orderRef } = paymentData;
       
       // Update application status based on payment result
-      if (status === 'completed' || status === 'successful' || status === 'approved') {
+      if (status === 'completed' || status === 'successful' || status === 'approved' || status === 'succeeded' || status === 'success') {
         console.log(`✅ Payment successful for order ${orderRef}: ${transactionId}`);
         
         // Try to find visa application first

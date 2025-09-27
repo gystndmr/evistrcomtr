@@ -298,15 +298,61 @@ export class GPayService {
   // Parse callback payload following PHP Result.php logic
   parseCallback(payload: string): any {
     try {
-      // URL decode -> Base64 decode -> JSON parse
+      console.log('🔍 PARSE ATTEMPT 1: URL decode + Base64 decode + JSON parse');
+      
+      // Method 1: URL decode -> Base64 decode -> JSON parse (original)
       const urlDecoded = decodeURIComponent(payload);
       const base64Decoded = Buffer.from(urlDecoded, 'base64').toString('utf8');
       const paymentData = JSON.parse(base64Decoded);
       
+      console.log('✅ PARSE SUCCESS with Method 1');
       return paymentData;
-    } catch (error) {
-      console.error('Callback parsing error:', error);
-      return null;
+    } catch (error1) {
+      console.log('❌ PARSE Method 1 failed:', error1.message);
+      
+      try {
+        console.log('🔍 PARSE ATTEMPT 2: Direct Base64 decode + JSON parse');
+        
+        // Method 2: Direct Base64 decode -> JSON parse
+        const base64Decoded = Buffer.from(payload, 'base64').toString('utf8');
+        const paymentData = JSON.parse(base64Decoded);
+        
+        console.log('✅ PARSE SUCCESS with Method 2');
+        return paymentData;
+      } catch (error2) {
+        console.log('❌ PARSE Method 2 failed:', error2.message);
+        
+        try {
+          console.log('🔍 PARSE ATTEMPT 3: Direct JSON parse');
+          
+          // Method 3: Direct JSON parse (already JSON)
+          const paymentData = JSON.parse(payload);
+          
+          console.log('✅ PARSE SUCCESS with Method 3');
+          return paymentData;
+        } catch (error3) {
+          console.log('❌ PARSE Method 3 failed:', error3.message);
+          
+          try {
+            console.log('🔍 PARSE ATTEMPT 4: URL decode + JSON parse');
+            
+            // Method 4: URL decode -> JSON parse
+            const urlDecoded = decodeURIComponent(payload);
+            const paymentData = JSON.parse(urlDecoded);
+            
+            console.log('✅ PARSE SUCCESS with Method 4');
+            return paymentData;
+          } catch (error4) {
+            console.log('❌ ALL PARSE METHODS FAILED');
+            console.error('Original payload:', payload);
+            console.error('Error 1 (URL+Base64+JSON):', error1.message);
+            console.error('Error 2 (Base64+JSON):', error2.message);
+            console.error('Error 3 (Direct JSON):', error3.message);
+            console.error('Error 4 (URL+JSON):', error4.message);
+            return null;
+          }
+        }
+      }
     }
   }
 }
