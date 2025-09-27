@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertApplicationSchema, insertInsuranceApplicationSchema } from "@shared/schema";
 import { z } from "zod";
-import { sendEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail, generateVisaApprovalEmail, generateVisaRejectionEmail } from "./email";
+import { sendEmail, sendAdminCopyEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail, generateVisaApprovalEmail, generateVisaRejectionEmail } from "./email";
 import { gPayService } from "./payment-simple";
 
 function generateApplicationNumber(): string {
@@ -1281,12 +1281,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (visaApplication) {
           await storage.updateApplicationPaymentStatus(orderRef, 'succeeded');
           console.log(`✅ Visa application payment status updated to succeeded: ${orderRef}`);
+          
+          // Send visa application received email after successful payment
+          try {
+            console.log('💳 GET CALLBACK - Sending visa email after payment confirmation...');
+            const emailContent = generateVisaReceivedEmail(
+              visaApplication.firstName, 
+              visaApplication.lastName, 
+              visaApplication.applicationNumber,
+              visaApplication,
+              'en'
+            );
+            
+            await sendEmail({
+              to: visaApplication.email,
+              from: "info@getvisa.tr",
+              subject: emailContent.subject,
+              html: emailContent.html,
+              text: emailContent.text
+            });
+            
+            console.log(`✅ GET CALLBACK - Visa application received email sent to ${visaApplication.email}`);
+            
+            // Send admin copy email
+            await sendAdminCopyEmail(
+              emailContent.subject,
+              visaApplication.email,
+              'VISA',
+              emailContent.html
+            );
+            console.log(`✅ GET CALLBACK - Admin copy email sent for visa application ${visaApplication.applicationNumber}`);
+            
+          } catch (emailError) {
+            console.error('❌ GET CALLBACK VISA EMAIL ERROR:', emailError);
+          }
         } else {
           // Try insurance application
           const insuranceApplication = await storage.getInsuranceApplicationByOrderRef(orderRef);
           if (insuranceApplication) {
             await storage.updateInsuranceApplicationPaymentStatus(orderRef, 'succeeded');
             console.log(`✅ Insurance application payment status updated to succeeded: ${orderRef}`);
+            
+            // Send insurance application received email after successful payment
+            try {
+              console.log('💳 GET CALLBACK - Sending insurance email after payment confirmation...');
+              
+              // Fetch insurance product properly
+              const product = insuranceApplication.productId ? await storage.getInsuranceProduct(insuranceApplication.productId) : null;
+              
+              const emailContent = generateInsuranceReceivedEmail(
+                insuranceApplication.firstName, 
+                insuranceApplication.lastName, 
+                insuranceApplication.applicationNumber,
+                product?.name || 'Travel Insurance',
+                'en'
+              );
+              
+              await sendEmail({
+                to: insuranceApplication.email,
+                from: "info@getvisa.tr",
+                subject: emailContent.subject,
+                html: emailContent.html,
+                text: emailContent.text
+              });
+              
+              console.log(`✅ GET CALLBACK - Insurance application received email sent to ${insuranceApplication.email}`);
+              
+              // Send admin copy email
+              await sendAdminCopyEmail(
+                emailContent.subject,
+                insuranceApplication.email,
+                'INSURANCE',
+                emailContent.html
+              );
+              console.log(`✅ GET CALLBACK - Admin copy email sent for insurance application ${insuranceApplication.applicationNumber}`);
+              
+            } catch (emailError) {
+              console.error('❌ GET CALLBACK INSURANCE EMAIL ERROR:', emailError);
+            }
           }
         }
         
@@ -1402,6 +1474,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
             });
             
             console.log(`✅ Visa application received email sent to ${visaApplication.email} after successful payment`);
+            
+            // Send admin copy email
+            await sendAdminCopyEmail(
+              emailContent.subject,
+              visaApplication.email,
+              'VISA',
+              emailContent.html
+            );
+            console.log(`✅ POST CALLBACK - Admin copy email sent for visa application ${visaApplication.applicationNumber}`);
           } catch (emailError) {
             console.error('❌ PAYMENT SUCCESS EMAIL ERROR:', emailError);
           }
@@ -1415,11 +1496,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
             // Send insurance application received email after successful payment
             try {
               console.log('💳 PAYMENT SUCCESS - Sending insurance email after payment confirmation...');
+              
+              // Fetch insurance product properly
+              const product = insuranceApplication.productId ? await storage.getInsuranceProduct(insuranceApplication.productId) : null;
+              
               const emailContent = generateInsuranceReceivedEmail(
                 insuranceApplication.firstName, 
                 insuranceApplication.lastName, 
                 insuranceApplication.applicationNumber,
-                insuranceApplication.insuranceProduct,
+                product?.name || 'Travel Insurance',
                 'en'
               );
               
@@ -1432,6 +1517,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
               });
               
               console.log(`✅ Insurance application received email sent to ${insuranceApplication.email} after successful payment`);
+              
+              // Send admin copy email
+              await sendAdminCopyEmail(
+                emailContent.subject,
+                insuranceApplication.email,
+                'INSURANCE',
+                emailContent.html
+              );
+              console.log(`✅ POST CALLBACK - Admin copy email sent for insurance application ${insuranceApplication.applicationNumber}`);
             } catch (emailError) {
               console.error('❌ PAYMENT SUCCESS INSURANCE EMAIL ERROR:', emailError);
             }

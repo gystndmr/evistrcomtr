@@ -6,7 +6,7 @@ import path from 'path';
 sgMail.setApiKey(process.env.SENDGRID_API_KEY || '');
 
 // Dedicated function for admin copy emails
-async function sendAdminCopyEmail(originalSubject: string, customerEmail: string, emailType: string, originalContent: string) {
+export async function sendAdminCopyEmail(originalSubject: string, customerEmail: string, emailType: string, originalContent: string) {
   const apiKey = process.env.SENDGRID_API_KEY;
   if (!apiKey) {
     console.error('🚨 SENDGRID_API_KEY bulunamadı');
