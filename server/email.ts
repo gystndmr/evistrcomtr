@@ -213,7 +213,7 @@ export function generateVisaReceivedEmail(
   `;
 
   return {
-    subject: `[${applicationNumber}] Turkey E-Visa Application Received`,
+    subject: `✅ Payment Successful - [${applicationNumber}] Turkey E-Visa Application Received`,
     html: `
       <!DOCTYPE html>
       <html>
