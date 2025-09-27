@@ -236,6 +236,17 @@ export function generateVisaReceivedEmail(
           <div style="padding: 40px 30px;">
             <h2 style="color: #1a1a1a; margin-bottom: 20px; font-size: 22px;">Dear ${firstName} ${lastName},</h2>
             
+            <!-- Payment Success Confirmation -->
+            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 25px; border-radius: 10px; margin: 20px 0; text-align: center;">
+              <div style="display: inline-block; background: rgba(255,255,255,0.2); border-radius: 50%; padding: 15px; margin-bottom: 15px;">
+                <div style="width: 30px; height: 30px; border: 3px solid white; border-radius: 50%; position: relative; margin: 0 auto;">
+                  <div style="position: absolute; top: 8px; left: 6px; width: 8px; height: 14px; border: solid white; border-width: 0 3px 3px 0; transform: rotate(45deg);"></div>
+                </div>
+              </div>
+              <h2 style="margin: 0 0 10px 0; font-size: 24px; font-weight: bold;">💳 PAYMENT SUCCESSFUL!</h2>
+              <p style="margin: 0; font-size: 16px; opacity: 0.95;">Your payment has been successfully processed and confirmed.</p>
+            </div>
+            
             <div style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 25px; border-radius: 10px; margin: 20px 0; border: 1px solid #dee2e6;">
               <p style="color: #1a1a1a; line-height: 1.7; margin: 0; font-size: 16px; text-align: center;">
                 <strong>Your Turkey Visa application has been successfully received and recorded.</strong><br>
@@ -407,6 +418,9 @@ export function generateVisaReceivedEmail(
 TURKEY E-ELECTRONIC VISA APPLICATION SYSTEM
 
 Dear ${firstName} ${lastName},
+
+💳 PAYMENT SUCCESSFUL!
+Your payment has been successfully processed and confirmed.
 
 Your Turkey Visa application has been successfully received and recorded.
 
