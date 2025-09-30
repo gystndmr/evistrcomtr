@@ -645,41 +645,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const limit = parseInt(req.query.limit as string) || 50;
       const search = (req.query.search as string) || '';
       
-      const allApplications = await storage.getApplications();
+      const { applications, totalCount } = await storage.getApplicationsPaginated(page, limit, search);
       
-      // Ensure both snake_case and camelCase fields for frontend compatibility
-      const normalizedApplications = allApplications.map(app => ({
-        ...app,
-        // Add camelCase versions if they don't exist
-        supportingDocumentType: app.supportingDocumentType || (app as any).supporting_document_type,
-        supportingDocumentCountry: app.supportingDocumentCountry || (app as any).supporting_document_country,
-        supportingDocumentNumber: app.supportingDocumentNumber || (app as any).supporting_document_number,
-        supportingDocumentStartDate: app.supportingDocumentStartDate || (app as any).supporting_document_start_date,
-        supportingDocumentEndDate: app.supportingDocumentEndDate || (app as any).supporting_document_end_date,
-        // Also keep snake_case versions for backward compatibility
-        supporting_document_type: (app as any).supporting_document_type || app.supportingDocumentType,
-        supporting_document_country: (app as any).supporting_document_country || app.supportingDocumentCountry,
-        supporting_document_number: (app as any).supporting_document_number || app.supportingDocumentNumber,
-        supporting_document_start_date: (app as any).supporting_document_start_date || app.supportingDocumentStartDate,
-        supporting_document_end_date: (app as any).supporting_document_end_date || app.supportingDocumentEndDate
-      }));
-      
-      // Filter by search term if provided
-      let filteredApplications = normalizedApplications;
-      if (search) {
-        filteredApplications = normalizedApplications.filter(app => 
-          app.firstName?.toLowerCase().includes(search.toLowerCase()) ||
-          app.lastName?.toLowerCase().includes(search.toLowerCase()) ||
-          app.email?.toLowerCase().includes(search.toLowerCase()) ||
-          app.applicationNumber?.toLowerCase().includes(search.toLowerCase())
-        );
-      }
-      
-      // Pagination
-      const totalCount = filteredApplications.length;
       const totalPages = Math.ceil(totalCount / limit);
-      const offset = (page - 1) * limit;
-      const applications = filteredApplications.slice(offset, offset + limit);
       
       res.json({
         applications,
@@ -700,24 +668,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const limit = parseInt(req.query.limit as string) || 50;
       const search = (req.query.search as string) || '';
       
-      const allApplications = await storage.getInsuranceApplications();
+      const { applications, totalCount } = await storage.getInsuranceApplicationsPaginated(page, limit, search);
       
-      // Filter by search term if provided
-      let filteredApplications = allApplications;
-      if (search) {
-        filteredApplications = allApplications.filter(app => 
-          app.firstName?.toLowerCase().includes(search.toLowerCase()) ||
-          app.lastName?.toLowerCase().includes(search.toLowerCase()) ||
-          app.email?.toLowerCase().includes(search.toLowerCase()) ||
-          app.applicationNumber?.toLowerCase().includes(search.toLowerCase())
-        );
-      }
-      
-      // Pagination
-      const totalCount = filteredApplications.length;
       const totalPages = Math.ceil(totalCount / limit);
-      const offset = (page - 1) * limit;
-      const applications = filteredApplications.slice(offset, offset + limit);
       
       res.json({
         applications,

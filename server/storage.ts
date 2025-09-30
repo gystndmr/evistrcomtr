@@ -16,7 +16,7 @@ import {
   type InsertChatMessage
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, like, or, sql, count } from "drizzle-orm";
 
 export interface IStorage {
   // Country operations
@@ -30,6 +30,8 @@ export interface IStorage {
   getApplicationByNumber(applicationNumber: string): Promise<Application | undefined>;
   getApplicationByOrderRef(orderRef: string): Promise<Application | undefined>;
   getApplications(): Promise<Application[]>;
+  getApplicationsPaginated(page: number, limit: number, search: string): Promise<{ applications: Application[]; totalCount: number }>;
+  getApplicationsStats(): Promise<{ totalCount: number; totalRevenue: number; pendingCount: number }>;
   createApplication(application: InsertApplication): Promise<Application>;
   updateApplicationStatus(id: number, status: string): Promise<Application | undefined>;
   updateApplicationPaymentStatus(orderRef: string, paymentStatus: string): Promise<void>;
@@ -44,6 +46,8 @@ export interface IStorage {
   getInsuranceApplicationByNumber(applicationNumber: string): Promise<InsuranceApplication | undefined>;
   getInsuranceApplicationByOrderRef(orderRef: string): Promise<InsuranceApplication | undefined>;
   getInsuranceApplications(): Promise<InsuranceApplication[]>;
+  getInsuranceApplicationsPaginated(page: number, limit: number, search: string): Promise<{ applications: InsuranceApplication[]; totalCount: number }>;
+  getInsuranceApplicationsStats(): Promise<{ totalCount: number; totalRevenue: number; pendingCount: number }>;
   getInsuranceApplicationById(id: number): Promise<InsuranceApplication | undefined>;
   updateInsuranceApplicationStatus(id: number, status: string): Promise<InsuranceApplication | undefined>;
   updateInsuranceApplicationPaymentStatus(orderRef: string, paymentStatus: string): Promise<void>;
@@ -167,23 +171,73 @@ export class DatabaseStorage implements IStorage {
 
   async getApplications(): Promise<Application[]> {
     try {
-      const results = await db.select().from(applications).orderBy(desc(applications.createdAt));
-      
-      // TEST: Log specific application to verify data structure
-      const testApp = results.find(app => app.applicationNumber === 'TRME2M3FUQ3LU8CW');
-      if (testApp) {
-        console.log('🔧 DEBUG Storage Test Application:', {
-          applicationNumber: testApp.applicationNumber,
-          supportingDocumentType: testApp.supportingDocumentType,
-          supportingDocumentCountry: testApp.supportingDocumentCountry,
-          keys: Object.keys(testApp)
-        });
-      }
-      
+      const results = await db.select().from(applications).orderBy(desc(applications.createdAt)).limit(100);
       return results;
     } catch (error) {
       console.error('Database error in getApplications:', error);
       return [];
+    }
+  }
+
+  async getApplicationsPaginated(page: number, limit: number, search: string): Promise<{ applications: Application[]; totalCount: number }> {
+    try {
+      const offset = (page - 1) * limit;
+      
+      let query = db.select().from(applications);
+      let countQuery = db.select({ count: count() }).from(applications);
+      
+      if (search && search.trim()) {
+        const searchPattern = `%${search.toLowerCase()}%`;
+        const searchCondition = or(
+          like(sql`LOWER(${applications.firstName})`, searchPattern),
+          like(sql`LOWER(${applications.lastName})`, searchPattern),
+          like(sql`LOWER(${applications.email})`, searchPattern),
+          like(sql`LOWER(${applications.applicationNumber})`, searchPattern)
+        );
+        query = query.where(searchCondition);
+        countQuery = countQuery.where(searchCondition);
+      }
+      
+      const [results, countResult] = await Promise.all([
+        query.orderBy(desc(applications.createdAt)).limit(limit).offset(offset),
+        countQuery
+      ]);
+      
+      const normalizedApplications = results.map(app => ({
+        ...app,
+        supportingDocumentType: app.supportingDocumentType || (app as any).supporting_document_type,
+        supportingDocumentCountry: app.supportingDocumentCountry || (app as any).supporting_document_country,
+        supportingDocumentNumber: app.supportingDocumentNumber || (app as any).supporting_document_number,
+        supportingDocumentStartDate: app.supportingDocumentStartDate || (app as any).supporting_document_start_date,
+        supportingDocumentEndDate: app.supportingDocumentEndDate || (app as any).supporting_document_end_date,
+      }));
+      
+      return {
+        applications: normalizedApplications,
+        totalCount: (countResult[0]?.count as number) || 0
+      };
+    } catch (error) {
+      console.error('Database error in getApplicationsPaginated:', error);
+      return { applications: [], totalCount: 0 };
+    }
+  }
+
+  async getApplicationsStats(): Promise<{ totalCount: number; totalRevenue: number; pendingCount: number }> {
+    try {
+      const [countResult, revenueResult, pendingResult] = await Promise.all([
+        db.select({ count: count() }).from(applications),
+        db.select({ total: sql<number>`COALESCE(SUM(CAST(${applications.totalAmount} AS DECIMAL)), 0)` }).from(applications),
+        db.select({ count: count() }).from(applications).where(eq(applications.status, 'pending'))
+      ]);
+      
+      return {
+        totalCount: (countResult[0]?.count as number) || 0,
+        totalRevenue: Number(revenueResult[0]?.total) || 0,
+        pendingCount: (pendingResult[0]?.count as number) || 0
+      };
+    } catch (error) {
+      console.error('Database error in getApplicationsStats:', error);
+      return { totalCount: 0, totalRevenue: 0, pendingCount: 0 };
     }
   }
 
@@ -247,10 +301,63 @@ export class DatabaseStorage implements IStorage {
 
   async getInsuranceApplications(): Promise<InsuranceApplication[]> {
     try {
-      return await db.select().from(insuranceApplications).orderBy(desc(insuranceApplications.createdAt));
+      return await db.select().from(insuranceApplications).orderBy(desc(insuranceApplications.createdAt)).limit(100);
     } catch (error) {
       console.error('Database error in getInsuranceApplications:', error);
       return [];
+    }
+  }
+
+  async getInsuranceApplicationsPaginated(page: number, limit: number, search: string): Promise<{ applications: InsuranceApplication[]; totalCount: number }> {
+    try {
+      const offset = (page - 1) * limit;
+      
+      let query = db.select().from(insuranceApplications);
+      let countQuery = db.select({ count: count() }).from(insuranceApplications);
+      
+      if (search && search.trim()) {
+        const searchPattern = `%${search.toLowerCase()}%`;
+        const searchCondition = or(
+          like(sql`LOWER(${insuranceApplications.firstName})`, searchPattern),
+          like(sql`LOWER(${insuranceApplications.lastName})`, searchPattern),
+          like(sql`LOWER(${insuranceApplications.email})`, searchPattern),
+          like(sql`LOWER(${insuranceApplications.applicationNumber})`, searchPattern)
+        );
+        query = query.where(searchCondition);
+        countQuery = countQuery.where(searchCondition);
+      }
+      
+      const [results, countResult] = await Promise.all([
+        query.orderBy(desc(insuranceApplications.createdAt)).limit(limit).offset(offset),
+        countQuery
+      ]);
+      
+      return {
+        applications: results,
+        totalCount: (countResult[0]?.count as number) || 0
+      };
+    } catch (error) {
+      console.error('Database error in getInsuranceApplicationsPaginated:', error);
+      return { applications: [], totalCount: 0 };
+    }
+  }
+
+  async getInsuranceApplicationsStats(): Promise<{ totalCount: number; totalRevenue: number; pendingCount: number }> {
+    try {
+      const [countResult, revenueResult, pendingResult] = await Promise.all([
+        db.select({ count: count() }).from(insuranceApplications),
+        db.select({ total: sql<number>`COALESCE(SUM(CAST(${insuranceApplications.totalAmount} AS DECIMAL)), 0)` }).from(insuranceApplications),
+        db.select({ count: count() }).from(insuranceApplications).where(eq(insuranceApplications.status, 'pending'))
+      ]);
+      
+      return {
+        totalCount: (countResult[0]?.count as number) || 0,
+        totalRevenue: Number(revenueResult[0]?.total) || 0,
+        pendingCount: (pendingResult[0]?.count as number) || 0
+      };
+    } catch (error) {
+      console.error('Database error in getInsuranceApplicationsStats:', error);
+      return { totalCount: 0, totalRevenue: 0, pendingCount: 0 };
     }
   }
 
