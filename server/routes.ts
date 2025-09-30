@@ -687,16 +687,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/admin/stats", async (req, res) => {
     try {
-      const applications = await storage.getApplications();
-      const insuranceApplications = await storage.getInsuranceApplications();
+      const [visaStats, insuranceStats] = await Promise.all([
+        storage.getApplicationsStats(),
+        storage.getInsuranceApplicationsStats()
+      ]);
       
       const stats = {
-        totalApplications: applications.length,
-        totalInsuranceApplications: insuranceApplications.length,
-        totalRevenue: applications.reduce((sum: number, app: any) => sum + parseFloat(app.totalAmount), 0) + 
-                     insuranceApplications.reduce((sum: number, app: any) => sum + parseFloat(app.totalAmount), 0),
-        pendingApplications: applications.filter((app: any) => app.status === 'pending').length + 
-                           insuranceApplications.filter((app: any) => app.status === 'pending').length
+        totalApplications: visaStats.totalCount,
+        totalInsuranceApplications: insuranceStats.totalCount,
+        totalRevenue: visaStats.totalRevenue + insuranceStats.totalRevenue,
+        pendingApplications: visaStats.pendingCount + insuranceStats.pendingCount
       };
       
       res.json(stats);
