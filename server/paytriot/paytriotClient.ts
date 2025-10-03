@@ -1,0 +1,184 @@
+import { v4 as uuidv4 } from 'uuid';
+import { sign, verifySignature } from '../utils/sign';
+import { toFormUrlEncoded, fromFormUrlEncoded } from '../utils/form';
+
+interface PaytriotSalePayload {
+  amountMinor: number;
+  cardNumber: string;
+  cardExpiryMonth: string;
+  cardExpiryYear: string;
+  cardCVV: string;
+  orderRef?: string;
+  transactionUnique?: string;
+  customerAddress?: string;
+  customerPostCode?: string;
+  customerEmail?: string;
+  customerIPAddress: string;
+  statementNarrative1?: string;
+  statementNarrative2?: string;
+  threeDSMD?: string;
+  threeDSPaRes?: string;
+}
+
+interface PaytriotResponse {
+  status: 'success' | '3ds_required' | 'error';
+  xref?: string;
+  authorisationCode?: string;
+  amountReceived?: string;
+  responseMessage?: string;
+  acsUrl?: string;
+  md?: string;
+  paReq?: string;
+  termUrl?: string;
+  code?: number;
+  message?: string;
+}
+
+export class PaytriotClient {
+  private gatewayUrl: string;
+  private merchantId: string;
+  private signatureKey: string;
+  private countryCode: string;
+  private currencyCode: string;
+  private timeout: number;
+
+  constructor() {
+    this.gatewayUrl = process.env.PAYTRIOT_GATEWAY_URL || 'https://paytriot-proxy.renga.workers.dev';
+    this.merchantId = process.env.PAYTRIOT_MERCHANT_ID || '281927';
+    this.signatureKey = process.env.PAYTRIOT_SIGNATURE_KEY || 'TempKey123Paytriot';
+    this.countryCode = process.env.COUNTRY_CODE || '792';
+    this.currencyCode = process.env.CURRENCY_CODE || '949';
+    this.timeout = parseInt(process.env.REQUEST_TIMEOUT_MS || '10000', 10);
+  }
+
+  async sale(payload: PaytriotSalePayload): Promise<PaytriotResponse> {
+    const {
+      amountMinor,
+      cardNumber,
+      cardExpiryMonth,
+      cardExpiryYear,
+      cardCVV,
+      orderRef,
+      transactionUnique,
+      customerAddress,
+      customerPostCode,
+      customerEmail,
+      customerIPAddress,
+      statementNarrative1,
+      statementNarrative2,
+      threeDSMD,
+      threeDSPaRes
+    } = payload;
+
+    if (!amountMinor || typeof amountMinor !== 'number' || amountMinor <= 0) {
+      throw new Error('Invalid amountMinor: must be a positive number');
+    }
+
+    if (!customerIPAddress) {
+      throw new Error('customerIPAddress is required');
+    }
+
+    const fields: Record<string, any> = {
+      merchantID: this.merchantId,
+      action: 'SALE',
+      type: '1',
+      countryCode: this.countryCode,
+      currencyCode: this.currencyCode,
+      amount: String(amountMinor),
+      cardNumber: cardNumber,
+      cardExpiryMonth: cardExpiryMonth,
+      cardExpiryYear: cardExpiryYear,
+      cardCVV: cardCVV,
+      orderRef: orderRef || `ORD-${Date.now()}-${uuidv4().slice(0, 8)}`,
+      transactionUnique: transactionUnique || uuidv4(),
+      customerIPAddress: customerIPAddress
+    };
+
+    if (customerAddress) fields.customerAddress = customerAddress;
+    if (customerPostCode) fields.customerPostCode = customerPostCode;
+    if (customerEmail) fields.customerEmail = customerEmail;
+    if (statementNarrative1 || process.env.STATEMENT_NARRATIVE_1) {
+      fields.statementNarrative1 = statementNarrative1 || process.env.STATEMENT_NARRATIVE_1;
+    }
+    if (statementNarrative2 || process.env.STATEMENT_NARRATIVE_2) {
+      fields.statementNarrative2 = statementNarrative2 || process.env.STATEMENT_NARRATIVE_2;
+    }
+
+    if (threeDSMD) fields.threeDSMD = threeDSMD;
+    if (threeDSPaRes) fields.threeDSPaRes = threeDSPaRes;
+
+    const signature = sign(fields, this.signatureKey);
+    fields.signature = signature;
+
+    const body = toFormUrlEncoded(fields);
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+
+      const response = await fetch(this.gatewayUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: body,
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      const responseText = await response.text();
+      const responseData = fromFormUrlEncoded(responseText);
+
+      const receivedSignature = responseData.signature;
+      if (!verifySignature(responseData, this.signatureKey, receivedSignature)) {
+        throw new Error('Response signature verification failed');
+      }
+
+      return this.normalizeResponse(responseData);
+    } catch (error: any) {
+      if (error.name === 'AbortError') {
+        throw new Error('Request timeout');
+      }
+      throw error;
+    }
+  }
+
+  private normalizeResponse(responseData: Record<string, string>): PaytriotResponse {
+    const responseCode = parseInt(responseData.responseCode, 10);
+
+    if (responseCode === 0) {
+      return {
+        status: 'success',
+        xref: responseData.xref,
+        authorisationCode: responseData.authorisationCode,
+        amountReceived: responseData.amountReceived,
+        responseMessage: responseData.responseMessage || 'Payment successful'
+      };
+    }
+
+    if (responseCode === 65802) {
+      return {
+        status: '3ds_required',
+        acsUrl: responseData.threeDSACSURL,
+        md: responseData.threeDSMD,
+        paReq: responseData.threeDSPaReq,
+        termUrl: process.env.RETURN_URL
+      };
+    }
+
+    if (responseCode === 65540) {
+      return {
+        status: 'error',
+        code: responseCode,
+        message: 'Forbidden: server IP not whitelisted'
+      };
+    }
+
+    return {
+      status: 'error',
+      code: responseCode,
+      message: responseData.responseMessage || 'Payment failed'
+    };
+  }
+}

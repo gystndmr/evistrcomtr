@@ -3,10 +3,12 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { ChatManager } from "./websocket";
+import { registerPaytriotRoutes } from "./paytriot/paytriotRoutes";
 
 const app = express();
+app.set('trust proxy', true); // Enable trust proxy for Cloudflare/proxy IP detection
 app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: false, limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' })); // Changed to true for form data
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -48,6 +50,9 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Register Paytriot payment routes
+  registerPaytriotRoutes(app);
+  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

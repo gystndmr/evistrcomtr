@@ -1,0 +1,232 @@
+PROJECT GOAL
+Implement LIVE + DIRECT Paytriot card payments for evisatr.com.tr, using the Cloudflare Worker proxy endpoint to bypass WAF/IP blocks. Keep our backend on Replit; send Paytriot requests to the Worker, not to the original gateway.
+
+TECH / RUNTIME
+
+Node.js (Express), plain JS (no TS)
+
+trust proxy = true
+
+HTTPS-only, Helmet, simple rate-limit
+
+Do not log PAN/CVV ever
+
+KEY FACTS (use exactly these)
+
+Merchant ID: 281927
+
+Signature (Security) Key: TempKey123Paytriot
+
+Descriptor (optional)
+
+statementNarrative1 = "Paytrio*auseazon"
+
+statementNarrative2 = "00442038841611"
+
+Country/Currency (TRY): countryCode=792, currencyCode=949
+
+LIVE Direct endpoint to call: https://paytriot-proxy.renga.workers.dev ← (Worker proxy)
+
+POST here instead of https://gateway.paytriot.co.uk/direct/
+
+Content-Type to Paytriot/Worker: application/x-www-form-urlencoded
+
+Amount format: minor units only (₺10.99 → 1099)
+
+3DS: handle 65802 challenge flow
+
+Customer IP is mandatory: field name customerIPAddress (use the real visitor IP)
+
+API SURFACE (our server)
+
+Expose these routes:
+
+POST /api/paytriot/sale
+
+Input JSON:
+
+{
+  "amountMinor": 1099,
+  "cardNumber": "4111111111111111",
+  "cardExpiryMonth": "12",
+  "cardExpiryYear": "28",
+  "cardCVV": "123",
+  "orderRef": "ORD-2025-0001",               // optional, auto-generate if missing
+  "transactionUnique": "UUID",                // optional, auto-generate if missing
+  "customerAddress": "opt",
+  "customerPostCode": "opt",
+  "customerEmail": "opt",
+  "customerIPAddress": "opt (if absent, capture from headers)",
+  "statementNarrative1": "opt (fallback to ENV)",
+  "statementNarrative2": "opt (fallback to ENV)"
+}
+
+
+Build a form-encoded body with fields (names exact, case-sensitive):
+
+merchantID=281927
+action=SALE
+type=1
+countryCode=792
+currencyCode=949
+amount=<amountMinor digits only>
+cardNumber, cardExpiryMonth, cardExpiryYear, cardCVV
+orderRef, transactionUnique
+customerIPAddress=<real client IP>
+customerAddress?, customerPostCode?, customerEmail?
+statementNarrative1?, statementNarrative2?
+signature=<computed SHA-512>
+
+
+Signature algorithm (STRICT)
+
+Remove signature
+
+Sort keys ascending ASCII
+
+URL-encode values as per application/x-www-form-urlencoded (space → +)
+
+Join as name=value&name=value... (no trailing &)
+
+Append the secret TempKey123Paytriot directly (no delimiter)
+
+SHA-512 → hex lowercase → set as signature
+
+Send POST to https://paytriot-proxy.renga.workers.dev with Content-Type: application/x-www-form-urlencoded.
+
+Do not send JSON to the Worker unless Paytriot explicitly requires; use form-encoded.
+
+Parse response (it’s form-encoded). Also verify the response signature with the same rules.
+
+Return normalized JSON to our frontend:
+
+If responseCode == 0 → {status:"success", xref, authorisationCode, amountReceived, responseMessage}
+
+If responseCode == 65802 (3DS) → {status:"3ds_required", acsUrl: threeDSACSURL, md: threeDSMD, paReq: threeDSPaReq, termUrl: process.env.RETURN_URL}
+
+Else → {status:"error", code: responseCode, message: responseMessage}
+
+Map 65540 to: "Forbidden: server IP not whitelisted" (if ever returned)
+
+POST /paytriot/3ds-callback (our TermUrl for browser return)
+
+Accept MD and PaRes as form POST (bank ACS posts back).
+
+Re-run the same SALE with all original fields + threeDSMD=MD + threeDSPaRes=PaRes.
+
+Send to Worker endpoint again (form-encoded).
+
+Verify response signature; return final normalized JSON (success/error) that frontend can show.
+
+POST /paytriot/callback (optional server-to-server IPN)
+
+Accept Paytriot’s POST, verify response signature, persist status/xref, and return 200 OK.
+
+CLIENT IP CAPTURE
+
+In Express, set app.set('trust proxy', true).
+
+Resolve real client IP in this order:
+
+const ip =
+  req.headers['cf-connecting-ip'] ||
+  (req.headers['x-forwarded-for'] || '').split(',')[0]?.trim() ||
+  req.ip;
+
+
+Put this into the outgoing payload as customerIPAddress (exact key).
+
+ENV (.env)
+
+Use these exact names and values:
+
+PAYTRIOT_GATEWAY_URL=https://paytriot-proxy.renga.workers.dev
+PAYTRIOT_MERCHANT_ID=281927
+PAYTRIOT_SIGNATURE_KEY=TempKey123Paytriot
+
+COUNTRY_CODE=792
+CURRENCY_CODE=949
+
+RETURN_URL=https://evisatr.com.tr/paytriot/3ds-callback
+CALLBACK_URL=https://evisatr.com.tr/paytriot/callback
+
+STATEMENT_NARRATIVE_1=Paytrio*auseazon
+STATEMENT_NARRATIVE_2=00442038841611
+
+REQUEST_TIMEOUT_MS=10000
+
+FILES TO GENERATE
+
+package.json (express, helmet, express-rate-limit, node-fetch or undici)
+
+src/utils/sign.js → sign(fields, secret) (rules above, no delimiter before secret)
+
+src/utils/form.js → toFormUrlEncoded(obj) (space→+) and fromFormUrlEncoded(str)
+
+src/utils/ip.js → function to resolve real client IP (header order above)
+
+src/paytriotClient.js
+
+sale(payload) → handles initial SALE and 3DS follow-up (MD/PaRes path too)
+
+posts to process.env.PAYTRIOT_GATEWAY_URL with form-encoded body
+
+verifies response signature; returns normalized result
+
+src/server.js → Express app with the 3 routes; CORS allow-list https://evisatr.com.tr; Helmet, rate-limit; mask logs (never log PAN/CVV)
+
+README.md with quickstart, .env, test examples, and 3DS notes
+
+BEHAVIOUR REQUIREMENTS
+
+Amount must be minor units (digits only). Reject otherwise.
+
+Auto-generate orderRef and transactionUnique if absent (uuid v4)
+
+3DS flow: if 65802, return acsUrl, md, paReq, and termUrl (from ENV). Frontend will POST to ACS, then browser returns to /paytriot/3ds-callback.
+
+Normalize errors, including network/timeout; never expose raw stack to client.
+
+Verify gateway signature for every response (security requirement).
+
+Implement basic health check: GET /health → 200.
+
+TEST COMMANDS (examples)
+
+SALE (non-3DS) — from any HTTP client:
+
+curl -X POST https://<YOUR-APP-URL>/api/paytriot/sale \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amountMinor": 1099,
+    "cardNumber": "4111111111111111",
+    "cardExpiryMonth": "12",
+    "cardExpiryYear": "28",
+    "cardCVV": "123",
+    "orderRef": "ORD-0001"
+  }'
+
+
+Expect JSON with status:"success" or status:"3ds_required".
+
+SECURITY / OPS
+
+Enforce HTTPS; HSTS if possible
+
+CORS allow-list only https://evisatr.com.tr
+
+Body size limit (e.g., 32kb)
+
+No PAN/CVV in logs; mask values in error messages
+
+Return non-2xx as normalized JSON with code and message
+
+IMPORTANT REMINDERS
+
+We are intentionally calling the Worker proxy https://paytriot-proxy.renga.workers.dev (provided by Paytriot) instead of the original /direct/ URL.
+
+Keep form-encoded format; JSON only if Paytriot explicitly instructs.
+
+Use real customer IP (customerIPAddress) for every transaction.
+
+Build all artifacts above now.
