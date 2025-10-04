@@ -45,12 +45,12 @@ export class PaytriotClient {
   private timeout: number;
 
   constructor() {
-    this.gatewayUrl = process.env.PAYTRIOT_GATEWAY_URL || 'https://paytriot-proxy.renga.workers.dev';
-    this.merchantId = process.env.PAYTRIOT_MERCHANT_ID || '281927';
-    this.signatureKey = process.env.PAYTRIOT_SIGNATURE_KEY || 'TempKey123Paytriot';
-    this.countryCode = process.env.COUNTRY_CODE || '792';
-    this.currencyCode = process.env.CURRENCY_CODE || '949';
-    this.timeout = parseInt(process.env.REQUEST_TIMEOUT_MS || '10000', 10);
+    this.gatewayUrl = 'https://paytriot-proxy.renga.workers.dev';
+    this.merchantId = '281927';
+    this.signatureKey = 'TempKey123Paytriot';
+    this.countryCode = '792';
+    this.currencyCode = '840';
+    this.timeout = 10000;
   }
 
   async sale(payload: PaytriotSalePayload): Promise<PaytriotResponse> {
