@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Shield, CheckCircle, Calendar, MapPin, Star, Crown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { PaymentRetry } from "@/components/payment-retry";
+import { PaytriotPaymentModal } from "@/components/paytriot-payment-modal";
 import teamPhoto from "@/assets/team-photo-new.png";
 import type { InsuranceProduct } from "@shared/schema";
 
@@ -37,9 +37,8 @@ export default function Insurance() {
   const [parentIdPhotos, setParentIdPhotos] = useState<File[]>([]);
   const [motherIdPhotos, setMotherIdPhotos] = useState<File[]>([]);
   const [fatherIdPhotos, setFatherIdPhotos] = useState<File[]>([]);
-  const [showRetry, setShowRetry] = useState(false);
-  const [currentOrderId, setCurrentOrderId] = useState<string>("");
-  const [paymentRedirectUrl, setPaymentRedirectUrl] = useState<string>("");
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [currentApplication, setCurrentApplication] = useState<any>(null);
   const { toast } = useToast();
 
   const { data: products = [], isLoading } = useQuery({
@@ -97,9 +96,7 @@ export default function Insurance() {
           };
         })) : null;
 
-      // First create the insurance application with mapped field names
-      console.log('Making insurance application request...');
-      console.log('🔍 Frontend URL being used:', "/api/insurance-applications");
+      // Create the insurance application
       const applicationPayload = {
         firstName: applicationData.firstName,
         lastName: applicationData.lastName,
@@ -117,123 +114,18 @@ export default function Insurance() {
         parentIdPhotos: parentIdPhotosData,
         countryOfOrigin: applicationData.nationality || countryFromUrl,
       };
-      console.log('Application payload:', applicationPayload);
       
-      const applicationResponse = await fetch("/api/insurance/applications", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify(applicationPayload),
+      const response = await apiRequest("POST", "/api/insurance/applications", applicationPayload);
+      
+      return response;
+    },
+    onSuccess: (data: any) => {
+      setCurrentApplication(data);
+      setIsPaymentModalOpen(true);
+      toast({
+        title: "Application Submitted!",
+        description: `Application ${data.applicationNumber} created. Please complete payment.`,
       });
-      
-      console.log('Application response status:', applicationResponse.status);
-      console.log('Application response headers:', Object.fromEntries(applicationResponse.headers));
-      
-      if (!applicationResponse.ok) {
-        const errorText = await applicationResponse.text();
-        console.error('Application response error:', errorText);
-        console.error('Application response URL:', applicationResponse.url);
-        console.error('Application response type:', applicationResponse.type);
-        throw new Error(`Application failed: ${applicationResponse.status} - ${errorText}`);
-      }
-      
-      // Check if response is actually JSON
-      const contentType = applicationResponse.headers.get('content-type');
-      console.log('Application response content-type:', contentType);
-      if (!contentType || !contentType.includes('application/json')) {
-        const responseText = await applicationResponse.text();
-        console.error('Expected JSON but got:', responseText);
-        throw new Error(`Server returned non-JSON response: ${contentType}`);
-      }
-      
-      const applicationData2 = await applicationResponse.json();
-      
-      // Then create payment
-      console.log('Making payment request...');
-      const paymentPayload = {
-        amount: selectedProduct.price,
-        currency: "USD",
-        description: `Turkey Travel Insurance - ${selectedProduct.name}`,
-        customerEmail: applicationData.email,
-        customerName: `${applicationData.firstName} ${applicationData.lastName}`
-      };
-      console.log('Payment payload:', paymentPayload);
-      
-      const paymentResponse = await fetch("/api/payment/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify(paymentPayload),
-      });
-      
-      console.log('Payment response status:', paymentResponse.status);
-      console.log('Payment response headers:', Object.fromEntries(paymentResponse.headers));
-      
-      if (!paymentResponse.ok) {
-        const errorText = await paymentResponse.text();
-        console.error('Payment response error:', errorText);
-        throw new Error(`Payment failed: ${paymentResponse.status} - ${errorText}`);
-      }
-      
-      const paymentData = await paymentResponse.json();
-      
-      if (paymentData.success && paymentData.paymentUrl) {
-        setCurrentOrderId(applicationData2.applicationNumber);
-        setPaymentRedirectUrl(paymentData.paymentUrl);
-        
-        // Enhanced redirect approach for mobile compatibility
-        const redirectToPayment = () => {
-          try {
-            console.log('[Insurance Payment Debug] Starting redirect process');
-            console.log('[Insurance Payment Debug] Payment URL:', paymentData.paymentUrl);
-            
-            // Always show success toast first
-            toast({
-              title: "Application Submitted Successfully!",
-              description: `Application ${applicationData2.applicationNumber} created. Redirecting to payment...`,
-              duration: 5000,
-            });
-            
-            // Enhanced redirect with multiple fallbacks for mobile
-            setTimeout(() => {
-              try {
-                // For mobile devices - try window.open first, then fallback
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                
-                if (isMobile) {
-                  console.log('[Insurance Payment Debug] Mobile device detected');
-                  // Try window.open first for mobile
-                  const newWindow = window.open(paymentData.paymentUrl, '_blank');
-                  if (!newWindow) {
-                    console.log('[Insurance Payment Debug] Pop-up blocked, using location.href');
-                    window.location.href = paymentData.paymentUrl;
-                  }
-                } else {
-                  console.log('[Insurance Payment Debug] Desktop device, using location.href');
-                  window.location.href = paymentData.paymentUrl;
-                }
-              } catch (redirectError) {
-                console.error('[Insurance Payment Debug] Redirect failed:', redirectError);
-                // Ultimate fallback - just set the location
-                window.location.replace(paymentData.paymentUrl);
-              }
-            }, 300); // Reduced timeout for better mobile experience
-            
-          } catch (error) {
-            console.error('[Insurance Payment Debug] Payment redirect error:', error);
-            setShowRetry(true);
-          }
-        };
-        
-        redirectToPayment();
-        return applicationData2;
-      } else {
-        throw new Error("Failed to create payment link");
-      }
     },
     onError: (error) => {
       console.error("Insurance application error:", error);
@@ -242,7 +134,6 @@ export default function Insurance() {
         description: error instanceof Error ? error.message : "Please try again",
         variant: "destructive",
       });
-      setShowRetry(true);
     },
   });
 
@@ -1089,14 +980,27 @@ export default function Insurance() {
 
       <Footer />
       
-      {/* Payment Retry Component */}
-      {showRetry && currentOrderId && (
-        <PaymentRetry
-          paymentUrl={`https://getvisa.gpayprocessing.com/checkout/${currentOrderId}`}
-          orderId={currentOrderId}
-          onRetry={() => {
-            setShowRetry(false);
-            createApplicationMutation.mutate();
+      {/* Paytriot Payment Modal */}
+      {currentApplication && (
+        <PaytriotPaymentModal
+          isOpen={isPaymentModalOpen}
+          onClose={() => setIsPaymentModalOpen(false)}
+          applicationNumber={currentApplication.applicationNumber}
+          amount={parseFloat(currentApplication.totalAmount || selectedProduct?.price || "0")}
+          onSuccess={(xref) => {
+            setIsPaymentModalOpen(false);
+            toast({
+              title: "Payment Successful!",
+              description: `Your payment has been processed. Transaction ID: ${xref}`,
+            });
+            window.location.href = "/";
+          }}
+          onError={(error) => {
+            toast({
+              title: "Payment Failed",
+              description: error,
+              variant: "destructive",
+            });
           }}
         />
       )}
