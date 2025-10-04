@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
 import { sign, verifySignature } from '../utils/sign';
-import { toFormUrlEncoded, fromFormUrlEncoded } from '../utils/form';
 
 interface PaytriotSalePayload {
   amountMinor: number;
@@ -115,7 +114,7 @@ export class PaytriotClient {
     const signature = sign(fields, this.signatureKey);
     fields.signature = signature;
 
-    const body = toFormUrlEncoded(fields);
+    console.log('[Paytriot] Sending JSON request with fields:', Object.keys(fields));
 
     try {
       const controller = new AbortController();
@@ -124,16 +123,24 @@ export class PaytriotClient {
       const response = await fetch(this.gatewayUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/json'
         },
-        body: body,
+        body: JSON.stringify(fields),
         signal: controller.signal
       });
 
       clearTimeout(timeoutId);
 
       const responseText = await response.text();
-      const responseData = fromFormUrlEncoded(responseText);
+      console.log('[Paytriot] Raw response:', responseText);
+      
+      let responseData: Record<string, any>;
+      try {
+        responseData = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('[Paytriot] Failed to parse JSON response:', responseText);
+        throw new Error('Invalid JSON response from payment gateway');
+      }
 
       console.log('[Paytriot] Response data:', JSON.stringify(responseData, null, 2));
       
