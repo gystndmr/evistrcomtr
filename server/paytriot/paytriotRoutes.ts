@@ -24,6 +24,9 @@ export function registerPaytriotRoutes(app: Express): void {
   const tempTransactions = new Map<string, PaytriotSalePayload>();
 
   app.post('/api/paytriot/sale', async (req: Request, res: Response) => {
+    // Track the map key outside try block for proper cleanup in catch (PCI compliance)
+    let txKey: string | undefined;
+    
     try {
       const {
         amountMinor,
@@ -82,7 +85,7 @@ export function registerPaytriotRoutes(app: Express): void {
       };
 
       // Store using transactionUnique as key for 3DS callback lookup
-      const txKey = transactionUnique || `temp-${Date.now()}`;
+      txKey = transactionUnique || `temp-${Date.now()}`;
       tempTransactions.set(txKey, payload);
 
       const result = await paytriotClient.sale(payload);
@@ -93,15 +96,47 @@ export function registerPaytriotRoutes(app: Express): void {
         orderRef 
       });
 
-      // If 3DS required, re-map with MD for callback lookup
-      if (result.status === '3ds_required' && result.md) {
-        tempTransactions.set(result.md, payload);
-        console.log('[Paytriot] 3DS required - stored transaction with MD:', result.md);
+      // Handle transaction cleanup and 3DS flow
+      if (result.status === 'success') {
+        // CRITICAL: Purge card data immediately on direct success (PCI compliance)
+        tempTransactions.delete(txKey);
+        console.log('[Paytriot] Direct success - purged card data from memory');
+      } else if (result.status === '3ds_required' && result.md) {
+        // CRITICAL: Sanitize payload before storing for 3DS (PCI compliance)
+        // Remove all sensitive card data - only store minimal fields needed for callback
+        const sanitizedPayload: PaytriotSalePayload = {
+          amountMinor: payload.amountMinor,
+          cardNumber: '', // Will be empty for 3DS continuation
+          cardExpiryMonth: '', 
+          cardExpiryYear: '',
+          cardCVV: '', // CVV must never be stored
+          orderRef: payload.orderRef,
+          transactionUnique: payload.transactionUnique,
+          customerAddress: payload.customerAddress,
+          customerPostCode: payload.customerPostCode,
+          customerEmail: payload.customerEmail,
+          customerIPAddress: payload.customerIPAddress,
+          statementNarrative1: payload.statementNarrative1,
+          statementNarrative2: payload.statementNarrative2
+        };
+        
+        tempTransactions.delete(txKey);
+        tempTransactions.set(result.md, sanitizedPayload);
+        console.log('[Paytriot] 3DS required - stored sanitized transaction (no card data) with MD:', result.md);
+      } else {
+        // Error case - also purge card data
+        tempTransactions.delete(txKey);
+        console.log('[Paytriot] Error occurred - purged card data from memory');
       }
 
       return res.json(result);
     } catch (error: any) {
       console.error('[Paytriot] Sale error:', error.message);
+      // CRITICAL: Purge any stored card data on exception (PCI compliance)
+      if (txKey) {
+        tempTransactions.delete(txKey);
+        console.log('[Paytriot] Exception occurred - purged card data from memory');
+      }
       return res.status(500).json({ 
         status: 'error', 
         message: error.message || 'Payment processing failed' 

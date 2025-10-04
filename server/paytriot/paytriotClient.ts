@@ -85,14 +85,19 @@ export class PaytriotClient {
       countryCode: this.countryCode,
       currencyCode: this.currencyCode,
       amount: String(amountMinor),
-      cardNumber: cardNumber,
-      cardExpiryMonth: cardExpiryMonth,
-      cardExpiryYear: cardExpiryYear,
-      cardCVV: cardCVV,
       orderRef: orderRef || `ORD-${Date.now()}-${uuidv4().slice(0, 8)}`,
       transactionUnique: transactionUnique || uuidv4(),
       customerIPAddress: customerIPAddress
     };
+
+    // Only include card fields if not doing 3DS completion
+    // (3DS completion uses MD to reference original transaction)
+    if (!threeDSMD && !threeDSPaRes) {
+      fields.cardNumber = cardNumber;
+      fields.cardExpiryMonth = cardExpiryMonth;
+      fields.cardExpiryYear = cardExpiryYear;
+      fields.cardCVV = cardCVV;
+    }
 
     if (customerAddress) fields.customerAddress = customerAddress;
     if (customerPostCode) fields.customerPostCode = customerPostCode;
