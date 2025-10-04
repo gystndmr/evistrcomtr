@@ -4,7 +4,6 @@ import { storage } from "./storage";
 import { insertApplicationSchema, insertInsuranceApplicationSchema } from "@shared/schema";
 import { z } from "zod";
 import { sendEmail, sendAdminCopyEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail, generateVisaApprovalEmail, generateVisaRejectionEmail } from "./email";
-import { registerPaytriotRoutes } from "./paytriot/paytriotRoutes";
 
 function generateApplicationNumber(): string {
   const timestamp = Date.now().toString(36);
@@ -1164,9 +1163,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
-
-  // Register Paytriot payment routes
-  registerPaytriotRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;
