@@ -135,10 +135,21 @@ export class PaytriotClient {
       const responseText = await response.text();
       const responseData = fromFormUrlEncoded(responseText);
 
+      console.log('[Paytriot] Response data:', JSON.stringify(responseData, null, 2));
+      
       const receivedSignature = responseData.signature;
+      const computedSignature = sign(responseData, this.signatureKey);
+      
+      console.log('[Paytriot] Received signature:', receivedSignature);
+      console.log('[Paytriot] Computed signature:', computedSignature);
+      
       if (!verifySignature(responseData, this.signatureKey, receivedSignature)) {
+        console.error('[Paytriot] Signature verification failed!');
+        console.error('[Paytriot] Response fields:', Object.keys(responseData));
         throw new Error('Response signature verification failed');
       }
+      
+      console.log('[Paytriot] Signature verification passed');
 
       return this.normalizeResponse(responseData);
     } catch (error: any) {
