@@ -11,8 +11,7 @@ export function sign(fields: Record<string, any>, secret: string): string {
     if (value === undefined || value === null || value === '') {
       return null;
     }
-    const encodedValue = encodeURIComponent(String(value)).replace(/%20/g, '+');
-    return `${key}=${encodedValue}`;
+    return `${key}=${String(value)}`;
   }).filter(Boolean);
 
   const messageString = pairs.join('&') + secret;

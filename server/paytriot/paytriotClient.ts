@@ -115,8 +115,7 @@ export class PaytriotClient {
     const signature = sign(fields, this.signatureKey);
     fields.signature = signature;
 
-    const body = toFormUrlEncoded(fields);
-    console.log('[Paytriot] Sending form-urlencoded request');
+    console.log('[Paytriot] Sending JSON request with signature');
 
     try {
       const controller = new AbortController();
@@ -125,9 +124,9 @@ export class PaytriotClient {
       const response = await fetch(this.gatewayUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/json'
         },
-        body: body,
+        body: JSON.stringify(fields),
         signal: controller.signal
       });
 
@@ -136,7 +135,12 @@ export class PaytriotClient {
       const responseText = await response.text();
       console.log('[Paytriot] Raw response (first 500 chars):', responseText.substring(0, 500));
       
-      const responseData = fromFormUrlEncoded(responseText);
+      let responseData: Record<string, any>;
+      try {
+        responseData = JSON.parse(responseText);
+      } catch (e) {
+        responseData = fromFormUrlEncoded(responseText);
+      }
 
       console.log('[Paytriot] Response data:', JSON.stringify(responseData, null, 2));
       
