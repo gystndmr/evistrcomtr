@@ -137,6 +137,15 @@ export const insertInsuranceApplicationSchema = createInsertSchema(insuranceAppl
   createdAt: true, 
   updatedAt: true,
   pdfAttachment: true
+}).extend({
+  // Override email validation to accept any string format
+  email: z.string().email("Invalid email address"),
+  // Override phone to accept any string
+  phone: z.string().min(1, "Phone number is required"),
+  // Override dateOfBirth to accept any string format (can be YYYY-MM-DD or other formats)
+  dateOfBirth: z.string().optional(),
+  // Override passportNumber to accept any string
+  passportNumber: z.string().optional(),
 });
 
 export const insertChatMessageSchema = createInsertSchema(chatMessages);
