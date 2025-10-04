@@ -39,6 +39,7 @@ export default function Insurance() {
   const [fatherIdPhotos, setFatherIdPhotos] = useState<File[]>([]);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [currentApplication, setCurrentApplication] = useState<any>(null);
+  const [pendingPaymentData, setPendingPaymentData] = useState<any>(null);
   const { toast } = useToast();
 
   const { data: products = [], isLoading } = useQuery({
@@ -121,6 +122,7 @@ export default function Insurance() {
     },
     onSuccess: (data: any) => {
       setCurrentApplication(data);
+      setPendingPaymentData(data); // Store for immediate use in modal
       setIsPaymentModalOpen(true);
       toast({
         title: "Application Submitted!",
@@ -981,17 +983,21 @@ export default function Insurance() {
       <Footer />
       
       {/* Paytriot Payment Modal */}
-      {currentApplication && (
+      {pendingPaymentData && (
         <PaytriotPaymentModal
           isOpen={isPaymentModalOpen}
-          onClose={() => setIsPaymentModalOpen(false)}
-          applicationNumber={currentApplication.applicationNumber}
-          amount={parseFloat(currentApplication.totalAmount || selectedProduct?.price || "0")}
-          customerName={`${currentApplication.firstName} ${currentApplication.lastName}`}
-          customerEmail={currentApplication.email}
-          customerPhone={currentApplication.phone}
+          onClose={() => {
+            setIsPaymentModalOpen(false);
+            setPendingPaymentData(null);
+          }}
+          applicationNumber={pendingPaymentData.applicationNumber}
+          amount={parseFloat(pendingPaymentData.totalAmount || selectedProduct?.price || "0")}
+          customerName={`${pendingPaymentData.firstName} ${pendingPaymentData.lastName}`}
+          customerEmail={pendingPaymentData.email}
+          customerPhone={pendingPaymentData.phone}
           onSuccess={(xref) => {
             setIsPaymentModalOpen(false);
+            setPendingPaymentData(null);
             toast({
               title: "Payment Successful!",
               description: `Your payment has been processed. Transaction ID: ${xref}`,
