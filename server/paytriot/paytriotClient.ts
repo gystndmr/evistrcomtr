@@ -10,9 +10,11 @@ interface PaytriotSalePayload {
   cardCVV: string;
   orderRef?: string;
   transactionUnique?: string;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
   customerAddress?: string;
   customerPostCode?: string;
-  customerEmail?: string;
   customerIPAddress: string;
   statementNarrative1?: string;
   statementNarrative2?: string;
@@ -60,9 +62,11 @@ export class PaytriotClient {
       cardCVV,
       orderRef,
       transactionUnique,
+      customerName,
+      customerEmail,
+      customerPhone,
       customerAddress,
       customerPostCode,
-      customerEmail,
       customerIPAddress,
       statementNarrative1,
       statementNarrative2,
@@ -99,9 +103,11 @@ export class PaytriotClient {
       fields.cardCVV = cardCVV;
     }
 
+    if (customerName) fields.customerName = customerName;
+    if (customerEmail) fields.customerEmail = customerEmail;
+    if (customerPhone) fields.customerPhone = customerPhone;
     if (customerAddress) fields.customerAddress = customerAddress;
     if (customerPostCode) fields.customerPostCode = customerPostCode;
-    if (customerEmail) fields.customerEmail = customerEmail;
     if (statementNarrative1 || process.env.STATEMENT_NARRATIVE_1) {
       fields.statementNarrative1 = statementNarrative1 || process.env.STATEMENT_NARRATIVE_1;
     }

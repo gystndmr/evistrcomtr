@@ -987,6 +987,9 @@ export default function Insurance() {
           onClose={() => setIsPaymentModalOpen(false)}
           applicationNumber={currentApplication.applicationNumber}
           amount={parseFloat(currentApplication.totalAmount || selectedProduct?.price || "0")}
+          customerName={`${currentApplication.firstName} ${currentApplication.lastName}`}
+          customerEmail={currentApplication.email}
+          customerPhone={currentApplication.phone}
           onSuccess={(xref) => {
             setIsPaymentModalOpen(false);
             toast({

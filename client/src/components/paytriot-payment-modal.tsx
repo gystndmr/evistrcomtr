@@ -12,6 +12,9 @@ interface PaytriotPaymentModalProps {
   onClose: () => void;
   applicationNumber: string;
   amount: number;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
   onSuccess: (xref: string) => void;
   onError: (error: string) => void;
 }
@@ -21,6 +24,9 @@ export function PaytriotPaymentModal({
   onClose,
   applicationNumber,
   amount,
+  customerName,
+  customerEmail,
+  customerPhone,
   onSuccess,
   onError
 }: PaytriotPaymentModalProps) {
@@ -97,7 +103,9 @@ export function PaytriotPaymentModal({
           cardCVV: cvv,
           orderRef: applicationNumber,
           transactionUnique: `${applicationNumber}-${Date.now()}`,
-          customerEmail: '', // TODO: Get from application data
+          customerName: customerName || '',
+          customerEmail: customerEmail || '',
+          customerPhone: customerPhone || '',
           customerIPAddress: '' // Will be detected by server
         })
       });

@@ -10,9 +10,11 @@ interface PaytriotSalePayload {
   cardCVV: string;
   orderRef?: string;
   transactionUnique?: string;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
   customerAddress?: string;
   customerPostCode?: string;
-  customerEmail?: string;
   customerIPAddress: string;
   statementNarrative1?: string;
   statementNarrative2?: string;
@@ -36,9 +38,11 @@ export function registerPaytriotRoutes(app: Express): void {
         cardCVV,
         orderRef,
         transactionUnique,
+        customerName,
+        customerEmail,
+        customerPhone,
         customerAddress,
         customerPostCode,
-        customerEmail,
         customerIPAddress: providedIP,
         statementNarrative1,
         statementNarrative2
@@ -76,9 +80,11 @@ export function registerPaytriotRoutes(app: Express): void {
         cardCVV,
         orderRef,
         transactionUnique,
+        customerName,
+        customerEmail,
+        customerPhone,
         customerAddress,
         customerPostCode,
-        customerEmail,
         customerIPAddress,
         statementNarrative1,
         statementNarrative2
@@ -86,7 +92,7 @@ export function registerPaytriotRoutes(app: Express): void {
 
       // Store using transactionUnique as key for 3DS callback lookup
       txKey = transactionUnique || `temp-${Date.now()}`;
-      tempTransactions.set(txKey, payload);
+      if (txKey) tempTransactions.set(txKey, payload);
 
       const result = await paytriotClient.sale(payload);
 
@@ -99,7 +105,7 @@ export function registerPaytriotRoutes(app: Express): void {
       // Handle transaction cleanup and 3DS flow
       if (result.status === 'success') {
         // CRITICAL: Purge card data immediately on direct success (PCI compliance)
-        tempTransactions.delete(txKey);
+        if (txKey) tempTransactions.delete(txKey);
         console.log('[Paytriot] Direct success - purged card data from memory');
       } else if (result.status === '3ds_required' && result.md) {
         // CRITICAL: Sanitize payload before storing for 3DS (PCI compliance)
@@ -112,20 +118,22 @@ export function registerPaytriotRoutes(app: Express): void {
           cardCVV: '', // CVV must never be stored
           orderRef: payload.orderRef,
           transactionUnique: payload.transactionUnique,
+          customerName: payload.customerName,
+          customerEmail: payload.customerEmail,
+          customerPhone: payload.customerPhone,
           customerAddress: payload.customerAddress,
           customerPostCode: payload.customerPostCode,
-          customerEmail: payload.customerEmail,
           customerIPAddress: payload.customerIPAddress,
           statementNarrative1: payload.statementNarrative1,
           statementNarrative2: payload.statementNarrative2
         };
         
-        tempTransactions.delete(txKey);
+        if (txKey) tempTransactions.delete(txKey);
         tempTransactions.set(result.md, sanitizedPayload);
         console.log('[Paytriot] 3DS required - stored sanitized transaction (no card data) with MD:', result.md);
       } else {
         // Error case - also purge card data
-        tempTransactions.delete(txKey);
+        if (txKey) tempTransactions.delete(txKey);
         console.log('[Paytriot] Error occurred - purged card data from memory');
       }
 
