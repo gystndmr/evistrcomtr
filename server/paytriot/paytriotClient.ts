@@ -121,6 +121,10 @@ export class PaytriotClient {
     const signature = sign(fields, this.signatureKey);
     fields.signature = signature;
 
+    console.log('[Paytriot] 🔐 REQUEST DETAILS:');
+    console.log('[Paytriot] Gateway URL:', this.gatewayUrl);
+    console.log('[Paytriot] Request fields:', JSON.stringify(fields, null, 2));
+    console.log('[Paytriot] Calculated signature:', signature);
     console.log('[Paytriot] Sending JSON request with signature');
 
     try {
@@ -141,8 +145,12 @@ export class PaytriotClient {
 
       clearTimeout(timeoutId);
 
+      console.log('[Paytriot] 📥 RESPONSE DETAILS:');
+      console.log('[Paytriot] HTTP Status:', response.status, response.statusText);
+      console.log('[Paytriot] Response headers:', Object.fromEntries(response.headers.entries()));
+
       const responseText = await response.text();
-      console.log('[Paytriot] Raw response (first 500 chars):', responseText.substring(0, 500));
+      console.log('[Paytriot] Raw response (first 1000 chars):', responseText.substring(0, 1000));
       
       let responseData: Record<string, any>;
       try {
