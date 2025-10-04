@@ -48,7 +48,7 @@ export class PaytriotClient {
     this.gatewayUrl = 'https://gateway.paytriot.co.uk/direct';
     this.merchantId = '281927';
     this.signatureKey = 'TempKey123Paytriot';
-    this.countryCode = '792';
+    this.countryCode = '826';
     this.currencyCode = '840';
     this.timeout = 10000;
   }
