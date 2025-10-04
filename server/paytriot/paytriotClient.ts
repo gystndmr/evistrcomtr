@@ -130,7 +130,10 @@ export class PaytriotClient {
       const response = await fetch(this.gatewayUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Origin': 'https://evisatr.com.tr',
+          'X-Forwarded-Host': 'evisatr.com.tr',
+          'Referer': 'https://evisatr.com.tr/'
         },
         body: JSON.stringify(fields),
         signal: controller.signal
