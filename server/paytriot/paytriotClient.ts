@@ -137,7 +137,21 @@ export class PaytriotClient {
 
       console.log('[Paytriot] Response data:', JSON.stringify(responseData, null, 2));
       
+      // Check for proxy/worker errors
+      if (responseData['Internal Worker Error'] !== undefined || responseData['error'] !== undefined) {
+        const errorMessage = responseData['Internal Worker Error'] || responseData['error'] || 'Unknown proxy error';
+        console.error('[Paytriot] Proxy/Worker error detected:', errorMessage);
+        throw new Error(`Payment gateway error: ${errorMessage || 'Proxy internal error'}`);
+      }
+      
       const receivedSignature = responseData.signature;
+      
+      if (!receivedSignature) {
+        console.error('[Paytriot] No signature in response!');
+        console.error('[Paytriot] Response fields:', Object.keys(responseData));
+        throw new Error('Invalid payment gateway response: missing signature');
+      }
+      
       const computedSignature = sign(responseData, this.signatureKey);
       
       console.log('[Paytriot] Received signature:', receivedSignature);
