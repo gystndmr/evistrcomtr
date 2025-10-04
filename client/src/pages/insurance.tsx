@@ -992,9 +992,9 @@ export default function Insurance() {
           }}
           applicationNumber={pendingPaymentData.applicationNumber}
           amount={parseFloat(pendingPaymentData.totalAmount || selectedProduct?.price || "0")}
-          customerName={`${pendingPaymentData.firstName} ${pendingPaymentData.lastName}`}
-          customerEmail={pendingPaymentData.email}
-          customerPhone={pendingPaymentData.phone}
+          customerName={`${applicationData.firstName} ${applicationData.lastName}`}
+          customerEmail={applicationData.email}
+          customerPhone={applicationData.phone}
           onSuccess={(xref) => {
             setIsPaymentModalOpen(false);
             setPendingPaymentData(null);
