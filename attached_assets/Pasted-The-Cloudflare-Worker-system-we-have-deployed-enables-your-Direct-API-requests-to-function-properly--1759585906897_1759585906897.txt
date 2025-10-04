@@ -1,0 +1,44 @@
+The Cloudflare Worker system we have deployed enables your Direct API requests to function properly even when your backend operates with dynamic or shared IP addresses found in Replit. The solution fixes the problem which occurs when Cloudflare/WAF systems block IP addresses.
+How it works
+Merchant Backend → Worker → Paytriot Gateway
+Our Worker accepts all Direct API requests which then proceed to the Paytriot Gateway through an IP address located in UK/EU/Turkey.
+The system stops Cloudflare/WAF blocks from occurring while maintaining the flexibility of your backend IP address.
+Customer IP is preserved
+Your backend system needs to add the actual public IP address of the end customer to the customerIPAddress field.
+customerIPAddress: “real_customer_ip_here”
+The system uses this information to perform 3DS and fraud scoring operations.
+The IP address used for payment processing should always be the actual IP address of the customer who visited your website.
+Security
+The request signing process remains unchanged from previous operations.
+The Worker functions as a request forwarder but the Paytriot Gateway continues to verify signatures for each request.
+The system accepts only POST requests for processing.
+The entire data transfer process happens through HTTPS encryption from start to finish.
+Action required on your side
+Your Direct API URL needs to be redirected to our Worker endpoint at
+paytriot-proxy.renga.workers.dev.
+The request payload needs to contain the customer IP address and all necessary fields including the following example:
+{
+  “merchantID”: “123456”,
+  “action”: “SALE”,
+  “type”: 1,
+  “countryCode”: 826,
+  “currencyCode”: 840,
+  “amount”: 11400,
+  “orderRef”: “TRMGAPP6KDIE8DLL”,
+  “transactionUnique”: “[auto-generated]“,
+  “cardNumber”: “4111111111111111",
+  “cardExpiryMonth”: “05",
+  “cardExpiryYear”: “32",
+  “cardCVV”: “089",
+  “customerName”: “John Doe”,
+  “customerEmail”: “john@example.com”,
+  “customerPhone”: “98374979345",
+  “customerIPAddress”: “real_customer_ip_here”,
+  “signature”: “HASHED_SIGNATURE_HERE”
+}
+The method for generating signatures remains the same.
+Benefits of this setup
+The system enables transaction processing without any interference from Cloudflare blocking mechanisms.
+The system uses customer IP addresses for both 3DS and risk assessment purposes.
+Your backend system operates without needing a fixed IP address.
+We are available to help with any questions you have about code updates or to provide assistance with your implementation.
