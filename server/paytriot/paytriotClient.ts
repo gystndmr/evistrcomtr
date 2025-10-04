@@ -45,7 +45,7 @@ export class PaytriotClient {
   private timeout: number;
 
   constructor() {
-    this.gatewayUrl = 'https://paytriot-proxy.renga.workers.dev';
+    this.gatewayUrl = 'https://gateway.paytriot.co.uk/direct';
     this.merchantId = '281927';
     this.signatureKey = 'TempKey123Paytriot';
     this.countryCode = '792';
