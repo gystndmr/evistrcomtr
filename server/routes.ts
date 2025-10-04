@@ -4,19 +4,12 @@ import { storage } from "./storage";
 import { insertApplicationSchema, insertInsuranceApplicationSchema } from "@shared/schema";
 import { z } from "zod";
 import { sendEmail, sendAdminCopyEmail, generateVisaReceivedEmail, generateInsuranceReceivedEmail, generateInsuranceApprovalEmail, generateVisaApprovalEmail, generateVisaRejectionEmail } from "./email";
-import { gPayService } from "./payment-simple";
+import { registerPaytriotRoutes } from "./paytriot/paytriotRoutes";
 
 function generateApplicationNumber(): string {
   const timestamp = Date.now().toString(36);
   const random = Math.random().toString(36).substring(2, 8);
   return `TR${timestamp}${random}`.toUpperCase();
-}
-
-// Generate unique order reference for GPay (includes timestamp)
-function generateOrderReference(): string {
-  const timestamp = Date.now().toString();
-  const random = Math.random().toString(36).substring(2, 8).toUpperCase();
-  return `TR${timestamp}${random}`;
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -1001,799 +994,103 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // GPay Payment Integration - New Implementation
-  
-  // Test GPay configuration
-  app.get("/api/payment/test-config", async (req, res) => {
+  // Paytriot Payment Callback - Update payment status in database
+  app.post("/api/payment/update-status", async (req, res) => {
     try {
-      const config = {
-        hasPublicKey: !!(process.env.GPAY_PUBLIC_KEY),
-        hasPrivateKey: !!(process.env.GPAY_PRIVATE_KEY),
-        hasMerchantId: !!(process.env.GPAY_MERCHANT_ID),
-        merchantId: process.env.GPAY_MERCHANT_ID || "Not set",
-        baseUrl: (process.env.NODE_ENV === 'production' || process.env.GPAY_MERCHANT_ID === '1100002537')
-          ? "https://getvisa.gpayprocessing.com" 
-          : "https://payment-sandbox.gpayprocessing.com",
-        environment: process.env.NODE_ENV || "development"
-      };
-      
-      res.json(config);
-    } catch (error) {
-      res.status(500).json({ error: "Configuration check failed" });
-    }
-  });
+      const { orderRef, paymentStatus, xref } = req.body;
 
-  // Test signature generation with Baris Topal's working example format
-  app.post("/api/payment/test-signature", async (req, res) => {
-    try {
-      // Use Baris Topal's exact working example data structure + mandatory customerIp
-      const testData = {
-        amount: "5489.75",
-        billingCountry: "AD",
-        billingEmail: "hasantopal0234@gmail.com",
-        billingFirstName: "Baris Hasan",
-        billingLastName: "Topal",
-        billingStreet1: "abc",
-        billingStreet2: "",
-        billingCity: "Test City",
-        brandName: "",
-        callbackUrl: "https://localhost:7092/Odeme/GPayResult",
-        cancelUrl: "https://localhost:7092/Odeme/GPayResult",
-        colorMode: "default-mode",
-        currency: "TRY",
-        customerIp: "127.0.0.1", // MANDATORY field from specification
-        errorUrl: "https://localhost:7092/Odeme/GPayResult",
-        feeBySeller: "50",
-        logoSource: "",
-        merchantId: "1100000026",
-        metadata: "{\"key\":\"value\"}",
-        notificationUrl: "https://localhost:7092/Odeme/GPayResult",
-        orderDescription: "VIZE BAŞVURU",
-        orderRef: "d9750380-282d-48a3-928d-f65df184cb5f",
-        paymentMethod: "ALL",
-        transactionDocuments: "{\"key\":\"value\"}"
-      };
-
-      console.log('=== BARIS TOPAL EXACT EXAMPLE TEST ===');
-      console.log('Test data before signature:', JSON.stringify(testData, null, 2));
-
-      // Generate signature using our implementation
-      const signature = gPayService.generateSignature(testData);
-
-      console.log('Generated signature:', signature);
-      console.log('Expected signature from Baris:', 'Pq+xaOykMkFyhUEATfTWmEv/odq3wbwMArqi0UGMYhwjw6C0Gk76nT+32g2dNtmrbB6I/u/6OokPmhJxdNtFfs9yBC6RwkXK4KF+qvCYa3QNUvdve1PvJiDpk+3krIlMCnFpa1c3e0+L+IybvuGzIa/59uU1m1RLLnjRmX8m35Inuv2MYCKCyCsSwU3Y22Nf5811ihYQHYid1++6L1p8yCeBzXAJijMnc7G5E7r+5RXX0QdMWor7Bv+D8+etZxto++/LNIcJNeywj2TO6QnxpoCYAJEuoE9AYdQYruiaAnVIQfNwZ8z5iTKKb6e5SqIZo3INrUyZlOIlY0Tx/i2ZQi4+qHOtp0i/ErtbsZZ3NlfC44WsDFlc7T8NENsjCdHzoODZfO8pbHxeLb4KHllj8WNMaKgg2C9dhRiX1+XNY6ET5JJgkSYk1USNfCW2sx5E/4qKBTCPMoLFjZELa72FsiASmVMbT8qYE3ltI5KkDaBBkqk2M3bDkLIuQ5DVe5MXaRy2ipsQqzw1y4Aa0ngL/6pBHtpOZ9zpHb41nedRHy6O+vjlVTem6UuQUgCuDFk9Hote6W/qJIqYa3/DGAW02/porOTv6B0ujjNuiuK/4pOI1EavbTu8UbtU2VQUBIAIelHTh5TNQEbi+cmSCqYmW2/RvUMglr1U07pKzYmW3Ic=');
-      
-      // Now test with GPay API directly
-      console.log('=== TESTING WITH GPAY API ===');
-      try {
-        const apiResponse = await gPayService.createPayment({
-          orderRef: testData.orderRef,
-          amount: parseFloat(testData.amount),
-          currency: testData.currency,
-          orderDescription: testData.orderDescription,
-          cancelUrl: testData.cancelUrl,
-          callbackUrl: testData.callbackUrl,
-          notificationUrl: testData.notificationUrl,
-          errorUrl: testData.errorUrl,
-          paymentMethod: testData.paymentMethod,
-          feeBySeller: parseInt(testData.feeBySeller),
-          billingFirstName: testData.billingFirstName,
-          billingLastName: testData.billingLastName,
-          billingStreet1: testData.billingStreet1,
-          billingCity: testData.billingCity,
-          billingCountry: testData.billingCountry,
-          customerIp: testData.customerIp, // Mandatory field
-          merchantId: testData.merchantId
-        });
-        
-        console.log('=== GPay API Response ===');
-        console.log('API Response:', JSON.stringify(apiResponse, null, 2));
-        console.log('=== End GPay API Response ===');
-        
-      } catch (apiError: any) {
-        console.error('=== GPay API Error ===');
-        console.error('Error details:', apiError);
-        if (apiError && typeof apiError === 'object') {
-          console.error('Error message:', apiError.message || 'Unknown error');
-          console.error('Error stack:', apiError.stack || 'No stack trace');
-        }
-        console.error('=== End GPay API Error ===');
-      }
-      
-      console.log('=== END BARIS TOPAL TEST ===');
-
-      res.json({
-        requestUrl: "https://payment-sandbox.gpayprocessing.com/v1/checkout",
-        httpMethod: "POST",
-        contentType: "application/x-www-form-urlencoded",
-        jsonPayloadForSignature: JSON.stringify(testData),
-        signature: signature,
-        expectedSignature: 'Pq+xaOykMkFyhUEATfTWmEv/odq3wbwMArqi0UGMYhwjw6C0Gk76nT+32g2dNtmrbB6I/u/6OokPmhJxdNtFfs9yBC6RwkXK4KF+qvCYa3QNUvdve1PvJiDpk+3krIlMCnFpa1c3e0+L+IybvuGzIa/59uU1m1RLLnjRmX8m35Inuv2MYCKCyCsSwU3Y22Nf5811ihYQHYid1++6L1p8yCeBzXAJijMnc7G5E7r+5RXX0QdMWor7Bv+D8+etZxto++/LNIcJNeywj2TO6QnxpoCYAJEuoE9AYdQYruiaAnVIQfNwZ8z5iTKKb6e5SqIZo3INrUyZlOIlY0Tx/i2ZQi4+qHOtp0i/ErtbsZZ3NlfC44WsDFlc7T8NENsjCdHzoODZfO8pbHxeLb4KHllj8WNMaKgg2C9dhRiX1+XNY6ET5JJgkSYk1USNfCW2sx5E/4qKBTCPMoLFjZELa72FsiASmVMbT8qYE3ltI5KkDaBBkqk2M3bDkLIuQ5DVe5MXaRy2ipsQqzw1y4Aa0ngL/6pBHtpOZ9zpHb41nedRHy6O+vjlVTem6UuQUgCuDFk9Hote6W/qJIqYa3/DGAW02/porOTv6B0ujjNuiuK/4pOI1EavbTu8UbtU2VQUBIAIelHTh5TNQEbi+cmSCqYmW2/RvUMglr1U07pKzYmW3Ic=',
-        formDataParameters: testData,
-        sortedKeys: Object.keys(testData).sort(),
-        merchantId: "1100000026",
-        signatureAlgorithm: "md5WithRSAEncryption"
-      });
-    } catch (error: any) {
-      console.error('Test signature error:', error);
-      res.status(500).json({ error: "Signature test failed: " + error?.message });
-    }
-  });
-  
-  // Create payment - following PHP merchant example with enhanced billing fields
-  app.post("/api/payment/create", async (req, res) => {
-    try {
-      const { 
-        orderRef, 
-        orderId, // Support both orderRef and orderId
-        amount, 
-        currency = "USD", 
-        orderDescription, 
-        description // Support both orderDescription and description
-      } = req.body;
-      
-      // Use orderRef or orderId (support both) - if none provided, generate unique one with timestamp and random
-      const finalOrderRef = orderRef || orderId || `VIS_${Date.now()}_${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-      const finalDescription = orderDescription || description;
-
-      // Always use production domain for GPay callbacks - required for GPay registration
-      const baseUrl = 'https://getvisa.tr';
-      console.log("🔧 GPay payment creation for:", finalOrderRef);
-      
-      // Get real customer IP - check multiple headers for proxy environments
-      const getCustomerIp = () => {
-        return req.headers['x-forwarded-for']?.toString().split(',')[0]?.trim() || 
-               req.headers['x-real-ip']?.toString() || 
-               req.connection?.remoteAddress || 
-               req.socket?.remoteAddress ||
-               req.ip || 
-               "85.34.78.112"; // Use a realistic Turkish IP as fallback instead of localhost
-      };
-
-      // Enhanced payment request with required billing fields for GPay
-      const paymentRequest = {
-        orderRef: finalOrderRef, // Use the original order reference without VIS prefix
-        amount: amount, // Keep as number, not string
-        currency: "USD", // Fixed currency
-        orderDescription: finalDescription || `Turkey E-Visa Application Payment`,
-        cancelUrl: `${baseUrl}/payment/cancel`,
-        callbackUrl: `${baseUrl}/api/payment/callback`,
-        notificationUrl: `${baseUrl}/api/payment/callback`,
-        errorUrl: `${baseUrl}/payment/cancel`,
-        paymentMethod: "ALL", // Allow all payment methods
-        feeBySeller: 50, // 50% fee by seller
-        
-        // Required billing fields - leave empty so customer can enter their own info
-        billingFirstName: "",
-        billingLastName: "",
-        billingStreet1: "",
-        billingCity: "",
-        billingCountry: "",
-        
-        customerIp: getCustomerIp(), // Use real customer IP
-        merchantId: "" // Will be set from environment
-      };
-
-      const response = await gPayService.createPayment(paymentRequest);
-      
-      if (response.success) {
-        res.json({
-          success: true,
-          paymentUrl: response.paymentUrl,
-          transactionId: response.transactionId
-          // Removed formData - use GET redirect as documented working method
-        });
-      } else {
-        // GPay hata mesajını direkt göster
-        res.json({
-          success: false,
-          error: response.error,
-          paymentUrl: response.paymentUrl || `${baseUrl}/payment/cancel?error=${encodeURIComponent(response.error || 'Unknown payment error')}`
-        });
-      }
-      
-    } catch (error) {
-      console.error("Payment creation error:", error);
-      res.status(500).json({ 
-        success: false, 
-        error: "Payment service error" 
-      });
-    }
-  });
-
-  // GPay callback handler for GET requests (user redirects)
-  app.get("/api/payment/callback", async (req, res) => {
-    try {
-      const { payload } = req.query;
-      
-      if (!payload || typeof payload !== 'string') {
-        console.log("❌ GPay GET callback: Missing or invalid payload");
-        return res.redirect('/payment/cancel?error=Invalid payment callback');
-      }
-
-      console.log("🔔 GPay GET callback received with payload");
-      console.log("🔍 RAW PAYLOAD LENGTH:", payload.length);
-      console.log("🔍 RAW PAYLOAD PREVIEW:", payload.substring(0, 100));
-      
-      // Parse callback payload
-      const paymentData = gPayService.parseCallback(payload);
-      
-      if (!paymentData) {
-        console.log("❌ GPay GET callback: Invalid payload format");
-        console.log("❌ FAILED PAYLOAD:", payload);
-        return res.redirect('/payment/cancel?error=Invalid payment data');
-      }
-
-      console.log("✅ GPay GET callback parsed:", paymentData);
-      
-      const { status, transactionId, amount, orderRef } = paymentData;
-      
-      // Update application status based on payment result
-      if (status === 'succeeded' || status === 'completed' || status === 'successful' || status === 'approved' || status === 'success') {
-        console.log(`✅ Payment successful for order ${orderRef}: ${transactionId}`);
-        
-        // Try to find visa application first
-        const visaApplication = await storage.getApplicationByOrderRef(orderRef);
-        if (visaApplication) {
-          await storage.updateApplicationPaymentStatus(orderRef, 'succeeded');
-          console.log(`✅ Visa application payment status updated to succeeded: ${orderRef}`);
-          
-          // Send visa application received email after successful payment
-          try {
-            console.log('💳 GET CALLBACK - Sending visa email after payment confirmation...');
-            const emailContent = generateVisaReceivedEmail(
-              visaApplication.firstName, 
-              visaApplication.lastName, 
-              visaApplication.applicationNumber,
-              visaApplication,
-              'en'
-            );
-            
-            await sendEmail({
-              to: visaApplication.email,
-              from: "info@getvisa.tr",
-              subject: emailContent.subject,
-              html: emailContent.html,
-              text: emailContent.text
-            });
-            
-            console.log(`✅ GET CALLBACK - Visa application received email sent to ${visaApplication.email}`);
-            
-            // Send admin copy email
-            await sendAdminCopyEmail(
-              emailContent.subject,
-              visaApplication.email,
-              'VISA',
-              emailContent.html
-            );
-            console.log(`✅ GET CALLBACK - Admin copy email sent for visa application ${visaApplication.applicationNumber}`);
-            
-          } catch (emailError) {
-            console.error('❌ GET CALLBACK VISA EMAIL ERROR:', emailError);
-          }
-        } else {
-          // Try insurance application
-          const insuranceApplication = await storage.getInsuranceApplicationByOrderRef(orderRef);
-          if (insuranceApplication) {
-            await storage.updateInsuranceApplicationPaymentStatus(orderRef, 'succeeded');
-            console.log(`✅ Insurance application payment status updated to succeeded: ${orderRef}`);
-            
-            // Send insurance application received email after successful payment
-            try {
-              console.log('💳 GET CALLBACK - Sending insurance email after payment confirmation...');
-              
-              // Fetch insurance product properly
-              const product = insuranceApplication.productId ? await storage.getInsuranceProduct(insuranceApplication.productId) : null;
-              
-              const emailContent = generateInsuranceReceivedEmail(
-                insuranceApplication.firstName, 
-                insuranceApplication.lastName, 
-                insuranceApplication.applicationNumber,
-                product?.name || 'Travel Insurance',
-                'en'
-              );
-              
-              await sendEmail({
-                to: insuranceApplication.email,
-                from: "info@getvisa.tr",
-                subject: emailContent.subject,
-                html: emailContent.html,
-                text: emailContent.text
-              });
-              
-              console.log(`✅ GET CALLBACK - Insurance application received email sent to ${insuranceApplication.email}`);
-              
-              // Send admin copy email
-              await sendAdminCopyEmail(
-                emailContent.subject,
-                insuranceApplication.email,
-                'INSURANCE',
-                emailContent.html
-              );
-              console.log(`✅ GET CALLBACK - Admin copy email sent for insurance application ${insuranceApplication.applicationNumber}`);
-              
-            } catch (emailError) {
-              console.error('❌ GET CALLBACK INSURANCE EMAIL ERROR:', emailError);
-            }
-          }
-        }
-        
-        // Redirect to success page with transaction details
-        res.redirect(`/payment/success?payment=success&transaction=${transactionId}&order=${orderRef}&amount=${amount}`);
-        
-      } else if (status === 'failed' || status === 'error' || status === 'declined' || status === 'cancelled') {
-        console.log(`❌ Payment failed for order ${orderRef}: ${transactionId} - Status: ${status}`);
-        
-        // Update payment status to failed
-        const visaApplication = await storage.getApplicationByOrderRef(orderRef);
-        if (visaApplication) {
-          await storage.updateApplicationPaymentStatus(orderRef, 'failed');
-        } else {
-          const insuranceApplication = await storage.getInsuranceApplicationByOrderRef(orderRef);
-          if (insuranceApplication) {
-            await storage.updateInsuranceApplicationPaymentStatus(orderRef, 'failed');
-          }
-        }
-        
-        // Provide specific error messages based on status
-        let errorMessage = 'Payment failed';
-        let errorCode = status;
-        
-        switch (status) {
-          case 'declined':
-            errorMessage = 'Payment was declined - Please check your card details and available balance';
-            break;
-          case 'failed':
-            errorMessage = 'Payment failed - Your card was unable to process this transaction';
-            break;
-          case 'error':
-            errorMessage = 'Payment system error - Please try again or use a different payment method';
-            break;
-          case 'cancelled':
-            errorMessage = 'Payment was cancelled - You can try again when ready';
-            break;
-        }
-        
-        res.redirect(`/payment/cancel?error=${encodeURIComponent(errorMessage)}&status=${errorCode}&orderRef=${orderRef}&amount=${amount}`);
-        
-      } else {
-        console.log(`⚠️ Unknown payment status for order ${orderRef}: ${status}`);
-        res.redirect(`/payment/cancel?error=${encodeURIComponent('Unknown payment status - Please contact support')}&status=unknown&orderRef=${orderRef}`);
-      }
-      
-    } catch (error) {
-      console.error("GPay GET callback error:", error);
-      res.redirect('/payment/cancel?error=Payment processing error');
-    }
-  });
-
-  // GPay callback handler for POST requests (webhook notifications)
-  app.post("/api/payment/callback", async (req, res) => {
-    try {
-      console.log("🔔 GPay POST callback received:", JSON.stringify(req.body, null, 2));
-      console.log("🔔 GPay POST callback headers:", JSON.stringify(req.headers, null, 2));
-      const { payload } = req.body;
-      
-      if (!payload) {
-        console.log("❌ GPay POST callback: Missing payload");
-        return res.status(400).json({ message: "Missing payload" });
-      }
-
-      console.log("🔍 POST RAW PAYLOAD LENGTH:", payload.length);
-      console.log("🔍 POST RAW PAYLOAD PREVIEW:", payload.substring(0, 100));
-
-      // Parse callback payload
-      const paymentData = gPayService.parseCallback(payload);
-      
-      if (!paymentData) {
-        console.log("❌ GPay POST callback: Invalid payload format");
-        console.log("❌ POST FAILED PAYLOAD:", payload);
-        return res.status(400).json({ message: "Invalid payload format" });
-      }
-
-      console.log("✅ GPay callback parsed:", paymentData);
-      
-      // Verify signature if present
-      if (paymentData.signature) {
-        const isValidSignature = gPayService.verifySignature(paymentData);
-        if (!isValidSignature) {
-          console.log("GPay callback: Invalid signature");
-          return res.status(400).json({ message: "Invalid signature" });
-        }
-      }
-
-      const { status, transactionId, amount, orderRef } = paymentData;
-      
-      // Update application status based on payment result
-      if (status === 'completed' || status === 'successful' || status === 'approved' || status === 'succeeded' || status === 'success') {
-        console.log(`✅ Payment successful for order ${orderRef}: ${transactionId}`);
-        
-        // Try to find visa application first
-        const visaApplication = await storage.getApplicationByOrderRef(orderRef);
-        if (visaApplication) {
-          await storage.updateApplicationPaymentStatus(orderRef, 'succeeded');
-          console.log(`✅ Visa application payment status updated to succeeded: ${orderRef}`);
-          
-          // Send visa application received email after successful payment
-          try {
-            console.log('💳 PAYMENT SUCCESS - Sending visa email after payment confirmation...');
-            const emailContent = generateVisaReceivedEmail(
-              visaApplication.firstName, 
-              visaApplication.lastName, 
-              visaApplication.applicationNumber,
-              visaApplication,
-              'en'
-            );
-            
-            await sendEmail({
-              to: visaApplication.email,
-              from: "info@getvisa.tr",
-              subject: emailContent.subject,
-              html: emailContent.html,
-              text: emailContent.text
-            });
-            
-            console.log(`✅ Visa application received email sent to ${visaApplication.email} after successful payment`);
-            
-            // Send admin copy email
-            await sendAdminCopyEmail(
-              emailContent.subject,
-              visaApplication.email,
-              'VISA',
-              emailContent.html
-            );
-            console.log(`✅ POST CALLBACK - Admin copy email sent for visa application ${visaApplication.applicationNumber}`);
-          } catch (emailError) {
-            console.error('❌ PAYMENT SUCCESS EMAIL ERROR:', emailError);
-          }
-        } else {
-          // Try insurance application
-          const insuranceApplication = await storage.getInsuranceApplicationByOrderRef(orderRef);
-          if (insuranceApplication) {
-            await storage.updateInsuranceApplicationPaymentStatus(orderRef, 'succeeded');
-            console.log(`✅ Insurance application payment status updated to succeeded: ${orderRef}`);
-            
-            // Send insurance application received email after successful payment
-            try {
-              console.log('💳 PAYMENT SUCCESS - Sending insurance email after payment confirmation...');
-              
-              // Fetch insurance product properly
-              const product = insuranceApplication.productId ? await storage.getInsuranceProduct(insuranceApplication.productId) : null;
-              
-              const emailContent = generateInsuranceReceivedEmail(
-                insuranceApplication.firstName, 
-                insuranceApplication.lastName, 
-                insuranceApplication.applicationNumber,
-                product?.name || 'Travel Insurance',
-                'en'
-              );
-              
-              await sendEmail({
-                to: insuranceApplication.email,
-                from: "info@getvisa.tr",
-                subject: emailContent.subject,
-                html: emailContent.html,
-                text: emailContent.text
-              });
-              
-              console.log(`✅ Insurance application received email sent to ${insuranceApplication.email} after successful payment`);
-              
-              // Send admin copy email
-              await sendAdminCopyEmail(
-                emailContent.subject,
-                insuranceApplication.email,
-                'INSURANCE',
-                emailContent.html
-              );
-              console.log(`✅ POST CALLBACK - Admin copy email sent for insurance application ${insuranceApplication.applicationNumber}`);
-            } catch (emailError) {
-              console.error('❌ PAYMENT SUCCESS INSURANCE EMAIL ERROR:', emailError);
-            }
-          } else {
-            console.log(`⚠️ No application found for order reference: ${orderRef}`);
-          }
-        }
-        
-        // Send success response to GPay
-        res.status(200).json({ 
-          message: "Payment callback processed successfully",
-          status: "success",
-          orderRef: orderRef
-        });
-        
-      } else if (status === 'failed' || status === 'error' || status === 'declined') {
-        console.log(`❌ Payment failed for order ${orderRef}: ${transactionId}`);
-        
-        // Try to find visa application first
-        const visaApplication = await storage.getApplicationByOrderRef(orderRef);
-        if (visaApplication) {
-          await storage.updateApplicationPaymentStatus(orderRef, 'failed');
-          console.log(`❌ Visa application payment status updated to failed: ${orderRef}`);
-        } else {
-          // Try insurance application
-          const insuranceApplication = await storage.getInsuranceApplicationByOrderRef(orderRef);
-          if (insuranceApplication) {
-            await storage.updateInsuranceApplicationPaymentStatus(orderRef, 'failed');
-            console.log(`❌ Insurance application payment status updated to failed: ${orderRef}`);
-          } else {
-            console.log(`⚠️ No application found for order reference: ${orderRef}`);
-          }
-        }
-      }
-      
-      res.json({ message: "OK" });
-      
-    } catch (error) {
-      console.error("GPay callback error:", error);
-      res.status(500).json({ message: "Callback processing error" });
-    }
-  });
-
-  // Test callback endpoint - manual testing of callback functionality
-  app.post("/api/payment/test-callback", async (req, res) => {
-    try {
-      console.log("🧪 Manual callback test:", req.body);
-      const { orderRef, status = 'completed', transactionId = 'TEST123' } = req.body;
-      
       if (!orderRef) {
-        return res.status(400).json({ message: "orderRef required" });
+        return res.status(400).json({ message: "Order reference is required" });
       }
 
-      console.log(`🧪 Testing callback for order ${orderRef} with status ${status}`);
-      
-      // Update application status based on test data
-      if (status === 'completed' || status === 'successful' || status === 'approved') {
-        // Try to find visa application first
-        const visaApplication = await storage.getApplicationByOrderRef(orderRef);
-        if (visaApplication) {
-          await storage.updateApplicationPaymentStatus(orderRef, 'succeeded');
-          console.log(`✅ TEST: Visa application payment updated to succeeded: ${orderRef}`);
-          res.json({ success: true, message: `Visa application ${orderRef} updated to succeeded` });
-        } else {
-          // Try insurance application
-          const insuranceApplication = await storage.getInsuranceApplicationByOrderRef(orderRef);
-          if (insuranceApplication) {
-            await storage.updateInsuranceApplicationPaymentStatus(orderRef, 'succeeded');
-            console.log(`✅ TEST: Insurance application payment updated to succeeded: ${orderRef}`);
-            res.json({ success: true, message: `Insurance application ${orderRef} updated to succeeded` });
-          } else {
-            console.log(`⚠️ TEST: No application found for order: ${orderRef}`);
-            res.json({ success: false, message: `No application found for order: ${orderRef}` });
-          }
-        }
-      } else {
-        res.json({ success: false, message: `Test status ${status} not processed` });
-      }
-      
-    } catch (error) {
-      console.error("Test callback error:", error);
-      res.status(500).json({ message: "Test callback error" });
-    }
-  });
+      console.log('[Payment Status Update]', { orderRef, paymentStatus, xref });
 
-  // Payment success page handler
-  app.get("/payment/success", async (req, res) => {
-    try {
-      const { payload } = req.query;
-      
-      if (!payload) {
-        return res.redirect(`/payment-success?payment=error&message=Missing payment data`);
-      }
+      // Find and update application by orderRef
+      const applications = await storage.getApplications();
+      const application = applications.find(app => 
+        app.applicationNumber === orderRef || 
+        (app as any).orderRef === orderRef
+      );
 
-      const paymentData = gPayService.parseCallback(payload as string);
-      
-      if (!paymentData) {
-        return res.redirect(`/payment-success?payment=error&message=Invalid payment data`);
-      }
-
-      console.log("Payment success callback:", paymentData);
-      
-      const { status, transactionId, orderRef } = paymentData;
-      
-      if (status === 'completed' || status === 'successful' || status === 'approved') {
-        res.redirect(`/payment-success?payment=success&transaction=${transactionId}&order=${orderRef}`);
-      } else {
-        res.redirect(`/payment-success?payment=error&transaction=${transactionId}&order=${orderRef}`);
-      }
-      
-    } catch (error) {
-      console.error("Payment success callback error:", error);
-      res.redirect(`/payment-success?payment=error&message=Processing error`);
-    }
-  });
-
-  // Payment cancel page handler
-  app.get("/payment/cancel", async (req, res) => {
-    try {
-      const { payload } = req.query;
-      
-      if (!payload) {
-        return res.redirect(`/payment-success?payment=cancelled&message=Payment cancelled`);
-      }
-
-      const paymentData = gPayService.parseCallback(payload as string);
-      
-      if (!paymentData) {
-        return res.redirect(`/payment-success?payment=cancelled&message=Payment cancelled`);
-      }
-
-      console.log("Payment cancel callback:", paymentData);
-      
-      const { transactionId, orderRef } = paymentData;
-      
-      res.redirect(`/payment-success?payment=cancelled&transaction=${transactionId}&order=${orderRef}`);
-      
-    } catch (error) {
-      console.error("Payment cancel callback error:", error);
-      res.redirect(`/payment-success?payment=cancelled&message=Payment cancelled`);
-    }
-  });
-
-  // Chat API routes
-  app.get("/api/chat/messages", async (req, res) => {
-    try {
-      const messages = await storage.getAllChatMessages();
-      res.json(messages);
-    } catch (error) {
-      console.error("Error fetching chat messages:", error);
-      res.status(500).json({ message: "Failed to fetch chat messages" });
-    }
-  });
-
-  // Create chat message from customer
-  app.post("/api/chat/messages", async (req, res) => {
-    try {
-      const { sessionId, message, customerName, customerEmail } = req.body;
-      
-      if (!sessionId || !message) {
-        return res.status(400).json({ message: "Missing sessionId or message" });
-      }
-
-      const chatMessage = await storage.createChatMessage({
-        id: `msg_${Date.now()}_${Math.random().toString(36).substring(2)}`,
-        sessionId,
-        message,
-        sender: 'user',
-        timestamp: new Date(),
-        isRead: false,
-        customerName: customerName || null,
-        customerEmail: customerEmail || null
-      });
-
-      console.log(`💬 New customer message from session ${sessionId}: ${message}`);
-      res.json(chatMessage);
-    } catch (error) {
-      console.error("Error creating chat message:", error);
-      res.status(500).json({ message: "Failed to create chat message" });
-    }
-  });
-
-  app.post("/api/chat/reply", async (req, res) => {
-    try {
-      const { sessionId, message } = req.body;
-      
-      if (!sessionId || !message) {
-        return res.status(400).json({ message: "Missing sessionId or message" });
-      }
-
-      const chatMessage = await storage.createChatMessage({
-        id: `msg_${Date.now()}_${Math.random().toString(36).substring(2)}`,
-        sessionId,
-        message,
-        sender: 'admin',
-        timestamp: new Date(),
-        isRead: true,
-        customerName: null,
-        customerEmail: null
-      });
-
-      res.json(chatMessage);
-    } catch (error) {
-      console.error("Error sending chat reply:", error);
-      res.status(500).json({ message: "Failed to send chat reply" });
-    }
-  });
-
-  app.patch("/api/chat/mark-read/:sessionId", async (req, res) => {
-    try {
-      const { sessionId } = req.params;
-      await storage.markChatMessagesRead(sessionId);
-      res.json({ message: "Messages marked as read" });
-    } catch (error) {
-      console.error("Error marking messages as read:", error);
-      res.status(500).json({ message: "Failed to mark messages as read" });
-    }
-  });
-
-  // Admin panel email routes
-  app.post("/api/admin/applications/:id/approve", async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { message } = req.body;
-
-      // Get application details
-      const application = await storage.getApplication(Number(id));
-      if (!application) {
-        return res.status(404).json({ message: "Application not found" });
-      }
-
-      // Update application status
-      await storage.updateApplicationStatus(Number(id), 'approved');
-
-      // Send approval email
-      try {
-        const approvalEmailData = generateVisaApprovalEmail(
-          application.firstName,
-          application.lastName,
-          application.applicationNumber
-        );
-
-        await sendEmail({
-          to: application.email,
-          from: "info@getvisa.tr",
-          subject: approvalEmailData.subject,
-          html: approvalEmailData.html,
-          text: approvalEmailData.text
-        });
-
-        console.log(`✅ Approval email sent to ${application.email} for application ${application.applicationNumber}`);
-      } catch (emailError) {
-        console.error("❌ Email error:", emailError);
-      }
-
-      res.json({ 
-        message: "Application approved and email sent",
-        applicationNumber: application.applicationNumber
-      });
-    } catch (error) {
-      console.error("Error approving application:", error);
-      res.status(500).json({ message: "Failed to approve application" });
-    }
-  });
-
-  app.post("/api/admin/applications/:id/reject", async (req, res) => {
-    try {
-      const { id } = req.params;
-      const { message } = req.body;
-
-      // Get application details
-      const application = await storage.getApplication(Number(id));
-      if (!application) {
-        return res.status(404).json({ message: "Application not found" });
-      }
-
-      // Update application status
-      await storage.updateApplicationStatus(Number(id), 'rejected');
-
-      // Send rejection email
-      try {
-        const rejectionEmailData = generateVisaRejectionEmail(
-          application.firstName,
-          application.lastName,
+      if (application) {
+        await storage.updateApplicationPaymentStatus(
           application.applicationNumber,
-          message || "Your application did not meet the requirements."
+          paymentStatus === 'success' ? 'succeeded' : 'failed'
         );
 
-        await sendEmail({
-          to: application.email,
-          from: "info@getvisa.tr",
-          subject: rejectionEmailData.subject,
-          html: rejectionEmailData.html,
-          text: rejectionEmailData.text
-        });
+        // Send email notification on successful payment
+        if (paymentStatus === 'success') {
+          const emailData = generateVisaReceivedEmail(
+            application.firstName,
+            application.lastName,
+            application.applicationNumber,
+            application as any
+          );
 
-        console.log(`✅ Rejection email sent to ${application.email} for application ${application.applicationNumber}`);
-      } catch (emailError) {
-        console.error("❌ Email error:", emailError);
+          await sendEmail({
+            to: application.email,
+            from: "info@getvisa.tr",
+            subject: emailData.subject,
+            html: emailData.html,
+            text: emailData.text
+          });
+
+          await sendAdminCopyEmail(
+            emailData.subject,
+            application.email,
+            'visa',
+            emailData.html
+          );
+        }
+
+        return res.json({ success: true, message: "Payment status updated" });
       }
 
-      res.json({ 
-        message: "Application rejected and email sent",
-        applicationNumber: application.applicationNumber
-      });
-    } catch (error) {
-      console.error("Error rejecting application:", error);
-      res.status(500).json({ message: "Failed to reject application" });
+      // Check insurance applications
+      const insuranceApps = await storage.getInsuranceApplications();
+      const insuranceApp = insuranceApps.find(app => 
+        app.applicationNumber === orderRef ||
+        (app as any).orderRef === orderRef
+      );
+
+      if (insuranceApp) {
+        await storage.updateInsuranceApplicationPaymentStatus(
+          insuranceApp.applicationNumber,
+          paymentStatus === 'success' ? 'succeeded' : 'failed'
+        );
+
+        if (paymentStatus === 'success') {
+          const emailData = generateInsuranceReceivedEmail(
+            insuranceApp.firstName,
+            insuranceApp.lastName,
+            insuranceApp.applicationNumber,
+            (insuranceApp as any).productName || 'Travel Insurance',
+            insuranceApp as any
+          );
+
+          await sendEmail({
+            to: insuranceApp.email,
+            from: "info@getvisa.tr",
+            subject: emailData.subject,
+            html: emailData.html,
+            text: emailData.text
+          });
+
+          await sendAdminCopyEmail(
+            emailData.subject,
+            insuranceApp.email,
+            'insurance',
+            emailData.html
+          );
+        }
+
+        return res.json({ success: true, message: "Insurance payment status updated" });
+      }
+
+      return res.status(404).json({ message: "Application not found" });
+    } catch (error: any) {
+      console.error('[Payment Status Update Error]', error);
+      return res.status(500).json({ message: "Failed to update payment status" });
     }
   });
 
@@ -1867,6 +1164,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   });
+
+  // Register Paytriot payment routes
+  registerPaytriotRoutes(app);
 
   const httpServer = createServer(app);
   return httpServer;

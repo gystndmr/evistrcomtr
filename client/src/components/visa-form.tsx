@@ -13,8 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CountrySelector } from "./country-selector";
 import { SupportingDocs } from "./supporting-docs";
 import { SupportingDocumentCheck } from "./supporting-document-check";
-// PaymentForm removed - now using direct redirects
-import { PaymentRetry } from "./payment-retry";
+import { PaytriotPaymentModal } from "./paytriot-payment-modal";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { ArrowLeft, ArrowRight, CreditCard, CheckCircle } from "lucide-react";
@@ -260,11 +259,11 @@ export function VisaForm() {
   const [documentProcessingType, setDocumentProcessingType] = useState("");
   const [isSupportingDocumentValid, setIsSupportingDocumentValid] = useState(false);
   const [availableSupportingDocTypes, setAvailableSupportingDocTypes] = useState(supportingDocProcessingTypes);
-  // Removed paymentData state - now using direct redirects
-  const [showRetry, setShowRetry] = useState(false);
-  const [currentOrderId, setCurrentOrderId] = useState<string>("");
-  const [paymentRedirectUrl, setPaymentRedirectUrl] = useState<string>("");
   const [prerequisites, setPrerequisites] = useState(defaultPrerequisites);
+  
+  // Paytriot payment modal state
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [currentApplication, setCurrentApplication] = useState<any>(null);
   
   // Egypt DOB local state to prevent dropdown closing
   const [egyptLocalDay, setEgyptLocalDay] = useState('');
@@ -381,75 +380,7 @@ export function VisaForm() {
       });
       const applicationData = await applicationResponse.json();
       
-      // Then create payment - let server generate unique orderRef
-      const paymentResponse = await apiRequest("POST", "/api/payment/create", {
-        amount: calculateTotal(),
-        currency: "USD",
-        description: `Turkey E-Visa Application - ${applicationData.applicationNumber}`,
-        customerEmail: data.email,
-        customerName: `${data.firstName} ${data.lastName}`
-        // Removed orderId - server will generate unique orderRef automatically
-      });
-      
-      const paymentData = await paymentResponse.json();
-      
-      if (paymentData.success && paymentData.paymentUrl) {
-        setCurrentOrderId(applicationData.applicationNumber);
-        setPaymentRedirectUrl(paymentData.paymentUrl);
-        
-        // Enhanced redirect approach for mobile compatibility with debugging
-        const redirectToPayment = () => {
-          try {
-            console.log('[Payment Debug] Starting redirect process');
-            console.log('[Payment Debug] Payment URL:', paymentData.paymentUrl);
-            console.log('[Payment Debug] User Agent:', navigator.userAgent);
-            
-            // Always show success toast first
-            toast({
-              title: "Payment Created",
-              description: `Redirecting to payment... Order: ${applicationData.applicationNumber}`,
-              duration: 5000,
-            });
-            
-            // For all devices: Direct location.href redirect
-            console.log('[Payment Debug] Using location.href redirect');
-            setTimeout(() => {
-              window.location.href = paymentData.paymentUrl;
-            }, 500); // Small delay to show toast
-            
-          } catch (error) {
-            console.error('[Payment Debug] Redirect error:', error);
-            
-            // Ultimate fallback: show manual link
-            toast({
-              title: "Payment Link Ready",
-              description: "Click the button to continue to payment",
-              action: (
-                <button 
-                  onClick={() => {
-                    try {
-                      window.open(paymentData.paymentUrl, '_blank');
-                    } catch (e) {
-                      console.error('[Payment Debug] Manual link error:', e);
-                      // Copy to clipboard as last resort
-                      navigator.clipboard?.writeText(paymentData.paymentUrl);
-                    }
-                  }}
-                  className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
-                >
-                  Continue to Payment
-                </button>
-              ),
-              duration: 15000,
-            });
-          }
-        };
-        
-        // Start redirect process immediately
-        redirectToPayment();
-      } else {
-        throw new Error(paymentData.error || "Payment initialization failed");
-      }
+      console.log('✅ Application created:', applicationData);
       
       return applicationData;
     },
@@ -457,45 +388,15 @@ export function VisaForm() {
       console.log('✅ [SUCCESS] Application created successfully:', data);
       console.log('✅ [SUCCESS] Application number:', data.applicationNumber);
       
+      // Store application data and open payment modal
+      setCurrentApplication(data);
+      setIsPaymentModalOpen(true);
+      
       toast({
         title: "Application Submitted",
-        description: `Your application number is ${data.applicationNumber}. Redirecting to payment page...`,
+        description: `Your application number is ${data.applicationNumber}. Please complete payment.`,
         duration: 5000,
       });
-      
-      // Show manual continue option after a short delay for mobile users
-      setTimeout(() => {
-        toast({
-          title: "Payment Ready",
-          description: "If payment page didn't open automatically, click Continue below",
-          action: paymentRedirectUrl ? (
-            <button 
-              onClick={() => window.open(paymentRedirectUrl, '_blank')}
-              className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
-            >
-              Continue
-            </button>
-          ) : undefined,
-          duration: 8000,
-        });
-      }, 2000);
-      setTimeout(() => {
-        if (paymentRedirectUrl) {
-          toast({
-            title: "Continue to Payment",
-            description: "If the page doesn't redirect automatically, click here to continue.",
-            action: (
-              <Button 
-                onClick={() => window.open(paymentRedirectUrl, '_blank')}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2"
-              >
-                Continue
-              </Button>
-            ),
-            duration: 10000,
-          });
-        }
-      }, 2500);
     },
     onError: (error) => {
       console.error('🚨 [CRITICAL ERROR] Application/Payment failed:', error);
@@ -506,7 +407,7 @@ export function VisaForm() {
       });
       
       // Check if it's a payment-specific error
-      const isPaymentError = error.message?.includes('payment') || error.message?.includes('GPay');
+      const isPaymentError = error.message?.includes('payment');
       
       toast({
         title: isPaymentError ? "Payment Error" : "Application Error",
@@ -2418,17 +2319,50 @@ export function VisaForm() {
       </Card>
 
       
-      {/* Payment Retry Component */}
-      {showRetry && currentOrderId && (
-        <PaymentRetry
-          paymentUrl={`https://getvisa.gpayprocessing.com/checkout/${currentOrderId}`}
-          orderId={currentOrderId}
-          onRetry={() => {
-            setShowRetry(false);
-            // Retry the payment creation with validated data
-            form.handleSubmit((validatedData) => {
-              createApplicationMutation.mutate(validatedData);
-            })();
+      {/* Paytriot Payment Modal */}
+      {currentApplication && (
+        <PaytriotPaymentModal
+          isOpen={isPaymentModalOpen}
+          onClose={() => setIsPaymentModalOpen(false)}
+          applicationNumber={currentApplication.applicationNumber}
+          amount={parseFloat(currentApplication.totalAmount || calculateTotal())}
+          onSuccess={(xref) => {
+            setIsPaymentModalOpen(false);
+            toast({
+              title: "Payment Successful!",
+              description: `Your payment has been processed. Transaction ID: ${xref}`,
+            });
+            // Update payment status via API
+            fetch('/api/payment/update-status', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                orderRef: currentApplication.applicationNumber,
+                paymentStatus: 'success',
+                xref
+              })
+            });
+            // Redirect to success page
+            setTimeout(() => {
+              window.location.href = `/payment-success?xref=${xref}&orderRef=${currentApplication.applicationNumber}`;
+            }, 1500);
+          }}
+          onError={(error) => {
+            setIsPaymentModalOpen(false);
+            toast({
+              title: "Payment Failed",
+              description: error,
+              variant: "destructive",
+            });
+            // Update payment status
+            fetch('/api/payment/update-status', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                orderRef: currentApplication.applicationNumber,
+                paymentStatus: 'failed'
+              })
+            });
           }}
         />
       )}

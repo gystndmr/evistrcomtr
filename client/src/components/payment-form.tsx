@@ -42,7 +42,7 @@ function PaymentForm({ paymentUrl, formData, onSubmit }: PaymentFormProps) {
         </div>
       </div>
       
-      {/* Hidden form for POST submission to GPay */}
+      {/* Hidden form for POST submission */}
       <form 
         ref={formRef} 
         method="POST" 

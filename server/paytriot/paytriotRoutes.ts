@@ -81,7 +81,9 @@ export function registerPaytriotRoutes(app: Express): void {
         statementNarrative2
       };
 
-      tempTransactions.set(orderRef || `temp-${Date.now()}`, payload);
+      // Store using transactionUnique as key for 3DS callback lookup
+      const txKey = transactionUnique || `temp-${Date.now()}`;
+      tempTransactions.set(txKey, payload);
 
       const result = await paytriotClient.sale(payload);
 
@@ -90,6 +92,12 @@ export function registerPaytriotRoutes(app: Express): void {
         xref: result.xref,
         orderRef 
       });
+
+      // If 3DS required, re-map with MD for callback lookup
+      if (result.status === '3ds_required' && result.md) {
+        tempTransactions.set(result.md, payload);
+        console.log('[Paytriot] 3DS required - stored transaction with MD:', result.md);
+      }
 
       return res.json(result);
     } catch (error: any) {
@@ -139,8 +147,40 @@ export function registerPaytriotRoutes(app: Express): void {
       });
 
       if (result.status === 'success') {
+        // Update payment status in database
+        if (originalTransaction.orderRef) {
+          try {
+            const updateResponse = await fetch(`${req.protocol}://${req.get('host')}/api/payment/update-status`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                orderRef: originalTransaction.orderRef,
+                paymentStatus: 'success',
+                xref: result.xref
+              })
+            });
+            console.log('[Paytriot] Payment status updated after 3DS:', await updateResponse.json());
+          } catch (err) {
+            console.error('[Paytriot] Failed to update payment status:', err);
+          }
+        }
         return res.redirect(`/payment-success?xref=${result.xref}&orderRef=${originalTransaction.orderRef || ''}`);
       } else {
+        // Update failed status
+        if (originalTransaction.orderRef) {
+          try {
+            await fetch(`${req.protocol}://${req.get('host')}/api/payment/update-status`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                orderRef: originalTransaction.orderRef,
+                paymentStatus: 'failed'
+              })
+            });
+          } catch (err) {
+            console.error('[Paytriot] Failed to update payment status:', err);
+          }
+        }
         return res.redirect(`/payment-error?message=${encodeURIComponent(result.message || 'Payment failed')}`);
       }
     } catch (error: any) {

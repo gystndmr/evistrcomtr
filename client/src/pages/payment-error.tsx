@@ -29,8 +29,8 @@ export default function PaymentError() {
                 className="w-full h-full object-cover rounded-full"
               />
             </div>
-            <h1 className="text-3xl font-bold text-neutral-800 mb-4">Payment Gateway Error</h1>
-            <p className="text-lg text-neutral-600">GPay is currently experiencing technical difficulties</p>
+            <h1 className="text-3xl font-bold text-neutral-800 mb-4">Payment Processing Error</h1>
+            <p className="text-lg text-neutral-600">We encountered an issue processing your payment</p>
           </div>
 
           {/* Main Error Card */}
@@ -45,28 +45,28 @@ export default function PaymentError() {
               <Alert className="border-red-200 bg-red-50">
                 <AlertTriangle className="h-4 w-4" />
                 <AlertDescription>
-                  <strong>GPay Payment Gateway Issue:</strong> The payment system is experiencing server-side problems. 
-                  This is a temporary technical issue with GPay's infrastructure, not with your application or payment details.
+                  <strong>Payment Processing Issue:</strong> The payment system encountered a problem processing your transaction. 
+                  This could be a temporary technical issue. Please verify your payment details and try again.
                 </AlertDescription>
               </Alert>
               
               <div className="bg-gray-50 p-4 rounded-lg text-left">
                 <h3 className="font-semibold mb-2">What happened?</h3>
                 <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• GPay's servers returned a 500 Internal Server Error</li>
-                  <li>• Domain registration issue: getvisa.tr may not be registered with GPay</li>
-                  <li>• Your payment information was processed correctly on our end</li>
-                  <li>• This requires GPay merchant account configuration update</li>
+                  <li>• Your payment could not be processed at this time</li>
+                  <li>• This could be due to insufficient funds, incorrect card details, or a temporary system issue</li>
+                  <li>• No charges have been made to your payment method</li>
+                  <li>• Your visa application has been saved and is pending payment</li>
                 </ul>
               </div>
               
               <div className="bg-blue-50 p-4 rounded-lg text-left">
                 <h3 className="font-semibold mb-2">What can you do?</h3>
                 <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• Contact our support team - this is a known domain issue</li>
-                  <li>• Alternative payment methods may be available</li>
-                  <li>• Try again in a few hours after domain registration is resolved</li>
-                  <li>• Check our status page for updates on the payment system</li>
+                  <li>• Verify your card details are correct (card number, expiry date, CVV)</li>
+                  <li>• Ensure you have sufficient funds available</li>
+                  <li>• Try using a different card or payment method</li>
+                  <li>• Contact our support team if the problem persists</li>
                 </ul>
               </div>
 
@@ -98,8 +98,8 @@ export default function PaymentError() {
               
               <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p className="text-sm text-yellow-800">
-                  <strong>Domain Registration Issue:</strong> The domain getvisa.tr needs to be registered with GPay merchant account (ID: 1100002537). 
-                  No charges have been made to your payment method.
+                  <strong>Important:</strong> No charges have been made to your payment method. 
+                  Your visa application is saved and waiting for successful payment completion.
                 </p>
               </div>
             </CardContent>
@@ -112,10 +112,10 @@ export default function PaymentError() {
             </CardHeader>
             <CardContent>
               <div className="text-xs text-gray-500 font-mono bg-gray-100 p-3 rounded">
-                <p>Error Code: HTTP 500 Internal Server Error</p>
-                <p>Gateway: GPay Processing (getvisa.gpayprocessing.com)</p>
-                <p>Status: Temporary server-side issue</p>
+                <p>Error: Payment processing failed</p>
+                <p>Status: Transaction not completed</p>
                 <p>Time: {new Date().toLocaleString()}</p>
+                <p>Note: Your application is saved - you can retry payment at any time</p>
               </div>
             </CardContent>
           </Card>
