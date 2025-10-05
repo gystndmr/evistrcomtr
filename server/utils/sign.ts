@@ -11,10 +11,13 @@ export function sign(fields: Record<string, any>, secret: string): string {
     if (value === undefined || value === null || value === '') {
       return null;
     }
-    return `${key}=${String(value)}`;
+    return `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`;
   }).filter(Boolean);
 
-  const messageString = pairs.join('&') + secret;
+  const messageString = pairs.join('&')
+    .replace(/%0D%0A/g, '%0A')
+    .replace(/%0A%0D/g, '%0A')
+    .replace(/%0D/g, '%0A') + secret;
 
   const hash = crypto.createHash('sha512').update(messageString, 'utf8').digest('hex');
   
