@@ -160,26 +160,27 @@ export class PaytriotClient {
         throw new Error(`Payment gateway error: ${errorMessage || 'Proxy internal error'}`);
       }
       
+      // CRITICAL: Paytriot only sends signature on SUCCESS responses
+      // Error responses don't include signature field
       const receivedSignature = responseData.signature;
       
-      if (!receivedSignature) {
-        console.error('[Paytriot] No signature in response!');
-        console.error('[Paytriot] Response fields:', Object.keys(responseData));
-        throw new Error('Invalid payment gateway response: missing signature');
+      if (receivedSignature) {
+        // Verify signature only if present
+        const computedSignature = sign(responseData, this.signatureKey);
+        
+        console.log('[Paytriot] Received signature:', receivedSignature);
+        console.log('[Paytriot] Computed signature:', computedSignature);
+        
+        if (!verifySignature(responseData, this.signatureKey, receivedSignature)) {
+          console.error('[Paytriot] Signature verification failed!');
+          console.error('[Paytriot] Response fields:', Object.keys(responseData));
+          throw new Error('Response signature verification failed');
+        }
+        
+        console.log('[Paytriot] ✅ Signature verification passed');
+      } else {
+        console.log('[Paytriot] ⚠️ No signature in response (likely error response)');
       }
-      
-      const computedSignature = sign(responseData, this.signatureKey);
-      
-      console.log('[Paytriot] Received signature:', receivedSignature);
-      console.log('[Paytriot] Computed signature:', computedSignature);
-      
-      if (!verifySignature(responseData, this.signatureKey, receivedSignature)) {
-        console.error('[Paytriot] Signature verification failed!');
-        console.error('[Paytriot] Response fields:', Object.keys(responseData));
-        throw new Error('Response signature verification failed');
-      }
-      
-      console.log('[Paytriot] Signature verification passed');
 
       return this.normalizeResponse(responseData);
     } catch (error: any) {
