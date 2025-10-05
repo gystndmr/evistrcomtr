@@ -98,22 +98,14 @@ export class PaytriotClient {
     // (3DS completion uses MD to reference original transaction)
     if (!threeDSMD && !threeDSPaRes) {
       fields.cardNumber = cardNumber;
-      fields.cardExpiryMonth = cardExpiryMonth;
-      fields.cardExpiryYear = cardExpiryYear;
+      const expiryYear = cardExpiryYear ? cardExpiryYear.slice(-2) : '';
+      fields.cardExpiryDate = `${cardExpiryMonth}${expiryYear}`;
       fields.cardCVV = cardCVV;
     }
 
     if (customerName) fields.customerName = customerName;
     if (customerEmail) fields.customerEmail = customerEmail;
     if (customerPhone) fields.customerPhone = customerPhone;
-    if (customerAddress) fields.customerAddress = customerAddress;
-    if (customerPostCode) fields.customerPostCode = customerPostCode;
-    if (statementNarrative1 || process.env.STATEMENT_NARRATIVE_1) {
-      fields.statementNarrative1 = statementNarrative1 || process.env.STATEMENT_NARRATIVE_1;
-    }
-    if (statementNarrative2 || process.env.STATEMENT_NARRATIVE_2) {
-      fields.statementNarrative2 = statementNarrative2 || process.env.STATEMENT_NARRATIVE_2;
-    }
 
     if (threeDSMD) fields.threeDSMD = threeDSMD;
     if (threeDSPaRes) fields.threeDSPaRes = threeDSPaRes;
@@ -137,10 +129,7 @@ export class PaytriotClient {
       const response = await fetch(this.gatewayUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Origin': 'https://evisatr.com.tr',
-          'X-Forwarded-Host': 'evisatr.com.tr',
-          'Referer': 'https://evisatr.com.tr/'
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
         body: formBody,
         signal: controller.signal
