@@ -125,7 +125,10 @@ export class PaytriotClient {
     console.log('[Paytriot] Gateway URL:', this.gatewayUrl);
     console.log('[Paytriot] Request fields:', JSON.stringify(fields, null, 2));
     console.log('[Paytriot] Calculated signature:', signature);
-    console.log('[Paytriot] Sending JSON request with signature');
+    console.log('[Paytriot] Sending form-urlencoded request with signature');
+
+    const formBody = toFormUrlEncoded(fields);
+    console.log('[Paytriot] Form body:', formBody);
 
     try {
       const controller = new AbortController();
@@ -134,12 +137,12 @@ export class PaytriotClient {
       const response = await fetch(this.gatewayUrl, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
           'Origin': 'https://evisatr.com.tr',
           'X-Forwarded-Host': 'evisatr.com.tr',
           'Referer': 'https://evisatr.com.tr/'
         },
-        body: JSON.stringify(fields),
+        body: formBody,
         signal: controller.signal
       });
 

@@ -1,5 +1,16 @@
 import crypto from 'crypto';
 
+function phpUrlEncode(str: string): string {
+  return encodeURIComponent(str)
+    .replace(/%20/g, '+')
+    .replace(/!/g, '%21')
+    .replace(/'/g, '%27')
+    .replace(/\(/g, '%28')
+    .replace(/\)/g, '%29')
+    .replace(/\*/g, '%2A')
+    .replace(/~/g, '%7E');
+}
+
 export function sign(fields: Record<string, any>, secret: string): string {
   const signatureFields = { ...fields };
   delete signatureFields.signature;
@@ -11,7 +22,7 @@ export function sign(fields: Record<string, any>, secret: string): string {
     if (value === undefined || value === null || value === '') {
       return null;
     }
-    return `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`;
+    return `${phpUrlEncode(key)}=${phpUrlEncode(String(value))}`;
   }).filter(Boolean);
 
   const messageString = pairs.join('&')

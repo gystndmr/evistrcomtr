@@ -1,12 +1,22 @@
+function phpUrlEncode(str: string): string {
+  return encodeURIComponent(str)
+    .replace(/%20/g, '+')
+    .replace(/!/g, '%21')
+    .replace(/'/g, '%27')
+    .replace(/\(/g, '%28')
+    .replace(/\)/g, '%29')
+    .replace(/\*/g, '%2A')
+    .replace(/~/g, '%7E');
+}
+
 export function toFormUrlEncoded(obj: Record<string, any>): string {
   const pairs: string[] = [];
-  for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      const value = obj[key];
-      if (value !== undefined && value !== null && value !== '') {
-        const encodedValue = encodeURIComponent(String(value)).replace(/%20/g, '+');
-        pairs.push(`${key}=${encodedValue}`);
-      }
+  const sortedKeys = Object.keys(obj).sort();
+  
+  for (const key of sortedKeys) {
+    const value = obj[key];
+    if (value !== undefined && value !== null && value !== '') {
+      pairs.push(`${phpUrlEncode(key)}=${phpUrlEncode(String(value))}`);
     }
   }
   return pairs.join('&');
