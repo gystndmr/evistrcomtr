@@ -1,11 +1,22 @@
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CreditCard, Lock } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { CreditCard, Lock } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface PaytriotPaymentModalProps {
   isOpen: boolean;
@@ -28,18 +39,18 @@ export function PaytriotPaymentModal({
   customerEmail,
   customerPhone,
   onSuccess,
-  onError
+  onError,
 }: PaytriotPaymentModalProps) {
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiryMonth, setExpiryMonth] = useState('');
-  const [expiryYear, setExpiryYear] = useState('');
-  const [cvv, setCvv] = useState('');
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiryMonth, setExpiryMonth] = useState("");
+  const [expiryYear, setExpiryYear] = useState("");
+  const [cvv, setCvv] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
 
   const formatCardNumber = (value: string) => {
-    const cleaned = value.replace(/\D/g, '');
-    const formatted = cleaned.replace(/(.{4})/g, '$1 ').trim();
+    const cleaned = value.replace(/\D/g, "");
+    const formatted = cleaned.replace(/(.{4})/g, "$1 ").trim();
     return formatted.slice(0, 19);
   };
 
@@ -49,20 +60,20 @@ export function PaytriotPaymentModal({
   };
 
   const handleCvvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, '').slice(0, 4);
+    const value = e.target.value.replace(/\D/g, "").slice(0, 4);
     setCvv(value);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const cleanCardNumber = cardNumber.replace(/\s/g, '');
-    
+
+    const cleanCardNumber = cardNumber.replace(/\s/g, "");
+
     if (cleanCardNumber.length < 13 || cleanCardNumber.length > 19) {
       toast({
         title: "Invalid Card Number",
         description: "Please enter a valid card number",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -71,7 +82,7 @@ export function PaytriotPaymentModal({
       toast({
         title: "Invalid Expiry Date",
         description: "Please select expiry month and year",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -80,7 +91,7 @@ export function PaytriotPaymentModal({
       toast({
         title: "Invalid CVV",
         description: "Please enter a valid CVV code",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -90,10 +101,10 @@ export function PaytriotPaymentModal({
     try {
       const amountMinor = Math.round(amount * 100);
 
-      const response = await fetch('/api/paytriot/sale', {
-        method: 'POST',
+      const response = await fetch("/api/paytriot/sale", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           amountMinor,
@@ -102,51 +113,54 @@ export function PaytriotPaymentModal({
           cardExpiryYear: expiryYear,
           cardCVV: cvv,
           orderRef: applicationNumber || `TMP-${Date.now()}`,
-          transactionUnique: applicationNumber ? `${applicationNumber}-${Date.now()}` : `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-          customerName: customerName || '',
-          customerEmail: customerEmail || '',
-          customerPhone: customerPhone || '',
-          customerIPAddress: '' // Will be detected by server
-        })
+          transactionUnique: applicationNumber
+            ? `${applicationNumber}-${Date.now()}`
+            : `TXN-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          customerName: customerName || "",
+          customerEmail: customerEmail || "",
+          customerPhone: customerPhone || "",
+          customerIPAddress: "", // Will be detected by server
+        }),
       });
 
       const result = await response.json();
 
-      if (result.status === 'success') {
+      if (result.status === "success") {
         onSuccess(result.xref || applicationNumber);
-      } else if (result.status === '3ds_required' && result.acsUrl) {
+      } else if (result.status === "3ds_required" && result.acsUrl) {
         // Create and submit 3DS form
-        const form = document.createElement('form');
-        form.method = 'POST';
+        const form = document.createElement("form");
+        form.method = "POST";
         form.action = result.acsUrl;
-        
-        const mdInput = document.createElement('input');
-        mdInput.type = 'hidden';
-        mdInput.name = 'MD';
-        mdInput.value = result.md || '';
-        
-        const paReqInput = document.createElement('input');
-        paReqInput.type = 'hidden';
-        paReqInput.name = 'PaReq';
-        paReqInput.value = result.paReq || '';
-        
-        const termUrlInput = document.createElement('input');
-        termUrlInput.type = 'hidden';
-        termUrlInput.name = 'TermUrl';
-        termUrlInput.value = result.termUrl || `${window.location.origin}/paytriot/3ds-callback`;
-        
+
+        const mdInput = document.createElement("input");
+        mdInput.type = "hidden";
+        mdInput.name = "MD";
+        mdInput.value = result.md || "";
+
+        const paReqInput = document.createElement("input");
+        paReqInput.type = "hidden";
+        paReqInput.name = "PaReq";
+        paReqInput.value = result.paReq || "";
+
+        const termUrlInput = document.createElement("input");
+        termUrlInput.type = "hidden";
+        termUrlInput.name = "TermUrl";
+        termUrlInput.value =
+          result.termUrl || `${window.location.origin}/paytriot/3ds-callback`;
+
         form.appendChild(mdInput);
         form.appendChild(paReqInput);
         form.appendChild(termUrlInput);
-        
+
         document.body.appendChild(form);
         form.submit();
       } else {
-        onError(result.message || 'Payment failed');
+        onError(result.message || "Payment failed");
       }
     } catch (error: any) {
-      console.error('Payment error:', error);
-      onError(error.message || 'Payment processing failed');
+      console.error("Payment error:", error);
+      onError(error.message || "Payment processing failed");
     } finally {
       setIsProcessing(false);
     }
@@ -154,7 +168,9 @@ export function PaytriotPaymentModal({
 
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 15 }, (_, i) => currentYear + i);
-  const months = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0'));
+  const months = Array.from({ length: 12 }, (_, i) =>
+    String(i + 1).padStart(2, "0"),
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -192,13 +208,22 @@ export function PaytriotPaymentModal({
           <div className="grid grid-cols-3 gap-3">
             <div className="space-y-2">
               <Label htmlFor="expiryMonth">Month</Label>
-              <Select value={expiryMonth} onValueChange={setExpiryMonth} required>
-                <SelectTrigger id="expiryMonth" data-testid="select-expiry-month">
+              <Select
+                value={expiryMonth}
+                onValueChange={setExpiryMonth}
+                required
+              >
+                <SelectTrigger
+                  id="expiryMonth"
+                  data-testid="select-expiry-month"
+                >
                   <SelectValue placeholder="MM" />
                 </SelectTrigger>
                 <SelectContent>
-                  {months.map(month => (
-                    <SelectItem key={month} value={month}>{month}</SelectItem>
+                  {months.map((month) => (
+                    <SelectItem key={month} value={month}>
+                      {month}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -211,8 +236,10 @@ export function PaytriotPaymentModal({
                   <SelectValue placeholder="YYYY" />
                 </SelectTrigger>
                 <SelectContent>
-                  {years.map(year => (
-                    <SelectItem key={year} value={String(year)}>{year}</SelectItem>
+                  {years.map((year) => (
+                    <SelectItem key={year} value={String(year)}>
+                      {year}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -255,7 +282,7 @@ export function PaytriotPaymentModal({
               className="flex-1 bg-green-600 hover:bg-green-700"
               data-testid="button-submit-payment"
             >
-              {isProcessing ? 'Processing...' : `Pay $${amount.toFixed(2)}`}
+              {isProcessing ? "Processing..." : `Pay $${amount.toFixed(2)}`}
             </Button>
           </div>
         </form>

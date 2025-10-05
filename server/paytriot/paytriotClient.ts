@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
-import { sign, verifySignature } from '../utils/sign';
-import { toFormUrlEncoded, fromFormUrlEncoded } from '../utils/form';
+import { v4 as uuidv4 } from "uuid";
+import { sign, verifySignature } from "../utils/sign";
+import { toFormUrlEncoded, fromFormUrlEncoded } from "../utils/form";
 
 interface PaytriotSalePayload {
   amountMinor: number;
@@ -23,7 +23,7 @@ interface PaytriotSalePayload {
 }
 
 interface PaytriotResponse {
-  status: 'success' | '3ds_required' | 'error';
+  status: "success" | "3ds_required" | "error";
   xref?: string;
   authorisationCode?: string;
   amountReceived?: string;
@@ -45,11 +45,12 @@ export class PaytriotClient {
   private timeout: number;
 
   constructor() {
-    this.gatewayUrl = 'https://gateway.paytriot.co.uk/direct';
-    this.merchantId = '281927';
-    this.signatureKey = 'TempKey123Paytriot';
-    this.countryCode = '826';
-    this.currencyCode = '840';
+    // 🔴 DEĞİŞİKLİK 1: Cloudflare Worker URL'i kullan
+    this.gatewayUrl = "https://paytriot-proxy.renga.workers.dev";
+    this.merchantId = "281927";
+    this.signatureKey = "TempKey123Paytriot";
+    this.countryCode = "826";
+    this.currencyCode = "840";
     this.timeout = 10000;
   }
 
@@ -71,34 +72,35 @@ export class PaytriotClient {
       statementNarrative1,
       statementNarrative2,
       threeDSMD,
-      threeDSPaRes
+      threeDSPaRes,
     } = payload;
 
-    if (!amountMinor || typeof amountMinor !== 'number' || amountMinor <= 0) {
-      throw new Error('Invalid amountMinor: must be a positive number');
+    if (!amountMinor || typeof amountMinor !== "number" || amountMinor <= 0) {
+      throw new Error("Invalid amountMinor: must be a positive number");
     }
 
+    // 🔴 DEĞİŞİKLİK 2: customerIPAddress zorunlu kontrolü
     if (!customerIPAddress) {
-      throw new Error('customerIPAddress is required');
+      throw new Error("customerIPAddress is required for Cloudflare Worker");
     }
 
     const fields: Record<string, any> = {
       merchantID: this.merchantId,
-      action: 'SALE',
-      type: '1',
+      action: "SALE",
+      type: "1",
       countryCode: this.countryCode,
       currencyCode: this.currencyCode,
       amount: String(amountMinor),
       orderRef: orderRef || `ORD-${Date.now()}-${uuidv4().slice(0, 8)}`,
       transactionUnique: transactionUnique || uuidv4(),
-      customerIPAddress: customerIPAddress
+      customerIPAddress: customerIPAddress, // ✅ Zaten var, sadece emin olun
     };
 
     // Only include card fields if not doing 3DS completion
     // (3DS completion uses MD to reference original transaction)
     if (!threeDSMD && !threeDSPaRes) {
       fields.cardNumber = cardNumber;
-      const expiryYear = cardExpiryYear ? cardExpiryYear.slice(-2) : '';
+      const expiryYear = cardExpiryYear ? cardExpiryYear.slice(-2) : "";
       fields.cardExpiryDate = `${cardExpiryMonth}${expiryYear}`;
       fields.cardCVV = cardCVV;
     }
@@ -113,37 +115,50 @@ export class PaytriotClient {
     const signature = sign(fields, this.signatureKey);
     fields.signature = signature;
 
-    console.log('[Paytriot] 🔐 REQUEST DETAILS:');
-    console.log('[Paytriot] Gateway URL:', this.gatewayUrl);
-    console.log('[Paytriot] Request fields:', JSON.stringify(fields, null, 2));
-    console.log('[Paytriot] Calculated signature:', signature);
-    console.log('[Paytriot] Sending form-urlencoded request with signature');
+    console.log("[Paytriot] 🔐 REQUEST DETAILS:");
+    console.log("[Paytriot] Gateway URL:", this.gatewayUrl);
+    console.log("[Paytriot] Customer IP:", customerIPAddress);
+    console.log("[Paytriot] Request fields:", JSON.stringify(fields, null, 2));
+    console.log("[Paytriot] Calculated signature:", signature);
+    console.log(
+      "[Paytriot] Sending form-urlencoded request via Cloudflare Worker",
+    );
 
     const formBody = toFormUrlEncoded(fields);
-    console.log('[Paytriot] Form body:', formBody);
+    console.log("[Paytriot] Form body:", formBody);
 
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
       const response = await fetch(this.gatewayUrl, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         body: formBody,
-        signal: controller.signal
+        signal: controller.signal,
       });
 
       clearTimeout(timeoutId);
 
-      console.log('[Paytriot] 📥 RESPONSE DETAILS:');
-      console.log('[Paytriot] HTTP Status:', response.status, response.statusText);
-      console.log('[Paytriot] Response headers:', Object.fromEntries(response.headers.entries()));
+      console.log("[Paytriot] 📥 RESPONSE DETAILS:");
+      console.log(
+        "[Paytriot] HTTP Status:",
+        response.status,
+        response.statusText,
+      );
+      console.log(
+        "[Paytriot] Response headers:",
+        Object.fromEntries(response.headers.entries()),
+      );
 
       const responseText = await response.text();
-      console.log('[Paytriot] Raw response (first 1000 chars):', responseText.substring(0, 1000));
-      
+      console.log(
+        "[Paytriot] Raw response (first 1000 chars):",
+        responseText.substring(0, 1000),
+      );
+
       let responseData: Record<string, any>;
       try {
         responseData = JSON.parse(responseText);
@@ -151,81 +166,101 @@ export class PaytriotClient {
         responseData = fromFormUrlEncoded(responseText);
       }
 
-      console.log('[Paytriot] Response data:', JSON.stringify(responseData, null, 2));
-      
+      console.log(
+        "[Paytriot] Response data:",
+        JSON.stringify(responseData, null, 2),
+      );
+
       // Check for proxy/worker errors
-      if (responseData['Internal Worker Error'] !== undefined || responseData['error'] !== undefined) {
-        const errorMessage = responseData['Internal Worker Error'] || responseData['error'] || 'Unknown proxy error';
-        console.error('[Paytriot] Proxy/Worker error detected:', errorMessage);
-        throw new Error(`Payment gateway error: ${errorMessage || 'Proxy internal error'}`);
+      if (
+        responseData["Internal Worker Error"] !== undefined ||
+        responseData["error"] !== undefined
+      ) {
+        const errorMessage =
+          responseData["Internal Worker Error"] ||
+          responseData["error"] ||
+          "Unknown proxy error";
+        console.error("[Paytriot] Proxy/Worker error detected:", errorMessage);
+        throw new Error(
+          `Payment gateway error: ${errorMessage || "Proxy internal error"}`,
+        );
       }
-      
+
       // CRITICAL: Paytriot only sends signature on SUCCESS responses
       // Error responses don't include signature field
       const receivedSignature = responseData.signature;
-      
+
       if (receivedSignature) {
         // Verify signature only if present
         const computedSignature = sign(responseData, this.signatureKey);
-        
-        console.log('[Paytriot] Received signature:', receivedSignature);
-        console.log('[Paytriot] Computed signature:', computedSignature);
-        
-        if (!verifySignature(responseData, this.signatureKey, receivedSignature)) {
-          console.error('[Paytriot] Signature verification failed!');
-          console.error('[Paytriot] Response fields:', Object.keys(responseData));
-          throw new Error('Response signature verification failed');
+
+        console.log("[Paytriot] Received signature:", receivedSignature);
+        console.log("[Paytriot] Computed signature:", computedSignature);
+
+        if (
+          !verifySignature(responseData, this.signatureKey, receivedSignature)
+        ) {
+          console.error("[Paytriot] Signature verification failed!");
+          console.error(
+            "[Paytriot] Response fields:",
+            Object.keys(responseData),
+          );
+          throw new Error("Response signature verification failed");
         }
-        
-        console.log('[Paytriot] ✅ Signature verification passed');
+
+        console.log("[Paytriot] ✅ Signature verification passed");
       } else {
-        console.log('[Paytriot] ⚠️ No signature in response (likely error response)');
+        console.log(
+          "[Paytriot] ⚠️ No signature in response (likely error response)",
+        );
       }
 
       return this.normalizeResponse(responseData);
     } catch (error: any) {
-      if (error.name === 'AbortError') {
-        throw new Error('Request timeout');
+      if (error.name === "AbortError") {
+        throw new Error("Request timeout");
       }
       throw error;
     }
   }
 
-  private normalizeResponse(responseData: Record<string, string>): PaytriotResponse {
+  private normalizeResponse(
+    responseData: Record<string, string>,
+  ): PaytriotResponse {
     const responseCode = parseInt(responseData.responseCode, 10);
 
     if (responseCode === 0) {
       return {
-        status: 'success',
+        status: "success",
         xref: responseData.xref,
         authorisationCode: responseData.authorisationCode,
         amountReceived: responseData.amountReceived,
-        responseMessage: responseData.responseMessage || 'Payment successful'
+        responseMessage: responseData.responseMessage || "Payment successful",
       };
     }
 
     if (responseCode === 65802) {
       return {
-        status: '3ds_required',
+        status: "3ds_required",
         acsUrl: responseData.threeDSACSURL,
         md: responseData.threeDSMD,
         paReq: responseData.threeDSPaReq,
-        termUrl: process.env.RETURN_URL
+        termUrl: process.env.RETURN_URL,
       };
     }
 
     if (responseCode === 65540) {
       return {
-        status: 'error',
+        status: "error",
         code: responseCode,
-        message: 'Forbidden: server IP not whitelisted'
+        message: "Forbidden: server IP not whitelisted",
       };
     }
 
     return {
-      status: 'error',
+      status: "error",
       code: responseCode,
-      message: responseData.responseMessage || 'Payment failed'
+      message: responseData.responseMessage || "Payment failed",
     };
   }
 }
