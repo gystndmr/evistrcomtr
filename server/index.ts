@@ -1,25 +1,35 @@
-import 'dotenv/config';
+import "dotenv/config";
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+let setupVite: any, serveStatic: any, log: any;
+
+if (process.env.NODE_ENV !== "production") {
+  const viteModule = await import("./vite");
+  setupVite = viteModule.setupVite;
+  serveStatic = viteModule.serveStatic;
+  log = viteModule.log;
+}
 import { ChatManager } from "./websocket";
 import { registerPaytriotRoutes } from "./paytriot/paytriotRoutes";
 
 const app = express();
-app.set('trust proxy', true); // Enable trust proxy for Cloudflare/proxy IP detection
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' })); // Changed to true for form data
+app.set("trust proxy", true); // Enable trust proxy for Cloudflare/proxy IP detection
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" })); // Changed to true for form data
 
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
-  
+
   // Debug API requests
   if (path.startsWith("/api")) {
     console.log(`🔍 API REQUEST: ${req.method} ${path}`);
     if (req.method === "POST") {
       console.log(`🔍 Headers:`, req.headers);
-      console.log(`🔍 Body preview:`, JSON.stringify(req.body).substring(0, 100));
+      console.log(
+        `🔍 Body preview:`,
+        JSON.stringify(req.body).substring(0, 100),
+      );
     }
   }
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
@@ -42,7 +52,11 @@ app.use((req, res, next) => {
         logLine = logLine.slice(0, 79) + "…";
       }
 
-      log(logLine);
+      if (log) {
+        log(logLine);
+      } else {
+        console.log(logLine);
+      }
     }
   });
 
@@ -52,7 +66,7 @@ app.use((req, res, next) => {
 (async () => {
   // Register Paytriot payment routes
   registerPaytriotRoutes(app);
-  
+
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -67,22 +81,29 @@ app.use((req, res, next) => {
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
   if (app.get("env") === "development") {
-    await setupVite(app, server);
+    if (setupVite) {
+      await setupVite(app, server);
+    }
   } else {
-    serveStatic(app);
+    if (serveStatic) {
+      serveStatic(app);
+    }
   }
 
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
+  server.listen(
+    {
+      port,
+      host: "0.0.0.0",
+      reusePort: true,
+    },
+    () => {
+      log(`serving on port ${port}`);
+    },
+  );
 
   // Initialize WebSocket chat system (disabled for debugging)
   // new ChatManager(server);

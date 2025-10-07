@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/evisatrc/insurance-app
+    - /bin/cp -R * $DEPLOYPATH
+    - cd $DEPLOYPATH
+    - source /home/evisatrc/nodevenv/insurance-app/22/bin/activate
+    - npm install --production
