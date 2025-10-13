@@ -2544,31 +2544,43 @@ async function registerRoutes(app2) {
 
 // server/paytriot/paytriotClient.ts
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 // server/utils/sign.ts
 import crypto from "crypto";
 function phpUrlEncode(str) {
   return encodeURIComponent(str).replace(/%20/g, "+").replace(/!/g, "%21").replace(/'/g, "%27").replace(/\(/g, "%28").replace(/\)/g, "%29").replace(/\*/g, "%2A").replace(/~/g, "%7E");
 }
-function sign(fields, secret) {
-  const signatureFields = { ...fields };
-  delete signatureFields.signature;
-  const sortedKeys = Object.keys(signatureFields).sort();
-  const pairs = sortedKeys.map((key) => {
-    const value = signatureFields[key];
-    if (value === void 0 || value === null || value === "") {
-      return null;
-    }
-    return `${phpUrlEncode(key)}=${phpUrlEncode(String(value))}`;
+function buildRequestSignature(fields, secret) {
+  const copy = { ...fields };
+  delete copy.signature;
+  const pairs = Object.keys(copy).sort((a, b) => a.localeCompare(b)).map((k) => {
+    const v = copy[k];
+    if (v === void 0 || v === null || v === "") return null;
+    return `${phpUrlEncode(k)}=${phpUrlEncode(String(v))}`;
   }).filter(Boolean);
-  const messageString = pairs.join("&").replace(/%0D%0A/g, "%0A").replace(/%0A%0D/g, "%0A").replace(/%0D/g, "%0A") + secret;
-  const hash = crypto.createHash("sha512").update(messageString, "utf8").digest("hex");
-  return hash.toLowerCase();
+  const message = pairs.join("&").replace(/%0D%0A/g, "%0A").replace(/%0A%0D/g, "%0A").replace(/%0D/g, "%0A") + secret;
+  return crypto.createHash("sha512").update(message, "utf8").digest("hex").toLowerCase();
+}
+function buildResponseSignature(fields, secret) {
+  const copy = { ...fields };
+  delete copy.signature;
+  const pairs = Object.keys(copy).sort((a, b) => a.localeCompare(b)).map((k) => {
+    const v = copy[k];
+    if (v === void 0 || v === null || v === "") return null;
+    return `${phpUrlEncode(k)}=${phpUrlEncode(String(v))}`;
+  }).filter(Boolean);
+  const message = pairs.join("&").replace(/%0D%0A/g, "%0A").replace(/%0A%0D/g, "%0A").replace(/%0D/g, "%0A") + secret;
+  return crypto.createHash("sha512").update(message, "utf8").digest("hex").toLowerCase();
+}
+function sign(fields, secret) {
+  return buildRequestSignature(fields, secret);
 }
 function verifySignature(fields, secret, receivedSignature) {
-  const computedSignature = sign(fields, secret);
-  return computedSignature === receivedSignature;
+  const expected = buildResponseSignature(fields, secret);
+  return expected === String(receivedSignature || "").toLowerCase();
 }
+var signResponse = buildResponseSignature;
 
 // server/utils/form.ts
 function phpUrlEncode2(str) {
@@ -2587,12 +2599,16 @@ function toFormUrlEncoded(obj) {
 }
 function fromFormUrlEncoded(str) {
   const obj = {};
+  if (!str) return obj;
   const pairs = str.split("&");
   for (const pair of pairs) {
-    const [key, value] = pair.split("=");
-    if (key) {
-      obj[key] = decodeURIComponent((value || "").replace(/\+/g, " "));
-    }
+    if (!pair) continue;
+    const eq2 = pair.indexOf("=");
+    const rawKey = eq2 >= 0 ? pair.slice(0, eq2) : pair;
+    const rawVal = eq2 >= 0 ? pair.slice(eq2 + 1) : "";
+    const key = decodeURIComponent(rawKey.replace(/\+/g, " "));
+    const value = decodeURIComponent(rawVal.replace(/\+/g, " "));
+    obj[key] = value;
   }
   return obj;
 }
@@ -2605,14 +2621,18 @@ var PaytriotClient = class {
   countryCode;
   currencyCode;
   timeout;
+  termUrl;
   constructor() {
-    this.gatewayUrl = "https://gateway.paytriot.co.uk/direct";
+    this.gatewayUrl = "https://gateway.paytriot.co.uk/direct/";
     this.merchantId = "281927";
     this.signatureKey = "TempKey123Paytriot";
     this.countryCode = "826";
     this.currencyCode = "840";
     this.timeout = 3e4;
-    console.log("[Paytriot] Direct gateway test - no proxy");
+    const baseUrl = process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(",")[0]}` : "http://localhost:5000";
+    this.termUrl = `${baseUrl}/api/paytriot/3ds-callback`;
+    console.log("[Paytriot] Gateway initialized");
+    console.log("[Paytriot] 3DS TermUrl:", this.termUrl);
   }
   async sale(payload) {
     const {
@@ -2638,8 +2658,10 @@ var PaytriotClient = class {
       throw new Error("Invalid amountMinor: must be a positive number");
     }
     if (!customerIPAddress) {
-      throw new Error("customerIPAddress is required for Cloudflare Worker");
+      throw new Error("customerIPAddress is required");
     }
+    const sanitizedOrderRef = (orderRef || `ORD${Date.now()}${uuidv4().slice(0, 8)}`).replace(/[^a-zA-Z0-9]/g, "");
+    const sanitizedTransactionUnique = (transactionUnique || uuidv4()).replace(/[^a-zA-Z0-9]/g, "");
     const fields = {
       merchantID: this.merchantId,
       action: "SALE",
@@ -2647,46 +2669,53 @@ var PaytriotClient = class {
       countryCode: this.countryCode,
       currencyCode: this.currencyCode,
       amount: String(amountMinor),
-      orderRef: orderRef || `ORD-${Date.now()}-${uuidv4().slice(0, 8)}`,
-      transactionUnique: transactionUnique || uuidv4(),
-      customerIPAddress
-      // ✅ Zaten var, sadece emin olun
+      orderRef: sanitizedOrderRef,
+      transactionUnique: sanitizedTransactionUnique,
+      customerIPAddress,
+      threeDSRequired: "Y"
     };
     if (!threeDSMD && !threeDSPaRes) {
       fields.cardNumber = cardNumber;
+      const paddedMonth = cardExpiryMonth.padStart(2, "0");
       const expiryYear = cardExpiryYear ? cardExpiryYear.slice(-2) : "";
-      fields.cardExpiryDate = `${cardExpiryMonth}${expiryYear}`;
+      fields.cardExpiryDate = `${paddedMonth}${expiryYear}`;
       fields.cardCVV = cardCVV;
     }
-    if (customerName) fields.customerName = customerName;
-    if (customerEmail) fields.customerEmail = customerEmail;
-    if (customerPhone) fields.customerPhone = customerPhone;
+    if (customerName?.trim()) fields.customerName = customerName.trim();
+    if (customerEmail?.trim()) fields.customerEmail = customerEmail.trim();
+    if (customerPhone?.trim()) fields.customerPhone = customerPhone.trim();
+    if (customerAddress?.trim()) fields.customerAddress = customerAddress.trim();
+    if (customerPostCode?.trim()) fields.customerPostCode = customerPostCode.trim();
+    if (statementNarrative1?.trim()) fields.statementNarrative1 = statementNarrative1.trim();
+    if (statementNarrative2?.trim()) fields.statementNarrative2 = statementNarrative2.trim();
     if (threeDSMD) fields.threeDSMD = threeDSMD;
     if (threeDSPaRes) fields.threeDSPaRes = threeDSPaRes;
     const signature = sign(fields, this.signatureKey);
     fields.signature = signature;
+    const maskedFields = { ...fields };
+    if (maskedFields.cardNumber) {
+      maskedFields.cardNumber = `****${maskedFields.cardNumber.slice(-4)}`;
+    }
+    if (maskedFields.cardCVV) {
+      maskedFields.cardCVV = "***";
+    }
     console.log("[Paytriot] \u{1F510} REQUEST DETAILS:");
     console.log("[Paytriot] Gateway URL:", this.gatewayUrl);
     console.log("[Paytriot] Customer IP:", customerIPAddress);
-    console.log("[Paytriot] Request fields:", JSON.stringify(fields, null, 2));
+    console.log("[Paytriot] Request fields (masked):", JSON.stringify(maskedFields, null, 2));
     console.log("[Paytriot] Calculated signature:", signature);
-    console.log(
-      "[Paytriot] Sending form-urlencoded request via Cloudflare Worker"
-    );
     const formBody = toFormUrlEncoded(fields);
-    console.log("[Paytriot] Form body:", formBody);
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), this.timeout);
-      const response = await fetch(this.gatewayUrl, {
-        method: "POST",
+      const response = await axios.post(this.gatewayUrl, formBody, {
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Accept": "text/html,application/x-www-form-urlencoded",
+          "User-Agent": "PaytriotClient/1.0"
         },
-        body: formBody,
-        signal: controller.signal
+        timeout: this.timeout,
+        validateStatus: () => true
+        // Accept all status codes
       });
-      clearTimeout(timeoutId);
       console.log("[Paytriot] \u{1F4E5} RESPONSE DETAILS:");
       console.log(
         "[Paytriot] HTTP Status:",
@@ -2695,16 +2724,20 @@ var PaytriotClient = class {
       );
       console.log(
         "[Paytriot] Response headers:",
-        Object.fromEntries(response.headers.entries())
+        response.headers
       );
-      const responseText = await response.text();
+      const responseText = typeof response.data === "string" ? response.data : JSON.stringify(response.data);
       console.log(
         "[Paytriot] Raw response (first 1000 chars):",
         responseText.substring(0, 1e3)
       );
+      if (response.status !== 200) {
+        console.error(`[Paytriot] \u26A0\uFE0F Non-200 HTTP status: ${response.status}`);
+        console.error(`[Paytriot] Response body:`, responseText);
+      }
       let responseData;
       try {
-        responseData = JSON.parse(responseText);
+        responseData = typeof response.data === "object" ? response.data : JSON.parse(responseText);
       } catch (e) {
         responseData = fromFormUrlEncoded(responseText);
       }
@@ -2720,8 +2753,9 @@ var PaytriotClient = class {
         );
       }
       const receivedSignature = responseData.signature;
-      if (receivedSignature) {
-        const computedSignature = sign(responseData, this.signatureKey);
+      const responseCode = parseInt(responseData.responseCode, 10);
+      if (receivedSignature && responseCode === 0) {
+        const computedSignature = signResponse(responseData, this.signatureKey);
         console.log("[Paytriot] Received signature:", receivedSignature);
         console.log("[Paytriot] Computed signature:", computedSignature);
         if (!verifySignature(responseData, this.signatureKey, receivedSignature)) {
@@ -2735,13 +2769,20 @@ var PaytriotClient = class {
         console.log("[Paytriot] \u2705 Signature verification passed");
       } else {
         console.log(
-          "[Paytriot] \u26A0\uFE0F No signature in response (likely error response)"
+          `[Paytriot] \u26A0\uFE0F Skipping signature verification (responseCode: ${responseCode})`
         );
       }
       return this.normalizeResponse(responseData);
     } catch (error) {
-      if (error.name === "AbortError") {
-        throw new Error("Request timeout");
+      if (axios.isAxiosError(error)) {
+        if (error.code === "ECONNABORTED") {
+          throw new Error("Request timeout");
+        }
+        console.error("[Paytriot] Axios error:", error.message);
+        if (error.response) {
+          console.error("[Paytriot] Error response status:", error.response.status);
+          console.error("[Paytriot] Error response data:", error.response.data);
+        }
       }
       throw error;
     }
@@ -2757,27 +2798,104 @@ var PaytriotClient = class {
         responseMessage: responseData.responseMessage || "Payment successful"
       };
     }
-    if (responseCode === 65802) {
+    const hasAcs = !!(responseData.threeDSACSURL && responseData.threeDSMD && responseData.threeDSPaReq);
+    if (responseCode === 65802 && hasAcs) {
       return {
         status: "3ds_required",
         acsUrl: responseData.threeDSACSURL,
         md: responseData.threeDSMD,
         paReq: responseData.threeDSPaReq,
-        termUrl: process.env.RETURN_URL
+        termUrl: this.termUrl
       };
     }
-    if (responseCode === 65540) {
+    if (responseCode === 65796 && hasAcs) {
       return {
-        status: "error",
-        code: responseCode,
-        message: "Forbidden: server IP not whitelisted"
+        status: "3ds_required",
+        acsUrl: responseData.threeDSACSURL,
+        md: responseData.threeDSMD,
+        paReq: responseData.threeDSPaReq,
+        termUrl: this.termUrl
       };
     }
     return {
       status: "error",
       code: responseCode,
-      message: responseData.responseMessage || "Payment failed"
+      message: this.getUserFriendlyError(responseData) || "3-D Secure required but ACS details were not provided."
     };
+  }
+  getUserFriendlyError(responseData) {
+    const responseCode = parseInt(responseData.responseCode, 10);
+    const acquirerCode = responseData.acquirerResponseCode;
+    const acquirerMessage = responseData.acquirerResponseMessage || "";
+    const payriotErrors = {
+      65539: "Invalid merchant credentials",
+      65541: "Transaction not allowed in current state",
+      65542: "Card details mismatch - please try again",
+      65544: "Invalid payment information",
+      65545: "Merchant account suspended - contact support",
+      65546: "Currency not supported",
+      65548: "System error - please try again",
+      65554: "Duplicate transaction detected",
+      65561: "Card type not supported",
+      65566: "Test card used on live system",
+      65567: "Card issuing country not supported",
+      65796: "3-D Secure is required for this card (no ACS details returned)",
+      65794: "3-D Secure unavailable on merchant account",
+      65792: "3-D Secure transaction in progress"
+    };
+    const acquirerErrors = {
+      "01": "Please contact your bank for authorization",
+      "02": "Please contact your bank for authorization",
+      "04": "Card declined - please use another card",
+      "05": "Card declined by bank - please use another card",
+      "12": "Invalid transaction - please check card details",
+      "13": "Invalid amount - please check payment amount",
+      "14": "Invalid card number - please check your card",
+      "15": "Invalid card issuer",
+      "25": "Cannot process at this time - please try again later",
+      "30": "Format error - please try again",
+      "41": "Lost card - please contact your bank",
+      "43": "Stolen card - please contact your bank",
+      "51": "Insufficient funds - please check your balance",
+      "54": "Card expired - please use a valid card",
+      "55": "Incorrect PIN - please try again",
+      "57": "Transaction not permitted for this card",
+      "58": "Transaction not permitted - contact your bank",
+      "61": "Exceeds withdrawal limit",
+      "62": "Restricted card - contact your bank",
+      "65": "Exceeds transaction limit",
+      "75": "PIN entry attempts exceeded",
+      "76": "Invalid account",
+      "78": "Card not activated",
+      "79": "Invalid card lifecycle state",
+      "82": "Incorrect CVV - please check security code",
+      "83": "Cannot verify PIN",
+      "85": "Card OK but transaction declined",
+      "91": "Bank system unavailable - please try again",
+      "92": "Unable to route transaction",
+      "93": "Transaction violation",
+      "94": "Duplicate transaction",
+      "96": "System error - please try again later"
+    };
+    if (payriotErrors[responseCode]) {
+      return payriotErrors[responseCode];
+    }
+    if (acquirerCode && acquirerErrors[acquirerCode]) {
+      return acquirerErrors[acquirerCode];
+    }
+    if (responseCode === 2) {
+      return "Please contact your bank for authorization";
+    }
+    if (responseCode === 4) {
+      return "Card declined - please use another card";
+    }
+    if (responseCode === 5) {
+      return "Card declined by bank - please use another card";
+    }
+    if (responseCode === 30) {
+      return acquirerMessage || "Payment failed - please try again";
+    }
+    return responseData.responseMessage || acquirerMessage || "Payment failed - please check your card details and try again";
   }
 };
 
@@ -2821,7 +2939,9 @@ function registerPaytriotRoutes(app2) {
         customerPostCode,
         customerIPAddress: providedIP,
         statementNarrative1,
-        statementNarrative2
+        statementNarrative2,
+        returnUrl,
+        errorUrl
       } = req.body;
       if (!amountMinor || typeof amountMinor !== "number" || amountMinor <= 0) {
         return res.status(400).json({
@@ -2876,7 +2996,32 @@ function registerPaytriotRoutes(app2) {
       });
       if (result.status === "success") {
         if (txKey) tempTransactions.delete(txKey);
+        try {
+          const base2 = `${req.protocol}://${req.get("host")}`;
+          const resp = await fetch(`${base2}/api/payment/update-status`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              orderRef,
+              // frontend'den gelen applicationNumber/orderRef
+              paymentStatus: "success",
+              xref: result.xref
+            })
+          });
+          const data = await resp.json().catch(() => ({}));
+          console.log("[Paytriot] update-status ->", resp.status, data);
+        } catch (e) {
+          console.warn("[Paytriot] update-status call failed:", e?.message || e);
+        }
+        const base = `${req.protocol}://${req.get("host")}`;
+        const target = typeof returnUrl === "string" && returnUrl.length > 0 ? new URL(returnUrl, base) : new URL("/payment-success", base);
+        if (target.origin === base) {
+          if (result.xref) target.searchParams.set("xref", result.xref);
+          if (orderRef) target.searchParams.set("orderRef", orderRef);
+          return res.json(result);
+        }
         console.log("[Paytriot] Direct success - purged card data from memory");
+        return res.json(result);
       } else if (result.status === "3ds_required" && result.md) {
         const sanitizedPayload = {
           amountMinor: payload.amountMinor,
@@ -2906,6 +3051,17 @@ function registerPaytriotRoutes(app2) {
         );
       } else {
         if (txKey) tempTransactions.delete(txKey);
+        const base = `${req.protocol}://${req.get("host")}`;
+        if (typeof errorUrl === "string" && errorUrl.length > 0) {
+          const err = new URL(errorUrl, base);
+          if (err.origin === base) {
+            const msg = result.message || "Payment failed";
+            err.searchParams.set("message", msg);
+            if (orderRef) err.searchParams.set("orderRef", orderRef);
+            return res.redirect(303, err.toString());
+          }
+        }
+        return res.json(result);
         console.log("[Paytriot] Error occurred - purged card data from memory");
       }
       return res.json(result);
@@ -2923,7 +3079,7 @@ function registerPaytriotRoutes(app2) {
       });
     }
   });
-  app2.post("/paytriot/3ds-callback", async (req, res) => {
+  app2.post("/api/paytriot/3ds-callback", async (req, res) => {
     try {
       const { MD, PaRes } = req.body;
       console.log("[Paytriot] 3DS callback received:", {
@@ -3030,6 +3186,10 @@ function registerPaytriotRoutes(app2) {
 var setupVite2;
 var serveStatic2;
 var log2;
+log2 = console.log;
+serveStatic2 = (app2) => {
+  app2.use(express2.static("dist/public"));
+};
 if (process.env.NODE_ENV !== "production") {
   const viteModule = await init_vite().then(() => vite_exports);
   setupVite2 = viteModule.setupVite;
@@ -3104,7 +3264,11 @@ app.use((req, res, next) => {
       reusePort: true
     },
     () => {
-      log2(`serving on port ${port}`);
+      if (log2) {
+        log2(`serving on port ${port}`);
+      } else {
+        console.log(`serving on port ${port}`);
+      }
     }
   );
 })();

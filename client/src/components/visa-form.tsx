@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CountrySelector } from "./country-selector";
 import { SupportingDocs } from "./supporting-docs";
 import { SupportingDocumentCheck } from "./supporting-document-check";
-import { PaytriotPaymentModal } from "./paytriot-payment-modal";
+import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { ArrowLeft, ArrowRight, CreditCard, CheckCircle } from "lucide-react";
@@ -261,9 +261,7 @@ export function VisaForm() {
   const [availableSupportingDocTypes, setAvailableSupportingDocTypes] = useState(supportingDocProcessingTypes);
   const [prerequisites, setPrerequisites] = useState(defaultPrerequisites);
   
-  // Paytriot payment modal state
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [currentApplication, setCurrentApplication] = useState<any>(null);
+  const [, setLocation] = useLocation();
   
   // Egypt DOB local state to prevent dropdown closing
   const [egyptLocalDay, setEgyptLocalDay] = useState('');
@@ -388,9 +386,17 @@ export function VisaForm() {
       console.log('✅ [SUCCESS] Application created successfully:', data);
       console.log('✅ [SUCCESS] Application number:', data.applicationNumber);
       
-      // Store application data and open payment modal
-      setCurrentApplication(data);
-      setIsPaymentModalOpen(true);
+      // Redirect to payment-formV2 with application details
+      const amount = parseFloat(data.totalAmount || calculateTotal());
+      const params = new URLSearchParams({
+        orderRef: data.applicationNumber,
+        amount: amount.toString(),
+        type: 'visa',
+        customerName: `${data.firstName} ${data.lastName}`,
+        customerEmail: data.email || '',
+        customerPhone: data.phone || ''
+      });
+      setLocation(`/payment-formV2?${params.toString()}`);
       
       toast({
         title: "Application Submitted",
@@ -2317,55 +2323,6 @@ export function VisaForm() {
           </Form>
         </CardContent>
       </Card>
-
-      
-      {/* Paytriot Payment Modal */}
-      {currentApplication && (
-        <PaytriotPaymentModal
-          isOpen={isPaymentModalOpen}
-          onClose={() => setIsPaymentModalOpen(false)}
-          applicationNumber={currentApplication.applicationNumber}
-          amount={parseFloat(currentApplication.totalAmount || calculateTotal())}
-          onSuccess={(xref) => {
-            setIsPaymentModalOpen(false);
-            toast({
-              title: "Payment Successful!",
-              description: `Your payment has been processed. Transaction ID: ${xref}`,
-            });
-            // Update payment status via API
-            fetch('/api/payment/update-status', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                orderRef: currentApplication.applicationNumber,
-                paymentStatus: 'success',
-                xref
-              })
-            });
-            // Redirect to success page
-            setTimeout(() => {
-              window.location.href = `/payment-success?xref=${xref}&orderRef=${currentApplication.applicationNumber}`;
-            }, 1500);
-          }}
-          onError={(error) => {
-            setIsPaymentModalOpen(false);
-            toast({
-              title: "Payment Failed",
-              description: error,
-              variant: "destructive",
-            });
-            // Update payment status
-            fetch('/api/payment/update-status', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                orderRef: currentApplication.applicationNumber,
-                paymentStatus: 'failed'
-              })
-            });
-          }}
-        />
-      )}
     </div>
   );
 }

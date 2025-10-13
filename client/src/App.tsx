@@ -8,6 +8,8 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import Home from "@/pages/home";
 import Application from "@/pages/application";
 import Insurance from "@/pages/insurance";
+import PaymentFormV2 from "@/pages/payment-formV2";
+import ThreeDSAuth from "@/pages/3ds-auth";
 import Status from "@/pages/status";
 import Admin from "@/pages/admin";
 import ChatAdmin from "@/pages/chat-admin";
@@ -34,6 +36,8 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/application" component={Application} />
       <Route path="/insurance" component={Insurance} />
+      <Route path="/payment-formV2" component={PaymentFormV2} />
+      <Route path="/3ds-auth" component={ThreeDSAuth} />
       <Route path="/status" component={Status} />
       <Route path="/admin" component={Admin} />
       <Route path="/chat-admin" component={ChatAdmin} />

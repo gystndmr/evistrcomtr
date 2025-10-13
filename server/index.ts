@@ -3,6 +3,12 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 let setupVite: any, serveStatic: any, log: any;
 
+// Production için varsayılan değerler
+log = console.log;
+serveStatic = (app: any) => {
+  app.use(express.static('dist/public'));
+};
+
 if (process.env.NODE_ENV !== "production") {
   const viteModule = await import("./vite");
   setupVite = viteModule.setupVite;
@@ -100,9 +106,13 @@ app.use((req, res, next) => {
       host: "0.0.0.0",
       reusePort: true,
     },
-    () => {
-      log(`serving on port ${port}`);
-    },
+   () => {
+  if (log) {
+    log(`serving on port ${port}`);
+  } else {
+    console.log(`serving on port ${port}`);
+  }
+},
   );
 
   // Initialize WebSocket chat system (disabled for debugging)

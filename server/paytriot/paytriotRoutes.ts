@@ -46,6 +46,8 @@ export function registerPaytriotRoutes(app: Express): void {
         customerIPAddress: providedIP,
         statementNarrative1,
         statementNarrative2,
+	returnUrl,
+        errorUrl,
       } = req.body;
 
       if (!amountMinor || typeof amountMinor !== "number" || amountMinor <= 0) {
@@ -114,8 +116,38 @@ export function registerPaytriotRoutes(app: Express): void {
       // Handle transaction cleanup and 3DS flow
       if (result.status === "success") {
         // CRITICAL: Purge card data immediately on direct success (PCI compliance)
-        if (txKey) tempTransactions.delete(txKey);
-        console.log("[Paytriot] Direct success - purged card data from memory");
+    if (txKey) tempTransactions.delete(txKey);
+     // ✅ DB'yi güncelle + e-posta tetikle
+     try {
+      const base = `${req.protocol}://${req.get("host")}`;
+      const resp = await fetch(`${base}/api/payment/update-status`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderRef,            // frontend'den gelen applicationNumber/orderRef
+          paymentStatus: "success",
+          xref: result.xref,
+       }),
+      });
+      const data = await resp.json().catch(() => ({}));
+      console.log("[Paytriot] update-status ->", resp.status, data);
+     } catch (e: any) {
+      console.warn("[Paytriot] update-status call failed:", e?.message || e);
+    }
+     // Başarılıysa redirect yap
+    const base = `${req.protocol}://${req.get("host")}`;
+    const target = (typeof returnUrl === "string" && returnUrl.length > 0)
+      ? new URL(returnUrl, base)         // relative path destekler
+      : new URL("/payment-success", base); // default
+    if (target.origin === base) {         // open redirect koruması
+      if (result.xref) target.searchParams.set("xref", result.xref);
+      if (orderRef)    target.searchParams.set("orderRef", orderRef);
+      return res.json(result);
+    }
+
+    console.log("[Paytriot] Direct success - purged card data from memory");
+    return res.json(result);
+
       } else if (result.status === "3ds_required" && result.md) {
         // CRITICAL: Sanitize payload before storing for 3DS (PCI compliance)
         // Remove all sensitive card data - only store minimal fields needed for callback
@@ -146,7 +178,21 @@ export function registerPaytriotRoutes(app: Express): void {
       } else {
         // Error case - also purge card data
         if (txKey) tempTransactions.delete(txKey);
-        console.log("[Paytriot] Error occurred - purged card data from memory");
+        
+	// Hata durumunda opsiyonel redirect
+        const base = `${req.protocol}://${req.get("host")}`;
+        if (typeof errorUrl === "string" && errorUrl.length > 0) {
+          const err = new URL(errorUrl, base);
+          if (err.origin === base) {
+            const msg = result.message || "Payment failed";
+            err.searchParams.set("message", msg);
+            if (orderRef) err.searchParams.set("orderRef", orderRef);
+            return res.redirect(303, err.toString());
+          }
+        }
+        return res.json(result);
+
+	console.log("[Paytriot] Error occurred - purged card data from memory");
       }
 
       return res.json(result);
@@ -166,7 +212,7 @@ export function registerPaytriotRoutes(app: Express): void {
     }
   });
 
-  app.post("/paytriot/3ds-callback", async (req: Request, res: Response) => {
+  app.post("/api/paytriot/3ds-callback", async (req: Request, res: Response) => {
     try {
       const { MD, PaRes } = req.body;
 

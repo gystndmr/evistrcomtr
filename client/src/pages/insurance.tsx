@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +17,7 @@ import teamPhoto from "@/assets/team-photo-new.png";
 import type { InsuranceProduct } from "@shared/schema";
 
 export default function Insurance() {
+  const [, setLocation] = useLocation();
   const [selectedProduct, setSelectedProduct] = useState<InsuranceProduct | null>(null);
   
   // Get country from URL parameters
@@ -117,16 +119,36 @@ export default function Insurance() {
       };
       
       const response = await apiRequest("POST", "/api/insurance/applications", applicationPayload);
+      const jsonData = await response.json();
       
-      return response;
+      return jsonData;
     },
     onSuccess: (data: any) => {
-      setCurrentApplication(data);
-      setPendingPaymentData(data); // Store for immediate use in modal
-      setIsPaymentModalOpen(true);
+      console.log('[Insurance] Application created - Response data:', data);
+      console.log('[Insurance] Field check:', {
+        applicationNumber: data.applicationNumber,
+        totalAmount: data.totalAmount,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phone: data.phone
+      });
+      
+      // Redirect to payment-formV2 page with application data
+      const params = new URLSearchParams({
+        applicationNumber: data.applicationNumber || 'UNKNOWN',
+        amount: data.totalAmount || '0',
+        customerName: `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'Unknown',
+        customerEmail: data.email || '',
+        customerPhone: data.phone || ''
+      });
+
+      console.log('[Insurance] Redirect URL:', `/payment-formV2?${params.toString()}`);
+      setLocation(`/payment-formV2?${params.toString()}`);
+      
       toast({
         title: "Application Submitted!",
-        description: `Application ${data.applicationNumber} created. Please complete payment.`,
+        description: `Application ${data.applicationNumber || 'UNKNOWN'} created. Redirecting to payment...`,
       });
     },
     onError: (error) => {

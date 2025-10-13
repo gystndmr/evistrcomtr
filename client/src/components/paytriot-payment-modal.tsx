@@ -122,11 +122,44 @@ export function PaytriotPaymentModal({
           customerIPAddress: "", // Will be detected by server
         }),
       });
-
+	
+       // 1) Backend 303 redirect verirse, HTML yerine direkt tarayıcıyı yönlendirelim
+      if (response.redirected) {
+        window.location.href = response.url;
+        return;
+      }
+ 
+      // 2) İçerik tipi JSON değilse (ör: bir hata nedeniyle HTML döndüyse) güvenlice ele alalım
+      const contentType = response.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        const text = await response.text().catch(() => "");
+        // Basit fallback: payment-success pattern’i yakalarsak oraya git
+        const m = text.match(/\/payment-success[^\s"']*/i);
+        if (m) {
+          window.location.href = m[0];
+          return;
+        }
+        throw new Error("Unexpected response from server");
+      }
+      
       const result = await response.json();
 
       if (result.status === "success") {
-        onSuccess(result.xref || applicationNumber);
+        // parent'a haber ver (redirect yapmamalı)
+  	try { onSuccess?.(result.xref || applicationNumber); } catch {}
+
+  	// modalı kapat
+  	try { onClose?.(); } catch {}
+
+  	// nereye gideceğiz?
+  	const next =
+    	  result.nextUrl ??
+    	  `/payment-success?xref=${encodeURIComponent(result.xref || "")}&orderRef=${encodeURIComponent(result.orderRef || applicationNumber || "")}`;
+
+  	// tek noktadan yönlendir
+  	window.location.href = next;
+  	return;
+
       } else if (result.status === "3ds_required" && result.acsUrl) {
         // Create and submit 3DS form
         const form = document.createElement("form");
