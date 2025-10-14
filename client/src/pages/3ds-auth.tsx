@@ -8,12 +8,12 @@ import { Shield, Loader2 } from "lucide-react";
 export default function ThreeDSAuth() {
   const [, setLocation] = useLocation();
   const formRef = useRef<HTMLFormElement>(null);
-  
+
   const urlParams = new URLSearchParams(window.location.search);
-  const acsUrl = urlParams.get('acsUrl');
-  const md = urlParams.get('md');
-  const paReq = urlParams.get('paReq');
-  const termUrl = urlParams.get('termUrl');
+  const acsUrl = urlParams.get("acsUrl");
+  const md = urlParams.get("md");
+  const paReq = urlParams.get("paReq");
+  const termUrl = urlParams.get("termUrl");
 
   useEffect(() => {
     // Scroll to top
@@ -21,18 +21,23 @@ export default function ThreeDSAuth() {
 
     // Validate required params
     if (!acsUrl || !md || !paReq || !termUrl) {
-      console.error('[3DS Auth] Missing required parameters:', { acsUrl, md, paReq, termUrl });
-      setTimeout(() => setLocation('/'), 3000);
+      console.error("[3DS Auth] Missing required parameters:", {
+        acsUrl,
+        md,
+        paReq,
+        termUrl,
+      });
+      setTimeout(() => setLocation("/"), 3000);
       return;
     }
 
     // Auto-submit form after 1 second
     const timer = setTimeout(() => {
       if (formRef.current) {
-        console.log('[3DS Auth] Submitting form to ACS:', acsUrl);
+        console.log("[3DS Auth] Submitting form to ACS:", acsUrl);
         formRef.current.submit();
       }
-    }, 1000);
+    }, 250);
 
     return () => clearTimeout(timer);
   }, [acsUrl, md, paReq, termUrl, setLocation]);
@@ -44,8 +49,12 @@ export default function ThreeDSAuth() {
         <main className="flex-1 flex items-center justify-center p-4">
           <Card className="max-w-md w-full">
             <CardContent className="p-8 text-center">
-              <p className="text-red-600 font-semibold">Missing 3D Secure parameters</p>
-              <p className="text-sm text-gray-600 mt-2">Redirecting to home...</p>
+              <p className="text-red-600 font-semibold">
+                Missing 3D Secure parameters
+              </p>
+              <p className="text-sm text-gray-600 mt-2">
+                Redirecting to home...
+              </p>
             </CardContent>
           </Card>
         </main>
@@ -57,7 +66,7 @@ export default function ThreeDSAuth() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100">
       <Header />
-      
+
       <main className="flex-1 flex items-center justify-center p-4">
         <Card className="max-w-2xl w-full shadow-xl border-0">
           <CardContent className="p-8">
@@ -95,23 +104,29 @@ export default function ThreeDSAuth() {
               <ul className="text-sm text-blue-800 space-y-2">
                 <li className="flex items-start gap-2">
                   <span className="text-blue-600 mt-0.5">•</span>
-                  <span>Additional security layer for online card payments</span>
+                  <span>
+                    Additional security layer for online card payments
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-blue-600 mt-0.5">•</span>
-                  <span>You'll be asked to verify your identity with your bank</span>
+                  <span>
+                    You'll be asked to verify your identity with your bank
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-blue-600 mt-0.5">•</span>
-                  <span>This may include SMS code, fingerprint, or password</span>
+                  <span>
+                    This may include SMS code, fingerprint, or password
+                  </span>
                 </li>
               </ul>
             </div>
 
             {/* Hidden Form - Auto-submits to ACS */}
-            <form 
+            <form
               ref={formRef}
-              method="POST" 
+              method="POST"
               action={acsUrl}
               className="hidden"
               data-testid="form-3ds-submit"
@@ -134,7 +149,7 @@ export default function ThreeDSAuth() {
           </CardContent>
         </Card>
       </main>
-      
+
       <Footer />
     </div>
   );

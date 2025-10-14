@@ -91,63 +91,65 @@ export class PaytriotClient {
     if (!amountMinor || typeof amountMinor !== "number" || amountMinor <= 0) {
       throw new Error("Invalid amountMinor: must be a positive number");
     }
-
     if (!customerIPAddress) {
       throw new Error("customerIPAddress is required");
     }
 
-    // Sanitize orderRef and transactionUnique to alphanumeric only
-    const sanitizedOrderRef = (orderRef || `ORD${Date.now()}${uuidv4().slice(0, 8)}`).replace(/[^a-zA-Z0-9]/g, '');
-    const sanitizedTransactionUnique = (transactionUnique || uuidv4()).replace(/[^a-zA-Z0-9]/g, '');
+    const sanitizedOrderRef = (orderRef || `ORD${Date.now()}${uuidv4().slice(0, 8)}`).replace(/[^a-zA-Z0-9]/g, "");
+    const sanitizedTransactionUnique = (transactionUnique || uuidv4()).replace(/[^a-zA-Z0-9]/g, "");
+    const is3DSCompletion = Boolean(threeDSMD && threeDSPaRes);
 
+    // Temel alanlar → numeric type/country/currency
     const fields: Record<string, any> = {
       merchantID: this.merchantId,
       action: "SALE",
-      type: "1",
-      countryCode: this.countryCode,
-      currencyCode: this.currencyCode,
+      type: 1,                                        // ✅ numeric
+      countryCode: Number(this.countryCode) || 826,   // ✅ numeric
+      currencyCode: Number(this.currencyCode) || 840, // ✅ numeric (USD)
       amount: String(amountMinor),
       orderRef: sanitizedOrderRef,
       transactionUnique: sanitizedTransactionUnique,
-      customerIPAddress: customerIPAddress,
-      threeDSRequired: "Y",
+      customerIPAddress,
     };
 
-    // Only include card fields if not doing 3DS completion
-    // (3DS completion uses MD to reference original transaction)
-    if (!threeDSMD && !threeDSPaRes) {
+    // === 3DS INIT (MD/PaRes yokken) ===
+    if (!is3DSCompletion) {
+      if (!cardNumber || !cardExpiryMonth || !cardExpiryYear || !cardCVV) {
+        throw new Error("Missing card details");
+      }
+      const paddedMonth = cardExpiryMonth.toString().padStart(2, "0");
+      const twoDigitYear = cardExpiryYear.toString().slice(-2);
+
+      fields.threeDSRequired = "Y";           // ✅ sadece init’te gönder
       fields.cardNumber = cardNumber;
-      // Ensure cardExpiryMonth is 2 digits (01-12)
-      const paddedMonth = cardExpiryMonth.padStart(2, '0');
-      const expiryYear = cardExpiryYear ? cardExpiryYear.slice(-2) : "";
-      fields.cardExpiryDate = `${paddedMonth}${expiryYear}`;
+      fields.cardExpiryMonth = paddedMonth;   // ✅ ayrı alan
+      fields.cardExpiryYear  = twoDigitYear;  // ✅ ayrı alan
       fields.cardCVV = cardCVV;
+
+      // Opsiyoneller (varsa)
+      if (customerName?.trim())    fields.customerName    = customerName.trim();
+      if (customerEmail?.trim())   fields.customerEmail   = customerEmail.trim();
+      if (customerPhone?.trim())   fields.customerPhone   = customerPhone.trim();
+      if (customerAddress?.trim()) fields.customerAddress = customerAddress.trim();
+      if (customerPostCode?.trim())fields.customerPostCode= customerPostCode.trim();
+      if (statementNarrative1?.trim()) fields.statementNarrative1 = statementNarrative1.trim();
+      if (statementNarrative2?.trim()) fields.statementNarrative2 = statementNarrative2.trim();
     }
 
-    // Only add non-empty optional fields
-    if (customerName?.trim()) fields.customerName = customerName.trim();
-    if (customerEmail?.trim()) fields.customerEmail = customerEmail.trim();
-    if (customerPhone?.trim()) fields.customerPhone = customerPhone.trim();
-    if (customerAddress?.trim()) fields.customerAddress = customerAddress.trim();
-    if (customerPostCode?.trim()) fields.customerPostCode = customerPostCode.trim();
-    if (statementNarrative1?.trim()) fields.statementNarrative1 = statementNarrative1.trim();
-    if (statementNarrative2?.trim()) fields.statementNarrative2 = statementNarrative2.trim();
+    // === 3DS COMPLETION (sadece MD + PaRes) ===
+    if (is3DSCompletion) {
+      fields.threeDSMD = threeDSMD;
+      fields.threeDSPaRes = threeDSPaRes;
+    }
 
-    // 3DS fields only for completion
-    if (threeDSMD) fields.threeDSMD = threeDSMD;
-    if (threeDSPaRes) fields.threeDSPaRes = threeDSPaRes;
-
+    // İmza
     const signature = sign(fields, this.signatureKey);
     fields.signature = signature;
 
-    // Mask sensitive data for logging (PCI compliance)
+    // Log maskesi (PCI)
     const maskedFields = { ...fields };
-    if (maskedFields.cardNumber) {
-      maskedFields.cardNumber = `****${maskedFields.cardNumber.slice(-4)}`;
-    }
-    if (maskedFields.cardCVV) {
-      maskedFields.cardCVV = '***';
-    }
+    if (maskedFields.cardNumber) maskedFields.cardNumber = `****${maskedFields.cardNumber.slice(-4)}`;
+    if (maskedFields.cardCVV)    maskedFields.cardCVV    = "***";
 
     console.log("[Paytriot] 🔐 REQUEST DETAILS:");
     console.log("[Paytriot] Gateway URL:", this.gatewayUrl);
@@ -165,105 +167,39 @@ export class PaytriotClient {
           "User-Agent": "PaytriotClient/1.0",
         },
         timeout: this.timeout,
-        validateStatus: () => true, // Accept all status codes
+        validateStatus: () => true,
       });
 
-      console.log("[Paytriot] 📥 RESPONSE DETAILS:");
-      console.log(
-        "[Paytriot] HTTP Status:",
-        response.status,
-        response.statusText,
-      );
-      console.log(
-        "[Paytriot] Response headers:",
-        response.headers,
-      );
-
-      const responseText = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
-      console.log(
-        "[Paytriot] Raw response (first 1000 chars):",
-        responseText.substring(0, 1000),
-      );
-
-      // Handle non-200 status codes
-      if (response.status !== 200) {
-        console.error(`[Paytriot] ⚠️ Non-200 HTTP status: ${response.status}`);
-        console.error(`[Paytriot] Response body:`, responseText);
-      }
-
+      const responseText = typeof response.data === "string" ? response.data : JSON.stringify(response.data);
       let responseData: Record<string, any>;
-      try {
-        responseData = typeof response.data === 'object' ? response.data : JSON.parse(responseText);
-      } catch (e) {
-        responseData = fromFormUrlEncoded(responseText);
+      try { responseData = typeof response.data === "object" ? response.data : JSON.parse(responseText); }
+      catch { responseData = fromFormUrlEncoded(responseText); }
+
+      console.log("[Paytriot] Response data:", JSON.stringify(responseData, null, 2));
+
+      if (responseData["Internal Worker Error"] !== undefined || responseData["error"] !== undefined) {
+        const errorMessage = responseData["Internal Worker Error"] || responseData["error"] || "Unknown proxy error";
+        throw new Error(`Payment gateway error: ${errorMessage}`);
       }
 
-      console.log(
-        "[Paytriot] Response data:",
-        JSON.stringify(responseData, null, 2),
-      );
-
-      // Check for proxy/worker errors
-      if (
-        responseData["Internal Worker Error"] !== undefined ||
-        responseData["error"] !== undefined
-      ) {
-        const errorMessage =
-          responseData["Internal Worker Error"] ||
-          responseData["error"] ||
-          "Unknown proxy error";
-        console.error("[Paytriot] Proxy/Worker error detected:", errorMessage);
-        throw new Error(
-          `Payment gateway error: ${errorMessage || "Proxy internal error"}`,
-        );
-      }
-
-      // CRITICAL: Paytriot only sends signature on SUCCESS responses
-      // Error responses don't include signature field
+      const responseCode = Number(responseData.responseCode);
       const receivedSignature = responseData.signature;
-      const responseCode = parseInt(responseData.responseCode, 10);
 
-
-      if (receivedSignature && responseCode === 0) {
-        // Verify signature only if present
-        const computedSignature = signResponse(responseData, this.signatureKey);
-
-        console.log("[Paytriot] Received signature:", receivedSignature);
-        console.log("[Paytriot] Computed signature:", computedSignature);
-
-        if (
-          !verifySignature(responseData, this.signatureKey, receivedSignature)
-        ) {
-          console.error("[Paytriot] Signature verification failed!");
-          console.error(
-            "[Paytriot] Response fields:",
-            Object.keys(responseData),
-          );
+      if (!Number.isNaN(responseCode) && receivedSignature && responseCode === 0) {
+        if (!verifySignature(responseData, this.signatureKey, receivedSignature)) {
           throw new Error("Response signature verification failed");
         }
-
-        console.log("[Paytriot] ✅ Signature verification passed");
-      } else {
-        console.log(
-          `[Paytriot] ⚠️ Skipping signature verification (responseCode: ${responseCode})`,
-        );
       }
 
       return this.normalizeResponse(responseData);
     } catch (error: any) {
-      if (axios.isAxiosError(error)) {
-        if (error.code === 'ECONNABORTED') {
-          throw new Error("Request timeout");
-        }
-        console.error("[Paytriot] Axios error:", error.message);
-        if (error.response) {
-          console.error("[Paytriot] Error response status:", error.response.status);
-          console.error("[Paytriot] Error response data:", error.response.data);
-        }
+      if (axios.isAxiosError(error) && error.code === "ECONNABORTED") {
+        throw new Error("Request timeout");
       }
       throw error;
     }
   }
+
 
   private normalizeResponse(
   responseData: Record<string, string>,
