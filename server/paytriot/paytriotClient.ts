@@ -23,7 +23,7 @@ interface PaytriotSalePayload {
   threeDSPaRes?: string;
 }
 
-interface PaytriotResponse {
+export interface PaytriotResponse {
   status: "success" | "3ds_required" | "error";
   xref?: string;
   authorisationCode?: string;

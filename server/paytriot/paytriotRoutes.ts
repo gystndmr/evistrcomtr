@@ -1,5 +1,5 @@
 import type { Express, Request, Response } from "express";
-import { PaytriotClient } from "./paytriotClient";
+import { PaytriotClient, type PaytriotResponse } from "./paytriotClient";
 import { getRealClientIP } from "../utils/ip";
 
 interface PaytriotSalePayload {
@@ -46,7 +46,7 @@ export function registerPaytriotRoutes(app: Express): void {
         customerIPAddress: providedIP,
         statementNarrative1,
         statementNarrative2,
-	returnUrl,
+        returnUrl,
         errorUrl,
       } = req.body;
 
@@ -101,6 +101,13 @@ export function registerPaytriotRoutes(app: Express): void {
         statementNarrative2,
       };
 
+      payload.customerAddress = (
+        payload.customerAddress || "16 Test Street"
+      ).trim();
+      payload.customerPostCode = (
+        payload.customerPostCode || "TE15 5ST"
+      ).trim();
+
       // Store using transactionUnique as key for 3DS callback lookup
       txKey = transactionUnique || `temp-${Date.now()}`;
       if (txKey) tempTransactions.set(txKey, payload);
@@ -116,38 +123,42 @@ export function registerPaytriotRoutes(app: Express): void {
       // Handle transaction cleanup and 3DS flow
       if (result.status === "success") {
         // CRITICAL: Purge card data immediately on direct success (PCI compliance)
-    if (txKey) tempTransactions.delete(txKey);
-     // ✅ DB'yi güncelle + e-posta tetikle
-     try {
-      const base = `${req.protocol}://${req.get("host")}`;
-      const resp = await fetch(`${base}/api/payment/update-status`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          orderRef,            // frontend'den gelen applicationNumber/orderRef
-          paymentStatus: "success",
-          xref: result.xref,
-       }),
-      });
-      const data = await resp.json().catch(() => ({}));
-      console.log("[Paytriot] update-status ->", resp.status, data);
-     } catch (e: any) {
-      console.warn("[Paytriot] update-status call failed:", e?.message || e);
-    }
-     // Başarılıysa redirect yap
-    const base = `${req.protocol}://${req.get("host")}`;
-    const target = (typeof returnUrl === "string" && returnUrl.length > 0)
-      ? new URL(returnUrl, base)         // relative path destekler
-      : new URL("/payment-success", base); // default
-    if (target.origin === base) {         // open redirect koruması
-      if (result.xref) target.searchParams.set("xref", result.xref);
-      if (orderRef)    target.searchParams.set("orderRef", orderRef);
-      return res.json(result);
-    }
+        if (txKey) tempTransactions.delete(txKey);
+        // ✅ DB'yi güncelle + e-posta tetikle
+        try {
+          const base = `${req.protocol}://${req.get("host")}`;
+          const resp = await fetch(`${base}/api/payment/update-status`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              orderRef, // frontend'den gelen applicationNumber/orderRef
+              paymentStatus: "success",
+              xref: result.xref,
+            }),
+          });
+          const data = await resp.json().catch(() => ({}));
+          console.log("[Paytriot] update-status ->", resp.status, data);
+        } catch (e: any) {
+          console.warn(
+            "[Paytriot] update-status call failed:",
+            e?.message || e,
+          );
+        }
+        // Başarılıysa redirect yap
+        const base = `${req.protocol}://${req.get("host")}`;
+        const target =
+          typeof returnUrl === "string" && returnUrl.length > 0
+            ? new URL(returnUrl, base) // relative path destekler
+            : new URL("/payment-success", base); // default
+        if (target.origin === base) {
+          // open redirect koruması
+          if (result.xref) target.searchParams.set("xref", result.xref);
+          if (orderRef) target.searchParams.set("orderRef", orderRef);
+          return res.json(result);
+        }
 
-    console.log("[Paytriot] Direct success - purged card data from memory");
-    return res.json(result);
-
+        console.log("[Paytriot] Direct success - purged card data from memory");
+        return res.json(result);
       } else if (result.status === "3ds_required" && result.md) {
         // CRITICAL: Sanitize payload before storing for 3DS (PCI compliance)
         // Remove all sensitive card data - only store minimal fields needed for callback
@@ -178,8 +189,8 @@ export function registerPaytriotRoutes(app: Express): void {
       } else {
         // Error case - also purge card data
         if (txKey) tempTransactions.delete(txKey);
-        
-	// Hata durumunda opsiyonel redirect
+
+        // Hata durumunda opsiyonel redirect
         const base = `${req.protocol}://${req.get("host")}`;
         if (typeof errorUrl === "string" && errorUrl.length > 0) {
           const err = new URL(errorUrl, base);
@@ -192,7 +203,7 @@ export function registerPaytriotRoutes(app: Express): void {
         }
         return res.json(result);
 
-	console.log("[Paytriot] Error occurred - purged card data from memory");
+        console.log("[Paytriot] Error occurred - purged card data from memory");
       }
 
       return res.json(result);
@@ -212,13 +223,18 @@ export function registerPaytriotRoutes(app: Express): void {
     }
   });
 
-  app.post("/api/paytriot/3ds-callback", async (req: Request, res: Response) => {
-    try {
-      const { MD, PaRes } = req.body;
+  app.post(
+    "/api/paytriot/3ds-callback",
+    async (req: Request, res: Response) => {
+      // Bazı ACS'ler form-urlencoded gönderir → express.urlencoded zorunlu
+      const MD = req.body.MD || req.body.md || req.body.Md;
+      const PaRes =
+        req.body.PaRes || req.body.PARES || req.body.pares || req.body.PARes;
 
       console.log("[Paytriot] 3DS callback received:", {
-        MD: MD ? "present" : "missing",
-        PaRes: PaRes ? "present" : "missing",
+        MD: Boolean(MD),
+        PaRes: Boolean(PaRes),
+        contentType: req.headers["content-type"],
       });
 
       if (!MD || !PaRes) {
@@ -228,23 +244,43 @@ export function registerPaytriotRoutes(app: Express): void {
         });
       }
 
+      // Orijinal payload'ı MD ile bul
       const originalTransaction = tempTransactions.get(MD);
 
       if (!originalTransaction) {
+        // Bazen MD yerine xref map'lenmiş olabilir; küçük bir fallback deneyebilirsin
+        // const alt = tempTransactions.get(req.body.xref || '');
+        // if (alt) { ... } else {
         return res.status(400).json({
           status: "error",
           message: "Transaction not found or expired",
         });
+        // }
       }
 
+      // 3DS completion çağrısı için payload
       const payload = {
         ...originalTransaction,
         threeDSMD: MD,
         threeDSPaRes: PaRes,
       };
 
-      const result = await paytriotClient.sale(payload);
+      let result: PaytriotResponse | undefined;
+      try {
+        result = await paytriotClient.sale(payload);
+      } catch (err: any) {
+        console.error(
+          "[Paytriot] 3DS completion call failed:",
+          err?.message || err,
+        );
+        // Map'i temizleyelim ki bellek sızıntısı olmasın
+        tempTransactions.delete(MD);
+        // Hata ekranına yönlendir
+        const msg = encodeURIComponent("3DS completion failed");
+        return res.redirect(303, `/payment-error?message=${msg}`);
+      }
 
+      // Map'i TEMİZLE (başarılı/başarısız fark etmez)
       tempTransactions.delete(MD);
 
       console.log("[Paytriot] 3DS completion result:", {
@@ -252,63 +288,40 @@ export function registerPaytriotRoutes(app: Express): void {
         xref: result.xref,
       });
 
-      if (result.status === "success") {
-        // Update payment status in database
-        if (originalTransaction.orderRef) {
-          try {
-            const updateResponse = await fetch(
-              `${req.protocol}://${req.get("host")}/api/payment/update-status`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  orderRef: originalTransaction.orderRef,
-                  paymentStatus: "success",
-                  xref: result.xref,
-                }),
-              },
-            );
-            console.log(
-              "[Paytriot] Payment status updated after 3DS:",
-              await updateResponse.json(),
-            );
-          } catch (err) {
-            console.error("[Paytriot] Failed to update payment status:", err);
-          }
-        }
-        return res.redirect(
-          `/payment-success?xref=${result.xref}&orderRef=${originalTransaction.orderRef || ""}`,
-        );
-      } else {
-        // Update failed status
-        if (originalTransaction.orderRef) {
-          try {
-            await fetch(
-              `${req.protocol}://${req.get("host")}/api/payment/update-status`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  orderRef: originalTransaction.orderRef,
-                  paymentStatus: "failed",
-                }),
-              },
-            );
-          } catch (err) {
-            console.error("[Paytriot] Failed to update payment status:", err);
-          }
-        }
-        return res.redirect(
-          `/payment-error?message=${encodeURIComponent(result.message || "Payment failed")}`,
+      // Ödeme sonucunu veritabanına yaz (mümkünse absolute URL, ama proxy trust ile req.protocol doğru gelir)
+      const orderRef = originalTransaction.orderRef || "";
+      const baseURL = `${req.protocol}://${req.get("host")}`;
+      const updateURL = `${baseURL}/api/payment/update-status`;
+
+      try {
+        await fetch(updateURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orderRef,
+            paymentStatus: result.status === "success" ? "success" : "failed",
+            xref: result.xref || undefined,
+          }),
+        });
+      } catch (e) {
+        console.error(
+          "[Paytriot] Failed to update payment status after 3DS:",
+          e,
         );
       }
-    } catch (error: any) {
-      console.error("[Paytriot] 3DS callback error:", error.message);
-      return res.redirect(
-        `/payment-error?message=${encodeURIComponent("3DS authentication failed")}`,
-      );
-    }
-  });
+
+      if (result.status === "success") {
+        const qp = new URLSearchParams({
+          xref: result.xref || "",
+          orderRef,
+        }).toString();
+        return res.redirect(303, `/payment-success?${qp}`);
+      } else {
+        const msg = encodeURIComponent(result.message || "Payment failed");
+        return res.redirect(303, `/payment-error?message=${msg}`);
+      }
+    },
+  );
 
   app.post("/paytriot/callback", async (req: Request, res: Response) => {
     try {
