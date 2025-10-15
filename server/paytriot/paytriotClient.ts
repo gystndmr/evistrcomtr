@@ -125,7 +125,7 @@ export class PaytriotClient {
       const paddedMonth = cardExpiryMonth.toString().padStart(2, "0");
       const twoDigitYear = cardExpiryYear.toString().slice(-2);
 
-      fields.threeDSRequired = "Y"; // ✅ sadece init’te gönder
+      //fields.threeDSRequired = "Y"; // ✅ sadece init’te gönder
       fields.cardNumber = cardNumber;
       fields.cardExpiryMonth = paddedMonth; // ✅ ayrı alan
       fields.cardExpiryYear = twoDigitYear; // ✅ ayrı alan
