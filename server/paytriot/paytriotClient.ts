@@ -111,7 +111,7 @@ export class PaytriotClient {
       type: 1, // ✅ numeric
       countryCode: Number(this.countryCode) || 826, // ✅ numeric
       currencyCode: Number(this.currencyCode) || 840, // ✅ numeric (USD)
-      amount: 10,
+      amount: String(amountMinor),
       orderRef: sanitizedOrderRef,
       transactionUnique: sanitizedTransactionUnique,
       customerIPAddress,
