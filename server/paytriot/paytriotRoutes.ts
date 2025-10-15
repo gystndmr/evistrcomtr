@@ -101,13 +101,6 @@ export function registerPaytriotRoutes(app: Express): void {
         statementNarrative2,
       };
 
-      payload.customerAddress = (
-        payload.customerAddress || "16 Test Street"
-      ).trim();
-      payload.customerPostCode = (
-        payload.customerPostCode || "TE15 5ST"
-      ).trim();
-
       // Store using transactionUnique as key for 3DS callback lookup
       txKey = transactionUnique || `temp-${Date.now()}`;
       if (txKey) tempTransactions.set(txKey, payload);
