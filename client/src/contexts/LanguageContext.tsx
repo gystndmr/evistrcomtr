@@ -360,6 +360,14 @@ const translations: Record<string, Record<string, string>> = {
     'form.error.passport.expired': 'Passport Expired',
     'form.error.prerequisites': 'Prerequisites Required',
     'form.error.prerequisites.desc': 'Please confirm all prerequisites before proceeding',
+    'form.error.arrival.date': 'Arrival Date Required',
+    'form.error.arrival.date.desc': 'Please select your arrival date in Turkey',
+    'form.error.complete.date': 'Complete Date Selection Required',
+    'form.error.complete.date.desc': 'Please select day, month AND year for your arrival date',
+    'form.error.invalid.arrival.date': 'Invalid Arrival Date',
+    'form.error.invalid.arrival.date.desc': 'Arrival date must be today or in the future',
+    'form.error.processing.fee': 'Processing Fee Required',
+    'form.error.processing.fee.desc': 'Please select a processing fee option',
 
     // Form components - New visa-form translations
     'form.field.supporting.document.number': 'Supporting Document Number',
@@ -703,6 +711,14 @@ const translations: Record<string, Record<string, string>> = {
     'form.error.passport.expired': 'Pasaport Süresi Dolmuş',
     'form.error.prerequisites': 'Önkoşullar Gerekli',
     'form.error.prerequisites.desc': 'Devam etmeden önce lütfen tüm önkoşulları onaylayın',
+    'form.error.arrival.date': 'Varış Tarihi Gerekli',
+    'form.error.arrival.date.desc': 'Lütfen Türkiye\'ye varış tarihinizi seçin',
+    'form.error.complete.date': 'Tam Tarih Seçimi Gerekli',
+    'form.error.complete.date.desc': 'Lütfen varış tarihiniz için gün, ay VE yıl seçin',
+    'form.error.invalid.arrival.date': 'Geçersiz Varış Tarihi',
+    'form.error.invalid.arrival.date.desc': 'Varış tarihi bugün veya gelecekte olmalıdır',
+    'form.error.processing.fee': 'İşlem Ücreti Gerekli',
+    'form.error.processing.fee.desc': 'Lütfen bir işlem ücreti seçeneği seçin',
 
     // Form components - New visa-form translations
     'form.field.supporting.document.number': 'Destekleyici Belge Numarası',

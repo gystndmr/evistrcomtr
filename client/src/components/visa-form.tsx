@@ -655,15 +655,15 @@ export function VisaForm() {
       }
     }
     
-    // Step 3: Arrival Information
-    if (currentStep === 3) {
+    // Arrival Information Validation (works for any step that shows travel content)
+    if (getCurrentStepContent() === 'travel') {
       const arrivalDate = form.getValues("arrivalDate");
       
       // Check if arrival date exists and is properly formatted
       if (!arrivalDate || !arrivalDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
         toast({
-          title: "Arrival Date Required",
-          description: "Please select a complete arrival date (day, month, year)",
+          title: t("form.error.arrival.date"),
+          description: t("form.error.arrival.date.desc"),
           variant: "destructive",
         });
         return;
@@ -681,8 +681,8 @@ export function VisaForm() {
           arrivalDate === "0000-01-01" ||
           year < 2025 || month < 1 || month > 12 || day < 1 || day > 31) {
         toast({
-          title: "Complete Date Selection Required",
-          description: "Please select day, month AND year for your arrival date",
+          title: t("form.error.complete.date"),
+          description: t("form.error.complete.date.desc"),
           variant: "destructive",
         });
         return;
@@ -696,8 +696,8 @@ export function VisaForm() {
       
       if (selectedDate < today) {
         toast({
-          title: "Invalid Arrival Date",
-          description: "Arrival date must be today or in the future",
+          title: t("form.error.invalid.arrival.date"),
+          description: t("form.error.invalid.arrival.date.desc"),
           variant: "destructive",
         });
         return;
@@ -707,8 +707,8 @@ export function VisaForm() {
       const currentProcessingType = form.getValues("processingType");
       if (!currentProcessingType) {
         toast({
-          title: "Processing Fee Required",
-          description: "Please select a processing fee option after completing date selection",
+          title: t("form.error.processing.fee"),
+          description: t("form.error.processing.fee.desc"),
           variant: "destructive",
         });
         return;
