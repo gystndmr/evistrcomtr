@@ -792,12 +792,11 @@ export function VisaForm() {
       }
     }
     
-    // Step 5: Personal Information (with supporting document) OR Step 4 (without)
-    const personalInfoStep = (selectedCountry?.isEligible && hasSupportingDocument === true) ? 5 : 4;
-    if (currentStep === personalInfoStep) {
+    // Personal Information Validation (works for any step that shows personal content)
+    if (getCurrentStepContent() === 'personal') {
       const formData = form.getValues();
       console.log("🔍 Personal Info Step Validation - Form Data:", formData);
-      console.log("🔍 Current Step:", currentStep, "Personal Info Step:", personalInfoStep);
+      console.log("🔍 Current Step:", currentStep);
       
       if (!formData.firstName.trim()) {
         toast({
