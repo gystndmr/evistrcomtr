@@ -616,7 +616,65 @@ export function VisaForm() {
       
       if (effectiveScenario === 1) {
         // Scenario 1: E-visa eligible + NO supporting document required
-        // Continue to next step (arrival information) normally - don't skip steps
+        // This scenario shows arrival date in Step 2, so validate it here
+        const arrivalDate = form.getValues("arrivalDate");
+        
+        // Check if arrival date exists and is properly formatted
+        if (!arrivalDate || !arrivalDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          toast({
+            title: t("form.error.arrival.date"),
+            description: t("form.error.arrival.date.desc"),
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        // Check if all parts of the date are valid (no 0000 placeholders)
+        const dateParts = arrivalDate.split('-');
+        const year = parseInt(dateParts[0]);
+        const month = parseInt(dateParts[1]);
+        const day = parseInt(dateParts[2]);
+        
+        // Check for incomplete date selection (placeholder values)
+        if (year === 0 || month === 0 || day === 0 || 
+            arrivalDate === "0000-00-01" || 
+            arrivalDate === "0000-01-01" ||
+            year < 2025 || month < 1 || month > 12 || day < 1 || day > 31) {
+          toast({
+            title: t("form.error.complete.date"),
+            description: t("form.error.complete.date.desc"),
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        // Check if arrival date is in the future
+        const today = new Date();
+        const selectedDate = new Date(year, month - 1, day);
+        today.setHours(0, 0, 0, 0);
+        selectedDate.setHours(0, 0, 0, 0);
+        
+        if (selectedDate < today) {
+          toast({
+            title: t("form.error.invalid.arrival.date"),
+            description: t("form.error.invalid.arrival.date.desc"),
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        // Check if processing fee is selected (REQUIRED for all cases when complete date is selected)
+        const currentProcessingType = form.getValues("processingType");
+        if (!currentProcessingType) {
+          toast({
+            title: t("form.error.processing.fee"),
+            description: t("form.error.processing.fee.desc"),
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        // All validations passed for Scenario 1, continue to next step
         setCurrentStep(currentStep + 1);
         return;
       }
@@ -655,8 +713,8 @@ export function VisaForm() {
       }
     }
     
-    // Arrival Information Validation (works for any step that shows travel content)
-    if (getCurrentStepContent() === 'travel') {
+    // Step 3: Arrival Information Validation (for Scenario 2 with supporting docs)
+    if (getCurrentStepContent() === 'travel' && currentStep === 3) {
       const arrivalDate = form.getValues("arrivalDate");
       
       // Check if arrival date exists and is properly formatted
